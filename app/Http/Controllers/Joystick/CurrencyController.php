@@ -13,7 +13,7 @@ class CurrencyController extends Controller
     {
         $this->authorize('viewAny', Currency::class);
 
-        $currencies = Currency::get();
+        $currencies = Currency::orderBy('sort_id')->get();
 
         return view('joystick.currencies.index', compact('currencies'));
     }
@@ -35,6 +35,7 @@ class CurrencyController extends Controller
 
         $currency = new Currency;
 
+        $currency->sort_id = $request->sort_id;
         $currency->country = $request->country;
         $currency->currency = $request->currency;
         $currency->code = $request->code;
@@ -64,6 +65,7 @@ class CurrencyController extends Controller
 
         $this->authorize('update', $currency);
 
+        $currency->sort_id = $request->sort_id;
         $currency->country = $request->country;
         $currency->currency = $request->currency;
         $currency->code = $request->code;

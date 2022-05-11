@@ -17,7 +17,7 @@ class CreateUnitsTable extends Migration
             $table->increments('id');
             $table->char('title');
             $table->char('slug');
-            $table->char('description');
+            $table->char('description')->nullable();
             $table->char('lang');
         });
     }

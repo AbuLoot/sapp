@@ -59,6 +59,17 @@
       <div class="row">
         <div class="col-xs-7 col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
+            <li @if(Request::is($lang.'/admin/office*')) class="active" @endif><a href="/{{ $lang }}/admin/office"><i class="material-icons md-20">apartment</i> Офис</a></li>
+            <li @if(Request::is($lang.'/admin/storages*')) class="active" @endif><a href="/{{ $lang }}/admin/storages"><i class="material-icons md-20">warehouse</i> Склады</a></li>
+            <li @if(Request::is($lang.'/admin/cashbooks*')) class="active" @endif><a href="/{{ $lang }}/admin/cashbooks"><i class="material-icons md-20">account_balance</i> Кассы</a></li>
+            <li @if(Request::is($lang.'/admin/workplaces*')) class="active" @endif><a href="/{{ $lang }}/admin/workplaces"><i class="material-icons md-20">workspaces</i> Рабочие места</a></li>
+            <li @if(Request::is($lang.'/admin/bank_accounts*')) class="active" @endif><a href="/{{ $lang }}/admin/bank_accounts"><i class="material-icons md-20">account_balance_wallet</i> Счета</a></li>
+            <li @if(Request::is($lang.'/admin/payment_types*')) class="active" @endif><a href="/{{ $lang }}/admin/payment_types"><i class="material-icons md-20">payments</i> Виды оплаты</a></li>
+            <li @if(Request::is($lang.'/admin/doc_types*')) class="active" @endif><a href="/{{ $lang }}/admin/doc_types"><i class="material-icons md-20">description</i> Виды документов</a></li>
+            <li @if(Request::is($lang.'/admin/discounts*')) class="active" @endif><a href="/{{ $lang }}/admin/discounts"><i class="material-icons md-20">sell</i> Скидки</a></li>
+            <li @if(Request::is($lang.'/admin/units*')) class="active" @endif><a href="/{{ $lang }}/admin/units"><i class="material-icons md-20">balance</i> Единицы измерения</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
             @can('viewAny', App\Models\Page::class)<li @if(Request::is($lang.'/admin/pages*')) class="active" @endif><a href="/{{ $lang }}/admin/pages"><i class="material-icons md-20">content_copy</i> Страницы</a></li>@endcan
             @can('viewAny', App\Models\Post::class)<li @if(Request::is($lang.'/admin/posts*')) class="active" @endif><a href="/{{ $lang }}/admin/posts"><i class="material-icons md-20">create</i> Новости</a></li>@endcan
             @can('viewAny', App\Models\Section::class)<li @if(Request::is($lang.'/admin/sections*')) class="active" @endif> <a href="/{{ $lang }}/admin/sections"><i class="material-icons md-20">dashboard</i> Разделы</a> </li>@endcan
@@ -71,16 +82,6 @@
             @can('viewAny', App\Models\Option::class)<li @if(Request::is($lang.'/admin/options*')) class="active" @endif><a href="/{{ $lang }}/admin/options"><i class="material-icons md-20">label_outline</i> Опции</a></li>@endcan
             @can('viewAny', App\Models\Order::class)<li @if(Request::is($lang.'/admin/orders*')) class="active" @endif><a href="/{{ $lang }}/admin/orders"><i class="material-icons md-20">shopping_cart</i> Заказы</a></li>@endcan
             @can('viewAny', App\Models\App::class)<li @if(Request::is($lang.'/admin/apps*')) class="active" @endif><a href="/{{ $lang }}/admin/apps"><i class="material-icons md-20">send</i> Заявки</a></li>@endcan
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li @if(Request::is($lang.'/admin/office*')) class="active" @endif><a href="/{{ $lang }}/admin/office"><i class="material-icons md-20">apartment</i> Офис</a></li>
-            <li @if(Request::is($lang.'/admin/storages*')) class="active" @endif><a href="/{{ $lang }}/admin/storages"><i class="material-icons md-20">warehouse</i> Склады</a></li>
-            <li @if(Request::is($lang.'/admin/cashbooks*')) class="active" @endif><a href="/{{ $lang }}/admin/cashbooks"><i class="material-icons md-20">account_balance</i> Кассы</a></li>
-            <li @if(Request::is($lang.'/admin/workplaces*')) class="active" @endif><a href="/{{ $lang }}/admin/workplaces"><i class="material-icons md-20">workspaces</i> Рабочие места</a></li>
-            <li @if(Request::is($lang.'/admin/bank_accounts*')) class="active" @endif><a href="/{{ $lang }}/admin/bank_accounts"><i class="material-icons md-20">account_balance_wallet</i> Счета</a></li>
-            <li @if(Request::is($lang.'/admin/payment_types*')) class="active" @endif><a href="/{{ $lang }}/admin/payment_types"><i class="material-icons md-20">payments</i> Виды оплаты</a></li>
-            <li @if(Request::is($lang.'/admin/doc_types*')) class="active" @endif><a href="/{{ $lang }}/admin/doc_types"><i class="material-icons md-20">description</i> Виды документов</a></li>
-            <li @if(Request::is($lang.'/admin/units*')) class="active" @endif><a href="/{{ $lang }}/admin/units"><i class="material-icons md-20">balance</i> Единицы измерения</a></li>
           </ul>
           <ul class="nav nav-sidebar">
             @can('viewAny', App\Models\Company::class)<li @if(Request::is($lang.'/admin/companies*')) class="active" @endif><a href="/{{ $lang }}/admin/companies"><i class="material-icons md-20">business</i> Компании</a></li>@endcan
@@ -106,16 +107,7 @@
 
     <script src="/joystick/js/jquery.min.js"></script>
     <script src="/joystick/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-          $('.sidebar').toggleClass('active');
-        });
-        $('.main').on('click', function () {
-          $('.sidebar').removeClass('active');
-        });
-      });
-    </script>
+
     @yield('scripts')
   </body>
 </html>

@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-6">
       <p class="text-right">
-        <a href="/{{ $lang }}/admin/products" class="btn btn-primary btn-sm">Назад</a>
+        <a href="/{{ $lang }}/admin/products" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
       </p>
     </div>
   </div><br>
@@ -62,9 +62,20 @@
                   <label for="barcode">Артикул</label>
                   <input type="text" class="form-control" id="barcode" name="barcode" value="{{ (old('barcode')) ? old('barcode') : $product->barcode }}">
                 </div>
+              </div>
+              <div class="col-md-6">
                 <div class="form-group">
-                  <label for="count">Количество</label>
-                  <input type="number" class="form-control" id="count" name="count" minlength="5" maxlength="80" value="{{ (old('count')) ? old('count') : $product->count }}">
+                  <label for="id_code">Код товара</label>
+                  <input type="text" class="form-control" id="id_code" name="id_code" value="{{ (old('id_code')) ? old('id_code') : $product->id_code }}">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="wholesale_price">Оптовая цена</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="wholesale_price" name="wholesale_price" maxlength="10" value="{{ (old('wholesale_price')) ? old('wholesale_price') : $product->wholesale_price }}" required>
+                    <div class="input-group-addon">{{ $currency->symbol }}</div>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
@@ -74,6 +85,12 @@
                     <input type="text" class="form-control" id="price" name="price" maxlength="10" value="{{ (old('price')) ? old('price') : $product->price }}" required>
                     <div class="input-group-addon">{{ $currency->symbol }}</div>
                   </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="count">Количество</label>
+                  <input type="number" class="form-control" id="count" name="count" minlength="5" maxlength="80" value="{{ (old('count')) ? old('count') : $product->count }}">
                 </div>
               </div>
             </div>
@@ -252,7 +269,7 @@
     </div>
 
     <div class="form-group">
-      <button type="submit" class="btn btn-primary">Обновить</button>
+      <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
     </div>
   </form>
 @endsection

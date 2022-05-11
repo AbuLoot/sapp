@@ -16,12 +16,13 @@ class CreateBankAccountsTable extends Migration
         Schema::create('bank_accounts', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id');
-            $table->integer('account_number');
             $table->char('title');
-            $table->integer('biс');
+            $table->char('slug');
+            $table->char('account_number');
+            $table->char('biс');
             $table->integer('balance');
             $table->char('currency');
-            $table->string('comment');
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }

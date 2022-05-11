@@ -17,7 +17,7 @@ class CreatePaymentTypesTable extends Migration
             $table->increments('id');
             $table->char('title');
             $table->char('slug');
-            $table->char('image');
+            $table->char('image')->nullable();
             $table->string('description')->nullable();
             $table->char('lang');
             $table->timestamps();

@@ -15,7 +15,7 @@ class CreateDocTypesTable extends Migration
     {
         Schema::create('doc_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->char('type');
+            $table->char('type')->nullable();
             $table->char('title');
             $table->char('slug');
             $table->text('description')->nullable();

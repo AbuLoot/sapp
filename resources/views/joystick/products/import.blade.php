@@ -6,7 +6,7 @@
   @include('joystick.partials.alerts')
 
   <p class="text-right">
-    <a href="/{{ $lang }}/admin/products" class="btn btn-primary btn-sm">Назад</a>
+    <a href="/{{ $lang }}/admin/products" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
   <form action="/{{ $lang }}/admin/products-import" method="POST" enctype="multipart/form-data">
     {!! csrf_field() !!}

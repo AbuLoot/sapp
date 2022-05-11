@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Joystick;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Joystick\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Models\Region;
 use App\Models\Company;
 use App\Models\Storage;
-
-use Auth;
 
 class StorageController extends Controller
 {
@@ -40,7 +38,7 @@ class StorageController extends Controller
             'title' => 'required|min:2|max:80|unique:storages',
         ]);
 
-        $company = Auth::user()->profile->company->first();
+        $company = auth()->user()->profile->company->first();
 
         $storage = new Storage;
         $storage->company_id = $company->id;

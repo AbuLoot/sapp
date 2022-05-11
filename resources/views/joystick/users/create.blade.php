@@ -6,7 +6,7 @@
   @include('joystick.partials.alerts')
 
   <p class="text-right">
-    <a href="/{{ $lang }}/admin/users" class="btn btn-primary btn-sm">Назад</a>
+    <a href="/{{ $lang }}/admin/users" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
   <form action="{{ route('users.update', [$lang, $user->id]) }}" method="post" enctype="multipart/form-data">
     <input name="_method" type="hidden" value="PUT">
@@ -142,7 +142,7 @@
     </div>
 
     <div class="form-group">
-      <button type="submit" class="btn btn-primary">Изменить</button>
+      <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
     </div>
   </form>
 @endsection

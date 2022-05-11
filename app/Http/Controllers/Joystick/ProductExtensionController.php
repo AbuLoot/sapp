@@ -39,7 +39,8 @@ class ProductExtensionController extends Controller
         $categories = Category::get()->toTree();
         $modes = Mode::all();
 
-        return view('joystick.products.joytable', ['categories' => $categories, 'products' => $products, 'modes' => $modes]);
+        return view('joystick.products.joytable', ['categories' => $categories, 'modes' => $modes]);
+        // return view('joystick.products.joytable', ['categories' => $categories, 'products' => $products, 'modes' => $modes]);
     }
 
     public function joytableUpdate(Request $request, $lang)
@@ -108,6 +109,7 @@ class ProductExtensionController extends Controller
     public function search(Request $request)
     {
         $text = trim(strip_tags($request->text));
+
         if (auth()->user()->roles()->firstWhere('name', 'admin')) {
             $products = Product::search($text)->orderBy('updated_at','desc')->paginate(50);
         }
@@ -195,7 +197,8 @@ class ProductExtensionController extends Controller
 
         if (auth()->user()->roles()->firstWhere('name', 'admin')) {
             $products = Product::whereIn('category_id', $ids)->orderBy('updated_at','desc')->paginate(50);
-        } else {
+        }
+        else {
             $products = Product::where('user_id', auth()->user()->id)->whereIn('category_id', $ids)->orderBy('updated_at','desc')->paginate(50);
         }
 

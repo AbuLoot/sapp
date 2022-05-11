@@ -18,4 +18,9 @@ class Storage extends Model
     {
         return $this->belongsTo('App\Models\Region', 'region_id');
     }
+
+    public function workplaces()
+    {
+        return $this->morphMany(Workplace::class, 'workplace_type');
+    }
 }

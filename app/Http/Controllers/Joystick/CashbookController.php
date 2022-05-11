@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Joystick;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Joystick\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Models\Region;
 use App\Models\Company;
 use App\Models\Cashbook;
-
-use Auth;
 
 class CashbookController extends Controller
 {
@@ -40,7 +38,7 @@ class CashbookController extends Controller
             'title' => 'required|min:2|max:80|unique:cashbooks',
         ]);
 
-        $company = Auth::user()->profile->company->first();
+        $company = auth()->user()->profile->company->first();
 
         $cashbook = new Cashbook;
         $cashbook->company_id = $company->id;

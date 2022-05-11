@@ -30,7 +30,7 @@
     </div>
 
     <div class="col-md-7 text-right">
-      @can('joytable', Auth::user())<a href="/{{ $lang }}/admin/joytable" class="btn btn-default text-uppercase"><i class="material-icons md-18">table_rows</i> Joytable</a>@endcan
+      @can('joytable', Auth::user())<a href="/{{ $lang }}/admin/joytable" class="btn btn-default"><i class="material-icons md-18">table_rows</i> Joytable</a>@endcan
       @can('export', Auth::user())<a href="/{{ $lang }}/admin/products-export" class="btn btn-default"><i class="material-icons md-18">import_export</i> Экспорт</a>@endcan
       @can('import', Auth::user())<a href="/{{ $lang }}/admin/products-import" class="btn btn-default"><i class="material-icons md-18">import_export</i> Импорт</a>@endcan
       @can('allow-calc', Auth::user())<a href="/{{ $lang }}/admin/products-price/edit" class="btn btn-default"><i class="material-icons md-18">calculate</i> Цены</a>@endcan

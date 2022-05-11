@@ -6,7 +6,7 @@
   @include('joystick.partials.alerts')
 
   <p class="text-right">
-    <a href="/{{ $lang }}/admin/products" class="btn btn-primary btn-sm">Назад</a>
+    <a href="/{{ $lang }}/admin/products" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
   <form action="/{{ $lang }}/admin/products-price/update" method="POST">
     {!! csrf_field() !!}
@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="form-group">
-      <button type="submit" class="btn btn-primary">Обновить</button>
+      <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
     </div>
   </form>
 @endsection

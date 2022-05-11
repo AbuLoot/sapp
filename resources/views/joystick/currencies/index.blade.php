@@ -14,6 +14,7 @@
           <td>№</td>
           <td>Символ</td>
           <td>Название валюты</td>
+          <td>Номер</td>
           <td>Страна</td>
           <td>Код</td>
           <td>Язык</td>
@@ -27,6 +28,7 @@
             <td>{{ $i++ }}</td>
             <td>{{ $currency->symbol }}</td>
             <td>{{ $currency->currency }}</td>
+            <td>{{ $currency->sort_id }}</td>
             <td>{{ $currency->country }}</td>
             <td>{{ $currency->code }}</td>
             <td>{{ $currency->lang }}</td>

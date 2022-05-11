@@ -12,11 +12,6 @@ class Category extends Model
 
     protected $table = 'categories';
 
-    public function cities()
-    {
-        return $this->hasMany('App\Models\City');
-    }
-
     public function companies()
     {
         return $this->hasMany('App\Models\Company');
@@ -25,5 +20,10 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany('App\Models\Product');
+    }
+
+    public function discounts()
+    {
+        return $this->hasMany('App\Models\Discount');
     }
 }

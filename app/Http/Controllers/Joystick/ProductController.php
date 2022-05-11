@@ -73,7 +73,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('images')) {
 
-            $dirName = $request->project_id.'/'.time();
+            $dirName = $request->category_id.'/'.time();
             Storage::makeDirectory('img/products/'.$dirName);
 
             $images = $this->saveImages($request, $dirName);
@@ -91,6 +91,8 @@ class ProductController extends Controller
         $product->meta_title = $request->meta_title;
         $product->meta_description = $request->meta_description;
         $product->barcode = $request->barcode;
+        $product->id_code = $request->id_code;
+        $product->wholesale_price = $request->wholesale_price;
         $product->price = $request->price;
         $product->count = $request->count;
         $product->type = $request->type;
@@ -162,7 +164,7 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
 
             if ( ! file_exists('img/products/'.$dirName) OR empty($dirName)) {
-                $dirName = $product->project_id.'/'.time();
+                $dirName = $product->category_id.'/'.time();
                 Storage::makeDirectory('img/products/'.$dirName);
                 $product->path = $dirName;
             }
@@ -174,8 +176,8 @@ class ProductController extends Controller
         }
 
         // Change directory for new category
-        if ($product->project_id != $request->project_id AND file_exists('img/products/'.$product->path) AND  $product->path != '') {
-            $dirName = $request->project_id.'/'.time();
+        if ($product->category_id != $request->category_id AND file_exists('img/products/'.$product->path) AND  $product->path != '') {
+            $dirName = $request->category_id.'/'.time();
             Storage::move('img/products/'.$product->path, 'img/products/'.$dirName);
             $product->path = $dirName;
         }
@@ -189,6 +191,8 @@ class ProductController extends Controller
         $product->meta_title = $request->meta_title;
         $product->meta_description = $request->meta_description;
         $product->barcode = $request->barcode;
+        $product->id_code = $request->id_code;
+        $product->wholesale_price = $request->wholesale_price;
         $product->price = $request->price;
         $product->count = $request->count;
         $product->type = $request->type;
@@ -227,14 +231,14 @@ class ProductController extends Controller
         {
             $imageName = 'image-'.$order.'-'.Str::slug($request->title).'.'.$image->getClientOriginalExtension();
 
-            // $watermark = Image::make('img/watermark.png');
+            $watermark = Image::make('img/watermark.png');
 
             // Creating present images
             $this->resizeOptimalImage($image, 320, 290, '/img/products/'.$dirName.'/present-'.$imageName, 90);
 
             // Storing original images
             // $image->storeAs('/img/products/'.$dirName, $imageName);
-            $this->resizeOptimalImage($image, 1024, 768, '/img/products/'.$dirName.'/'.$imageName, 90);
+            $this->resizeOptimalImage($image, 1024, 768, '/img/products/'.$dirName.'/'.$imageName, 90, $watermark);
 
             $images[$key]['image'] = $imageName;
             $images[$key]['present_image'] = 'present-'.$imageName;
@@ -253,13 +257,13 @@ class ProductController extends Controller
         {
             $imageName = 'image-'.$order.'-'.Str::slug($request->title).'.'.$image->getClientOriginalExtension();
 
-            // $watermark = Image::make('img/watermark.png');
+            $watermark = Image::make('img/watermark.png');
 
             // Creating present images
             $this->resizeOptimalImage($image, 320, 290, '/img/products/'.$dirName.'/present-'.$imageName, 90);
 
             // Storing original images
-            $this->resizeOptimalImage($image, 1024, 768, '/img/products/'.$dirName.'/'.$imageName, 90);
+            $this->resizeOptimalImage($image, 1024, 768, '/img/products/'.$dirName.'/'.$imageName, 90, $watermark);
 
             if (isset($images[$key])) {
 

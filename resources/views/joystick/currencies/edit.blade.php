@@ -9,16 +9,20 @@
 
   @include('joystick.partials.alerts')
   <p class="text-right">
-    <a href="/{{ $lang }}/admin/currencies" class="btn btn-primary btn-sm">Назад</a>
+    <a href="/{{ $lang }}/admin/currencies" class="btn btn-primary"><i class="material-icons">arrow_back</i></a>
   </p>
   <div class="row">
-    <div class="col-md-11">
+    <div class="col-md-7">
       <div class="panel panel-default">
         <div class="panel-body">
           <form action="{{ route('currencies.update', [$lang, $currency->id]) }}" method="post">
             <input type="hidden" name="_method" value="PUT">
             {!! csrf_field() !!}
 
+            <div class="form-group">
+              <label for="sort_id">Номер</label>
+              <input type="text" class="form-control" id="sort_id" name="sort_id" value="{{ (old('sort_id')) ? old('sort_id') : $currency->sort_id }}">
+            </div>
             <div class="form-group">
               <label for="currency">Валюта</label>
               <input type="text" class="form-control" id="currency" name="currency" minlength="2" maxlength="80" value="{{ (old('currency')) ? old('currency') : $currency->currency }}" required>
@@ -40,7 +44,7 @@
               <input type="text" class="form-control" id="lang" name="lang" maxlength="10" value="{{ (old('lang')) ? old('lang') : $currency->lang }}">
             </div>
             <div class="form-group">
-              <button type="submit" class="btn btn-primary">Обновить</button>
+              <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
             </div>
           </form>
         </div>

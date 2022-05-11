@@ -12,6 +12,7 @@ class Comment extends Model
     {
     	return $this->morphTo();
     }
+
     public function getCreatedAtAttribute($value)
     {
         return date('j '.trans('date.month.'.date('F', strtotime($value))).', Y', strtotime($value));

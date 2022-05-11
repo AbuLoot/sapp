@@ -6,7 +6,7 @@
   @include('joystick.partials.alerts')
 
   <p class="text-right">
-    <a href="/{{ $lang }}/admin/companies" class="btn btn-primary btn-sm">Назад</a>
+    <a href="/{{ $lang }}/admin/companies" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
   <div class="row">
     <div class="col-md-11">
@@ -101,7 +101,7 @@
               </label>
             </div>
             <div class="form-group">
-              <button type="submit" class="btn btn-primary">Создать</button>
+              <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
             </div>
           </form>
         </div>

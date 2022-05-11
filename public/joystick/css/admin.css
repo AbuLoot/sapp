@@ -3,6 +3,9 @@ body {
   /*background-color: #FCFCFC;*/
   background-color: #FAFAFA;
 }
+.main .panel-body {
+  /*background-color: #f7f7f7;*/
+}
 .btn {
   margin-bottom: 2px;
 }
@@ -53,7 +56,7 @@ body {
 }
 .sidebar .material-icons.md-18,
 .sidebar .material-icons.md-20 {
-  color: #585C64;
+  color: #6d7483;
   margin-right: 5px;
 }
 @media (min-width: 768px) {
@@ -99,7 +102,7 @@ body {
 }
 .nav-sidebar > li > a {
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   padding-right: 20px;
   padding-left: 20px;
 }
@@ -222,16 +225,15 @@ td.cell-size {
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
-/* JOYTABLE */
-#edit, #save, #cancel {
+/* JOYTABLE JQUERY */
+/*#edit, #save, #cancel {
   outline: none;
   background: none;
   border: none;
 }
 #edit, #save, #cancel {
-  /*padding: 5px 10px;*/
   cursor: pointer;
 }
 #save {
   display: none;
-}
+}*/
