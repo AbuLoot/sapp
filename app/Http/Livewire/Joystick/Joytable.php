@@ -94,7 +94,6 @@ class Joytable extends Component
 
             foreach ($this->images as $key => $image)
             {
-                $key += $lastKey;
                 $imageName = 'image-'.$order.'-'.Str::slug($product['title']).'.'.$image->getClientOriginalExtension();
 
                 $watermark = Image::make('img/watermark.png');

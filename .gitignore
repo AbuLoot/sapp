@@ -4,6 +4,7 @@
 /public/img/banners
 /public/img/posts
 /public/img/products
+/public/livewire-tmp
 /storage/*.key
 /vendor
 .env

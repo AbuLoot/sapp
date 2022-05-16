@@ -38,16 +38,16 @@
                     <input type="file" wire:model.defer="images" accept="image/*" style="max-width:100px;" multiple>
                   </div>
                   @error('photos.*') <span class="error">{{ $message }}</span> @enderror
-                  <button type="submit">Save Photo</button>
+                  <button type="submit">Сохранить</button>
                   @error('images')<div class="text-danger">{{ $message }}</div>@enderror
                 </form>
               @endif
             </td>
-            <td class="cell-size">
+            <td>
               @if($product_index !== $index)
                 {{ $product->title }}
               @else
-                <input type="text" wire:model.defer="products.{{ $index }}.title" class="form-control">
+                <textarea wire:model.defer="products.{{ $index }}.title" class="form-control"></textarea>
                 @error('products.'.$index.'.title')<div class="text-danger">{{ $message }}</div>@enderror
               @endif
             </td>
