@@ -41,21 +41,22 @@
 
   <!-- Custom styles for this template -->
   <link href="template/offcanvas.css" rel="stylesheet">
+  <link href="template/custom.css" rel="stylesheet">
   <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-purple" aria-label="Main navigation">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-brand" aria-label="Main navigation">
     <div class="container-xl">
       <a href="#">
-        <img src="img/logo.svg" style="width: auto; max-height: 40px;">
+        <img src="img/logo.svg" width="auto" height="40">
       </a>
       <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav py-1 mx-auto">
+        <ul class="navbar-nav py-2 mx-auto">
           <li class="nav-item">
             <a class="nav-link px-3" aria-current="page" href="main.html">Главная</a>
           </li>
@@ -111,7 +112,7 @@
 
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Ревизия №1</h4>
 
-      <form class="col-4 col-lg-3 mb-md-2 mb-lg-0 me-lg-auto">
+      <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
         <input type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
       </form>
 
@@ -251,27 +252,139 @@
       </tbody>
     </table>
 
-    <div class="row mb-3">
-      <div class="col-5">
-        <div class="mb-3">
-          <label for="storages" class="form-label">Склады</label>
-          <select class="form-select" aria-label="Default select example">
-            <option selected>Выберите склад</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="barcode-count" class="form-label">Example textarea</label>
-          <textarea class="form-control" id="barcode-count" rows="3" placeholder="Штрихкод и количество"></textarea>
-          <p>@Введите штрихкод товара и количество товара через пробел</p>
-        </div>
+    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#revisionDetails">Посмотреть детали</button>
 
-        <button type="submit" class="btn btn-primary">Проверить</button>
+    <!-- Modal -->
+    <div class="modal fade" id="revisionDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Детали ревизий</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Инфо о ревизий</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Список продуктов</button>
+              </li>
+            </ul>
+            <div class="tab-content pt-2" id="myTabContent">
+              <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">First</th>
+                      <th scope="col">Last</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">3</th>
+                      <td colspan="2">Larry the Bird</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr  class="align-items-start">
+                      <th scope="col">#</th>
+                      <th scope="col">Наименование товара</th>
+                      <th scope="col">Штрихкод</th>
+                      <th scope="col">Категория</th>
+                      <th scope="col">Цена закупки</th>
+                      <th scope="col">Цена оптовая</th>
+                      <th scope="col">Цена продажи</th>
+                      <th scope="col">Кол-во</th>
+                      <th scope="col">Ед. измерения</th>
+                      <th scope="col">Поставщик</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td>@mdo</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">3</th>
+                      <td colspan="8">Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="col d-grid" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+            </div>
+            <div class="col d-grid" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>

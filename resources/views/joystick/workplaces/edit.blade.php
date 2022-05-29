@@ -6,13 +6,13 @@
   @include('joystick.partials.alerts')
 
   <p class="text-right">
-    <a href="/{{ $lang }}/admin/bank_accounts" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
+    <a href="/{{ $lang }}/admin/workplaces" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
   <div class="row">
     <div class="col-md-7">
       <div class="panel panel-default">
         <div class="panel-body">
-          <form action="{{ route('bank_accounts.update', [$lang, $bank_account->id]) }}" method="post" enctype="multipart/form-data">
+          <form action="{{ route('workplaces.update', [$lang, $workplace->id]) }}" method="post">
             <input type="hidden" name="_method" value="PUT">
             {!! csrf_field() !!}
 

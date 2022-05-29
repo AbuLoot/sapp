@@ -8,7 +8,6 @@ use App\Http\Controllers\Joystick\PageController;
 use App\Http\Controllers\Joystick\PostController;
 use App\Http\Controllers\Joystick\SectionController;
 use App\Http\Controllers\Joystick\CategoryController;
-use App\Http\Controllers\Joystick\CurrencyController;
 use App\Http\Controllers\Joystick\ProductController;
 use App\Http\Controllers\Joystick\ProductExtensionController;
 use App\Http\Controllers\Joystick\BannerController;
@@ -19,12 +18,14 @@ use App\Http\Controllers\Joystick\ModeController;
 use App\Http\Controllers\Joystick\CompanyController;
 use App\Http\Controllers\Joystick\ProjectController;
 use App\Http\Controllers\Joystick\RegionController;
+use App\Http\Controllers\Joystick\CurrencyController;
+use App\Http\Controllers\Joystick\UnitController;
 use App\Http\Controllers\Joystick\UserController;
 use App\Http\Controllers\Joystick\RoleController;
 use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
 
-// Sanapp Controllers
+// Sanapp Admin Controllers
 use App\Http\Controllers\Joystick\OfficeController;
 use App\Http\Controllers\Joystick\StorageController;
 use App\Http\Controllers\Joystick\CashbookController;
@@ -32,8 +33,24 @@ use App\Http\Controllers\Joystick\WorkplaceController;
 use App\Http\Controllers\Joystick\BankAccountController;
 use App\Http\Controllers\Joystick\PaymentTypeController;
 use App\Http\Controllers\Joystick\DocTypeController;
-use App\Http\Controllers\Joystick\UnitController;
 use App\Http\Controllers\Joystick\DiscountController;
+
+// Storage
+use App\Http\Controllers\Storage\StorageIndexController;
+use App\Http\Controllers\Storage\DocController;
+use App\Http\Controllers\Storage\RevisionController;
+use App\Http\Controllers\Storage\RevisionProductController;
+use App\Http\Controllers\Storage\WriteoffController;
+use App\Http\Controllers\Storage\IncomingDocController;
+use App\Http\Controllers\Storage\OutgoingDocController;
+
+// Cashbook
+use App\Http\Controllers\Cashbook\CashbookIndexController;
+use App\Http\Controllers\Cashbook\CashDocController;
+use App\Http\Controllers\Cashbook\IncomingOrderController;
+use App\Http\Controllers\Cashbook\IncomingCheckController;
+use App\Http\Controllers\Cashbook\OutgoingOrderController;
+use App\Http\Controllers\Cashbook\CashShiftJournalController;
 
 // Site Controllers
 use App\Http\Controllers\InputController;
@@ -44,9 +61,50 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
+// Sanapp Storage
+Route::redirect('/store', '/'.app()->getLocale().'/store');
+
+Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
+
+    Route::get('/', [StorageIndexController::class, 'index']);
+    Route::get('/income', [StorageIndexController::class, 'income']);
+
+    Route::get('add-product', [IncomingDocController::class, 'create']);
+    // Route::post('add-product', [IncomingDocController::class, 'store']);
+    Route::get('docs/outgoing', [OutgoingDocController::class, 'index']);
+
+    Route::resources([
+        // 'storage' => StorageController::class,
+        'docs' => IncomingDocController::class,
+        'outgoing_docs' => OutgoingDocController::class,
+        'revision' => RevisionController::class,
+        'writeoff' => WriteoffController::class,
+        'companies' => CompanyController::class,
+        'categories' => CategoryController::class,
+        'products' => ProductController::class,
+    ]);
+});
+
+// Sanapp Cashbook
+Route::redirect('/cashbook', '/'.app()->getLocale().'/cashbook');
+
+Route::group(['prefix' => '{lang}/cashbook', 'middleware' => ['auth' , 'roles:admin|cashier']], function () {
+
+    Route::get('/', [CashbookIndexController::class, 'index']);
+
+    Route::resources([
+        // 'cashbook' => CashbookIndexController::class,
+        'cash_docs' => CashDocController::class,
+        'cash_shift_journal' => CashShiftJournalController::class,
+        'incoming_orders' => IncomingOrderController::class,
+        'incoming_checks' => IncomingCheckController::class,
+        'outgoing_orders' => OutgoingOrderController::class,
+    ]);
+});
+
+// Sanapp Joystick Administration
 Route::redirect('/admin', '/'.app()->getLocale().'/admin');
 
-// Joystick Administration
 Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|storekeeper|cashier|manager']], function () {
 
     Route::get('/', [AdminController::class, 'index']);
@@ -54,17 +112,6 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
     Route::get('frame-filemanager', [AdminController::class, 'frameFilemanager']);
 
     Route::resources([
-        'pages' => PageController::class,
-        'posts' => PostController::class,
-        'sections' => SectionController::class,
-        'categories' => CategoryController::class,
-        'projects' => ProjectController::class,
-        'products' => ProductController::class,
-        'banners' => BannerController::class,
-        'apps' => AppController::class,
-        'orders' => OrderController::class,
-        'options' => OptionController::class,
-        'modes' => ModeController::class,
 
         // Sanapp routes
         'office' => OfficeController::class,
@@ -77,6 +124,17 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
         'units' => UnitController::class,
         'discounts' => DiscountController::class,
 
+        'pages' => PageController::class,
+        'posts' => PostController::class,
+        'sections' => SectionController::class,
+        'categories' => CategoryController::class,
+        'projects' => ProjectController::class,
+        'products' => ProductController::class,
+        'banners' => BannerController::class,
+        'apps' => AppController::class,
+        'orders' => OrderController::class,
+        'options' => OptionController::class,
+        'modes' => ModeController::class,
         'companies' => CompanyController::class,
         'currencies' => CurrencyController::class,
         'regions' => RegionController::class,

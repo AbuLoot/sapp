@@ -120,6 +120,25 @@ body {
   color: #F5F5F5;
 }
 
+.btn-sidebar {
+  margin-right: -21px;
+  padding: 10px 0;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: .1em;
+  color: #6d7483;
+  background-color: transparent;
+}
+.btn-sidebar > .caret {
+  position: relative;
+  display: inline-block;
+  float: right;
+  font-size: 10px;
+  margin: 10px 20px 0;
+  color: #6d7483;
+  /*text-align: right;*/
+}
+
 .node-title:hover {
   cursor: pointer;
 }

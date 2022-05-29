@@ -14,12 +14,9 @@
       <thead>
         <tr class="active">
           <td>№</td>
-          <td>Название банка</td>
-          <td>Компания</td>
-          <td>Номер счета</td>
-          <td>БИК</td>
-          <td>Баланс</td>
-          <td>Валюта</td>
+          <td>Имя</td>
+          <td>Рабочее место</td>
+          <td>Примичание</td>
           <td class="text-right">Функции</td>
         </tr>
       </thead>
@@ -28,12 +25,9 @@
         @foreach ($workplaces as $workplace)
           <tr>
             <td>{{ $i++ }}</td>
-            <td>{{ $workplace->title }}</td>
-            <td>{{ $workplace->company->title }}</td>
-            <td>{{ $workplace->account_number }}</td>
-            <td>{{ $workplace->bic }}</td>
-            <td>{{ $workplace->balance }}</td>
-            <td>{{ $workplace->currency }}</td>
+            <td>{{ $workplace->user_id }}</td>
+            <td>{{ $workplace->workplace_type }}</td>
+            <td>{{ $workplace->comment }}</td>
             <td class="text-right">
               <a class="btn btn-link btn-xs" href="{{ route('workplaces.edit', [$lang, $workplace->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>
               <form method="POST" action="{{ route('workplaces.destroy', [$lang, $workplace->id]) }}" accept-charset="UTF-8" class="btn-delete">

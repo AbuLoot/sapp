@@ -25,6 +25,7 @@ class WorkplaceController extends Controller
     public function create($lang)
     {
         // $this->authorize('create', Workplace::class);
+
         $users = User::where('is_worker', 1)->get();
         $storages = Storage::get();
         $cashbooks = Cashbook::get();
@@ -37,19 +38,20 @@ class WorkplaceController extends Controller
         // $this->authorize('create', Workplace::class);
 
         $this->validate($request, [
-            'title' => 'required|min:2|max:80|unique:workplaces',
+            'user_id' => 'required|numeric',
+            'workplace_id' => 'required|min:6',
+            'code' => 'required|numeric|min:4'
         ]);
 
         $company = auth()->user()->profile->company->first();
 
+        list($workplace_type, $workplace_id) = explode('-', $request->workplace_id);
+
         $workplace = new Workplace;
-        $workplace->company_id = $company->id;
-        $workplace->title = $request->title;
-        $workplace->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
-        $workplace->account_number = $request->account_number;
-        $workplace->bic = $request->bic;
-        $workplace->balance = $request->balance;
-        $workplace->currency = $request->currency;
+        $workplace->user_id = $request->user_id;
+        $workplace->workplace_id = $workplace_id;
+        $workplace->workplace_type = 'App\\'.Str::ucfirst($workplace_type);
+        $workplace->code = $request->code;
         $workplace->comment = $request->comment;
         $workplace->save();
 

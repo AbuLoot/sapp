@@ -1,0 +1,28 @@
+.bg-brand {
+  background-color: #6559d4;
+}
+.bg-indigo {
+  background-color: #6610f2;
+}
+.bg-indigo-400 {
+  color: #fff;
+  background-color: #8540f5;
+}
+.bg-purple-300 {
+  color: #000;
+  background-color: #a98eda;
+}
+.bg-purple-400 {
+  color: #000;
+  background-color: #8c68cd;
+}
+.bg-green-300 {
+  color: #000;
+  background-color: #75b798;
+}
+
+.cash-operations .btn {
+  font-size: 1.1rem;
+  line-height: 1.4;
+  padding: 0.375rem 0.375rem;
+}

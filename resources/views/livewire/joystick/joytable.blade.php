@@ -106,14 +106,14 @@
   <div>
     {{ $productsItems->links() }}
   </div>
-    <script type="text/javascript">
-      /*$(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-          $('.sidebar').toggleClass('active');
-        });
-        $('.main').on('click', function () {
-          $('.sidebar').removeClass('active');
-        });
-      });*/
-    </script>
+  <script type="text/javascript">
+    /*$(document).ready(function () {
+      $('#sidebarCollapse').on('click', function () {
+        $('.sidebar').toggleClass('active');
+      });
+      $('.main').on('click', function () {
+        $('.sidebar').removeClass('active');
+      });
+    });*/
+  </script>
 </div>

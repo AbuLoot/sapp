@@ -12,7 +12,7 @@
     <div class="col-md-7">
       <div class="panel panel-default">
         <div class="panel-body">
-          <form action="{{ route('workplaces.store', $lang) }}" method="post" enctype="multipart/form-data">
+          <form action="{{ route('workplaces.store', $lang) }}" method="post">
             {!! csrf_field() !!}
             <div class="form-group">
               <label for="company_id">Компания</label>
@@ -34,7 +34,7 @@
                   <label for="workplace_id">Склады</label><br>
                   <div style="display: inline-block; margin-right: 15px;">
                     @foreach($storages as $storage)
-                      <label><input type="radio" name="workplace_id" value="{{ $storage->id }}"> {{ $storage->title }}</label><br>
+                      <label><input type="radio" name="workplace_id" value="storage-{{ $storage->id }}"> {{ $storage->title }}</label><br>
                     @endforeach<br>
                   </div>
                 </div>
@@ -44,7 +44,7 @@
                   <label for="workplace_id">Кассы</label><br>
                   <div style="display: inline-block; margin-right: 15px;">
                     @foreach($cashbooks as $cashbook)
-                      <label><input type="radio" name="workplace_id" value="{{ $cashbook->id }}"> {{ $cashbook->title }}</label><br>
+                      <label><input type="radio" name="workplace_id" value="cashbook-{{ $cashbook->id }}"> {{ $cashbook->title }}</label><br>
                     @endforeach<br>
                   </div>
                 </div>
@@ -53,7 +53,7 @@
 
             <div class="form-group">
               <label for="code">Код</label>
-              <input type="text" class="form-control" id="code" name="code" value="{{ (old('code')) ? old('code') : NULL }}">
+              <input type="number" class="form-control" id="code" name="code" minlength="4" maxlength="4" value="{{ (old('code')) ? old('code') : NULL }}" required>
             </div>
             <div class="form-group">
               <label for="comment">Примечание</label>
