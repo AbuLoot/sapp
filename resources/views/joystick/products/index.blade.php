@@ -80,7 +80,7 @@
             <td><input type="checkbox" name="products_id[]" value="{{ $product->id }}" class="checkbox-ids"></td>
             <td><img src="/img/products/{{ $product->path.'/'.$product->image }}" class="img-responsive" style="width:80px;height:auto;"></td>
             <td class="cell-size">{{ $product->title }}</td>
-            <td class="text-nowrap">{{ $product->category->title }}</td>
+            <td>{{ $product->category->title }}</td>
             <td>{{ ($product->company) ? $product->company->title : '' }}</td>
             <td>{{ ($product->project) ? $product->project->title : '' }}</td>
             <td>{{ $product->barcode }}</td>

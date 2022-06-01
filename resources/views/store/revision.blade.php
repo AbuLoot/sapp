@@ -1,4 +1,4 @@
-@extends('storage.layout')
+@extends('store.layout')
 
 @section('nav-functions')    
   <div class="container d-flex flex-wrap justify-content-between align-items-center">

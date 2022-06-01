@@ -15,7 +15,6 @@
           <form action="{{ route('workplaces.update', [$lang, $workplace->id]) }}" method="post">
             <input type="hidden" name="_method" value="PUT">
             {!! csrf_field() !!}
-
             <div class="form-group">
               <label for="company_id">Компания</label>
               <input type="text" class="form-control" id="company_id" name="company_id" value="{{ (old('company_id')) ? old('company_id') : Auth::user()->profile->company->title }}" disabled>
@@ -30,33 +29,38 @@
               </select>
             </div>
 
-            <div class="form-group">
-              <label for="workplace_id">Склады</label>
-              <select id="workplace_id" name="workplace_id" class="form-control" size="5">
-                <option value=""></option>
-                @foreach($storages as $storage)
-                  <option value="{{ $storage->id }}">{{ $storage->title }}</option>
-                @endforeach
-              </select>
-            </div>
+            <?php $workplace_type = explode('App\\Models\\', $workplace->workplace_type); ?>
 
-            <div class="form-group">
-              <label for="workplace_id">Кассы</label>
-              <select id="workplace_id" name="workplace_id" class="form-control" size="5">
-                <option value=""></option>
-                @foreach($cashbooks as $cashbook)
-                  <option value="{{ $cashbook->id }}">{{ $cashbook->title }}</option>
-                @endforeach
-              </select>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="workplace_id">Склады</label><br>
+                  <div style="display: inline-block; margin-right: 15px;">
+                    @foreach($stores as $store)
+                      <label><input type="radio" name="workplace_id" value="store-{{ $store->id }}" @if($workplace->workplace_id == $store->id && $workplace_type[1] == 'Store') checked @endif> {{ $store->title }}</label><br>
+                    @endforeach<br>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="workplace_id">Кассы</label><br>
+                  <div style="display: inline-block; margin-right: 15px;">
+                    @foreach($cashbooks as $cashbook)
+                      <label><input type="radio" name="workplace_id" value="cashbook-{{ $cashbook->id }}" @if($workplace->workplace_id == $cashbook->id && $workplace_type[1] == 'Cashbook') checked @endif> {{ $cashbook->title }}</label><br>
+                    @endforeach<br>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
               <label for="code">Код</label>
-              <input type="text" class="form-control" id="code" name="code" value="{{ (old('code')) ? old('code') : NULL }}">
+              <input type="number" class="form-control" id="code" name="code" minlength="4" maxlength="4" value="{{ (old('code')) ? old('code') : NULL }}" required>
             </div>
             <div class="form-group">
               <label for="comment">Примечание</label>
-              <textarea class="form-control" id="comment" name="comment" rows="5">{{ (old('comment')) ? old('comment') : '' }}</textarea>
+              <textarea class="form-control" id="comment" name="comment" rows="5">{{ (old('comment')) ? old('comment') : $workplace->comment }}</textarea>
             </div>
             <div class="form-group">
               <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>

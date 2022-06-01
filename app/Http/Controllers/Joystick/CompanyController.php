@@ -133,7 +133,7 @@ class CompanyController extends Controller
 
         $this->authorize('delete', $company);
 
-        if (file_exists('img/companies/'.$company->image)) {
+        if (file_exists('img/companies/'.$company->image) && $company->image != 'no-image-mini.png') {
             Storage::delete('img/companies/'.$company->image);
         }
 

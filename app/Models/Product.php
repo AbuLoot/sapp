@@ -15,19 +15,28 @@ class Product extends Model
 
     protected $fillable = [
         'sort_id',
+        'doc_no',
+        'category_id',
+        'user_id',
         'company_id',
         'project_id',
-        'category_id',
         'title',
         'slug',
         'meta_title',
+        'meta_description',
         'barcode',
+        'id_code',
         'wholesale_price',
         'price',
         'count',
         'type',
+        'description',
+        'characteristic',
+        'parameters',
         'image',
+        'images',
         'lang',
+        'views',
         'status'
     ];
 

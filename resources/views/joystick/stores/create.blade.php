@@ -6,13 +6,13 @@
   @include('joystick.partials.alerts')
 
   <p class="text-right">
-    <a href="/{{ $lang }}/admin/storages" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
+    <a href="/{{ $lang }}/admin/stores" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
   <div class="row">
     <div class="col-md-7">
       <div class="panel panel-default">
         <div class="panel-body">
-          <form action="{{ route('storages.store', $lang) }}" method="post" enctype="multipart/form-data">
+          <form action="{{ route('stores.store', $lang) }}" method="post" enctype="multipart/form-data">
             {!! csrf_field() !!}
             <div class="form-group">
               <label for="title">Название</label>

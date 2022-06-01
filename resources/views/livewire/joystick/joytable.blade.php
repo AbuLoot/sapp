@@ -37,7 +37,6 @@
                   <div class="form-group">
                     <input type="file" wire:model.defer="images" accept="image/*" style="max-width:100px;" multiple>
                   </div>
-                  @error('photos.*') <span class="error">{{ $message }}</span> @enderror
                   <button type="submit">Сохранить</button>
                   @error('images')<div class="text-danger">{{ $message }}</div>@enderror
                 </form>

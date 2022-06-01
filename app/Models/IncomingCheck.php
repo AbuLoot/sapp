@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class IncomingCheck extends Model
 {
     use HasFactory;
+
+    protected $table = 'incoming_checks';
 }

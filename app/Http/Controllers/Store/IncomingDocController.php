@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Storage;
+namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,6 +10,7 @@ use Image;
 use Storage;
 
 use App\Models\Unit;
+use App\Models\Store;
 use App\Models\Company;
 use App\Models\Project;
 use App\Models\Product;
@@ -32,20 +33,18 @@ class IncomingDocController extends Controller
 
         $categories = Category::get()->toTree();
 
-        return view('storage.docs', ['categories' => $categories, 'products' => $products]);
+        return view('store.docs', ['categories' => $categories, 'products' => $products]);
     }
 
     public function create($lang)
     {
         $this->authorize('create', Product::class);
 
-        $units = Unit::all();
+        $units = Unit::get();
+        $stores = Store::get();
         $currency = Currency::where('lang', (($lang == 'ru') ? 'kz' : $lang))->first();
-        $categories = Category::get()->toTree();
-        $companies = Company::orderBy('sort_id')->get();
-        $projects = Project::get()->toTree();
 
-        return view('storage.add-product', ['units' => $units, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects]);
+        return view('store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency]);
     }
 
     public function store(Request $request)

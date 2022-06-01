@@ -7,7 +7,7 @@
   @include('joystick.partials.alerts')
 
   <div class="text-right">
-    <a href="/{{ $lang }}/admin/storages/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>
+    <a href="/{{ $lang }}/admin/stores/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>
   </div><br>
   <div class="table-responsive">
     <table class="table table-striped table-condensed">
@@ -24,17 +24,17 @@
       </thead>
       <tbody>
         <?php $i = 1; ?>
-        @foreach ($storages as $storage)
+        @foreach ($stores as $store)
           <tr>
             <td>{{ $i++ }}</td>
-            <td>{{ $storage->title }}</td>
-            <td>{{ $storage->company->title }}</td>
-            <td>{{ $storage->region->title ?? null }}</td>
-            <td>{{ $storage->address }}</td>
-            <td>{{ $storage->ip_address }}</td>
+            <td>{{ $store->title }}</td>
+            <td>{{ $store->company->title }}</td>
+            <td>{{ $store->region->title ?? null }}</td>
+            <td>{{ $store->address }}</td>
+            <td>{{ $store->ip_address }}</td>
             <td class="text-right">
-              <a class="btn btn-link btn-xs" href="{{ route('storages.edit', [$lang, $storage->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>
-              <form method="POST" action="{{ route('storages.destroy', [$lang, $storage->id]) }}" accept-charset="UTF-8" class="btn-delete">
+              <a class="btn btn-link btn-xs" href="{{ route('stores.edit', [$lang, $store->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>
+              <form method="POST" action="{{ route('stores.destroy', [$lang, $store->id]) }}" accept-charset="UTF-8" class="btn-delete">
                 <input name="_method" type="hidden" value="DELETE">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <button type="submit" class="btn btn-link btn-xs" onclick="return confirm('Удалить запись?')"><i class="material-icons md-18">clear</i></button>
@@ -46,6 +46,6 @@
     </table>
   </div>
 
-  {{ $storages->links() }}
+  {{ $stores->links() }}
 
 @endsection

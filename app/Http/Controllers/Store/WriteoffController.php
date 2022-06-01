@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Storage;
+namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -19,6 +19,6 @@ class WriteoffController extends Controller
     {
         $writeoffs = Writeoff::get();
 
-        return view('storage.writeoff', ['writeoffs' => $writeoffs]);
+        return view('store.writeoff', ['writeoffs' => $writeoffs]);
     }
 }

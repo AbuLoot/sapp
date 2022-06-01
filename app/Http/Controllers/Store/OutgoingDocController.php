@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Storage;
+namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -32,6 +32,6 @@ class OutgoingDocController extends Controller
 
         $categories = Category::get()->toTree();
 
-        return view('storage.docs-outgoing', ['categories' => $categories, 'products' => $products]);
+        return view('store.docs-outgoing', ['categories' => $categories, 'products' => $products]);
     }
 }

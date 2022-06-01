@@ -11,7 +11,7 @@
   <link rel="canonical" href="">
 
   <!-- Bootstrap core CSS -->
-  <!-- <link href="/storage/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
+  <!-- <link href="/store/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
   <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
 
@@ -21,15 +21,15 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
   <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png">
-  <link rel="manifest" href="manifest.json">
   <link rel="mask-icon" href="safari-pinned-tab.svg" color="#7952b3">
   <link rel="icon" href="favicon.ico">
   <meta name="theme-color" content="#7952b3">
 
   <!-- Custom styles for this template -->
-  <link href="/storage/offcanvas.css" rel="stylesheet">
-  <link href="/storage/custom.css" rel="stylesheet">
+  <link href="/store/offcanvas.css" rel="stylesheet">
+  <link href="/store/custom.css" rel="stylesheet">
   <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.css">
+  @yield('head')
 </head>
 <body class="bg-light">
 
@@ -91,7 +91,8 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
   </script>
-  <!-- <script src="/storage/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
-  <script src="/storage/offcanvas.js"></script>
+  <!-- <script src="/store/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
+  <script src="/store/offcanvas.js"></script>
+  @yield('scripts')
 </body>
 </html>

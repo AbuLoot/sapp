@@ -19,7 +19,7 @@ class CreateIncomingOrdersTable extends Migration
             $table->integer('company_id');
             $table->integer('user_id');
             $table->char('cashier_name');
-            $table->integer('doc_id');
+            $table->integer('doc_no');
             $table->integer('doc_type_id');
             $table->json('products_ids');
             $table->char('from_contractor')->nullable();

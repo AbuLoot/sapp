@@ -27,7 +27,7 @@ use App\Http\Controllers\Joystick\LanguageController;
 
 // Sanapp Admin Controllers
 use App\Http\Controllers\Joystick\OfficeController;
-use App\Http\Controllers\Joystick\StorageController;
+use App\Http\Controllers\Joystick\StoreController;
 use App\Http\Controllers\Joystick\CashbookController;
 use App\Http\Controllers\Joystick\WorkplaceController;
 use App\Http\Controllers\Joystick\BankAccountController;
@@ -35,14 +35,14 @@ use App\Http\Controllers\Joystick\PaymentTypeController;
 use App\Http\Controllers\Joystick\DocTypeController;
 use App\Http\Controllers\Joystick\DiscountController;
 
-// Storage
-use App\Http\Controllers\Storage\StorageIndexController;
-use App\Http\Controllers\Storage\DocController;
-use App\Http\Controllers\Storage\RevisionController;
-use App\Http\Controllers\Storage\RevisionProductController;
-use App\Http\Controllers\Storage\WriteoffController;
-use App\Http\Controllers\Storage\IncomingDocController;
-use App\Http\Controllers\Storage\OutgoingDocController;
+// Store
+use App\Http\Controllers\Store\StoreIndexController;
+use App\Http\Controllers\Store\DocController;
+use App\Http\Controllers\Store\RevisionController;
+use App\Http\Controllers\Store\RevisionProductController;
+use App\Http\Controllers\Store\WriteoffController;
+use App\Http\Controllers\Store\IncomingDocController;
+use App\Http\Controllers\Store\OutgoingDocController;
 
 // Cashbook
 use App\Http\Controllers\Cashbook\CashbookIndexController;
@@ -61,20 +61,20 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
-// Sanapp Storage
-Route::redirect('/store', '/'.app()->getLocale().'/store');
+// Sanapp Store
+Route::redirect('/{service}', '/'.app()->getLocale().'/{service}');
 
 Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
 
-    Route::get('/', [StorageIndexController::class, 'index']);
-    Route::get('/income', [StorageIndexController::class, 'income']);
+    Route::get('/', [StoreIndexController::class, 'index']);
+    Route::get('/income', [StoreIndexController::class, 'income']);
 
     Route::get('add-product', [IncomingDocController::class, 'create']);
     // Route::post('add-product', [IncomingDocController::class, 'store']);
     Route::get('docs/outgoing', [OutgoingDocController::class, 'index']);
 
     Route::resources([
-        // 'storage' => StorageController::class,
+        // 'store' => StoreController::class,
         'docs' => IncomingDocController::class,
         'outgoing_docs' => OutgoingDocController::class,
         'revision' => RevisionController::class,
@@ -86,7 +86,7 @@ Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin
 });
 
 // Sanapp Cashbook
-Route::redirect('/cashbook', '/'.app()->getLocale().'/cashbook');
+// Route::redirect('/cashbook', '/'.app()->getLocale().'/cashbook');
 
 Route::group(['prefix' => '{lang}/cashbook', 'middleware' => ['auth' , 'roles:admin|cashier']], function () {
 
@@ -103,7 +103,7 @@ Route::group(['prefix' => '{lang}/cashbook', 'middleware' => ['auth' , 'roles:ad
 });
 
 // Sanapp Joystick Administration
-Route::redirect('/admin', '/'.app()->getLocale().'/admin');
+// Route::redirect('/admin', '/'.app()->getLocale().'/admin');
 
 Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|storekeeper|cashier|manager']], function () {
 
@@ -115,7 +115,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
 
         // Sanapp routes
         'office' => OfficeController::class,
-        'storages' => StorageController::class,
+        'stores' => StoreController::class,
         'cashbooks' => CashbookController::class,
         'workplaces' => WorkplaceController::class,
         'bank_accounts' => BankAccountController::class,

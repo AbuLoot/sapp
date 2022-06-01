@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Storage;
+namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class RevisionController extends Controller
     {
         $revision = Revision::get();
 
-        return view('storage.revision', ['revision' => $revision]);
+        return view('store.revision', ['revision' => $revision]);
     }
 
     public function create($lang)
@@ -32,7 +32,7 @@ class RevisionController extends Controller
         $companies = Company::orderBy('sort_id')->get();
         $projects = Project::get()->toTree();
 
-        return view('storage.add-product', ['units' => $units, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects]);
+        return view('store.add-product', ['units' => $units, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects]);
     }
 
     public function store(Request $request)

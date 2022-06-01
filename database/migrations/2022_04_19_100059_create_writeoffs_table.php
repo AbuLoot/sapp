@@ -15,7 +15,7 @@ class CreateWriteoffsTable extends Migration
     {
         Schema::create('writeoffs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('storage_id');
+            $table->integer('store_id');
             $table->integer('user_id');
             $table->integer('product_id');
             $table->char('title');

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class OutgoingOrder extends Model
 {
     use HasFactory;
+
+    protected $table = 'outgoing_orders';
 }

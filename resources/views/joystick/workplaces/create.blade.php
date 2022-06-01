@@ -33,8 +33,8 @@
                 <div class="form-group">
                   <label for="workplace_id">Склады</label><br>
                   <div style="display: inline-block; margin-right: 15px;">
-                    @foreach($storages as $storage)
-                      <label><input type="radio" name="workplace_id" value="storage-{{ $storage->id }}"> {{ $storage->title }}</label><br>
+                    @foreach($stores as $store)
+                      <label><input type="radio" name="workplace_id" value="store-{{ $store->id }}"> {{ $store->title }}</label><br>
                     @endforeach<br>
                   </div>
                 </div>

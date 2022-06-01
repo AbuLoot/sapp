@@ -15,11 +15,11 @@ class CreateOutgoingDocsTable extends Migration
     {
         Schema::create('outgoing_docs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('storage_id');
+            $table->integer('store_id');
             $table->integer('company_id');
             $table->integer('user_id');
             $table->char('username');
-            $table->integer('doc_id');
+            $table->integer('doc_no');
             $table->integer('doc_type_id');
             $table->json('products_ids');
             $table->char('to_contractor');

@@ -62,7 +62,7 @@
           <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarAccount" aria-expanded="true" aria-controls="sidebarAccount">Учет <span class="caret"></span></div>
           <ul class="nav nav-sidebar collapse in" id="sidebarAccount">
             <li @if(Request::is($lang.'/admin/office*')) class="active" @endif><a href="/{{ $lang }}/admin/office"><i class="material-icons md-20">apartment</i> Офис</a></li>
-            <li @if(Request::is($lang.'/admin/storages*')) class="active" @endif><a href="/{{ $lang }}/admin/storages"><i class="material-icons md-20">warehouse</i> Склады</a></li>
+            <li @if(Request::is($lang.'/admin/stores*')) class="active" @endif><a href="/{{ $lang }}/admin/stores"><i class="material-icons md-20">warehouse</i> Склады</a></li>
             <li @if(Request::is($lang.'/admin/cashbooks*')) class="active" @endif><a href="/{{ $lang }}/admin/cashbooks"><i class="material-icons md-20">account_balance</i> Кассы</a></li>
             <li @if(Request::is($lang.'/admin/workplaces*')) class="active" @endif><a href="/{{ $lang }}/admin/workplaces"><i class="material-icons md-20">workspaces</i> Рабочие места</a></li>
             <li @if(Request::is($lang.'/admin/bank_accounts*')) class="active" @endif><a href="/{{ $lang }}/admin/bank_accounts"><i class="material-icons md-20">account_balance_wallet</i> Счета</a></li>
