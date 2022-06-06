@@ -18,23 +18,17 @@
 
 @section('scripts')
   @livewireScripts
-  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-  <script>
-    function addBarcodeInput(i) {
-      var barcodeInput =
-          '<div class="mb-3">' +
-            '<div class="input-group">' +
-              '<input type="number" class="form-control" id="barcode" name="barcode" value="">' +
-              '<button type="button" onclick="removeBarcodeInput(this)" class="input-group-text bg-dark text-white"><i class="bi bi-x-lg"></i></button>' +
-            '</div>' +
-            '<div class="form-text"><a href="#"><i class="bi bi-upc"></i> Сгенерировать штрихкод</a></div>' +
-          '</div>';
 
-      $('#barcodes').append(barcodeInput);
-    }
+  <script type="text/javascript">
+    // window.addEventListener('hide-modal', event => {
+    //   // const modalToggle = document.getElementById('addCategory');
+    //   // myModal.hide(modalToggle)
 
-    function removeBarcodeInput(i) {
-      $(i).parent().parent().remove();
-    }
+    //   const myModal = document.getElementById('addCategory')
+
+    //   myModal.addEventListener('show.bs.modal', event => {
+    //       return event.preventDefault() // stops modal from being shown
+    //   })
+    // })
   </script>
 @endsection

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Store;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Store\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -40,11 +40,7 @@ class IncomingDocController extends Controller
     {
         $this->authorize('create', Product::class);
 
-        $units = Unit::get();
-        $stores = Store::get();
-        $currency = Currency::where('lang', (($lang == 'ru') ? 'kz' : $lang))->first();
-
-        return view('store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency]);
+        return view('store.add-product');
     }
 
     public function store(Request $request)

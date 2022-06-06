@@ -61,8 +61,22 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
+Route::get('bc', function(){
+
+$time_start = microtime(true);
+
+// Спим некоторое время
+usleep(100);
+
+$time_end = microtime(true);
+$time = $time_end - $time_start;
+
+echo "Ничего не делал $time секунд\n<br>";
+echo substr(intval(microtime(true)), 7);
+});
+
 // Sanapp Store
-Route::redirect('/{service}', '/'.app()->getLocale().'/{service}');
+Route::redirect('/store', '/'.app()->getLocale().'/store');
 
 Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
 
@@ -70,6 +84,7 @@ Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin
     Route::get('/income', [StoreIndexController::class, 'income']);
 
     Route::get('add-product', [IncomingDocController::class, 'create']);
+    Route::get('edit-product', [IncomingDocController::class, 'edit']);
     // Route::post('add-product', [IncomingDocController::class, 'store']);
     Route::get('docs/outgoing', [OutgoingDocController::class, 'index']);
 

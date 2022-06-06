@@ -11,6 +11,7 @@ class Company extends Model
     protected $fillable = [
         'sort_id',
         'region_id',
+        'currency_id',
         'slug',
         'title',
         'phones',
@@ -34,9 +35,9 @@ class Company extends Model
         return $this->hasMany('App\Models\Product');
     }
 
-    public function storages()
+    public function stores()
     {
-        return $this->hasMany('App\Models\Storage');
+        return $this->hasMany('App\Models\Store');
     }
 
     public function cashbooks()
@@ -47,5 +48,10 @@ class Company extends Model
     public function bank_accounts()
     {
         return $this->hasMany('App\Models\BankAccount');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo('App\Models\Currency', 'currency_id');
     }
 }

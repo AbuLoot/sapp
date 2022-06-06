@@ -65,8 +65,8 @@
           <td>Категории</td>
           <td>Компания</td>
           <td>Проекты</td>
-          <td>Артикул</td>
-          <td>Товар</td>
+          <td>Штрихкод</td>
+          <td>Цена</td>
           <td><i class="material-icons md-18">face</i></td>
           <td>Язык</td>
           <td>Режим</td>
@@ -83,8 +83,8 @@
             <td>{{ $product->category->title }}</td>
             <td>{{ ($product->company) ? $product->company->title : '' }}</td>
             <td>{{ ($product->project) ? $product->project->title : '' }}</td>
-            <td>{{ $product->barcode }}</td>
-            <td>{{ ($product->type == 1) ? 'Новый' : 'Б/у' }}</td>
+            <td>{{ $product->barcodes }}</td>
+            <td>{{ $product->price }}</td>
             <td>{{ $product->views }}</td>
             <td>{{ $product->lang }}</td>
             <td class="text-nowrap">

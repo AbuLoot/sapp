@@ -90,8 +90,9 @@ class ProductController extends Controller
         $product->title = $request->title;
         $product->meta_title = $request->meta_title;
         $product->meta_description = $request->meta_description;
-        $product->barcode = $request->barcode;
+        $product->barcodes = json_encode($request->barcodes);
         $product->id_code = $request->id_code;
+        $product->purchase_price = $request->purchase_price;
         $product->wholesale_price = $request->wholesale_price;
         $product->price = $request->price;
         $product->count = $request->count;
@@ -190,8 +191,9 @@ class ProductController extends Controller
         $product->title = $request->title;
         $product->meta_title = $request->meta_title;
         $product->meta_description = $request->meta_description;
-        $product->barcode = $request->barcode;
+        $product->barcodes = json_encode($request->barcodes);
         $product->id_code = $request->id_code;
+        $product->purchase_price = $request->purchase_price;
         $product->wholesale_price = $request->wholesale_price;
         $product->price = $request->price;
         $product->count = $request->count;

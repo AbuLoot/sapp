@@ -12,6 +12,21 @@ class Category extends Model
 
     protected $table = 'categories';
 
+    protected $fillable = [
+        'sort_id',
+        'slug',
+        'title',
+        'title_extra',
+        'image',
+        'meta_title',
+        'meta_description',
+        'lang',
+        '_lft',
+        '_rgt',
+        'parent_id',
+        'status',
+    ];
+
     public function companies()
     {
         return $this->hasMany('App\Models\Company');

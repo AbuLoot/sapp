@@ -23,6 +23,7 @@ class OutgoingDoc extends Model
         'sum',
         'currency',
         'count',
+        'unit',
         'comment',
     ];
 }

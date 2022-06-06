@@ -46,6 +46,15 @@
               </select>
             </div>
             <div class="form-group">
+              <label for="currency_id">Валюты</label>
+              <select id="currency_id" name="currency_id" class="form-control">
+                <option value=""></option>
+                @foreach ($currencies as $currency)
+                  <option value="{{ $currency->id }}" @if($company->currency_id == $currency->id) selected @endif>{{ $currency->symbol }} - {{ $currency->currency }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
               <label for="legal_address">Юридический адрес</label>
               <input type="text" class="form-control" id="legal_address" name="legal_address" value="{{ (old('legal_address')) ? old('legal_address') : $company->legal_address }}">
             </div>

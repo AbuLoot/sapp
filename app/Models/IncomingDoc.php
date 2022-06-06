@@ -23,6 +23,7 @@ class IncomingDoc extends Model
         'sum',
         'currency',
         'count',
+        'unit',
         'comment',
     ];
 }

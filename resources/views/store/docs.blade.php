@@ -21,16 +21,22 @@
 @endsection
 
 @section('content')
-  <ul class="nav nav-pills mb-3">
-    <li class="nav-item">
-      <a class="nav-link  active" aria-current="page" href="#">Приходные</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="/{{ $lang }}/store/docs/outgoing">Расходные</a>
-    </li>
-  </ul>
 
-  <h6>Обшая сумма накладных: 1000000KZT</h6>
+  <div class="row align-items-center">
+    <div class="col-6">
+      <ul class="nav nav-pills gap-2 small mb-3">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Приходные</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/store/docs/outgoing">Расходные</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-6 text-end">
+      <h6>Обшая сумма накладных: 1000000KZT</h6>
+    </div>
+  </div>
 
   <table class="table align-middle table-sm table-striped">
     <thead>

@@ -57,16 +57,35 @@
               <input type="text" class="form-control" id="parameters" name="parameters" minlength="5" value="{{ (old('parameters')) ? old('parameters') : $product->parameters }}">
             </div>
             <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="barcode">Артикул</label>
-                  <input type="text" class="form-control" id="barcode" name="barcode" value="{{ (old('barcode')) ? old('barcode') : $product->barcode }}">
+              <?php $barcodes = json_decode($product->barcodes); ?>
+              @foreach($barcodes as $key => $barcode)
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="barcode">Штрихкод {{ ++$key }}</label>
+                    <input type="text" class="form-control" id="barcode" name="barcodes[]" value="{{ $barcode }}">
+                  </div>
                 </div>
-              </div>
+              @endforeach
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="id_code">Код товара</label>
                   <input type="text" class="form-control" id="id_code" name="id_code" value="{{ (old('id_code')) ? old('id_code') : $product->id_code }}">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="purchase_price">Закупочная цена</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="purchase_price" name="purchase_price" maxlength="10" value="{{ (old('purchase_price')) ? old('purchase_price') : $product->purchase_price }}" required>
+                    <div class="input-group-addon">{{ $currency->symbol }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="count">Количество</label>
+                  <input type="number" class="form-control" id="count" name="count" minlength="5" maxlength="80" value="{{ (old('count')) ? old('count') : $product->count }}">
                 </div>
               </div>
               <div class="col-md-6">
@@ -80,32 +99,22 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="price">Цена</label>
+                  <label for="price">Розничная цена</label>
                   <div class="input-group">
                     <input type="text" class="form-control" id="price" name="price" maxlength="10" value="{{ (old('price')) ? old('price') : $product->price }}" required>
                     <div class="input-group-addon">{{ $currency->symbol }}</div>
                   </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="count">Количество</label>
-                  <input type="number" class="form-control" id="count" name="count" minlength="5" maxlength="80" value="{{ (old('count')) ? old('count') : $product->count }}">
-                </div>
-              </div>
             </div>
             <div class="form-group">
               <label for="type">Тип</label><br>
               <label class="radio-inline">
-                <input type="radio" name="type" value="1" @if ($product->type == '1') checked @endif> Новый
+                <input type="radio" name="type" value="1" @if ($product->type == '1') checked @endif> Товар
               </label>
               <label class="radio-inline">
-                <input type="radio" name="type" value="2" @if ($product->type == '2') checked @endif> Б/у
+                <input type="radio" name="type" value="2" @if ($product->type == '2') checked @endif> Услуга
               </label>
-              <label class="radio-inline">
-                <input type="radio" name="type" value="3" @if ($product->type == '3') checked @endif> Услуга
-              </label>
-
             </div>
             <div class="row" id="gallery">
               <div class="col-md-12">

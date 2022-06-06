@@ -58,14 +58,29 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="barcode">Артикул</label>
-                  <input type="text" class="form-control" id="barcode" name="barcode" value="{{ (old('barcode')) ? old('barcode') : NULL }}">
+                  <label for="barcodes">Штрихкод</label>
+                  <input type="text" class="form-control" id="barcodes" name="barcodes[]" value="{{ (old('barcodes')) ? old('barcodes') : NULL }}">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="id_code">Код товара</label>
                   <input type="text" class="form-control" id="id_code" name="id_code" value="{{ (old('id_code')) ? old('id_code') : NULL }}">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="purchase_price">Закупочная цена</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="purchase_price" name="purchase_price" maxlength="10" value="{{ (old('wholesale_price')) ? old('wholesale_price') : '' }}" required>
+                    <div class="input-group-addon">{{ $currency->symbol }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="count">Количество</label>
+                  <input type="number" class="form-control" id="count" name="count" minlength="5" maxlength="80" value="{{ (old('count')) ? old('count') : 1 }}">
                 </div>
               </div>
               <div class="col-md-6">
@@ -79,17 +94,11 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="price">Цена</label>
+                  <label for="price">Розничная цена</label>
                   <div class="input-group">
                     <input type="text" class="form-control" id="price" name="price" maxlength="10" value="{{ (old('price')) ? old('price') : '' }}" required>
                     <div class="input-group-addon">{{ $currency->symbol }}</div>
                   </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="count">Количество</label>
-                  <input type="number" class="form-control" id="count" name="count" minlength="5" maxlength="80" value="{{ (old('count')) ? old('count') : 1 }}">
                 </div>
               </div>
             </div>

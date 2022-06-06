@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Store;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Store\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 

@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Joystick\Controller;
 use App\Models\Region;
 use App\Models\Company;
+use App\Models\Currency;
 
 use Storage;
 
@@ -27,7 +28,22 @@ class CompanyController extends Controller
             'companies_id' => 'required'
         ]);
 
-        Company::whereIn('id', $request->companies_id)->update(['status' => $request->action]);
+        if (in_array($request->action, ['0', '1', '2', '3'])) {
+            Company::whereIn('id', $request->companies_id)->update(['status' => $request->action]);
+        }
+        elseif($request->action == 'destroy') {
+
+            foreach($request->companies_id as $company_id) {
+                $company = company::find($company_id);
+                $this->authorize('delete', $company);
+
+                if (file_exists('img/companies/'.$company->image) && $company->image != 'no-image-mini.png') {
+                    Storage::delete('img/companies/'.$company->image);
+                }
+
+                $company->delete();
+            }
+        }
 
         return response()->json(['status' => true]);
     }
@@ -37,8 +53,9 @@ class CompanyController extends Controller
         $this->authorize('create', Company::class);
 
         $regions = Region::orderBy('sort_id')->get()->toTree();
+        $currencies = Currency::get();
 
-        return view('joystick.companies.create', compact('regions'));
+        return view('joystick.companies.create', compact('regions', 'currencies'));
     }
 
     public function store(Request $request)
@@ -59,6 +76,7 @@ class CompanyController extends Controller
 
         $company->sort_id = ($request->sort_id > 0) ? $request->sort_id : $company->count() + 1;
         $company->region_id = ($request->region_id > 0) ? $request->region_id : 0;
+        $company->currency_id = $request->currency_id;
         $company->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
         $company->title = $request->title;
         $company->bin = $request->bin;
@@ -81,10 +99,12 @@ class CompanyController extends Controller
     {
         $regions = Region::orderBy('sort_id')->get()->toTree();
         $company = Company::findOrFail($id);
+        $currencies = Currency::get();
 
         $this->authorize('update', $company);
 
-        return view('joystick.companies.edit', compact('regions', 'company'));
+
+        return view('joystick.companies.edit', compact('regions', 'company', 'currencies'));
     }
 
     public function update(Request $request, $lang, $id)
@@ -109,6 +129,7 @@ class CompanyController extends Controller
 
         $company->sort_id = ($request->sort_id > 0) ? $request->sort_id : $company->count() + 1;
         $company->region_id = ($request->region_id > 0) ? $request->region_id : 0;
+        $company->currency_id = $request->currency_id;
         $company->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
         $company->title = $request->title;
         $company->bin = $request->bin;

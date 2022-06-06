@@ -26,7 +26,17 @@ class CategoryController extends Controller
             'categories_id' => 'required'
         ]);
 
-        Category::whereIn('id', $request->categories_id)->update(['status' => $request->action]);
+        if (in_array($request->action, ['0', '1', '2', '3'])) {
+            Category::whereIn('id', $request->categories_id)->update(['status' => $request->action]);
+        }
+        elseif($request->action == 'destroy') {
+
+            $category = Category::whereIn($request->categories_id)->delete();
+            // foreach($request->categories_id as $category_id) {
+            //     // $this->authorize('delete', $category);
+            //     $category->delete();
+            // }
+        }
 
         return response()->json(['status' => true]);
     }

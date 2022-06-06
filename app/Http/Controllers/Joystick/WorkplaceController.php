@@ -72,7 +72,9 @@ class WorkplaceController extends Controller
     public function update(Request $request, $lang, $id)
     {
         $this->validate($request, [
-            'title' => 'required|min:2|max:80',
+            'user_id' => 'required|numeric',
+            'workplace_id' => 'required|min:6',
+            'code' => 'required|numeric|min:4'
         ]);
 
         $workplace = Workplace::findOrFail($id);

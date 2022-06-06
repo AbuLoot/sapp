@@ -26,7 +26,9 @@ class CreateProductsTable extends Migration
             $table->string('meta_title');
             $table->string('meta_description')->nullable();
             $table->string('barcode')->nullable();
+            $table->json('barcodes')->nullable();
             $table->string('id_code')->nullable();
+            $table->decimal('purchase_price', 44, 2)->default(0);
             $table->decimal('wholesale_price', 44, 2)->default(0);
             $table->decimal('price', 44, 2)->default(0);
             $table->integer('count')->default(1);

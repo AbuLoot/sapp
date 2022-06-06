@@ -12,7 +12,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\IncomingDoc;
 
-class AddProduct extends Component
+class EditProduct extends Component
 {
     public $product;
     public $productBarcodes = [];
@@ -162,6 +162,6 @@ class AddProduct extends Component
         $stores = Store::where('company_id', $companyStore->id)->get();
         $units = Unit::all();
 
-        return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency]);
+        return view('livewire.store.edit-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency]);
     }
 }

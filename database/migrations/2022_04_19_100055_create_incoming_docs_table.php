@@ -26,6 +26,7 @@ class CreateIncomingDocsTable extends Migration
             $table->integer('sum');
             $table->char('currency');
             $table->integer('count');
+            $table->char('unit');
             $table->string('comment')->nullable();
             $table->timestamps();
         });

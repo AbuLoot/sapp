@@ -15,6 +15,8 @@
         @foreach(trans('statuses.data') as $num => $status)
           <li><a data-action="{{ $num }}" href="#">Статус {{ $status['title'] }}</a></li>
         @endforeach
+        <li role="separator" class="divider"></li>
+        <li><a data-action="destroy" href="#" onclick="return confirm('Удалить записи?')">Удалить</a></li>
       </ul>
     </div>
     <a href="/{{ $lang }}/admin/categories/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>

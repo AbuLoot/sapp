@@ -1,10 +1,10 @@
 <div>
 
   <!-- Modal Add Company -->
-  <div class="modal fade @if($alert) show @endif" id="addCompany" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal fade" id="addCompany" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
-        <form wire:submit.prevent="saveCompany()">
+        <form wire:submit.prevent="saveCompany">
           <div class="modal-header">
             <h5 class="modal-title" id="modalLabel">Добавить поставщика</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary text-center" data-bs-dismiss="modal"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
+            <button type="submit" data-bs-dismiss="modal" class="btn btn-primary text-center"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
           </div>
         </form>
       </div>
