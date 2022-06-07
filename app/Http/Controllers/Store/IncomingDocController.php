@@ -112,16 +112,16 @@ class IncomingDocController extends Controller
 
         $this->authorize('update', $product);
 
-        $categories = Category::get()->toTree();
-        $currency = Currency::where('lang', (($lang == 'ru') ? 'kz' : $lang))->first();
-        $companies = Company::orderBy('sort_id')->get();
-        $projects = Project::get()->toTree();
-        $regions = Region::orderBy('sort_id')->get()->toTree();
-        $options = Option::orderBy('sort_id')->get();
-        $grouped = $options->groupBy('data');
-        $modes = Mode::all();
+        // $categories = Category::get()->toTree();
+        // $currency = Currency::where('lang', (($lang == 'ru') ? 'kz' : $lang))->first();
+        // $companies = Company::orderBy('sort_id')->get();
+        // $projects = Project::get()->toTree();
+        // $regions = Region::orderBy('sort_id')->get()->toTree();
+        // $options = Option::orderBy('sort_id')->get();
+        // $grouped = $options->groupBy('data');
+        // $modes = Mode::all();
 
-        return view('joystick.products.edit', ['modes' => $modes, 'regions' => $regions, 'product' => $product, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects, 'options' => $options, 'grouped' => $grouped]);
+        return view('store.edit-product', ['product' => $product]);
     }
 
     public function update(Request $request, $lang, $id)

@@ -12,9 +12,11 @@ class Index extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public function render()
     {
-        $products = Product::orderByDesc('id')->paginate(50);
+        $products = Product::orderByDesc('id')->paginate(5);
 
         return view('livewire.store.index', ['products' => $products]);
     }

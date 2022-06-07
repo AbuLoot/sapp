@@ -1,9 +1,8 @@
 <div>
-  <table class="table table-sm table-striped small">
+  <table class="table table-sm- table-striped">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Наименование</th>
+        <th scope="col">Наименование<br> товара</th>
         <th scope="col">Штрихкод</th>
         <th scope="col">Категория</th>
         <th scope="col">Цена закупки</th>
@@ -17,8 +16,7 @@
     <tbody>
       @forelse($products as $index => $product)
         <tr>
-          <th>{{ $index }}</th>
-          <td>{{ $product->title }}</td>
+          <td><a href="/{{ $lang }}/store/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
           <td>
             @foreach(json_decode($product->barcodes, true) as $barcode)
               {{ $barcode }}<br>

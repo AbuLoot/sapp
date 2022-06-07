@@ -61,19 +61,7 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
-Route::get('bc', function(){
-
-$time_start = microtime(true);
-
-// Спим некоторое время
-usleep(100);
-
-$time_end = microtime(true);
-$time = $time_end - $time_start;
-
-echo "Ничего не делал $time секунд\n<br>";
-echo substr(intval(microtime(true)), 7);
-});
+use App\Http\Livewire\Store\AddProduct;
 
 // Sanapp Store
 Route::redirect('/store', '/'.app()->getLocale().'/store');
@@ -83,9 +71,10 @@ Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin
     Route::get('/', [StoreIndexController::class, 'index']);
     Route::get('/income', [StoreIndexController::class, 'income']);
 
+    // Route::get('/add-product', AddProduct::class);
     Route::get('add-product', [IncomingDocController::class, 'create']);
-    Route::get('edit-product', [IncomingDocController::class, 'edit']);
-    // Route::post('add-product', [IncomingDocController::class, 'store']);
+    Route::get('edit-product/{id}', [IncomingDocController::class, 'edit']);
+    // Route::put('update-product/{id}', [IncomingDocController::class, 'update']);
     Route::get('docs/outgoing', [OutgoingDocController::class, 'index']);
 
     Route::resources([

@@ -19,7 +19,6 @@ class EditProduct extends Component
     public $companies;
     public $categories;
     public $barcodes = [''];
-    public $doc_no;
     public $id_code;
     public $unit;
     public $purchase_price;
@@ -36,14 +35,18 @@ class EditProduct extends Component
         'product.type' => 'required|numeric',
         'product.price' => 'required',
         'product.count' => 'required|numeric',
-        'doc_no' => 'required',
         'productBarcodes.*' => 'required',
     ];
 
-    public function mount()
+    public function mount($product)
     {
-        $this->product = new Product;
-        $this->product->type = 1;
+        $this->product = $product;
+        $this->productBarcodes = json_decode($product->barcodes);
+        $this->barcodes = $this->productBarcodes;
+        $this->id_code = $product->id_code;
+        $this->purchase_price = $product->purchase_price;
+        $this->wholesale_price = $product->wholesale_price;
+        $this->price = $product->price;
         $this->companies = Company::where('is_supplier', 1)->get();
     }
 
@@ -102,11 +105,11 @@ class EditProduct extends Component
     {
         $this->validate();
 
-        $lastProduct = Product::orderByDesc('id')->first();
+        // $lastProduct = Product::orderByDesc('id')->first();
 
-        $product = Product::create([
-            'sort_id' => $lastProduct->id + 1,
-            'user_id' => auth()->user()->id,
+        $product = Product::update([
+            // 'sort_id' => $lastProduct->id + 1,
+            // 'user_id' => auth()->user()->id,
             'company_id' => $this->product->company_id ?? 0,
             'category_id' => $this->product->category_id,
             'slug' => Str::slug($this->product->title),
@@ -126,33 +129,17 @@ class EditProduct extends Component
         // Store
         // $companyStore = auth()->user()->profile->company;
 
-        $incomingDoc = new IncomingDoc;
-        $incomingDoc->store_id = 1;
-        $incomingDoc->company_id = $this->product->company_id;
-        $incomingDoc->user_id = auth()->user()->id;
-        $incomingDoc->username = auth()->user()->name;
-        $incomingDoc->doc_no = $this->doc_no;
-        $incomingDoc->doc_type_id = 3;
-        $incomingDoc->products_ids = json_encode($product->id);
-        $incomingDoc->from_contractor = Company::find($this->product->company_id)->title;
-        $incomingDoc->sum = $this->purchase_price * $this->product->count;
-        $incomingDoc->currency = auth()->user()->profile->company->currency->code;
-        $incomingDoc->count = $this->product->count;
-        $incomingDoc->unit = $this->unit;
-        // $incomingDoc->comment = '';
-        $incomingDoc->save();
-
         // $this->reset();
         // $this->product = new Product;
         // $this->product->type = 1;
 
-        $this->reset('doc_no', 'productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
+        $this->reset('productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
         $this->product->title = null;
         $this->product->price = null;
         $this->product->count = null;
         $this->barcodes = [''];
 
-        session()->flash('message', 'Запись добавлена.');
+        session()->flash('message', 'Запись изменена.');
     }
 
     public function render()
