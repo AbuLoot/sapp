@@ -64,4 +64,14 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Order');
     }
+
+    public function incomingDocs()
+    {
+        return $this->hasMany('App\Models\IncomingDoc');
+    }
+
+    public function outgoingDocs()
+    {
+        return $this->hasMany('App\Models\OutgoingDoc');
+    }
 }

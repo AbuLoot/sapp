@@ -1,109 +1,72 @@
-@extends('store.layout')
+<div>
+  <div class="py-3 border-bottom mb-3">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+      <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Накладные</h4>
 
-@section('nav-tools')    
-  <div class="container d-flex flex-wrap justify-content-between align-items-center">
+      <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+        <input type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
+      </form>
 
-    <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Накладные</h4>
+      <form class="col-5 col-lg-auto mb-2 mb-lg-0 ms-lg-auto">
+        <div class="input-group">
+          <span class="input-group-text">От</span>
+          <input type="date" class="form-control" placeholder="От..." data-date-format="dd/mm/yyyy">
+          <span class="input-group-text">До</span>
+          <input type="date" class="form-control" placeholder="До...">
+        </div>
+      </form>
+    </div>
+  </div>
 
-    <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-      <input type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
-    </form>
-
-    <form class="col-12 col-lg-auto mb-2 mb-lg-0 ms-lg-auto">
-      <div class="input-group">
-        <span class="input-group-text">От</span>
-        <input type="date" class="form-control" placeholder="От..." data-date-format="dd/mm/yyyy">
-        <span class="input-group-text">До</span>
-        <input type="date" class="form-control" placeholder="До...">
+  <!-- Content -->
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-6">
+        <ul class="nav nav-pills gap-2 small mb-3">
+          <li class="nav-item">
+            <a class="nav-link" href="/{{ $lang }}/store/docs">Приходные</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Расходные</a>
+          </li>
+        </ul>
       </div>
-    </form>
-  </div>
-@endsection
-
-@section('content')
-  <div class="row align-items-center">
-    <div class="col-6">
-      <ul class="nav nav-pills gap-2 small mb-3">
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/store/docs">Приходные</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Расходные</a>
-        </li>
-      </ul>
+      <div class="col-6 text-end">
+        <h6>Обшая сумма накладных: {{ number_format($outgoingDocs->sum('sum'), 0, '.', ',') }}KZT</h6>
+      </div>
     </div>
-    <div class="col-6 text-end">
-      <h6>Обшая сумма накладных: 1000000KZT</h6>
-    </div>
-  </div>
 
-  <table class="table align-middle table-sm table-striped">
-    <thead>
-      <tr>
-        <th scope="col">Номер накладной</th>
-        <th scope="col">Сумма</th>
-        <th scope="col">Автор</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Время</th>
-        <th class="text-end" scope="col">Функции</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Jacob</td>
-        <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Jacob</td>
-        <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Jacob</td>
-        <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Jacob</td>
-        <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Jacob</td>
-        <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Jacob</td>
-        <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="4">Larry the Bird</td>
-        <td class="text-end">@twitter</td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="table-responsive">
+      <table class="table align-middle table-sm table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Номер накладной</th>
+            <th scope="col">Сумма</th>
+            <th scope="col">Автор</th>
+            <th scope="col">Дата и время</th>
+            <th class="text-end" scope="col">Функции</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($outgoingDocs as $index => $outgoingDoc)
+            <tr>
+              <td><a href="/{{ $lang }}/store/edit-outgoingDoc/{{ $outgoingDoc->id }}">{{ $outgoingDoc->doc_no }}</a></td>
+              <td>{{ $outgoingDoc->sum }}</td>
+              <td>{{ $outgoingDoc->user->name }}</td>
+              <td>{{ $outgoingDoc->created_at }}</td>
+              <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="5">No docs</td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+
+    {{ $outgoingDocs->links() }}
+  </div>
 
   <!-- Modal -->
   <div class="modal fade" id="docDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -236,4 +199,4 @@
       </div>
     </div>
   </div>
-@endsection
+</div>

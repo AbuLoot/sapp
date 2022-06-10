@@ -1,6 +1,6 @@
 @extends('store.layout')
 
-@section('nav-functions')    
+@section('nav-tools')    
   <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
     <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Списание</h4>
@@ -55,7 +55,7 @@
         <td>
           <input type="text" class="form-control form-control-sm" aria-label="input" aria-describedby="inputGroup-sizing-sm" value="10">
         </td>
-        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-file-x"></i></a></td>
+        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-x-square-fill"></i></a></td>
       </tr>
       <tr>
         <th scope="row">2</th>
@@ -70,7 +70,7 @@
         <td>
           <input type="text" class="form-control form-control-sm" aria-label="input" aria-describedby="inputGroup-sizing-sm" value="10">
         </td>
-        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-file-x"></i></a></td>
+        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-x-square-fill"></i></a></td>
       </tr>
       <tr>
         <th scope="row">2</th>
@@ -85,7 +85,7 @@
         <td>
           <input type="text" class="form-control form-control-sm" aria-label="input" aria-describedby="inputGroup-sizing-sm" value="10">
         </td>
-        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-file-x"></i></a></td>
+        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-x-square-fill"></i></a></td>
       </tr>
       <tr>
         <th scope="row">2</th>
@@ -100,7 +100,7 @@
         <td>
           <input type="text" class="form-control form-control-sm" aria-label="input" aria-describedby="inputGroup-sizing-sm" value="10">
         </td>
-        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-file-x"></i></a></td>
+        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-x-square-fill"></i></a></td>
       </tr>
       <tr>
         <th scope="row">2</th>
@@ -115,7 +115,7 @@
         <td>
           <input type="text" class="form-control form-control-sm" aria-label="input" aria-describedby="inputGroup-sizing-sm" value="10">
         </td>
-        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-file-x"></i></a></td>
+        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-x-square-fill"></i></a></td>
       </tr>
       <tr>
         <th scope="row">2</th>
@@ -130,7 +130,7 @@
         <td>
           <input type="text" class="form-control form-control-sm" aria-label="input" aria-describedby="inputGroup-sizing-sm" value="10">
         </td>
-        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-file-x"></i></a></td>
+        <td class="text-end"><a href="#" class="fs-5"><i class="bi bi-x-square-fill"></i></a></td>
       </tr>
       <tr>
         <th scope="row">3</th>

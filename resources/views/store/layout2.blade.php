@@ -81,7 +81,7 @@
   </nav>
 
   <div class="px-3 py-3 border-bottom mb-3">
-    @yield('nav-functions')
+    @yield('nav-tools')
   </div>
 
   <main class="container mb-5">

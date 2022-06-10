@@ -14,10 +14,10 @@ use App\Models\IncomingDoc;
 
 class EditProduct extends Component
 {
+    public $lang;
     public $product;
     public $productBarcodes = [];
     public $companies;
-    public $categories;
     public $barcodes = [''];
     public $id_code;
     public $unit;
@@ -38,15 +38,15 @@ class EditProduct extends Component
         'productBarcodes.*' => 'required',
     ];
 
-    public function mount($product)
+    public function mount($id)
     {
-        $this->product = $product;
-        $this->productBarcodes = json_decode($product->barcodes);
+        $this->product = Product::findOrFail($id);
+        $this->productBarcodes = json_decode($this->product->barcodes);
         $this->barcodes = $this->productBarcodes;
-        $this->id_code = $product->id_code;
-        $this->purchase_price = $product->purchase_price;
-        $this->wholesale_price = $product->wholesale_price;
-        $this->price = $product->price;
+        $this->id_code = $this->product->id_code;
+        $this->purchase_price = $this->product->purchase_price;
+        $this->wholesale_price = $this->product->wholesale_price;
+        $this->price = $this->product->price;
         $this->companies = Company::where('is_supplier', 1)->get();
     }
 
@@ -105,9 +105,7 @@ class EditProduct extends Component
     {
         $this->validate();
 
-        // $lastProduct = Product::orderByDesc('id')->first();
-
-        $product = Product::update([
+        Product::where('id', $this->product->id)->update([
             // 'sort_id' => $lastProduct->id + 1,
             // 'user_id' => auth()->user()->id,
             'company_id' => $this->product->company_id ?? 0,
@@ -120,24 +118,11 @@ class EditProduct extends Component
             'wholesale_price' => $this->wholesale_price,
             'price' => $this->product->price,
             'count' => $this->product->count,
-            'type' => $this->product->type,
-            'image' => 'no-image-middle.png',
-            'lang' => 'ru',
-            'status' => 1,
+            'type' => $this->product->type
         ]);
 
         // Store
         // $companyStore = auth()->user()->profile->company;
-
-        // $this->reset();
-        // $this->product = new Product;
-        // $this->product->type = 1;
-
-        $this->reset('productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
-        $this->product->title = null;
-        $this->product->price = null;
-        $this->product->count = null;
-        $this->barcodes = [''];
 
         session()->flash('message', 'Запись изменена.');
     }
@@ -149,6 +134,7 @@ class EditProduct extends Component
         $stores = Store::where('company_id', $companyStore->id)->get();
         $units = Unit::all();
 
-        return view('livewire.store.edit-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency]);
+        return view('livewire.store.edit-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
+            ->layout('store.layout');
     }
 }

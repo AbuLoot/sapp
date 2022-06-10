@@ -84,8 +84,8 @@ class ProductController extends Controller
         $product->sort_id = ($request->sort_id > 0) ? $request->sort_id : $product->count() + 1;
         $product->user_id = auth()->user()->id;
         $product->category_id = $request->category_id;
-        $product->project_id = $request->project_id;
-        $product->company_id = $request->company_id;
+        $product->project_id = $request->project_id ?? 0;
+        $product->company_id = $request->company_id ?? 0;
         $product->slug = Str::slug($request->title);
         $product->title = $request->title;
         $product->meta_title = $request->meta_title;
@@ -185,8 +185,8 @@ class ProductController extends Controller
 
         $product->sort_id = ($request->sort_id > 0) ? $request->sort_id : $product->count() + 1;
         $product->category_id = $request->category_id;
-        $product->project_id = $request->project_id;
-        $product->company_id = $request->company_id;
+        $product->project_id = $request->project_id ?? 0;
+        $product->company_id = $request->company_id ?? 0;
         $product->slug = Str::slug($request->title);
         $product->title = $request->title;
         $product->meta_title = $request->meta_title;

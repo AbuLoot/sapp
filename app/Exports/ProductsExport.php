@@ -65,7 +65,7 @@ class ProductsExport implements FromQuery, WithMapping, WithHeadings, ShouldAuto
             $product->wholesale_price,
             $product->price,
             $product->count,
-            ($product->type == 1) ? 'Новый' : 'Б/у'
+            ($product->type == 1) ? 'Товар' : 'Услуга'
         ];
     }
 }

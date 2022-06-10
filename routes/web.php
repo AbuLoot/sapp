@@ -62,23 +62,28 @@ use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
 use App\Http\Livewire\Store\AddProduct;
+use App\Http\Livewire\Store\EditProduct;
+use App\Http\Livewire\Store\IncomingDocs;
+use App\Http\Livewire\Store\OutgoingDocs;
+use App\Http\Livewire\Store\Index;
+
 
 // Sanapp Store
 Route::redirect('/store', '/'.app()->getLocale().'/store');
 
-Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
+Route::group(['prefix' => '{lang}/store', 'name' => 'store', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
 
-    Route::get('/', [StoreIndexController::class, 'index']);
-    Route::get('/income', [StoreIndexController::class, 'income']);
+    // Route::get('/', [StoreIndexController::class, 'index']);
+    // Route::get('/income', [StoreIndexController::class, 'income']);
 
-    // Route::get('/add-product', AddProduct::class);
-    Route::get('add-product', [IncomingDocController::class, 'create']);
-    Route::get('edit-product/{id}', [IncomingDocController::class, 'edit']);
-    // Route::put('update-product/{id}', [IncomingDocController::class, 'update']);
-    Route::get('docs/outgoing', [OutgoingDocController::class, 'index']);
+    Route::get('/', Index::class);
+    Route::get('add-product', AddProduct::class);
+    Route::get('edit-product/{id}', EditProduct::class);
+    Route::get('docs', IncomingDocs::class);
+    Route::get('docs/outgoing', OutgoingDocs::class);
 
-    Route::resources([
-        // 'store' => StoreController::class,
+    /*Route::resources([
+        'store' => StoreController::class,
         'docs' => IncomingDocController::class,
         'outgoing_docs' => OutgoingDocController::class,
         'revision' => RevisionController::class,
@@ -86,7 +91,7 @@ Route::group(['prefix' => '{lang}/store', 'middleware' => ['auth' , 'roles:admin
         'companies' => CompanyController::class,
         'categories' => CategoryController::class,
         'products' => ProductController::class,
-    ]);
+    ]);*/
 });
 
 // Sanapp Cashbook
@@ -107,7 +112,7 @@ Route::group(['prefix' => '{lang}/cashbook', 'middleware' => ['auth' , 'roles:ad
 });
 
 // Sanapp Joystick Administration
-// Route::redirect('/admin', '/'.app()->getLocale().'/admin');
+Route::redirect('/admin', '/'.app()->getLocale().'/admin');
 
 Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|storekeeper|cashier|manager']], function () {
 

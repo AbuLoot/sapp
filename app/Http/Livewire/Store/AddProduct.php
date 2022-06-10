@@ -14,6 +14,7 @@ use App\Models\IncomingDoc;
 
 class AddProduct extends Component
 {
+    public $lang;
     public $product;
     public $productBarcodes = [];
     public $companies;
@@ -162,6 +163,7 @@ class AddProduct extends Component
         $stores = Store::where('company_id', $companyStore->id)->get();
         $units = Unit::all();
 
-        return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency]);
+        return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
+            ->layout('store.layout');
     }
 }

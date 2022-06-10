@@ -72,7 +72,7 @@
                 <div class="form-group">
                   <label for="purchase_price">Закупочная цена</label>
                   <div class="input-group">
-                    <input type="text" class="form-control" id="purchase_price" name="purchase_price" maxlength="10" value="{{ (old('wholesale_price')) ? old('wholesale_price') : '' }}" required>
+                    <input type="text" class="form-control" id="purchase_price" name="purchase_price" value="{{ (old('wholesale_price')) ? old('wholesale_price') : '' }}">
                     <div class="input-group-addon">{{ $currency->symbol }}</div>
                   </div>
                 </div>
@@ -80,14 +80,14 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="count">Количество</label>
-                  <input type="number" class="form-control" id="count" name="count" minlength="5" maxlength="80" value="{{ (old('count')) ? old('count') : 1 }}">
+                  <input type="number" class="form-control" id="count" name="count" value="{{ (old('count')) ? old('count') : 1 }}">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="wholesale_price">Оптовая цена</label>
                   <div class="input-group">
-                    <input type="text" class="form-control" id="wholesale_price" name="wholesale_price" maxlength="10" value="{{ (old('wholesale_price')) ? old('wholesale_price') : '' }}" required>
+                    <input type="text" class="form-control" id="wholesale_price" name="wholesale_price" value="{{ (old('wholesale_price')) ? old('wholesale_price') : '' }}">
                     <div class="input-group-addon">{{ $currency->symbol }}</div>
                   </div>
                 </div>
@@ -96,7 +96,7 @@
                 <div class="form-group">
                   <label for="price">Розничная цена</label>
                   <div class="input-group">
-                    <input type="text" class="form-control" id="price" name="price" maxlength="10" value="{{ (old('price')) ? old('price') : '' }}" required>
+                    <input type="text" class="form-control" id="price" name="price" value="{{ (old('price')) ? old('price') : '' }}" required>
                     <div class="input-group-addon">{{ $currency->symbol }}</div>
                   </div>
                 </div>
@@ -105,13 +105,10 @@
             <div class="form-group">
               <label for="type">Тип</label><br>
               <label class="radio-inline">
-                <input type="radio" name="type" value="1" checked> Новый
+                <input type="radio" name="type" value="1" checked> Товар
               </label>
               <label class="radio-inline">
-                <input type="radio" name="type" value="2"> Б/у
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="type" value="3"> Услуга
+                <input type="radio" name="type" value="2"> Услуга
               </label>
             </div>
             <div class="row" id="gallery">
@@ -176,6 +173,7 @@
             <div class="form-group">
               <label for="company_id">Компания</label>
               <select id="company_id" name="company_id" class="form-control">
+                <option value="">Выбор компании</option>
                 @foreach($companies as $company)
                   <option value="{{ $company->id }}">{{ $company->title }}</option>
                 @endforeach

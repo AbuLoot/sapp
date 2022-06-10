@@ -55,7 +55,7 @@ class Product extends Model
         $array = [
             'id' => $this->id,
             'title' => $this->title,
-            'barcode' => $this->barcode,
+            'barcodes' => $this->barcodes,
             'description' => $this->description,
             'characteristic' => $this->characteristic
         ];

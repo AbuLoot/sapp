@@ -26,4 +26,9 @@ class OutgoingDoc extends Model
         'unit',
         'comment',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
 }

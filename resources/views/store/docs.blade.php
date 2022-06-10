@@ -1,6 +1,6 @@
 @extends('store.layout')
 
-@section('nav-functions')    
+@section('nav-tools')    
   <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
     <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Накладные</h4>

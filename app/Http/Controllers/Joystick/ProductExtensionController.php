@@ -94,6 +94,7 @@ class ProductExtensionController extends Controller
 
     public function import(Request $request, $lang)
     {
+        dd($lang);
         if (! Gate::allows('import', \Auth::user())) {
             abort(403);
         }

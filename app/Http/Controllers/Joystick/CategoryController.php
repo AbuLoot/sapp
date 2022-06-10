@@ -31,11 +31,11 @@ class CategoryController extends Controller
         }
         elseif($request->action == 'destroy') {
 
-            $category = Category::whereIn($request->categories_id)->delete();
-            // foreach($request->categories_id as $category_id) {
-            //     // $this->authorize('delete', $category);
-            //     $category->delete();
-            // }
+            foreach($request->categories_id as $category_id) {
+                $category = Category::find($category_id);
+                // $this->authorize('delete', $category);
+                $category->delete();
+            }
         }
 
         return response()->json(['status' => true]);

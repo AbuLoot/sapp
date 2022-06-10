@@ -18,6 +18,7 @@
             <div class="form-group">
               <label for="company_id">Компания</label>
               <select id="company_id" name="company_id" class="form-control">
+                <option value="">Выбор компании</option>
                 @foreach($companies as $company)
                   <option value="{{ $company->id }}">{{ $company->title }}</option>
                 @endforeach

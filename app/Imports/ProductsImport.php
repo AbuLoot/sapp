@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Company;
+
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
@@ -22,11 +24,13 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
     private $categories;
     private $products;
     private $products_count;
+    private $companies;
 
     public function __construct()
     {
         $this->user_id = auth()->user()->id;
         $this->categories = Category::select('id', 'slug', 'title')->get();
+        $this->companies = Category::select('id', 'slug', 'title')->get();
         $this->products_count = Product::count();
     }
 
@@ -48,9 +52,11 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
     */
     public function model(array $row)
     {
+        return false;
         $category = $this->categories->where('title', trim($row['kategorii']))->first();
+        $company = $this->companies->where('title', trim($row['kompanii']))->first();
 
-        if (is_null($row['naimenovanie']) || is_null($category)) {
+        if (is_null($row['naimenovanie']) || is_null($category) || is_null($company)) {
             return null;
         }
 
@@ -58,7 +64,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
             'sort_id' => ++$this->products_count,
             'user_id' => $this->user_id,
             'category_id' => $category->id,
-            'company_id' => $_REQUEST['company_id'] ?? 0,
+            'company_id' => $company->id ?? 0,
             'project_id' => $_REQUEST['project_id'] ?? 0,
             'title' => $row['naimenovanie'],
             'slug' => Str::slug($row['naimenovanie']),
@@ -69,7 +75,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
             'wholesale_price' => (int) str_replace(" ", "", $row['cena_optovaya']) ?? 0,
             'price' => (int) str_replace(" ", "", $row['cena']) ?? 0,
             'count' => $row['kolicestvo'] ?? 0,
-            'type' => ($row['tip'] == 'Новый') ? 1 : 2,
+            'type' => ($row['tip'] == 'Товар') ? 1 : 2,
             'image' => 'no-image-middle.png',
             'lang' => 'ru',
             'status' => 1

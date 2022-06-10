@@ -10,4 +10,5 @@ class IncomingCheck extends Model
     use HasFactory;
 
     protected $table = 'incoming_checks';
+
 }
