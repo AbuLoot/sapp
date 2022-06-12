@@ -66,6 +66,7 @@ use App\Http\Livewire\Store\EditProduct;
 use App\Http\Livewire\Store\IncomingDocs;
 use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Index;
+use App\Http\Livewire\Store\Income;
 
 
 // Sanapp Store
@@ -81,6 +82,7 @@ Route::group(['prefix' => '{lang}/store', 'name' => 'store', 'middleware' => ['a
     Route::get('edit-product/{id}', EditProduct::class);
     Route::get('docs', IncomingDocs::class);
     Route::get('docs/outgoing', OutgoingDocs::class);
+    Route::get('income', Income::class);
 
     /*Route::resources([
         'store' => StoreController::class,

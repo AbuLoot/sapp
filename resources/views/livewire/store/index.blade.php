@@ -24,7 +24,7 @@
   <!-- Content -->
   <div class="container">
     <div class="table-responsive">
-      <table class="table table-sm- table-striped">
+      <table class="table table-sm table-striped">
         <thead>
           <tr>
             <th scope="col">Наименование<br> товара</th>
@@ -35,7 +35,7 @@
             <th scope="col">Цена продажи</th>
             <th scope="col">Кол.</th>
             <!-- <th scope="col">Ед. измерения</th> -->
-            <th scope="col">Поставщик</th>
+            <th class="text-end" scope="col">Поставщик</th>
           </tr>
         </thead>
         <tbody>
@@ -51,12 +51,16 @@
               <td>{{ $product->purchase_price }}</td>
               <td>{{ $product->wholesale_price }}</td>
               <td>{{ $product->price }}</td>
-              <td>{{ $product->count }}</td>
+              <td class="text-nowrap text-end">
+                {{ $product->count }} <a href="#"><i class="bi bi-pencil-square text-primary"></i></a>
+              </td>
               <!-- <td></td> -->
-              <td>{{ $product->company->title }}</td>
+              <td class="text-end">{{ $product->company->title }}</td>
             </tr>
           @empty
-            <p>No docs</p>
+            <tr>
+              <td colspan="8">No docs</td>
+            </tr>
           @endforelse
         </tbody>
       </table>

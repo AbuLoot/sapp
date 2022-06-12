@@ -10,9 +10,9 @@
       <form class="col-5 col-lg-auto mb-2 mb-lg-0 ms-lg-auto">
         <div class="input-group">
           <span class="input-group-text">От</span>
-          <input type="date" class="form-control" placeholder="От..." data-date-format="dd/mm/yyyy">
+          <input type="date" wire:model="startDate" class="form-control" placeholder="От..." data-date-format="dd/mm/yyyy">
           <span class="input-group-text">До</span>
-          <input type="date" class="form-control" placeholder="До...">
+          <input type="date" wire:model="endDate" class="form-control" placeholder="До..." data-date-format="dd/mm/yyyy">
         </div>
       </form>
     </div>
@@ -37,11 +37,12 @@
     </div>
 
     <div class="table-responsive">
-      <table class="table align-middle table-sm table-striped">
+      <table class="table table-sm table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">Номер накладной</th>
             <th scope="col">Сумма</th>
+            <th scope="col">Количество</th>
             <th scope="col">Автор</th>
             <th scope="col">Дата и время</th>
             <th class="text-end" scope="col">Функции</th>
@@ -52,13 +53,14 @@
             <tr>
               <td><a href="/{{ $lang }}/store/edit-incomingDoc/{{ $incomingDoc->id }}">{{ $incomingDoc->doc_no }}</a></td>
               <td>{{ $incomingDoc->sum }}</td>
+              <td>{{ $incomingDoc->count }}</td>
               <td>{{ $incomingDoc->user->name }}</td>
               <td>{{ $incomingDoc->created_at }}</td>
-              <td class="text-end"><button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
+              <td class="text-end"><button wire:click="docDetail({{ $incomingDoc->id }})" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
             </tr>
           @empty
             <tr>
-              <td colspan="5">No docs</td>
+              <td colspan="6">No docs</td>
             </tr>
           @endforelse
         </tbody>
@@ -87,102 +89,71 @@
           </ul>
           <div class="tab-content pt-2" id="myTabContent">
             <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                  </tr>
-                </tbody>
-              </table>
+              @if($docDetail)
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Номер накладной</th>
+                      <td>{{ $docDetail->doc_no }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Сумма</th>
+                      <td>{{ $docDetail->sum }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Количество</th>
+                      <td>{{ $docDetail->count }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Автор</th>
+                      <td>{{ $docDetail->user->name }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Дата и время</th>
+                      <td>{{ $docDetail->created_at }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              @endif
             </div>
             <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+
               <table class="table table-sm table-striped">
                 <thead>
                   <tr  class="align-items-start">
-                    <th scope="col">#</th>
                     <th scope="col">Наименование товара</th>
                     <th scope="col">Штрихкод</th>
                     <th scope="col">Категория</th>
                     <th scope="col">Цена закупки</th>
                     <th scope="col">Цена оптовая</th>
                     <th scope="col">Цена продажи</th>
-                    <th scope="col">Кол-во</th>
-                    <th scope="col">Ед. измерения</th>
+                    <th scope="col">Кол.</th>
+                    <!-- <th scope="col">Ед. измерения</th> -->
                     <th scope="col">Поставщик</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="8">Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                  @forelse($docProducts as $index => $product)
+                    <tr>
+                      <td><a href="/{{ $lang }}/store/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+                      <td>
+                        @foreach(json_decode($product->barcodes, true) as $barcode)
+                          {{ $barcode }}<br>
+                        @endforeach
+                      </td>
+                      <td>{{ $product->category->title }}</td>
+                      <td>{{ $product->purchase_price }}</td>
+                      <td>{{ $product->wholesale_price }}</td>
+                      <td>{{ $product->price }}</td>
+                      <td>{{ $product->count }}</td>
+                      <!-- <td></td> -->
+                      <td>{{ $product->company->title }}</td>
+                    </tr>
+                  @empty
+                    <tr>
+                      <td colspan="9">No products</td>
+                    </tr>
+                  @endforelse
                 </tbody>
               </table>
             </div>
