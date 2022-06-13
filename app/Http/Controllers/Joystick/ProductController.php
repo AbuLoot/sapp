@@ -9,6 +9,7 @@ use Image;
 use Storage;
 
 use App\Http\Controllers\Joystick\Controller;
+use App\Models\Unit;
 use App\Models\Mode;
 use App\Models\Region;
 use App\Models\Option;
@@ -51,9 +52,10 @@ class ProductController extends Controller
         $projects = Project::get()->toTree();
         $regions = Region::orderBy('sort_id')->get()->toTree();
         $options = Option::orderBy('sort_id')->get();
-        $modes = Mode::all();
+        $modes = Mode::get();
+        $units = Unit::get();
 
-        return view('joystick.products.create', ['modes' => $modes, 'regions' => $regions, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects, 'options' => $options]);
+        return view('joystick.products.create', ['modes' => $modes, 'units' => $units, 'regions' => $regions, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects, 'options' => $options]);
     }
 
     public function store(Request $request)
@@ -80,6 +82,14 @@ class ProductController extends Controller
             $introImage = current($images)['present_image'];
         }
 
+        // Product parameters
+        $parameters = [
+            'weight'    => $request->weight,
+            'length'    => $request->length,
+            'width'     => $request->width,
+            'height'    => $request->height,
+        ];
+
         $product = new Product;
         $product->sort_id = ($request->sort_id > 0) ? $request->sort_id : $product->count() + 1;
         $product->user_id = auth()->user()->id;
@@ -96,10 +106,11 @@ class ProductController extends Controller
         $product->wholesale_price = $request->wholesale_price;
         $product->price = $request->price;
         $product->count = $request->count;
+        $product->unit = $request->unit;
         $product->type = $request->type;
         $product->description = $request->description;
         $product->characteristic = $request->characteristic;
-        $product->parameters = $request->parameters;
+        $product->parameters = json_encode($parameters);
         $product->path = $dirName;
         $product->image = $introImage;
         $product->images = serialize($images);
@@ -133,9 +144,10 @@ class ProductController extends Controller
         $regions = Region::orderBy('sort_id')->get()->toTree();
         $options = Option::orderBy('sort_id')->get();
         $grouped = $options->groupBy('data');
-        $modes = Mode::all();
+        $modes = Mode::get();
+        $units = Unit::get();
 
-        return view('joystick.products.edit', ['modes' => $modes, 'regions' => $regions, 'product' => $product, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects, 'options' => $options, 'grouped' => $grouped]);
+        return view('joystick.products.edit', ['modes' => $modes, 'units' => $units, 'regions' => $regions, 'product' => $product, 'currency' => $currency, 'categories' => $categories, 'companies' => $companies, 'projects' => $projects, 'options' => $options, 'grouped' => $grouped]);
     }
 
     public function update(Request $request, $lang, $id)
@@ -183,6 +195,14 @@ class ProductController extends Controller
             $product->path = $dirName;
         }
 
+        // Product parameters
+        $parameters = [
+            'weight'    => $request->weight,
+            'length'    => $request->length,
+            'width'     => $request->width,
+            'height'    => $request->height,
+        ];
+
         $product->sort_id = ($request->sort_id > 0) ? $request->sort_id : $product->count() + 1;
         $product->category_id = $request->category_id;
         $product->project_id = $request->project_id ?? 0;
@@ -197,10 +217,11 @@ class ProductController extends Controller
         $product->wholesale_price = $request->wholesale_price;
         $product->price = $request->price;
         $product->count = $request->count;
+        $product->unit = $request->unit;
         $product->type = $request->type;
         $product->description = $request->description;
         $product->characteristic = $request->characteristic;
-        $product->parameters = $request->parameters;
+        $product->parameters = json_encode($parameters);
         $product->lang = $request->lang;
         $product->status = $request->status;
         $product->save();

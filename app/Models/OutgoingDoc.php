@@ -18,7 +18,7 @@ class OutgoingDoc extends Model
         'username',
         'doc_no',
         'doc_type_id',
-        'products_ids',
+        'products_data',
         'to_contractor',
         'sum',
         'currency',

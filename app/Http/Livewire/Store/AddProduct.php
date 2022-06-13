@@ -22,7 +22,6 @@ class AddProduct extends Component
     public $barcodes = [''];
     public $doc_no;
     public $id_code;
-    public $unit;
     public $purchase_price;
     public $wholesale_price;
     public $wholesale_price_markup;
@@ -37,6 +36,7 @@ class AddProduct extends Component
         'product.type' => 'required|numeric',
         'product.price' => 'required',
         'product.count' => 'required|numeric',
+        'product.unit' => 'required|numeric',
         'doc_no' => 'required',
         'productBarcodes.*' => 'required',
     ];
@@ -119,29 +119,30 @@ class AddProduct extends Component
             'price' => $this->product->price,
             'count' => $this->product->count,
             'type' => $this->product->type,
+            'unit' => $this->product->unit,
             'image' => 'no-image-middle.png',
             'lang' => 'ru',
             'status' => 1,
         ]);
 
         // Store
-        // $companyStore = auth()->user()->profile->company;
+        $company = auth()->user()->profile->company;
 
-        $incomingDoc = new IncomingDoc;
+        /*$incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = 1;
-        $incomingDoc->company_id = $this->product->company_id;
+        $incomingDoc->company_id = $company->id;
         $incomingDoc->user_id = auth()->user()->id;
         $incomingDoc->username = auth()->user()->name;
         $incomingDoc->doc_no = $this->doc_no;
         $incomingDoc->doc_type_id = 3;
-        $incomingDoc->products_ids = json_encode($product->id);
+        $incomingDoc->products_data = json_encode($product->id);
         $incomingDoc->from_contractor = Company::find($this->product->company_id)->title;
         $incomingDoc->sum = $this->purchase_price * $this->product->count;
         $incomingDoc->currency = auth()->user()->profile->company->currency->code;
         $incomingDoc->count = $this->product->count;
         $incomingDoc->unit = $this->unit;
-        // $incomingDoc->comment = '';
-        $incomingDoc->save();
+        $incomingDoc->comment = '';
+        $incomingDoc->save();*/
 
         // $this->reset();
         // $this->product = new Product;

@@ -16,11 +16,11 @@
             {!! csrf_field() !!}
             <div class="form-group">
               <label for="title">Название</label>
-              <input type="text" class="form-control" id="title" name="title" minlength="2" maxlength="255" value="{{ (old('title')) ? old('title') : '' }}" required>
+              <input type="text" class="form-control" id="title" name="title" maxlength="255" value="{{ (old('title')) ? old('title') : '' }}" required>
             </div>
             <div class="form-group">
               <label for="slug">Slug</label>
-              <input type="text" class="form-control" id="slug" name="slug" minlength="2" maxlength="255" value="{{ (old('slug')) ? old('slug') : '' }}">
+              <input type="text" class="form-control" id="slug" name="slug" maxlength="255" value="{{ (old('slug')) ? old('slug') : '' }}">
             </div>
             <div class="form-group">
               <label for="description">Описание</label>

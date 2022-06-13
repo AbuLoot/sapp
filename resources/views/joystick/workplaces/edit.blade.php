@@ -56,7 +56,7 @@
 
             <div class="form-group">
               <label for="code">Код</label>
-              <input type="number" class="form-control" id="code" name="code" minlength="4" maxlength="4" value="{{ (old('code')) ? old('code') : NULL }}" required>
+              <input type="password" class="form-control" id="code" name="code" minlength="4" maxlength="4" value="{{ (old('code')) ? old('code') : $workplace->code }}" required>
             </div>
             <div class="form-group">
               <label for="comment">Примечание</label>

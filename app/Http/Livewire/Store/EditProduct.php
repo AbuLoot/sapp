@@ -20,7 +20,6 @@ class EditProduct extends Component
     public $companies;
     public $barcodes = [''];
     public $id_code;
-    public $unit;
     public $purchase_price;
     public $wholesale_price;
     public $wholesale_price_markup;
@@ -35,6 +34,7 @@ class EditProduct extends Component
         'product.type' => 'required|numeric',
         'product.price' => 'required',
         'product.count' => 'required|numeric',
+        'product.unit' => 'required|numeric',
         'productBarcodes.*' => 'required',
     ];
 
@@ -118,7 +118,8 @@ class EditProduct extends Component
             'wholesale_price' => $this->wholesale_price,
             'price' => $this->product->price,
             'count' => $this->product->count,
-            'type' => $this->product->type
+            'unit' => $this->product->unit,
+            'type' => $this->product->type,
         ]);
 
         // Store

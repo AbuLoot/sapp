@@ -18,7 +18,7 @@ class IncomingDoc extends Model
         'username',
         'doc_no',
         'doc_type_id',
-        'products_ids',
+        'products_data',
         'from_contractor',
         'sum',
         'currency',

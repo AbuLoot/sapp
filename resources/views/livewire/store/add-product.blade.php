@@ -127,13 +127,14 @@
                         @endforeach
                       </ul>
                       <input type="number" wire:model.defer="product.count" class="form-control @error('product.count') is-invalid @enderror" id="count" required>
-                      <select class="form-control @error('unit') is-invalid @enderror" wire:model.defer="unit" id="unit">
+                      <select class="form-control @error('product.unit') is-invalid @enderror" wire:model.defer="product.unit" id="unit">
+                        <option value="">Ед. измерения</option>
                         @foreach($units as $unit)
-                          <option value="{{ $unit->title }}">{{ $unit->title }}</option>
+                          <option value="{{ $unit->id }}">{{ $unit->title }}</option>
                         @endforeach
                       </select>
                       @error('product.count')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                      @error('unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                      @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                   </div>
                   <div class="col-lg-6 mb-3">

@@ -26,11 +26,11 @@
           <div class="panel-body">
             <div class="form-group">
               <label for="title">Название</label>
-              <input type="text" class="form-control" id="title" name="title" minlength="5" maxlength="80" value="{{ (old('title')) ? old('title') : $product->title }}" required>
+              <input type="text" class="form-control" id="title" name="title" minlength="2" value="{{ (old('title')) ? old('title') : $product->title }}" required>
             </div>
             <div class="form-group">
               <label for="slug">Slug</label>
-              <input type="text" class="form-control" id="slug" name="slug" minlength="2" maxlength="80" value="{{ (old('slug')) ? old('slug') : $product->slug }}">
+              <input type="text" class="form-control" id="slug" name="slug" minlength="2" value="{{ (old('slug')) ? old('slug') : $product->slug }}">
             </div>
             <div class="form-group">
               <label for="sort_id">Порядковый номер</label>
@@ -52,10 +52,44 @@
               <label for="characteristic">Характеристика</label>
               <input type="text" class="form-control" id="characteristic" name="characteristic" minlength="2" value="{{ (old('characteristic')) ? old('characteristic') : $product->characteristic }}">
             </div>
-            <div class="form-group">
-              <label for="parameters">Параметры</label>
-              <input type="text" class="form-control" id="parameters" name="parameters" minlength="5" value="{{ (old('parameters')) ? old('parameters') : $product->parameters }}">
+            <div class="row">
+              <div class="col-md-4 col-xs-6">
+                <div class="form-group">
+                  <label for="unit">Ед. измерения</label>
+                  <select id="unit" name="unit" class="form-control" required>
+                    @foreach($units as $unit)
+                      <option value="{{ $unit->id }}" @if($unit->id == $product->unit) selected @endif>{{ $unit->title }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <?php $parameters = json_decode($product->parameters); ?>
+              <div class="col-md-2 col-xs-6">
+                <div class="form-group">
+                  <label for="weight">Вес</label>
+                  <input type="text" class="form-control" id="weight" name="weight" value="{{ (old('weight')) ? old('weight') : $parameters->weight ?? '' }}">
+                </div>
+              </div>
+              <div class="col-md-2 col-xs-4">
+                <div class="form-group">
+                  <label for="length">Длина</label>
+                  <input type="text" class="form-control" id="length" name="length" value="{{ (old('length')) ? old('length') : $parameters->length ?? '' }}">
+                </div>
+              </div>
+              <div class="col-md-2 col-xs-4">
+                <div class="form-group">
+                  <label for="width">Ширина</label>
+                  <input type="text" class="form-control" id="width" name="width" value="{{ (old('width')) ? old('width') : $parameters->width ?? '' }}">
+                </div>
+              </div>
+              <div class="col-md-2 col-xs-4">
+                <div class="form-group">
+                  <label for="height">Высота</label>
+                  <input type="text" class="form-control" id="height" name="height" value="{{ (old('height')) ? old('height') : $parameters->height ?? '' }}">
+                </div>
+              </div>
             </div>
+            <hr>
             <div class="row">
               <?php $barcodes = json_decode($product->barcodes); ?>
               @foreach($barcodes as $key => $barcode)

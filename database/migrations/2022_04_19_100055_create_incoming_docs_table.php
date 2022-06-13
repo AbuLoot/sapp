@@ -21,7 +21,7 @@ class CreateIncomingDocsTable extends Migration
             $table->char('username');
             $table->integer('doc_no');
             $table->integer('doc_type_id');
-            $table->json('products_ids');
+            $table->json('products_data');
             $table->char('from_contractor');
             $table->integer('sum');
             $table->char('currency');

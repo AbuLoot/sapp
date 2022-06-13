@@ -25,7 +25,7 @@
           <div class="panel-body">
             <div class="form-group">
               <label for="title">Название</label>
-              <input type="text" class="form-control" id="title" name="title" minlength="5" value="{{ (old('title')) ? old('title') : '' }}" required>
+              <input type="text" class="form-control" id="title" name="title" minlength="2" value="{{ (old('title')) ? old('title') : '' }}" required>
             </div>
             <div class="form-group">
               <label for="slug">Slug</label>
@@ -51,10 +51,43 @@
               <label for="characteristic">Характеристика</label>
               <input type="text" class="form-control" id="characteristic" name="characteristic" minlength="2" value="{{ (old('characteristic')) ? old('characteristic') : '' }}">
             </div>
-            <div class="form-group">
-              <label for="parameters">Параметры</label>
-              <input type="text" class="form-control" id="parameters" name="parameters" minlength="5" value="{{ (old('parameters')) ? old('parameters') : '' }}">
+            <div class="row">
+              <div class="col-md-4 col-xs-6">
+                <div class="form-group">
+                  <label for="unit">Ед. измерения</label>
+                  <select id="unit" name="unit" class="form-control" required>
+                    @foreach($units as $unit)
+                      <option value="{{ $unit->id }}">{{ $unit->title }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2 col-xs-6">
+                <div class="form-group">
+                  <label for="weight">Вес</label>
+                  <input type="text" class="form-control" id="weight" name="weight" value="{{ (old('weight')) ? old('weight') : '' }}">
+                </div>
+              </div>
+              <div class="col-md-2 col-xs-4">
+                <div class="form-group">
+                  <label for="length">Длина</label>
+                  <input type="text" class="form-control" id="length" name="length" value="{{ (old('length')) ? old('length') : '' }}">
+                </div>
+              </div>
+              <div class="col-md-2 col-xs-4">
+                <div class="form-group">
+                  <label for="width">Ширина</label>
+                  <input type="text" class="form-control" id="width" name="width" value="{{ (old('width')) ? old('width') : '' }}">
+                </div>
+              </div>
+              <div class="col-md-2 col-xs-4">
+                <div class="form-group">
+                  <label for="height">Высота</label>
+                  <input type="text" class="form-control" id="height" name="height" value="{{ (old('height')) ? old('height') : '' }}">
+                </div>
+              </div>
             </div>
+            <hr>
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">

@@ -46,16 +46,17 @@
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена оптовая</th>
             <th scope="col">Цена продажи</th>
-            <th scope="col">Кол.</th>
-            <!-- <th scope="col">Ед. измерения</th> -->
+            <th scope="col">В&nbsp;базе</th>
+            <th scope="col">Количество</th>
             <th scope="col">Поставщик</th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
+          <?php //dd($incomeProducts); ?>
           @forelse($incomeProducts as $index => $incomeProduct)
             <tr>
-              <td><a href="/{{ $lang }}/store/edit-incomeProduct/{{ $incomeProduct->id }}">{{ $incomeProduct->title }}</a></td>
+              <td><a href="/{{ $lang }}/store/edit-product/{{ $incomeProduct->id }}">{{ $incomeProduct->title }}</a></td>
               <td>
                 @foreach(json_decode($incomeProduct->barcodes, true) as $barcode)
                   {{ $barcode }}<br>
@@ -65,9 +66,14 @@
               <td>{{ $incomeProduct->purchase_price }}</td>
               <td>{{ $incomeProduct->wholesale_price }}</td>
               <td>{{ $incomeProduct->price }}</td>
+              <?php $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?'; ?>
+              <td>{{ $incomeProduct->count + $incomeProduct->income_count . $unit }}</td>
               <td class="col-2">
-                <input type="text" wire:model="incomeProducts.{{ $incomeProduct->id }}.count" class="form-control form-control-sm px-1">
-                @error('products.'.$incomeProduct->id.'.count')<div class="text-danger">{{ $message }}</div>@enderror
+                <div class="input-group input-group-sm">
+                  <input type="number" wire:model="count.{{ $incomeProduct->id }}" class="form-control @error('count.'.$incomeProduct->id) is-invalid @enderror" required>
+                  <span class="input-group-text px-1-">{{ $unit }}</span>
+                  @error('count.'.$incomeProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
+                </div>
               </td>
               <!-- <td></td> -->
               <td>{{ $incomeProduct->company->title }}</td>
@@ -82,8 +88,21 @@
       </table>
     </div>
 
-    @if($incomeProducts)
-      <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
-    @endif
+    <div class="row">
+      <div class="col-auto">
+        <select wire:model="store_id" class="form-control @error('store_id') is-invalid @enderror" id="store_id">
+          <option value="">Выберите склад...</option>
+          @foreach ($company->stores as $store)
+            <option value="{{ $store->id }}"> {{ $store->title }}</option>
+          @endforeach
+        </select>
+        @error('store_id')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
+      <div class="col-auto">    
+        @if($incomeProducts)
+          <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
+        @endif
+      </div>
+    </div>
   </div>
 </div>

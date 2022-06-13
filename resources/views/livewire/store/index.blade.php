@@ -11,8 +11,8 @@
         <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="funnel"><i class="bi bi-funnel-fill"></i></a></li>
         <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="printer"><i class="bi bi-printer-fill"></i></a></li>
         <li><a href="#" wire:click.prevent="deleteProducts()" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="x"><i class="bi bi-x-square-fill"></i></a></li>
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="plus"><i class="bi bi-plus-square-fill"></i></a></li>
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="save"><i class="bi bi-save-fill"></i></a></li>
+        <!-- <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="plus"><i class="bi bi-plus-square-fill"></i></a></li> -->
+        <!-- <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="save"><i class="bi bi-save-fill"></i></a></li> -->
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">

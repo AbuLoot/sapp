@@ -31,7 +31,7 @@ class UnitController extends Controller
         // $this->authorize('create', Unit::class);
 
         $this->validate($request, [
-            'title' => 'required|min:2|max:80|unique:units',
+            'title' => 'required|max:80|unique:units',
         ]);
 
         $unit = new Unit;
@@ -57,7 +57,7 @@ class UnitController extends Controller
     public function update(Request $request, $lang, $id)
     {
         $this->validate($request, [
-            'title' => 'required|min:2|max:80',
+            'title' => 'required|max:80',
         ]);
 
         $unit = Unit::findOrFail($id);

@@ -33,10 +33,11 @@ class CreateProductsTable extends Migration
             $table->decimal('wholesale_price', 44, 2)->default(0);
             $table->decimal('price', 44, 2)->default(0);
             $table->integer('count')->default(1);
+            $table->integer('unit')->default(0);
             $table->integer('type')->default(1);
             $table->text('description')->nullable();
             $table->text('characteristic')->nullable();
-            $table->json('parameters')->nullable(); // Length, Height, Cube, Weight
+            $table->json('parameters')->nullable(); // Weight, Length, Width, Height, Unit
             $table->char('path', 50)->nullable();
             $table->text('image')->nullable();
             $table->text('images')->nullable();

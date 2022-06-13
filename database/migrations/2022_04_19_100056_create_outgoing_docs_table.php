@@ -21,7 +21,7 @@ class CreateOutgoingDocsTable extends Migration
             $table->char('username');
             $table->integer('doc_no');
             $table->integer('doc_type_id');
-            $table->json('products_ids');
+            $table->json('products_data');
             $table->char('to_contractor');
             $table->integer('sum');
             $table->char('currency');

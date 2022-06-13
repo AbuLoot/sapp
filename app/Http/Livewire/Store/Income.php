@@ -5,8 +5,11 @@ namespace App\Http\Livewire\Store;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-use App\Models\Product;
+use App\Models\Unit;
+use App\Models\Store;
+use App\Models\StoreDoc;
 use App\Models\IncomingDoc;
+use App\Models\Product;
 
 class Income extends Component
 {
@@ -16,56 +19,111 @@ class Income extends Component
     protected $queryString = ['search'];
 
     public $lang;
+    public $units;
+    public $store_id;
     public $search = '';
     public $incomeProducts = [];
+    public $count = [];
 
     protected $rules = [
-        // 'incomeProducts.*.price' => 'numeric',
-        'incomeProducts.*.count' => 'require|numeric'
+        // 'count.*' => 'require|numeric'
     ];
 
     public function mount()
     {
         $this->lang = app()->getLocale();
+        $this->units = Unit::get();
     }
 
     public function updated($key, $value)
     {
         $parts = explode('.', $key);
 
-        if (count($parts) == 3 && $parts[0] == 'incomeProducts' && $parts[2] == 'count') {
+        if (count($parts) == 2 && $parts[0] == 'count') {
+
             $incomeProducts = session()->get('incomeProducts');
-            $incomeProducts[$parts[1]]['count'] = $value;
+
+            if ($value == 0 || !is_numeric($value)) {
+                $this->addError($key, 'Неверные данные');
+                $incomeProducts[$parts[1]]['income_count'] = 0;
+                return false;
+            } else {
+                $this->resetErrorBag($key);
+            }
+
+            $incomeProducts[$parts[1]]['income_count'] = $value;
             session()->put('incomeProducts', $incomeProducts);
         }
     }
 
     public function makeDoc()
     {
-        $this->validate();
+        if (empty($this->store_id) || !is_numeric($this->store_id)) {
+            $this->addError('store_id', 'Выберите склад');
+            return false;
+        } else {
+            $this->resetErrorBag('store_id');
+        }
 
-        $incomeProduct = $this->incomeProducts[$id];
-        dd($data, $incomeProduct['count']);
-        $product = Product::findOrFail($id);
-        $product->count = $incomeProduct->count;
-        $product->save();
+        $products_data = [];
+        $incomeAmountCount = 0;
+        $incomeAmountPrice = 0;
+
+        foreach($this->incomeProducts as $productId => $incomeProduct) {
+
+            $product = Product::findOrFail($productId);
+            $product->count += $incomeProduct['income_count'];
+
+            $products_data[$productId]['count'] = $incomeProduct['income_count'];
+            $products_data[$productId]['unit'] = $product->unit;
+            $products_data[$productId]['title'] = $product->title;
+            $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
+
+            $incomeAmountCount = $incomeAmountCount + $incomeProduct['income_count'];
+            $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $incomeProduct['income_count']);
+
+            $product->save();
+        }
+
+        $company = auth()->user()->profile->company;
+        $lastDoc = IncomingDoc::orderByDesc('id')->first();
 
         $incomingDoc = new IncomingDoc;
-        $incomingDoc->store_id = 1;
-        $incomingDoc->company_id = $this->product->company_id;
+        $incomingDoc->store_id = $company->stores->first()->id;
+        $incomingDoc->company_id = $company->id;
         $incomingDoc->user_id = auth()->user()->id;
         $incomingDoc->username = auth()->user()->name;
-        $incomingDoc->doc_no = $this->doc_no;
-        $incomingDoc->doc_type_id = 3;
-        $incomingDoc->products_ids = json_encode($product->id);
-        $incomingDoc->from_contractor = Company::find($this->product->company_id)->title;
-        $incomingDoc->sum = $this->purchase_price * $this->product->count;
-        $incomingDoc->currency = auth()->user()->profile->company->currency->code;
-        $incomingDoc->count = $this->product->count;
-        $incomingDoc->unit = $this->unit;
-        // $incomingDoc->comment = '';
+        $incomingDoc->doc_no = $company->stores->first()->id . $lastDoc->doc_no + 1;
+        $incomingDoc->doc_type_id = $lastDoc->doc_type_id;
+        $incomingDoc->products_data = json_encode($products_data);
+        $incomingDoc->from_contractor = '';
+        $incomingDoc->sum = $incomeAmountPrice;
+        $incomingDoc->currency = $company->currency->code;
+        $incomingDoc->count = $incomeAmountCount;
+        // $incomingDoc->unit = $this->unit;
+        $incomingDoc->comment = '';
         $incomingDoc->save();
 
+        $storeDoc = new StoreDoc;
+        $storeDoc->store_id = $company->stores->first()->id;
+        $storeDoc->company_id = $company->id;
+        $storeDoc->user_id = auth()->user()->id;
+        $storeDoc->doc_id = $incomingDoc->id;
+        $storeDoc->doc_type_id = $incomingDoc->doc_type_id;
+        $storeDoc->title = 'doc_type_id';
+        $storeDoc->products_data = json_encode($products_data);
+        $storeDoc->from_contractor = '';
+        $storeDoc->to_contractor = $company->title;
+        $storeDoc->incoming_price = 0;
+        $storeDoc->outgoing_price = $incomeAmountPrice;
+        $storeDoc->amount = $incomeAmountCount;
+        // $storeDoc->unit = $this->unit;
+        $storeDoc->comment = '';
+        $storeDoc->save();
+
+        session()->forget('incomeProducts');
+        $this->incomeProducts = [];
+        // dd($product, $products_data, $incomingDoc, $storeDoc);
     }
 
     public function addToIncome($id)
@@ -76,6 +134,7 @@ class Income extends Component
 
             $incomeProducts = session()->get('incomeProducts');
             $incomeProducts[$id] = $product;
+            $incomeProducts[$id]['income_count'] = 0;
 
             session()->put('incomeProducts', $incomeProducts);
             $this->search = '';
@@ -84,6 +143,7 @@ class Income extends Component
         }
 
         $incomeProducts[$id] = $product;
+        $incomeProducts[$id]['income_count'] = 0;
 
         session()->put('incomeProducts', $incomeProducts);
         $this->search = '';
@@ -111,9 +171,10 @@ class Income extends Component
             $products = [];
         }
 
-        $this->incomeProducts = session()->get('incomeProducts');
+        $this->incomeProducts = session()->get('incomeProducts') ?? [];
+        $company = auth()->user()->profile->company;
 
-        return view('livewire.store.income', ['products' => $products])
+        return view('livewire.store.income', ['products' => $products, 'company' => $company])
             ->layout('store.layout');
     }
 }
