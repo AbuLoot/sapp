@@ -15,6 +15,7 @@
         <tr class="active">
           <td>№</td>
           <td>Тип</td>
+          <td>Slug</td>
           <td>Название</td>
           <td>Язык</td>
           <td class="text-right">Функции</td>
@@ -25,7 +26,8 @@
         @foreach ($doc_types as $doc_type)
           <tr>
             <td>{{ $i++ }}</td>
-            <td>{{ $doc_type->type }}</td>
+            <td class="text-nowrap">{{ $doc_type->type }}</td>
+            <td>{{ $doc_type->slug }}</td>
             <td>{{ $doc_type->title }}</td>
             <td>{{ $doc_type->lang }}</td>
             <td class="text-right">

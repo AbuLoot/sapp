@@ -72,7 +72,7 @@
                         <?php $traverse($node->children, $prefix.'__'); ?>
                       <?php endforeach; ?>
                     <?php }; ?>
-                    <?php $categories = \App\Models\Category::get()->toTree(); ?>
+                    <?php $categories = \App\Models\Category::orderBy('sort_id')->get()->toTree(); ?>
                     <?php $traverse($categories); ?>
                   </select>
                   @error('product.category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror

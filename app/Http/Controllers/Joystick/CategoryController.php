@@ -15,7 +15,7 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
-        $categories = Category::get()->toTree();
+        $categories = Category::orderBy('sort_id')->get()->toTree();
 
         return view('joystick.categories.index', compact('categories'));
     }

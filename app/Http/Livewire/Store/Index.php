@@ -31,10 +31,10 @@ class Index extends Component
     public function render()
     {
         if (strlen($this->search) >= 2) {
-            $products = Product::search($this->search)->orderBy('id', 'desc')->paginate(5);
+            $products = Product::search($this->search)->orderBy('id', 'desc')->paginate(30);
         }
         else {
-            $products = Product::orderBy('id', 'desc')->paginate(5);
+            $products = Product::orderBy('id', 'desc')->paginate(30);
         }
 
         return view('livewire.store.index', ['products' => $products])

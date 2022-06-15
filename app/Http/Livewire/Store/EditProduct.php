@@ -41,7 +41,7 @@ class EditProduct extends Component
     public function mount($id)
     {
         $this->product = Product::findOrFail($id);
-        $this->productBarcodes = json_decode($this->product->barcodes);
+        $this->productBarcodes = json_decode($this->product->barcodes) ?? [''];
         $this->barcodes = $this->productBarcodes;
         $this->id_code = $this->product->id_code;
         $this->purchase_price = $this->product->purchase_price;

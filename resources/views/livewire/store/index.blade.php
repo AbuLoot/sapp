@@ -41,9 +41,10 @@
         <tbody>
           @forelse($products as $index => $product)
             <tr>
-              <td><a href="/{{ $lang ?? '' }}/store/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+              <td><a href="/{{ $lang }}/store/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
               <td>
-                @foreach(json_decode($product->barcodes, true) as $barcode)
+                <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
+                @foreach($barcodes as $barcode)
                   {{ $barcode }}<br>
                 @endforeach
               </td>

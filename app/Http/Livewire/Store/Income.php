@@ -9,6 +9,7 @@ use App\Models\Unit;
 use App\Models\Store;
 use App\Models\StoreDoc;
 use App\Models\IncomingDoc;
+use App\Models\DocType;
 use App\Models\Product;
 
 class Income extends Component
@@ -86,15 +87,16 @@ class Income extends Component
         }
 
         $company = auth()->user()->profile->company;
-        $lastDoc = IncomingDoc::orderByDesc('id')->first();
+        $docCount = IncomingDoc::count();
+        $docType = DocType::where('slug', 'forma-z-1')->first();
 
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $company->stores->first()->id;
         $incomingDoc->company_id = $company->id;
         $incomingDoc->user_id = auth()->user()->id;
         $incomingDoc->username = auth()->user()->name;
-        $incomingDoc->doc_no = $company->stores->first()->id . $lastDoc->doc_no + 1;
-        $incomingDoc->doc_type_id = $lastDoc->doc_type_id;
+        $incomingDoc->doc_no = $company->stores->first()->id . $docCount++;
+        $incomingDoc->doc_type_id = $docType->id;
         $incomingDoc->products_data = json_encode($products_data);
         $incomingDoc->from_contractor = '';
         $incomingDoc->sum = $incomeAmountPrice;
@@ -109,8 +111,8 @@ class Income extends Component
         $storeDoc->company_id = $company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_id = $incomingDoc->id;
-        $storeDoc->doc_type_id = $incomingDoc->doc_type_id;
-        $storeDoc->title = 'doc_type_id';
+        $storeDoc->doc_type_id = $docType->id;
+        $storeDoc->title = $docType->title;
         $storeDoc->products_data = json_encode($products_data);
         $storeDoc->from_contractor = '';
         $storeDoc->to_contractor = $company->title;

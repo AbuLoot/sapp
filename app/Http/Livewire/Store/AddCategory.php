@@ -51,7 +51,7 @@ class AddCategory extends Component
 
     public function render()
     {
-        $categories = Category::get()->toTree();
+        $categories = Category::orderBy('sort_id')->get()->toTree();
 
         return view('livewire.store.add-category', ['categories' => $categories]);
     }

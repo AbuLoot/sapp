@@ -26,7 +26,7 @@
             </div>
 
             <p><b>Проекты</b></p>
-            <select name="project_id" class="form-control" size="15" required>
+            <select name="project_id" class="form-control" size="15">
               <?php $traverse = function ($nodes, $prefix = null) use (&$traverse) { ?>
                 <?php foreach ($nodes as $node) : ?>
                   <option value="{{ $node->id }}">{{ PHP_EOL.$prefix.' '.$node->title }}</option>

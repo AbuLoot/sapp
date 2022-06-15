@@ -36,16 +36,27 @@ class ProductsExport implements FromQuery, WithMapping, WithHeadings, ShouldAuto
     public function headings(): array
     {
         return [
-            'ID',
+            'Id',
             'Наименование',
             'Kатегории',
             'Проекты',
             'Компании',
             'Артикул',
-            'Цена оптовая',
+            'Цена закупочная',
             'Цена',
             'Количество',
-            'Товар'
+            'Тип',
+
+            // 'Id',
+            // 'Title',
+            // 'Category',
+            // 'Project',
+            // 'Company',
+            // 'Id code',
+            // 'Purchase price',
+            // 'Price',
+            // 'Count',
+            // 'Type',
         ];
     }
 
@@ -61,8 +72,8 @@ class ProductsExport implements FromQuery, WithMapping, WithHeadings, ShouldAuto
             $category->title ?? null,
             $project->title ?? null,
             $company->title ?? null,
-            $product->barcode,
-            $product->wholesale_price,
+            $product->id_code,
+            $product->purchase_price,
             $product->price,
             $product->count,
             ($product->type == 1) ? 'Товар' : 'Услуга'

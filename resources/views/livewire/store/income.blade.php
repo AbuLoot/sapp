@@ -4,22 +4,22 @@
 
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Новый приход</h4>
 
-        <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto" style="position: relative;">
-          <input wire:model="search" type="search" list="datalistOptions" class="form-control" placeholder="Поиск..." aria-label="Search">
-          @if($products)
-            <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
-              <ul class="list-unstyled mb-0">
-                @forelse($products as $product)
-                  <li>
-                    <a wire:click="addToIncome({{ $product->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $product->title }}</a>
-                  </li>
-                @empty
-                  <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled">No data</a></li>
-                @endforelse
-              </ul>
-            </div>
-          @endif
-        </form>
+      <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto" style="position: relative;">
+        <input wire:model="search" type="search" list="datalistOptions" class="form-control" placeholder="Поиск..." aria-label="Search">
+        @if($products)
+          <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
+            <ul class="list-unstyled mb-0">
+              @forelse($products as $product)
+                <li>
+                  <a wire:click="addToIncome({{ $product->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $product->title }}</a>
+                </li>
+              @empty
+                <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled">No data</a></li>
+              @endforelse
+            </ul>
+          </div>
+        @endif
+      </form>
 
       <ul class="nav col-lg-auto text-end me-lg-2 text-small">
         <li><a href="#" class="nav-link text-primary"><i class="bi bi-journals"></i></a></li>
@@ -53,12 +53,12 @@
           </tr>
         </thead>
         <tbody>
-          <?php //dd($incomeProducts); ?>
           @forelse($incomeProducts as $index => $incomeProduct)
             <tr>
               <td><a href="/{{ $lang }}/store/edit-product/{{ $incomeProduct->id }}">{{ $incomeProduct->title }}</a></td>
               <td>
-                @foreach(json_decode($incomeProduct->barcodes, true) as $barcode)
+                <?php $barcodes = json_decode($incomeProduct->barcodes, true) ?? ['']; ?>
+                @foreach($barcodes as $barcode)
                   {{ $barcode }}<br>
                 @endforeach
               </td>

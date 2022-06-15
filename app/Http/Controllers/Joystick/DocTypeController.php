@@ -38,7 +38,7 @@ class DocTypeController extends Controller
 
         $doc_type->type = $request->type;
         $doc_type->title = $request->title;
-        $doc_type->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
+        $doc_type->slug = (empty($request->slug)) ? Str::slug($request->type) : $request->slug;
         $doc_type->description = $request->description;
         $doc_type->lang = $request->lang;
         $doc_type->save();
@@ -67,7 +67,7 @@ class DocTypeController extends Controller
 
         $doc_type->type = $request->type;
         $doc_type->title = $request->title;
-        $doc_type->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
+        $doc_type->slug = (empty($request->slug)) ? Str::slug($request->type) : $request->slug;
         $doc_type->description = $request->description;
         $doc_type->lang = $request->lang;
         $doc_type->save();

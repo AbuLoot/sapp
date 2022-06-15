@@ -68,7 +68,6 @@ use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Index;
 use App\Http\Livewire\Store\Income;
 
-
 // Sanapp Store
 Route::redirect('/store', '/'.app()->getLocale().'/store');
 

@@ -30,7 +30,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
     {
         $this->user_id = auth()->user()->id;
         $this->categories = Category::select('id', 'slug', 'title')->get();
-        $this->companies = Category::select('id', 'slug', 'title')->get();
+        $this->companies = Company::select('id', 'slug', 'title')->get();
         $this->products_count = Product::count();
     }
 
@@ -52,12 +52,46 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
     */
     public function model(array $row)
     {
-        return false;
+        if (is_null($row['naimenovanie']) || is_null($row['kategorii']) || is_null($row['kompanii'])) {
+            return null;
+        }
+
         $category = $this->categories->where('title', trim($row['kategorii']))->first();
         $company = $this->companies->where('title', trim($row['kompanii']))->first();
 
-        if (is_null($row['naimenovanie']) || is_null($category) || is_null($company)) {
-            return null;
+        if (is_null($company)) {
+
+            $newCompany = new Company;
+            $newCompany->sort_id = $this->companies->count() + 1;
+            $newCompany->region_id = 0;
+            $newCompany->slug = Str::slug($row['kompanii']);
+            $newCompany->title = $row['kompanii'];
+            $newCompany->image = 'no-image-mini.png';
+            $newCompany->is_supplier = 1;
+            $newCompany->is_customer = 0;
+            $newCompany->status = 1;
+            $newCompany->save();
+
+            $company = $newCompany;
+
+            $this->companies = Company::select('id', 'slug', 'title')->get();
+        }
+
+        if (is_null($category)) {
+
+            $newCategory = new Category;
+            $newCategory->sort_id = $this->categories->count() + 1;
+            $newCategory->title = $row['kategorii'];
+            $newCategory->slug = Str::slug($row['kategorii']);
+            $newCategory->image = 'no-image-middle.png';
+            $newCategory->saveAsRoot();
+            $newCategory->lang = 'ru';
+            $newCategory->status = 1;
+            $newCategory->save();
+
+            $category = $newCategory;
+
+            $this->categories = Category::select('id', 'slug', 'title')->get();
         }
 
         return new Product([
@@ -68,11 +102,11 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
             'project_id' => $_REQUEST['project_id'] ?? 0,
             'title' => $row['naimenovanie'],
             'slug' => Str::slug($row['naimenovanie']),
-            'meta_title' => $row['naimenovanie'].' '.$row['artikul'] ?? $row['naimenovanie'].' '.$row['part_nomer'],
-            'meta_description' => $row['naimenovanie'].' - '.$category->title.' '.$row['artikul'] ?? $row['naimenovanie'].' - '.$category->title.' '.$row['part_nomer'],
-            'barcode' => $row['shtrihkod'] ?? NULL,
+            'meta_title' => $row['naimenovanie'].' '.$row['artikul'],
+            'meta_description' => $row['naimenovanie'].' - '.$category->title.' '.$row['artikul'],
+            'barcodes' => (isset($row['shtrihkod'])) ? json_encode($row['shtrihkod']) : NULL,
             'id_code' => $row['artikul'] ?? NULL,
-            'wholesale_price' => (int) str_replace(" ", "", $row['cena_optovaya']) ?? 0,
+            'purchase_price' => (int) str_replace(" ", "", $row['cena_zakupocnaya']) ?? 0,
             'price' => (int) str_replace(" ", "", $row['cena']) ?? 0,
             'count' => $row['kolicestvo'] ?? 0,
             'type' => ($row['tip'] == 'Товар') ? 1 : 2,
