@@ -66,7 +66,9 @@ use App\Http\Livewire\Store\EditProduct;
 use App\Http\Livewire\Store\IncomingDocs;
 use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Index;
+use App\Http\Livewire\Store\Revision;
 use App\Http\Livewire\Store\Income;
+use App\Http\Livewire\Store\Writeoff;
 
 // Sanapp Store
 Route::redirect('/store', '/'.app()->getLocale().'/store');
@@ -82,6 +84,8 @@ Route::group(['prefix' => '{lang}/store', 'name' => 'store', 'middleware' => ['a
     Route::get('docs', IncomingDocs::class);
     Route::get('docs/outgoing', OutgoingDocs::class);
     Route::get('income', Income::class);
+    Route::get('revision', Revision::class);
+    Route::get('writeoff', Writeoff::class);
 
     /*Route::resources([
         'store' => StoreController::class,

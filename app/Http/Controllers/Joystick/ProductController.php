@@ -36,7 +36,7 @@ class ProductController extends Controller
             $products = Product::where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
         }
 
-        $categories = Category::get()->toTree();
+        $categories = Category::orderBy('sort_id')->get()->toTree();
         $modes = Mode::all();
 
         return view('joystick.products.index', ['categories' => $categories, 'products' => $products, 'modes' => $modes]);
