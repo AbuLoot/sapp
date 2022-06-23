@@ -48,7 +48,7 @@
     <div class="text-end">
       @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
+          <input class="form-check-input" type="radio" wire:model="store_id" id="store{{ $store->id }}" value="{{ $store->id }}" @if($store_id == $store->id) checked @endif>
           <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
         </div>
       @endforeach
@@ -84,7 +84,9 @@
               <td>{{ $writeoffProduct->wholesale_price }}</td>
               <td>{{ $writeoffProduct->price }}</td>
               <?php $unit = $units->where('id', $writeoffProduct->unit)->first()->title ?? '?'; ?>
-              <td>{{ $writeoffProduct->count + $writeoffProduct->writeoff_count . $unit }}</td>
+              <?php $count_in_stores = json_decode($writeoffProduct->count_in_stores, true) ?? []; ?>
+              <?php $count_in_store = (isset($count_in_stores[$store_id])) ? $count_in_stores[$store_id] : 0; ?>
+              <td>{{ $count_in_store + $writeoffProduct->writeoff_count . $unit }}</td>
               <td class="col-2">
                 <div class="input-group input-group-sm">
                   <input type="number" wire:model="count.{{ $writeoffProduct->id }}" class="form-control @error('count.'.$writeoffProduct->id) is-invalid @enderror" required>
@@ -108,8 +110,8 @@
     <div class="row">
       <div class="col-auto">
         <div class="mb-3">
-          <label for="comment" class="form-label">Комментарии</label>
-          <textarea class="form-control @error('comment') is-invalid @enderror" id="comment" rows="3"></textarea>
+          <label for="comment" class="form-label">Причина списания</label>
+          <textarea wire:model="comment" class="form-control @error('comment') is-invalid @enderror" id="comment" rows="3"></textarea>
           @error('comment')<div class="text-danger">{{ $message }}</div>@enderror
         </div>
       </div>

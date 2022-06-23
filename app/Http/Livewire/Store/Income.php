@@ -67,13 +67,13 @@ class Income extends Component
         }
 
         $products_data = [];
+        $count_in_stores = [];
         $incomeAmountCount = 0;
         $incomeAmountPrice = 0;
 
         foreach($this->incomeProducts as $productId => $incomeProduct) {
 
             $product = Product::findOrFail($productId);
-            $product->count += $incomeProduct['income_count'];
 
             $products_data[$productId]['count'] = $incomeProduct['income_count'];
             $products_data[$productId]['unit'] = $product->unit;
@@ -83,6 +83,16 @@ class Income extends Component
             $incomeAmountCount = $incomeAmountCount + $incomeProduct['income_count'];
             $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $incomeProduct['income_count']);
 
+            if (is_object(json_decode($product->count_in_stores))) {
+                $count_in_stores = json_decode($product->count_in_stores, true);
+                $count_in_stores[$this->store_id] += $incomeProduct['income_count'];
+            }
+            else {
+                $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
+            }
+
+            $product->count_in_stores = json_encode($count_in_stores);
+            $product->count += $incomeProduct['income_count'];
             $product->save();
         }
 

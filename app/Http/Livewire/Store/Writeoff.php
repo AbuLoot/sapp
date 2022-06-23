@@ -19,6 +19,7 @@ class Writeoff extends Component
 
     public $lang;
     public $units;
+    public $company;
     public $store_id;
     public $search = '';
     public $writeoffProducts = [];
@@ -29,6 +30,8 @@ class Writeoff extends Component
     {
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
+        $this->company = auth()->user()->profile->company;
+        $this->store_id = $this->company->first()->id;
     }
 
     public function updated($key, $value)
@@ -62,13 +65,13 @@ class Writeoff extends Component
         }
 
         $products_data = [];
+        $count_in_stores = [];
         $incomeAmountCount = 0;
         $incomeAmountPrice = 0;
 
         foreach($this->writeoffProducts as $productId => $incomeProduct) {
 
             $product = Product::findOrFail($productId);
-            $product->count += $incomeProduct['writeoff_count'];
 
             $products_data[$productId]['count'] = $incomeProduct['writeoff_count'];
             $products_data[$productId]['unit'] = $product->unit;
@@ -78,12 +81,22 @@ class Writeoff extends Component
             $incomeAmountCount = $incomeAmountCount + $incomeProduct['writeoff_count'];
             $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $incomeProduct['writeoff_count']);
 
+            if (is_object(json_decode($product->count_in_stores))) {
+                $count_in_stores = json_decode($product->count_in_stores, true);
+                $count_in_stores[$this->store_id] -= $incomeProduct['writeoff_count'];
+            }
+            else {
+                $count_in_stores[$this->store_id] = $incomeProduct['writeoff_count'];
+            }
+
+            $product->count_in_stores = json_encode($count_in_stores);
+            $product->count += $incomeProduct['writeoff_count'];
             $product->save();
         }
 
         $company = auth()->user()->profile->company;
         $docCount = OutgoingDoc::count();
-        $docType = DocType::where('slug', 'forma-z-1')->first();
+        $docType = DocType::where('slug', 'forma-z-6')->first();
 
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $company->stores->first()->id;
@@ -169,9 +182,8 @@ class Writeoff extends Component
         }
 
         $this->writeoffProducts = session()->get('writeoffProducts') ?? [];
-        $company = auth()->user()->profile->company;
 
-        return view('livewire.store.writeoff', ['products' => $products, 'company' => $company])
+        return view('livewire.store.writeoff', ['products' => $products])
             ->layout('store.layout');
     }
 }

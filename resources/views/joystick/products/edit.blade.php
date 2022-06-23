@@ -91,7 +91,7 @@
             </div>
             <hr>
             <div class="row">
-              <?php $barcodes = json_decode($product->barcodes); ?>
+              <?php $barcodes = json_decode($product->barcodes, true) ?? []; ?>
               @foreach($barcodes as $key => $barcode)
                 <div class="col-md-6">
                   <div class="form-group">

@@ -44,7 +44,6 @@
             <th scope="col">Штрихкод</th>
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
-            <th scope="col">Цена оптовая</th>
             <th scope="col">Цена продажи</th>
             <th scope="col">В&nbsp;базе</th>
             <th scope="col">Количество</th>
@@ -64,7 +63,6 @@
               </td>
               <td>{{ $incomeProduct->category->title }}</td>
               <td>{{ $incomeProduct->purchase_price }}</td>
-              <td>{{ $incomeProduct->wholesale_price }}</td>
               <td>{{ $incomeProduct->price }}</td>
               <?php $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?'; ?>
               <td>{{ $incomeProduct->count + $incomeProduct->income_count . $unit }}</td>

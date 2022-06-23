@@ -31,7 +31,7 @@ class DocTypeController extends Controller
         // $this->authorize('create', DocType::class);
 
         $this->validate($request, [
-            'title' => 'required|min:2|max:80|unique:doc_types',
+            'title' => 'required|min:2|max:255|unique:doc_types',
         ]);
 
         $doc_type = new DocType;
@@ -58,7 +58,7 @@ class DocTypeController extends Controller
     public function update(Request $request, $lang, $id)
     {
         $this->validate($request, [
-            'title' => 'required|min:2|max:80',
+            'title' => 'required|min:2|max:255',
         ]);
 
         $doc_type = DocType::findOrFail($id);
