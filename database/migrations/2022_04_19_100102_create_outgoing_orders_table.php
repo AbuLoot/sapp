@@ -19,7 +19,7 @@ class CreateOutgoingOrdersTable extends Migration
             $table->integer('company_id');
             $table->integer('user_id');
             $table->char('cashier_name');
-            $table->integer('doc_no');
+            $table->string('doc_no');
             $table->integer('doc_type_id');
             $table->json('to_contractors')->nullable();
             $table->integer('sum');

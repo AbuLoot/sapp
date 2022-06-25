@@ -53,10 +53,10 @@
             <tr>
               <td><a href="/{{ $lang }}/store/edit-outgoingDoc/{{ $outgoingDoc->id }}">{{ $outgoingDoc->doc_no }}</a></td>
               <td>{{ $outgoingDoc->sum }}</td>
-              <td>{{ $incomingDoc->count }}</td>
+              <td>{{ $outgoingDoc->count }}</td>
               <td>{{ $outgoingDoc->user->name }}</td>
               <td>{{ $outgoingDoc->created_at }}</td>
-              <td class="text-end"><button wire:click="docDetail({{ $incomingDoc->id }})" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
+              <td class="text-end"><button wire:click="docDetail({{ $outgoingDoc->id }})" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
             </tr>
           @empty
             <tr>
@@ -90,8 +90,14 @@
           <div class="tab-content pt-2" id="myTabContent">
             <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
               @if($docDetail)
+                <?php $docType = \App\Models\DocType::where('id', $docDetail->doc_type_id)->first(); ?>
+                <?php $products_data = json_decode($docDetail->products_data, true) ?? []; ?>
                 <table class="table">
                   <tbody>
+                    <tr>
+                      <th scope="row">Тип документа</th>
+                      <td>{{ $docType->title }}</td>
+                    </tr>
                     <tr>
                       <th scope="row">Номер накладной</th>
                       <td>{{ $docDetail->doc_no }}</td>
@@ -125,9 +131,9 @@
                     <th scope="col">Штрихкод</th>
                     <th scope="col">Категория</th>
                     <th scope="col">Цена закупки</th>
-                    <th scope="col">Цена оптовая</th>
                     <th scope="col">Цена продажи</th>
-                    <th scope="col">Кол.</th>
+                    <th scope="col">Кол. расхода</th>
+                    <th scope="col">Общее Кол.</th>
                     <!-- <th scope="col">Ед. измерения</th> -->
                     <th scope="col">Поставщик</th>
                   </tr>
@@ -137,16 +143,16 @@
                     <tr>
                       <td><a href="/{{ $lang }}/store/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
                       <td>
-                        @foreach(json_decode($product->barcodes, true) as $barcode)
+                        <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
+                        @foreach($barcodes as $barcode)
                           {{ $barcode }}<br>
                         @endforeach
                       </td>
                       <td>{{ $product->category->title }}</td>
                       <td>{{ $product->purchase_price }}</td>
-                      <td>{{ $product->wholesale_price }}</td>
                       <td>{{ $product->price }}</td>
+                      <td>{{ $products_data[$product->id]['outgoing_count'] }}</td>
                       <td>{{ $product->count }}</td>
-                      <!-- <td></td> -->
                       <td>{{ $product->company->title }}</td>
                     </tr>
                   @empty

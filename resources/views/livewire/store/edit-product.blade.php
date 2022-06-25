@@ -113,28 +113,27 @@
                   </div>
                   <div class="mb-3">
                     <label for="count">Количество</label>
-                    <div class="input-group">
-                      <button class="btn btn-outline-secondary w-25 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Склад 1</button>
-                      <ul class="dropdown-menu">
-                        @foreach($stores as $store)
-                          <li><a class="dropdown-item" href="{{ $store->id }}#">{{ $store->title }}</a></li>
-                        @endforeach
-                      </ul>
-                      <input type="number" wire:model.defer="product.count" class="form-control @error('product.count') is-invalid @enderror" id="count" required>
-                      <select class="form-control @error('product.unit') is-invalid @enderror" wire:model.defer="product.unit" id="unit">
-                        <option value="">Ед. измерения</option>
-                        @foreach($units as $unit)
-                          <option value="{{ $unit->id }}">{{ $unit->title }}</option>
-                        @endforeach
-                      </select>
-                      @error('product.count')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                      @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div style="max-height: 125px; overflow-y: auto;">
+                      @foreach($stores as $store)
+                        <div class="input-group mb-1">
+                          <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
+                          <input type="number" wire:model.defer="product.count" class="form-control @error('product.count') is-invalid @enderror" id="count" required>
+                          <select class="form-control @error('product.unit') is-invalid @enderror" wire:model.defer="product.unit" id="unit">
+                            <option value="">Ед. измерения</option>
+                            @foreach($units as $unit)
+                              <option value="{{ $unit->id }}">{{ $unit->title }}</option>
+                            @endforeach
+                          </select>
+                          @error('product.count')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                          @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                      @endforeach
                     </div>
                   </div>
                   <div class="col-lg-6 mb-3">
                     <label for="purchase_price">Закупочная цена</label>
                     <div class="input-group">
-                      <input type="text" wire:model="purchase_price" class="form-control" id="purchase_price" required>
+                      <input type="text" wire:model="purchase_price" class="form-control" id="purchase_price">
                       <div class="input-group-text">{{ $currency }}</div>
                     </div>
                   </div>
@@ -142,7 +141,7 @@
                   <div class="col-lg-6 mb-3">
                     <label for="wholesale_price">Оптовая цена</label>
                     <div class="input-group">
-                      <input type="text" wire:model="wholesale_price" class="form-control" id="wholesale_price" required>
+                      <input type="text" wire:model="wholesale_price" class="form-control" id="wholesale_price">
                       <div class="input-group-text">{{ $currency }}</div>
                     </div>
                   </div>

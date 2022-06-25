@@ -97,7 +97,9 @@ class Income extends Component
         }
 
         $company = auth()->user()->profile->company;
-        $docCount = IncomingDoc::count();
+        $lastDoc = IncomingDoc::orderBy('id')->first();
+
+        // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
 
         $incomingDoc = new IncomingDoc;
@@ -105,7 +107,7 @@ class Income extends Component
         $incomingDoc->company_id = $company->id;
         $incomingDoc->user_id = auth()->user()->id;
         $incomingDoc->username = auth()->user()->name;
-        $incomingDoc->doc_no = $company->stores->first()->id . $docCount++;
+        $incomingDoc->doc_no = $company->stores->first()->id . ($lastDoc) ? $lastDoc->id++ : 1;
         $incomingDoc->doc_type_id = $docType->id;
         $incomingDoc->products_data = json_encode($products_data);
         $incomingDoc->from_contractor = '';
@@ -122,7 +124,6 @@ class Income extends Component
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_id = $incomingDoc->id;
         $storeDoc->doc_type_id = $docType->id;
-        $storeDoc->title = $docType->title;
         $storeDoc->products_data = json_encode($products_data);
         $storeDoc->from_contractor = '';
         $storeDoc->to_contractor = $company->title;

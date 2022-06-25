@@ -4,7 +4,9 @@ namespace App\Http\Livewire\Store;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+
 use App\Models\OutgoingDoc;
+use App\Models\Product;
 
 class OutgoingDocs extends Component
 {
@@ -28,7 +30,9 @@ class OutgoingDocs extends Component
     public function docDetail($id)
     {
         $this->docDetail = OutgoingDoc::findOrFail($id);
-        $this->docProducts = Product::whereIn('id', [$this->docDetail->products_ids])->get();
+        $products_data = json_decode($this->docDetail->products_data, true);
+        $products_keys = collect($products_data)->keys();
+        $this->docProducts = Product::whereIn('id', $products_keys->all())->get();
     }
 
     public function render()

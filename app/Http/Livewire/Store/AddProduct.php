@@ -85,7 +85,7 @@ class AddProduct extends Component
         $fourthCode = substr(sprintf("%'.02d", $index + 1), -2);
 
         $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
-        $sameProduct = Product::where('barcode', $barcode)->first();
+        $sameProduct = Product::whereJsonContains('barcodes', $barcode)->first();
 
         if (in_array($barcode, $this->productBarcodes) || $sameProduct) {
             $firstCode += ($firstCode == '299') ? -98 : 1;
@@ -117,6 +117,7 @@ class AddProduct extends Component
             'purchase_price' => $this->purchase_price ?? 0,
             'wholesale_price' => $this->wholesale_price,
             'price' => $this->product->price,
+            'count_in_stores' => json_encode([]),
             'count' => $this->product->count,
             'type' => $this->product->type,
             'unit' => $this->product->unit,

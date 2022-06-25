@@ -67,7 +67,7 @@
               <?php $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?'; ?>
               <td>{{ $incomeProduct->count + $incomeProduct->income_count . $unit }}</td>
               <td class="col-2">
-                <div class="input-group input-group-sm">
+                <div class="input-group">
                   <input type="number" wire:model="count.{{ $incomeProduct->id }}" class="form-control @error('count.'.$incomeProduct->id) is-invalid @enderror" required>
                   <span class="input-group-text px-1-">{{ $unit }}</span>
                   @error('count.'.$incomeProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
@@ -75,7 +75,7 @@
               </td>
               <!-- <td></td> -->
               <td>{{ $incomeProduct->company->title }}</td>
-              <td class="text-end"><a wire:click="deleteFromIncome({{ $incomeProduct->id }})" href="#" class="fs-5"><i class="bi bi-file-x-fill"></i></a></td>
+              <td class="text-end"><a wire:click="deleteFromIncome({{ $incomeProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
           @empty
             <tr>
@@ -96,7 +96,7 @@
         </select>
         @error('store_id')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
-      <div class="col-auto">    
+      <div class="col-auto">
         @if($incomeProducts)
           <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
         @endif

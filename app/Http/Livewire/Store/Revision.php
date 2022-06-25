@@ -82,7 +82,7 @@ class Revision extends Component
         }
 
         $company = auth()->user()->profile->company;
-        $docCount = OutgoingDoc::count();
+        $lastDoc = OutgoingDoc::orderBy('id')->first();
         $docType = DocType::where('slug', 'forma-z-1')->first();
 
         $outgoingDoc = new OutgoingDoc;
@@ -90,7 +90,7 @@ class Revision extends Component
         $outgoingDoc->company_id = $company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->username = auth()->user()->name;
-        $outgoingDoc->doc_no = $company->stores->first()->id . $docCount++;
+        $outgoingDoc->doc_no = $company->stores->first()->id . ($lastDoc) ? $lastDoc->id++ : 1;
         $outgoingDoc->doc_type_id = $docType->id;
         $outgoingDoc->products_data = json_encode($products_data);
         $outgoingDoc->from_contractor = '';
@@ -107,7 +107,6 @@ class Revision extends Component
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docType->id;
-        $storeDoc->title = $docType->title;
         $storeDoc->products_data = json_encode($products_data);
         $storeDoc->from_contractor = '';
         $storeDoc->to_contractor = $company->title;

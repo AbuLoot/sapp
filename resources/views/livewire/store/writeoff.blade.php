@@ -36,14 +36,25 @@
         </li>
       </ul>
 
-      <div class="text-end ms-md-auto ms-lg-0">
+      <!-- <div class="text-end ms-md-auto ms-lg-0">
         <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
-      </div>
+      </div> -->
     </div>
   </div>
 
   <!-- Content -->
   <div class="container">
+
+    @if(session()->has('message'))
+      <div class="toast-container position-fixed bottom-0 end-0 p-4">
+        <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body text-white">{{ session('message') }}</div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+    @endif
 
     <div class="text-end">
       @foreach($company->stores as $index => $store)
@@ -62,11 +73,12 @@
             <th scope="col">Штрихкод</th>
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
-            <th scope="col">Цена оптовая</th>
             <th scope="col">Цена продажи</th>
+            <th scope="col">{{ $company->stores->where('id', $store_id)->first()->title }}</th>
             <th scope="col">В&nbsp;базе</th>
             <th scope="col">Количество</th>
-            <th class="text-end" scope="col">Функции</th>
+            <th scope="col">Поставщик</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -74,29 +86,28 @@
             <tr>
               <td><a href="/{{ $lang }}/store/edit-product/{{ $writeoffProduct->id }}">{{ $writeoffProduct->title }}</a></td>
               <td>
-                <?php $barcodes = json_decode($writeoffProduct->barcodes, true) ?? ['']; ?>
+                <?php $barcodes = json_decode($writeoffProduct->barcodes, true) ?? []; ?>
                 @foreach($barcodes as $barcode)
                   {{ $barcode }}<br>
                 @endforeach
               </td>
               <td>{{ $writeoffProduct->category->title }}</td>
               <td>{{ $writeoffProduct->purchase_price }}</td>
-              <td>{{ $writeoffProduct->wholesale_price }}</td>
               <td>{{ $writeoffProduct->price }}</td>
               <?php $unit = $units->where('id', $writeoffProduct->unit)->first()->title ?? '?'; ?>
-              <?php $count_in_stores = json_decode($writeoffProduct->count_in_stores, true) ?? []; ?>
-              <?php $count_in_store = (isset($count_in_stores[$store_id])) ? $count_in_stores[$store_id] : 0; ?>
-              <td>{{ $count_in_store + $writeoffProduct->writeoff_count . $unit }}</td>
+              <?php $count_in_stores = json_decode($writeoffProduct->count_in_stores, true) ?? []; print_r($count_in_stores); ?>
+              <td>{{ $count_in_stores[$store_id] ?? 0 }}</td>
+              <?php $count_in_store = (isset($count_in_stores[$store_id])) ? $count_in_stores[$store_id] : $writeoffProduct->count; ?>
+              <td>{{ $count_in_store - $writeoffProduct->writeoff_count . $unit }}</td>
               <td class="col-2">
-                <div class="input-group input-group-sm">
+                <div class="input-group">
                   <input type="number" wire:model="count.{{ $writeoffProduct->id }}" class="form-control @error('count.'.$writeoffProduct->id) is-invalid @enderror" required>
                   <span class="input-group-text px-1-">{{ $unit }}</span>
                   @error('count.'.$writeoffProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
-              <!-- <td></td> -->
               <td>{{ $writeoffProduct->company->title }}</td>
-              <td class="text-end"><a wire:click="deleteFromWriteoff({{ $writeoffProduct->id }})" href="#" class="fs-5"><i class="bi bi-file-x-fill"></i></a></td>
+              <td class="text-end"><a wire:click="deleteFromWriteoff({{ $writeoffProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
           @empty
             <tr>
@@ -109,11 +120,16 @@
 
     <div class="row">
       <div class="col-auto">
-        <div class="mb-3">
-          <label for="comment" class="form-label">Причина списания</label>
-          <textarea wire:model="comment" class="form-control @error('comment') is-invalid @enderror" id="comment" rows="3"></textarea>
+        <div class="form-floating">
+          <textarea wire:model="comment" class="form-control @error('comment') is-invalid @enderror" id="comment" style="height: 100px" placeholder="Причина списания"></textarea>
           @error('comment')<div class="text-danger">{{ $message }}</div>@enderror
+          <label for="comment">Причина списания</label>
         </div>
+      </div>
+      <div class="col-auto">
+        @if($writeoffProducts)
+          <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
+        @endif
       </div>
     </div>
   </div>
