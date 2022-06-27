@@ -24,7 +24,7 @@ class Writeoff extends Component
     public $search = '';
     public $writeoffProducts = [];
     public $comment;
-    public $count = [];
+    public $writeoff_count = [];
 
     public function mount()
     {
@@ -38,19 +38,20 @@ class Writeoff extends Component
     {
         $parts = explode('.', $key);
 
-        if (count($parts) == 2 && $parts[0] == 'count') {
+        if (count($parts) == 3 && $parts[0] == 'writeoff_count') {
 
             $writeoffProducts = session()->get('writeoffProducts');
 
             if ($value == 0 || !is_numeric($value)) {
                 $this->addError($key, 'Неверные данные');
-                $writeoffProducts[$parts[1]]['writeoff_count'] = 0;
+                $writeoffProducts[$parts[1]]['writeoff_count'] = [$this->store_id => 0];
                 return false;
             } else {
                 $this->resetErrorBag($key);
             }
 
-            $writeoffProducts[$parts[1]]['writeoff_count'] = $value;
+            $writeoffProducts[$parts[1]]['writeoff_count'] = [$this->store_id => $value];
+            $this->writeoff_count[$parts[1]][$this->store_id] = $value;
             session()->put('writeoffProducts', $writeoffProducts);
         }
     }
@@ -157,7 +158,7 @@ class Writeoff extends Component
 
             $writeoffProducts = session()->get('writeoffProducts');
             $writeoffProducts[$id] = $product;
-            $writeoffProducts[$id]['writeoff_count'] = 0;
+            $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
 
             session()->put('writeoffProducts', $writeoffProducts);
             $this->search = '';
@@ -166,7 +167,7 @@ class Writeoff extends Component
         }
 
         $writeoffProducts[$id] = $product;
-        $writeoffProducts[$id]['writeoff_count'] = 0;
+        $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
 
         session()->put('writeoffProducts', $writeoffProducts);
         $this->search = '';

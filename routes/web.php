@@ -70,6 +70,21 @@ use App\Http\Livewire\Store\Revision;
 use App\Http\Livewire\Store\Income;
 use App\Http\Livewire\Store\Writeoff;
 
+Route::get('test', function() {
+    $arr = [];
+
+    $arr[1] = 'a';
+    $arr[2][3] = 'b';
+    $arr[2] = [3 => 'c'];
+    $arr[2][] = ['d'];
+    $arr[2][] = ['d'];
+    $arr[2][1][][] [] [] [] [] [][3] = ['d'];
+    $arr[2][1][][] [] [] [] [] [] = [3 => ['2']];
+
+    echo '<pre>';
+    print_r($arr);
+});
+
 // Sanapp Store
 Route::redirect('/store', '/'.app()->getLocale().'/store');
 

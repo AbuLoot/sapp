@@ -75,13 +75,14 @@
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
             <th scope="col">{{ $company->stores->where('id', $store_id)->first()->title }}</th>
-            <th scope="col">В&nbsp;базе</th>
+            <th scope="col">Общее количество</th>
             <th scope="col">Количество</th>
             <th scope="col">Поставщик</th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
+          <?php // dd($writeoffProducts); ?>
           @forelse($writeoffProducts as $index => $writeoffProduct)
             <tr>
               <td><a href="/{{ $lang }}/store/edit-product/{{ $writeoffProduct->id }}">{{ $writeoffProduct->title }}</a></td>
@@ -94,16 +95,31 @@
               <td>{{ $writeoffProduct->category->title }}</td>
               <td>{{ $writeoffProduct->purchase_price }}</td>
               <td>{{ $writeoffProduct->price }}</td>
-              <?php $unit = $units->where('id', $writeoffProduct->unit)->first()->title ?? '?'; ?>
-              <?php $count_in_stores = json_decode($writeoffProduct->count_in_stores, true) ?? []; print_r($count_in_stores); ?>
-              <td>{{ $count_in_stores[$store_id] ?? 0 }}</td>
-              <?php $count_in_store = (isset($count_in_stores[$store_id])) ? $count_in_stores[$store_id] : $writeoffProduct->count; ?>
-              <td>{{ $count_in_store - $writeoffProduct->writeoff_count . $unit }}</td>
+              <?php
+                $unit = $units->where('id', $writeoffProduct->unit)->first()->title ?? '?';
+
+                $count_in_stores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
+                $count_in_store = (isset($count_in_stores[$store_id])) ? $count_in_stores[$store_id] : 0;
+
+                $writeoff_count2 = (isset($writeoffProduct['writeoff_count'][$store_id]))
+                    ? $writeoffProduct['writeoff_count'][$store_id]
+                    : 0;
+
+                $writeoff_count_product = (isset($writeoff_count[$writeoffProduct->id][$store_id]))
+                    ? $writeoff_count[$writeoffProduct->id][$store_id]
+                    : 0;
+              ?>
+              <td>{{ $count_in_store - $writeoff_count_product . $unit }}</td>
+                <?php $amountWriteoffCount = 0; ?>
+                @foreach($company->stores as $store)
+                  <?php $amountWriteoffCount += $writeoffProduct['writeoff_count'][$store->id] ?? 0; ?>
+                @endforeach
+              <td>{{ $writeoffProduct->count - $amountWriteoffCount . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
-                  <input type="number" wire:model="count.{{ $writeoffProduct->id }}" class="form-control @error('count.'.$writeoffProduct->id) is-invalid @enderror" required>
-                  <span class="input-group-text px-1-">{{ $unit }}</span>
-                  @error('count.'.$writeoffProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
+                  <input type="number" wire:model="writeoff_count.{{ $writeoffProduct->id }}.{{ $store_id }}" class="form-control @error('writeoff_count.'.$writeoffProduct->id.'.'.$store_id) is-invalid @enderror" required>
+                  <span class="input-group-text">{{ $unit }}</span>
+                  @error('writeoff_count.'.$writeoffProduct->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
               <td>{{ $writeoffProduct->company->title }}</td>
@@ -117,6 +133,8 @@
         </tbody>
       </table>
     </div>
+
+    <pre>{{ print_r($writeoff_count) }}</pre>
 
     <div class="row">
       <div class="col-auto">
