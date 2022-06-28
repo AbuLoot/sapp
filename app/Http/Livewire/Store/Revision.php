@@ -90,7 +90,7 @@ class Revision extends Component
         $outgoingDoc->company_id = $company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->username = auth()->user()->name;
-        $outgoingDoc->doc_no = $company->stores->first()->id . ($lastDoc) ? $lastDoc->id++ : 1;
+        $outgoingDoc->doc_no = $company->stores->first()->id . '/' . ($lastDoc) ? $lastDoc->id++ : 1;
         $outgoingDoc->doc_type_id = $docType->id;
         $outgoingDoc->products_data = json_encode($products_data);
         $outgoingDoc->from_contractor = '';

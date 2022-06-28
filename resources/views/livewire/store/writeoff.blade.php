@@ -82,7 +82,6 @@
           </tr>
         </thead>
         <tbody>
-          <?php // dd($writeoffProducts); ?>
           @forelse($writeoffProducts as $index => $writeoffProduct)
             <tr>
               <td><a href="/{{ $lang }}/store/edit-product/{{ $writeoffProduct->id }}">{{ $writeoffProduct->title }}</a></td>
@@ -98,23 +97,21 @@
               <?php
                 $unit = $units->where('id', $writeoffProduct->unit)->first()->title ?? '?';
 
-                $count_in_stores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
-                $count_in_store = (isset($count_in_stores[$store_id])) ? $count_in_stores[$store_id] : 0;
+                $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
+                $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
 
-                $writeoff_count2 = (isset($writeoffProduct['writeoff_count'][$store_id]))
-                    ? $writeoffProduct['writeoff_count'][$store_id]
-                    : 0;
+                $writeoffCountProduct = 0;
 
-                $writeoff_count_product = (isset($writeoff_count[$writeoffProduct->id][$store_id]))
-                    ? $writeoff_count[$writeoffProduct->id][$store_id]
-                    : 0;
+                if (isset($writeoff_count[$writeoffProduct->id][$store_id])) {
+                  if ($countInStore >= 1 && $writeoff_count[$writeoffProduct->id][$store_id] <= $countInStore) {
+                    $writeoffCountProduct = $writeoff_count[$writeoffProduct->id][$store_id];
+                  } elseif ($countInStore < $writeoff_count[$writeoffProduct->id][$store_id]) {
+                    $writeoffCountProduct = $countInStore;
+                  }
+                }
               ?>
-              <td>{{ $count_in_store - $writeoff_count_product . $unit }}</td>
-                <?php $amountWriteoffCount = 0; ?>
-                @foreach($company->stores as $store)
-                  <?php $amountWriteoffCount += $writeoffProduct['writeoff_count'][$store->id] ?? 0; ?>
-                @endforeach
-              <td>{{ $writeoffProduct->count - $amountWriteoffCount . $unit }}</td>
+              <td>{{ $countInStore - $writeoffCountProduct . $unit }}</td>
+              <td>{{ ($writeoffProduct->count - $writeoffCountProduct) . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
                   <input type="number" wire:model="writeoff_count.{{ $writeoffProduct->id }}.{{ $store_id }}" class="form-control @error('writeoff_count.'.$writeoffProduct->id.'.'.$store_id) is-invalid @enderror" required>
@@ -133,8 +130,6 @@
         </tbody>
       </table>
     </div>
-
-    <pre>{{ print_r($writeoff_count) }}</pre>
 
     <div class="row">
       <div class="col-auto">

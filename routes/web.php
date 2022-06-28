@@ -71,6 +71,10 @@ use App\Http\Livewire\Store\Income;
 use App\Http\Livewire\Store\Writeoff;
 
 Route::get('test', function() {
+
+
+    echo 3 * 0;
+
     $arr = [];
 
     $arr[1] = 'a';

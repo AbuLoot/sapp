@@ -42,12 +42,11 @@ class Writeoff extends Component
 
             $writeoffProducts = session()->get('writeoffProducts');
 
-            if ($value == 0 || !is_numeric($value)) {
-                $this->addError($key, 'Неверные данные');
-                $writeoffProducts[$parts[1]]['writeoff_count'] = [$this->store_id => 0];
+            if (empty($value) || !is_numeric($value)) {
+                $writeoffProducts[$parts[1]]['writeoff_count'] = [$this->store_id => null];
+                $this->writeoff_count[$parts[1]][$this->store_id] = null;
+                session()->put('writeoffProducts', $writeoffProducts);
                 return false;
-            } else {
-                $this->resetErrorBag($key);
             }
 
             $writeoffProducts[$parts[1]]['writeoff_count'] = [$this->store_id => $value];
@@ -66,48 +65,65 @@ class Writeoff extends Component
         }
 
         $products_data = [];
-        $count_in_stores = [];
+        $countInStores = [];
         $writeoffAmountCount = 0;
         $writeoffAmountPrice = 0;
 
-        // $this->writeoffProducts[959]['count_in_stores'] = json_encode(['1' => 51]);
         // $this->writeoffProducts[962]['count_in_stores'] = json_encode(['1' => 5]);
         // $this->writeoffProducts[963]['count_in_stores'] = json_encode(['1' => 5, '2' => 6]);
+
+        $this->writeoffProducts = session()->get('writeoffProducts') ?? [];
 
         foreach($this->writeoffProducts as $productId => $writeoffProduct) {
 
             $product = Product::findOrFail($productId);
 
-            $final_count = ($product->count <= $writeoffProduct['writeoff_count'])
-                ? 0
-                : $product->count - $writeoffProduct['writeoff_count'];
+            $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
 
-            $products_data[$productId]['outgoing_count'] = $writeoffProduct['writeoff_count'];
-            $products_data[$productId]['count'] = $final_count;
+            if (isset($countInStores[$this->store_id])) {
+                $countInStore = $countInStores[$this->store_id];
+            } else {
+                session()->flash('message', 'Произошла ошибка.');
+                return false;
+            }
+
+            $writeoffCountProduct = 0;
+
+            if (isset($this->writeoff_count[$productId][$this->store_id])) {
+                if ($countInStore >= 1 && $this->writeoff_count[$productId][$this->store_id] <= $countInStore) {
+                    $writeoffCountProduct = $this->writeoff_count[$productId][$this->store_id];
+                } elseif ($countInStore < $this->writeoff_count[$productId][$this->store_id]) {
+                    $writeoffCountProduct = $countInStore;
+                }
+            }
+
+            $finalCount = ($product->count <= $writeoffCountProduct)
+                ? 0
+                : $countInStore - $writeoffCountProduct;
+
+            $products_data[$productId]['outgoing_count'] = $writeoffCountProduct;
+            $products_data[$productId]['count'] = $finalCount;
             $products_data[$productId]['unit'] = $product->unit;
-            $products_data[$productId]['title'] = $product->title;
             $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
-            $writeoffAmountCount = $writeoffAmountCount + $writeoffProduct['writeoff_count'];
-            $writeoffAmountPrice = $writeoffAmountPrice + ($product->purchase_price * $writeoffProduct['writeoff_count']);
+            $writeoffAmountCount = $writeoffAmountCount + $writeoffCountProduct;
+            $writeoffAmountPrice = $writeoffAmountPrice + ($product->purchase_price * $writeoffCountProduct);
 
-            if (is_object(json_decode($product->count_in_stores))) {
-                $count_in_stores = json_decode($product->count_in_stores, true);
-                $count_in_stores[$this->store_id] = ($count_in_stores[$this->store_id] <= $writeoffProduct['writeoff_count'])
-                    ? 0
-                    : $count_in_stores[$this->store_id] - $writeoffProduct['writeoff_count'];
-            }
-            else {
-                $count_in_stores[$this->store_id] = $final_count;
-            }
+            $countInStores[$this->store_id] = $finalCount;
 
-            $product->count_in_stores = json_encode($count_in_stores);
-            $product->count = $final_count;
+            $product->count_in_stores = json_encode($countInStores);
+            $product->count = $finalCount;
             $product->save();
         }
 
         $company = auth()->user()->profile->company;
-        $lastDoc = OutgoingDoc::orderBy('id')->first();
+        $lastDoc = OutgoingDoc::orderByDesc('id')->first();
+        $docNo = $this->store_id . '/' . $lastDoc->id++;
+        $existDoc = OutgoingDoc::where('doc_no', $docNo)->first();
+
+        if ($existDoc) {
+            $docNo = $this->store_id . '/' . ($lastDoc->count() + 2);
+        }
 
         // Writeoff Doc
         $docType = DocType::where('slug', 'forma-z-6')->first();
@@ -117,7 +133,7 @@ class Writeoff extends Component
         $outgoingDoc->company_id = $company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->username = auth()->user()->name;
-        $outgoingDoc->doc_no = $this->store_id . ($lastDoc) ? $lastDoc->id++ : 1;
+        $outgoingDoc->doc_no = $docNo;
         $outgoingDoc->doc_type_id = $docType->id;
         $outgoingDoc->products_data = json_encode($products_data);
         $outgoingDoc->to_contractor = '';
@@ -179,12 +195,14 @@ class Writeoff extends Component
 
         if (count($writeoffProducts) >= 1) {
             unset($writeoffProducts[$id]);
+            unset($this->writeoff_count[$id]);
             session()->put('writeoffProducts', $writeoffProducts);
             return true;
         }
 
         session()->forget('writeoffProducts');
         $this->writeoffProducts = [];
+        $this->writeoff_count = [];
     }
 
     public function render()
