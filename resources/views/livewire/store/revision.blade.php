@@ -40,7 +40,7 @@
     <div class="text-end">
       @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
+          <input class="form-check-input" wire:model="store_id" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
           <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
         </div>
       @endforeach
@@ -55,13 +55,14 @@
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
-            <th scope="col">В&nbsp;базе</th>
-            <th scope="col">Количество</th>
-            <th scope="col">Поставщик</th>
+            <th scope="col">Общее<br> кол-во</th>
+            <th scope="col">Расчетное<br> кол-во</th>
+            <th scope="col">Фактическое<br> кол-во</th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
+          <?php print_r($actualCount); ?>
           @forelse($revisionProducts as $index => $revisionProduct)
             <tr>
               <td><a href="/{{ $lang }}/store/edit-product/{{ $revisionProduct->id }}">{{ $revisionProduct->title }}</a></td>
@@ -74,18 +75,32 @@
               <td>{{ $revisionProduct->category->title }}</td>
               <td>{{ $revisionProduct->purchase_price }}</td>
               <td>{{ $revisionProduct->price }}</td>
-              <?php $unit = $units->where('id', $revisionProduct->unit)->first()->title ?? '?'; ?>
-              <td>{{ $revisionProduct->count + $revisionProduct->income_count . $unit }}</td>
+              <?php
+                $unit = $units->where('id', $revisionProduct->unit)->first()->title ?? '?';
+
+                $countInStores = json_decode($revisionProduct->count_in_stores, true) ?? [];
+                $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
+
+                $revisionCountProduct = 0;
+
+                if (isset($revision_count[$revisionProduct->id][$store_id])) {
+                  if ($countInStore >= 1 && $revision_count[$revisionProduct->id][$store_id] <= $countInStore) {
+                    $revisionCountProduct = $revision_count[$revisionProduct->id][$store_id];
+                  } elseif ($countInStore < $revision_count[$revisionProduct->id][$store_id]) {
+                    $revisionCountProduct = $countInStore;
+                  }
+                }
+              ?>
+              <td>{{ $revisionProduct->count + $revisionCountProduct . $unit }}</td>
+              <td>{{ $countInStore - $revisionCountProduct . $unit }}</td>
               <td class="col-2">
-                <div class="input-group input-group-sm">
-                  <input type="number" wire:model="count.{{ $revisionProduct->id }}" class="form-control @error('count.'.$revisionProduct->id) is-invalid @enderror" required>
-                  <span class="input-group-text px-1-">{{ $unit }}</span>
-                  @error('count.'.$revisionProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
+                <div class="input-group">
+                  <input type="number" wire:model="actualCount.{{ $revisionProduct->id }}.{{ $store_id }}" class="form-control @error('actualCount.'.$revisionProduct->id.'.'.$store_id) is-invalid @enderror" required>
+                  <span class="input-group-text">{{ $unit }}</span>
+                  @error('actualCount.'.$revisionProduct->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
-              <!-- <td></td> -->
-              <td>{{ $revisionProduct->company->title }}</td>
-              <td class="text-end"><a wire:click="deleteFromRevision({{ $revisionProduct->id }})" href="#" class="fs-5"><i class="bi bi-file-x-fill"></i></a></td>
+              <td class="text-end"><a wire:click="deleteFromRevision({{ $revisionProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
           @empty
             <tr>
@@ -97,6 +112,13 @@
     </div>
 
     <div class="row">
+      <div class="col-3">
+        <div class="form-floating">
+          <textarea wire:model="barcodeAndCount" class="form-control @error('barcodeAndCount') is-invalid @enderror" id="barcode-and-count" style="height: 120px" placeholder="Причина списания"></textarea>
+          @error('barcodeAndCount')<div class="text-danger">{{ $message }}</div>@enderror
+          <label for="barcode-and-count">Штрихкод и количество</label>
+        </div>
+      </div>
       <div class="col-auto">
         <select wire:model="store_id" class="form-control @error('store_id') is-invalid @enderror" id="store_id">
           <option value="">Выберите склад...</option>

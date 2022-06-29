@@ -122,7 +122,7 @@ class Writeoff extends Component
         $existDoc = OutgoingDoc::where('doc_no', $docNo)->first();
 
         if ($existDoc) {
-            $docNo = $this->store_id . '/' . ($lastDoc->count() + 2);
+            $docNo = $this->store_id . '/' . $lastDoc->id + 2;
         }
 
         // Writeoff Doc

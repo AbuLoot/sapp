@@ -34,6 +34,8 @@ class Income extends Component
     {
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
+        $this->company = auth()->user()->profile->company;
+        $this->store_id = $this->company->first()->id;
     }
 
     public function updated($key, $value)
@@ -85,7 +87,7 @@ class Income extends Component
 
             if (is_object(json_decode($product->count_in_stores))) {
                 $count_in_stores = json_decode($product->count_in_stores, true);
-                $count_in_stores[$this->store_id] += $incomeProduct['income_count'];
+                $count_in_stores[$this->store_id] + $incomeProduct['income_count'];
             }
             else {
                 $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
@@ -97,17 +99,22 @@ class Income extends Component
         }
 
         $company = auth()->user()->profile->company;
-        $lastDoc = IncomingDoc::orderBy('id')->first();
+        $lastDoc = IncomingDoc::orderByDesc('id')->first();
+        $docNo = $this->store_id . '/' . $lastDoc->id++;
+        $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
+
+        if ($existDoc) {
+            $docNo = $this->store_id . '/' . $lastDoc->id + 2;
+        }
 
         // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
-
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $company->stores->first()->id;
         $incomingDoc->company_id = $company->id;
         $incomingDoc->user_id = auth()->user()->id;
         $incomingDoc->username = auth()->user()->name;
-        $incomingDoc->doc_no = $company->stores->first()->id . ($lastDoc) ? $lastDoc->id++ : 1;
+        $incomingDoc->doc_no = $docNo;
         $incomingDoc->doc_type_id = $docType->id;
         $incomingDoc->products_data = json_encode($products_data);
         $incomingDoc->from_contractor = '';
@@ -185,9 +192,8 @@ class Income extends Component
         }
 
         $this->incomeProducts = session()->get('incomeProducts') ?? [];
-        $company = auth()->user()->profile->company;
 
-        return view('livewire.store.income', ['products' => $products, 'company' => $company])
+        return view('livewire.store.income', ['products' => $products])
             ->layout('store.layout');
     }
 }

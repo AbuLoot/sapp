@@ -45,6 +45,7 @@
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
+            <th scope="col">{{ $company->stores->where('id', $store_id)->first()->title }}</th>
             <th scope="col">В&nbsp;базе</th>
             <th scope="col">Количество</th>
             <th scope="col">Поставщик</th>
@@ -64,7 +65,13 @@
               <td>{{ $incomeProduct->category->title }}</td>
               <td>{{ $incomeProduct->purchase_price }}</td>
               <td>{{ $incomeProduct->price }}</td>
-              <?php $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?'; ?>
+              <?php
+                $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?';
+
+                $countInStores = json_decode($incomeProduct->count_in_stores, true) ?? [];
+                $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
+              ?>
+              <td>{{ $countInStore + $incomeProduct->income_count . $unit }}</td>
               <td>{{ $incomeProduct->count + $incomeProduct->income_count . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">

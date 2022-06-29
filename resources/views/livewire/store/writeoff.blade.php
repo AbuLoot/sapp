@@ -75,8 +75,8 @@
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
             <th scope="col">{{ $company->stores->where('id', $store_id)->first()->title }}</th>
-            <th scope="col">Общее количество</th>
-            <th scope="col">Количество</th>
+            <th scope="col">Общее кол-во</th>
+            <th scope="col">Кол-во</th>
             <th scope="col">Поставщик</th>
             <th scope="col"></th>
           </tr>
@@ -124,7 +124,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="9">No data</td>
+              <td colspan="10">No data</td>
             </tr>
           @endforelse
         </tbody>

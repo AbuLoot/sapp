@@ -100,9 +100,9 @@ Route::group(['prefix' => '{lang}/store', 'name' => 'store', 'middleware' => ['a
     Route::get('/', Index::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
+    Route::get('income', Income::class);
     Route::get('docs', IncomingDocs::class);
     Route::get('docs/outgoing', OutgoingDocs::class);
-    Route::get('income', Income::class);
     Route::get('revision', Revision::class);
     Route::get('writeoff', Writeoff::class);
 
@@ -157,6 +157,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
         'units' => UnitController::class,
         'discounts' => DiscountController::class,
 
+        // Joystick routes
         'pages' => PageController::class,
         'posts' => PostController::class,
         'sections' => SectionController::class,

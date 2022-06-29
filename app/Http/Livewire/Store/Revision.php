@@ -9,7 +9,8 @@ use Livewire\WithPagination;
 use App\Models\Unit;
 use App\Models\Store;
 use App\Models\StoreDoc;
-use App\Models\OutgoingDoc;
+use App\Models\Revision;
+use App\Models\RevisionProduct;
 use App\Models\DocType;
 use App\Models\Product;
 
@@ -23,31 +24,34 @@ class Revision extends Component
     public $store_id;
     public $search = '';
     public $revisionProducts = [];
-    public $count = [];
+    public $actualCount = [];
+    public $barcodeAndCount = [];
 
     public function mount()
     {
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
+        $this->company = auth()->user()->profile->company;
+        $this->store_id = $this->company->first()->id;
     }
 
     public function updated($key, $value)
     {
         $parts = explode('.', $key);
 
-        if (count($parts) == 2 && $parts[0] == 'count') {
+        if (count($parts) == 3 && $parts[0] == 'actualCount') {
 
             $revisionProducts = session()->get('revisionProducts');
 
-            if ($value == 0 || !is_numeric($value)) {
-                $this->addError($key, 'Неверные данные');
-                $revisionProducts[$parts[1]]['revision_count'] = 0;
+            if (empty($value) || !is_numeric($value)) {
+                $revisionProducts[$parts[1]]['actualCount'] = [$this->store_id => null];
+                $this->actualCount[$parts[1]][$this->store_id] = null;
+                session()->put('revisionProducts', $revisionProducts);
                 return false;
-            } else {
-                $this->resetErrorBag($key);
             }
 
-            $revisionProducts[$parts[1]]['revision_count'] =- $value;
+            $revisionProducts[$parts[1]]['actualCount'] = [$this->store_id => $value];
+            $this->actualCount[$parts[1]][$this->store_id] = $value;
             session()->put('revisionProducts', $revisionProducts);
         }
     }
@@ -82,44 +86,45 @@ class Revision extends Component
         }
 
         $company = auth()->user()->profile->company;
-        $lastDoc = OutgoingDoc::orderBy('id')->first();
+        $lastDoc = Revision::orderBy('id')->first();
         $docType = DocType::where('slug', 'forma-z-1')->first();
 
-        $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $company->stores->first()->id;
-        $outgoingDoc->company_id = $company->id;
-        $outgoingDoc->user_id = auth()->user()->id;
-        $outgoingDoc->username = auth()->user()->name;
-        $outgoingDoc->doc_no = $company->stores->first()->id . '/' . ($lastDoc) ? $lastDoc->id++ : 1;
-        $outgoingDoc->doc_type_id = $docType->id;
-        $outgoingDoc->products_data = json_encode($products_data);
-        $outgoingDoc->from_contractor = '';
-        $outgoingDoc->sum = $incomeAmountPrice;
-        $outgoingDoc->currency = $company->currency->code;
-        $outgoingDoc->count = $incomeAmountCount;
-        // $outgoingDoc->unit = $this->unit;
-        $outgoingDoc->comment = '';
-        $outgoingDoc->save();
+        $Revision = new Revision;
+        $revision->store_id = $company->stores->first()->id;
+        $revision->company_id = $company->id;
+        $revision->user_id = auth()->user()->id;
+        $revision->doc_no = $company->stores->first()->id . '/' . ($lastDoc) ? $lastDoc->id++ : 1;
+        $revision->products_ids = json_encode($products_ids);
+        $revision->products_count = $products_count;
+        $revision->sum = $incomeAmountPrice;
+        $revision->title = $title;
+        $revision->actual_count = $actual_count;
+        $revision->difference = $difference;
+        $revision->surplus_sum = $surplus_sum;
+        $revision->shortage_sum = $shortage_sum;
+        $revision->currency = $company->currency->code;
+        $revision->comment = $comment;
+        $revision->save();
 
-        $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $company->stores->first()->id;
-        $storeDoc->company_id = $company->id;
-        $storeDoc->user_id = auth()->user()->id;
-        $storeDoc->doc_id = $outgoingDoc->id;
-        $storeDoc->doc_type_id = $docType->id;
-        $storeDoc->products_data = json_encode($products_data);
-        $storeDoc->from_contractor = '';
-        $storeDoc->to_contractor = $company->title;
-        $storeDoc->incoming_price = 0;
-        $storeDoc->outgoing_price = $incomeAmountPrice;
-        $storeDoc->amount = $incomeAmountCount;
-        // $storeDoc->unit = $this->unit;
-        $storeDoc->comment = '';
-        $storeDoc->save();
+        $revisionProduct = new RevisionProduct;
+        $revisionProduct->revision_id = $revision->id;
+        $revisionProduct->product_id = $product->id;
+        $revisionProduct->category_id = $product->category_id;
+        $revisionProduct->doc_id = $revision->id;
+        $revisionProduct->doc_type_id = $docType->id;
+        $revisionProduct->products_data = json_encode($products_data);
+        $revisionProduct->purchase_price = $purchase_price;
+        $revisionProduct->selling_price = $selling_price;
+        $revisionProduct->estimated_count = $estimated_count;
+        $revisionProduct->actual_count = $actual_count;
+        $revisionProduct->difference = $difference;
+        // $revisionProduct->unit = $this->unit;
+        $revisionProduct->comment = '';
+        $revisionProduct->save();
 
         session()->forget('revisionProducts');
         $this->revisionProducts = [];
-        // dd($product, $products_data, $outgoingDoc, $storeDoc);
+        // dd($product, $products_data, $revision, $revisionProduct);
     }
 
     public function addToRevision($id)
@@ -132,6 +137,8 @@ class Revision extends Component
             $revisionProducts[$id] = $product;
             $revisionProducts[$id]['revision_count'] = 0;
 
+            $this->estimatedCount[$id][$this->store_id] = $product->count;
+
             session()->put('revisionProducts', $revisionProducts);
             $this->search = '';
 
@@ -140,6 +147,8 @@ class Revision extends Component
 
         $revisionProducts[$id] = $product;
         $revisionProducts[$id]['revision_count'] = 0;
+
+        $this->estimatedCount[$id][$this->store_id] = $product->count;
 
         session()->put('revisionProducts', $revisionProducts);
         $this->search = '';

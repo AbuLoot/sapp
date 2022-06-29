@@ -4,15 +4,15 @@
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Накладные</h4>
 
       <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-        <input type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
+        <input wire:model="search" type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
       </form>
 
       <form class="col-5 col-lg-auto mb-2 mb-lg-0 ms-lg-auto">
         <div class="input-group">
           <span class="input-group-text">От</span>
-          <input type="date" class="form-control" placeholder="От..." data-date-format="dd/mm/yyyy">
+          <input type="date" wire:model="startDate" class="form-control" placeholder="От..." data-date-format="dd/mm/yyyy">
           <span class="input-group-text">До</span>
-          <input type="date" class="form-control" placeholder="До...">
+          <input type="date" wire:model="endDate" class="form-control" placeholder="До..." data-date-format="dd/mm/yyyy">
         </div>
       </form>
     </div>
