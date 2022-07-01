@@ -83,11 +83,11 @@
 
                 $revisionCountProduct = 0;
 
-                if (isset($revision_count[$revisionProduct->id][$store_id])) {
-                  if ($countInStore >= 1 && $revision_count[$revisionProduct->id][$store_id] <= $countInStore) {
-                    $revisionCountProduct = $revision_count[$revisionProduct->id][$store_id];
-                  } elseif ($countInStore < $revision_count[$revisionProduct->id][$store_id]) {
-                    $revisionCountProduct = $countInStore;
+                if (isset($actualCount[$revisionProduct->id][$store_id])) {
+                  if ($countInStore >= 1 && $actualCount[$revisionProduct->id][$store_id] < $countInStore) {
+                    $defferentCount = $countInStore - $actualCount[$revisionProduct->id][$store_id];
+                  } elseif ($countInStore < $actualCount[$revisionProduct->id][$store_id]) {
+                    $defferentCount = $actualCount[$revisionProduct->id][$store_id] - $countInStore;
                   }
                 }
               ?>

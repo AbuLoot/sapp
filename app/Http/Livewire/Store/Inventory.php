@@ -3,7 +3,6 @@
 namespace App\Http\Livewire\Store;
 
 use Livewire\Component;
-
 use Livewire\WithPagination;
 
 use App\Models\Unit;
@@ -14,7 +13,7 @@ use App\Models\RevisionProduct;
 use App\Models\DocType;
 use App\Models\Product;
 
-class Revision extends Component
+class Inventory extends Component
 {
     protected $paginationTheme = 'bootstrap';
     protected $queryString = ['search'];
@@ -66,34 +65,52 @@ class Revision extends Component
         }
 
         $products_data = [];
-        $incomeAmountCount = 0;
-        $incomeAmountPrice = 0;
+        $countInStores = [];
+        $revisionAmountCount = 0;
+        $revisionAmountPrice = 0;
 
-        foreach($this->revisionProducts as $productId => $incomeProduct) {
+        foreach($this->revisionProducts as $productId => $revisionProduct) {
 
             $product = Product::findOrFail($productId);
-            $product->count += $incomeProduct['revision_count'];
 
-            $products_data[$productId]['count'] = $incomeProduct['revision_count'];
+            if (is_object($product->count_in_stores)) {
+                $countInStores = json_decode($product->count_in_stores, true) ?? [];
+            }
+
+            // $countInStores[$this->store_id] = $this->actualCount[$productId][$this->store_id];
+            $countInStore = $countInStores[$this->store_id];
+
+            if ($companyStore > $this->actualCount[$productId][$this->store_id]) {
+                $minus = $countInStore - $this->actualCount[$productId][$this->store_id];
+            } else {
+                $plus = $this->actualCount[$productId][$this->store_id] - $countInStore;
+            }
+
+            $products_data[$productId]['count'] = $revisionProduct['revision_count'];
             $products_data[$productId]['unit'] = $product->unit;
             $products_data[$productId]['title'] = $product->title;
             $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
-            $incomeAmountCount = $incomeAmountCount + $incomeProduct['revision_count'];
-            $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $incomeProduct['revision_count']);
+            $incomeAmountCount = $incomeAmountCount + $revisionProduct['revision_count'];
+            $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $revisionProduct['revision_count']);
 
-            $product->save();
+            $product->count += $revisionProduct['revision_count'];
+            // $product->save();
         }
 
-        $company = auth()->user()->profile->company;
-        $lastDoc = Revision::orderBy('id')->first();
-        $docType = DocType::where('slug', 'forma-z-1')->first();
+        $lastDoc = Revision::orderByDesc('id')->first();
+        $docNo = $this->store_id . '/' . $lastDoc->id++;
+        $existDoc = Revision::where('doc_no', $docNo)->first();
 
-        $Revision = new Revision;
-        $revision->store_id = $company->stores->first()->id;
-        $revision->company_id = $company->id;
+        if ($existDoc) {
+            $docNo = $this->store_id . '/' . $lastDoc->id + 2;
+        }
+
+        $revision = new Revision;
+        $revision->store_id = $this->company->stores->first()->id;
+        $revision->company_id = $this->company->id;
         $revision->user_id = auth()->user()->id;
-        $revision->doc_no = $company->stores->first()->id . '/' . ($lastDoc) ? $lastDoc->id++ : 1;
+        $revision->doc_no = $docNo;
         $revision->products_ids = json_encode($products_ids);
         $revision->products_count = $products_count;
         $revision->sum = $incomeAmountPrice;
@@ -102,7 +119,7 @@ class Revision extends Component
         $revision->difference = $difference;
         $revision->surplus_sum = $surplus_sum;
         $revision->shortage_sum = $shortage_sum;
-        $revision->currency = $company->currency->code;
+        $revision->currency = $this->company->currency->code;
         $revision->comment = $comment;
         $revision->save();
 
@@ -137,8 +154,6 @@ class Revision extends Component
             $revisionProducts[$id] = $product;
             $revisionProducts[$id]['revision_count'] = 0;
 
-            $this->estimatedCount[$id][$this->store_id] = $product->count;
-
             session()->put('revisionProducts', $revisionProducts);
             $this->search = '';
 
@@ -147,8 +162,6 @@ class Revision extends Component
 
         $revisionProducts[$id] = $product;
         $revisionProducts[$id]['revision_count'] = 0;
-
-        $this->estimatedCount[$id][$this->store_id] = $product->count;
 
         session()->put('revisionProducts', $revisionProducts);
         $this->search = '';
@@ -177,9 +190,8 @@ class Revision extends Component
         }
 
         $this->revisionProducts = session()->get('revisionProducts') ?? [];
-        $company = auth()->user()->profile->company;
 
-        return view('livewire.store.revision', ['products' => $products, 'company' => $company])
+        return view('livewire.store.inventory', ['products' => $products])
             ->layout('store.layout');
     }
 }

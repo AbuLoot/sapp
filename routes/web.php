@@ -35,23 +35,6 @@ use App\Http\Controllers\Joystick\PaymentTypeController;
 use App\Http\Controllers\Joystick\DocTypeController;
 use App\Http\Controllers\Joystick\DiscountController;
 
-// Store
-use App\Http\Controllers\Store\StoreIndexController;
-use App\Http\Controllers\Store\DocController;
-use App\Http\Controllers\Store\RevisionController;
-use App\Http\Controllers\Store\RevisionProductController;
-use App\Http\Controllers\Store\WriteoffController;
-use App\Http\Controllers\Store\IncomingDocController;
-use App\Http\Controllers\Store\OutgoingDocController;
-
-// Cashbook
-use App\Http\Controllers\Cashbook\CashbookIndexController;
-use App\Http\Controllers\Cashbook\CashDocController;
-use App\Http\Controllers\Cashbook\IncomingOrderController;
-use App\Http\Controllers\Cashbook\IncomingCheckController;
-use App\Http\Controllers\Cashbook\OutgoingOrderController;
-use App\Http\Controllers\Cashbook\CashShiftJournalController;
-
 // Site Controllers
 use App\Http\Controllers\InputController;
 use App\Http\Controllers\ShopController;
@@ -61,33 +44,31 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
+// Store
+// use App\Http\Controllers\Store\StoreIndexController;
+// use App\Http\Controllers\Store\DocController;
+// use App\Http\Controllers\Store\RevisionController;
+// use App\Http\Controllers\Store\RevisionProductController;
+// use App\Http\Controllers\Store\WriteoffController;
+// use App\Http\Controllers\Store\IncomingDocController;
+// use App\Http\Controllers\Store\OutgoingDocController;
+
+use App\Http\Livewire\Store\Index;
 use App\Http\Livewire\Store\AddProduct;
 use App\Http\Livewire\Store\EditProduct;
+use App\Http\Livewire\Store\Income;
 use App\Http\Livewire\Store\IncomingDocs;
 use App\Http\Livewire\Store\OutgoingDocs;
-use App\Http\Livewire\Store\Index;
-use App\Http\Livewire\Store\Revision;
-use App\Http\Livewire\Store\Income;
+use App\Http\Livewire\Store\Inventory;
 use App\Http\Livewire\Store\Writeoff;
 
-Route::get('test', function() {
-
-
-    echo 3 * 0;
-
-    $arr = [];
-
-    $arr[1] = 'a';
-    $arr[2][3] = 'b';
-    $arr[2] = [3 => 'c'];
-    $arr[2][] = ['d'];
-    $arr[2][] = ['d'];
-    $arr[2][1][][] [] [] [] [] [][3] = ['d'];
-    $arr[2][1][][] [] [] [] [] [] = [3 => ['2']];
-
-    echo '<pre>';
-    print_r($arr);
-});
+// Cashbook
+// use App\Http\Controllers\Cashbook\CashbookIndexController;
+// use App\Http\Controllers\Cashbook\CashDocController;
+// use App\Http\Controllers\Cashbook\IncomingOrderController;
+// use App\Http\Controllers\Cashbook\IncomingCheckController;
+// use App\Http\Controllers\Cashbook\OutgoingOrderController;
+// use App\Http\Controllers\Cashbook\CashShiftJournalController;
 
 // Sanapp Store
 Route::redirect('/store', '/'.app()->getLocale().'/store');
@@ -103,7 +84,7 @@ Route::group(['prefix' => '{lang}/store', 'name' => 'store', 'middleware' => ['a
     Route::get('income', Income::class);
     Route::get('docs', IncomingDocs::class);
     Route::get('docs/outgoing', OutgoingDocs::class);
-    Route::get('revision', Revision::class);
+    Route::get('inventory', Inventory::class);
     Route::get('writeoff', Writeoff::class);
 
     /*Route::resources([
@@ -127,11 +108,11 @@ Route::group(['prefix' => '{lang}/cashbook', 'middleware' => ['auth' , 'roles:ad
 
     Route::resources([
         // 'cashbook' => CashbookIndexController::class,
-        'cash_docs' => CashDocController::class,
-        'cash_shift_journal' => CashShiftJournalController::class,
-        'incoming_orders' => IncomingOrderController::class,
-        'incoming_checks' => IncomingCheckController::class,
-        'outgoing_orders' => OutgoingOrderController::class,
+        // 'cash_docs' => CashDocController::class,
+        // 'cash_shift_journal' => CashShiftJournalController::class,
+        // 'incoming_orders' => IncomingOrderController::class,
+        // 'incoming_checks' => IncomingCheckController::class,
+        // 'outgoing_orders' => OutgoingOrderController::class,
     ]);
 });
 

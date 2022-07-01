@@ -15,11 +15,13 @@ use App\Models\IncomingDoc;
 class EditProduct extends Component
 {
     public $lang;
+    public $company;
     public $product;
     public $productBarcodes = [];
     public $companies;
     public $barcodes = [''];
     public $id_code;
+    public $countInStores = [];
     public $purchase_price;
     public $wholesale_price;
     public $wholesale_price_markup;
@@ -33,17 +35,32 @@ class EditProduct extends Component
         'product.category_id' => 'required|numeric',
         'product.type' => 'required|numeric',
         'product.price' => 'required',
-        'product.count' => 'required|numeric',
+        'product.count.*' => 'required|numeric',
         'product.unit' => 'required|numeric',
         'productBarcodes.*' => 'required',
     ];
 
     public function mount($id)
     {
+        $this->company = auth()->user()->profile->company;
+        $this->stores = $this->company->stores;
         $this->product = Product::findOrFail($id);
         $this->productBarcodes = json_decode($this->product->barcodes) ?? [''];
         $this->barcodes = $this->productBarcodes;
         $this->id_code = $this->product->id_code;
+
+        $this->countInStores = json_decode($this->product->count_in_stores, true) ?? [''];
+
+        foreach($this->stores as $index => $store) {
+            if (empty($this->countInStores[$store->id]) && $index == 0) {
+                $this->countInStores[$store->id] = $this->product->count;
+            } elseif (empty($this->countInStores[$store->id])) {
+                $this->countInStores[$store->id] = null;
+            }
+        }
+
+        $this->product['count'] = $this->countInStores;
+
         $this->purchase_price = $this->product->purchase_price;
         $this->wholesale_price = $this->product->wholesale_price;
         $this->price = $this->product->price;
@@ -131,12 +148,10 @@ class EditProduct extends Component
 
     public function render()
     {
-        $companyStore = auth()->user()->profile->company;
-        $currency = $companyStore->currency->symbol;
-        $stores = Store::where('company_id', $companyStore->id)->get();
+        $currency = $this->company->currency->symbol;
         $units = Unit::all();
 
-        return view('livewire.store.edit-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
+        return view('livewire.store.edit-product', ['units' => $units, 'currency' => $currency])
             ->layout('store.layout');
     }
 }

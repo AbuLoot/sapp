@@ -54,7 +54,7 @@
             <a class="nav-link px-3 @if(Request::is($lang.'/store/docs*')) active @endif" href="/{{ $lang }}/store/docs">Накладные</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/store/revision*')) active @endif" href="/{{ $lang }}/store/revision">Ревизия</a>
+            <a class="nav-link px-3 @if(Request::is($lang.'/store/inventory*')) active @endif" href="/{{ $lang }}/store/inventory">Ревизия</a>
           </li>
           <li class="nav-item">
             <a class="nav-link px-3 @if(Request::is($lang.'/store/income*')) active @endif" href="/{{ $lang }}/store/income">Новый приход</a>

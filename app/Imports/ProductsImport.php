@@ -21,6 +21,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
     use SkipsFailures;
 
     private $user_id;
+    private $company;
     private $categories;
     private $products;
     private $products_count;
@@ -29,6 +30,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
     public function __construct()
     {
         $this->user_id = auth()->user()->id;
+        $this->first_store = auth()->user()->profile->company->stores->first();
         $this->categories = Category::select('id', 'slug', 'title')->get();
         $this->companies = Company::select('id', 'slug', 'title')->get();
         $this->products_count = Product::count();
@@ -108,6 +110,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
             'id_code' => $row['artikul'] ?? NULL,
             'purchase_price' => (int) str_replace(" ", "", $row['cena_zakupocnaya']) ?? 0,
             'price' => (int) str_replace(" ", "", $row['cena']) ?? 0,
+            'count_in_stores' => json_encode([$this->first_store->id => $row['kolicestvo'] ?? 0]),
             'count' => $row['kolicestvo'] ?? 0,
             'type' => ($row['tip'] == 'Товар') ? 1 : 2,
             'image' => 'no-image-middle.png',
