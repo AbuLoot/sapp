@@ -31,7 +31,7 @@
               <div class="row">
                 <div class="col-lg-6 mb-3">
                   <label for="doc_no" class="form-label">Номер накладной</label>
-                  <input type="number" wire:model.defer="doc_no" class="form-control @error('doc_no') is-invalid @enderror" id="doc_no" required>
+                  <input type="text" wire:model.defer="doc_no" class="form-control @error('doc_no') is-invalid @enderror" id="doc_no" required>
                   @error('doc_no')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="w-100"></div>
@@ -119,18 +119,18 @@
                   </div>
                   <div class="mb-3">
                     <label for="count">Количество</label>
-                    <div style="max-height: 125px; overflow-y: auto;">
+                    <div style="max-height: 210px; overflow-y: auto;" class="py-1">
                       @foreach($stores as $store)
                         <div class="input-group mb-1">
                           <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
-                          <input type="number" wire:model.defer="product.count" class="form-control @error('product.count') is-invalid @enderror" id="count" required>
-                          <select class="form-control @error('product.unit') is-invalid @enderror" wire:model.defer="product.unit" id="unit">
+                          <input type="number" wire:model.defer="countInStores.{{ $store->id }}" class="form-control @error('countInStores.'.$store->id) is-invalid @enderror" id="count">
+                          <select class="form-control @error('product.unit') is-invalid @enderror" wire:model="product.unit" id="unit">
                             <option value="">Ед. измерения</option>
                             @foreach($units as $unit)
                               <option value="{{ $unit->id }}">{{ $unit->title }}</option>
                             @endforeach
                           </select>
-                          @error('product.count')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                          @error('countInStores.'.$store->id)<div class="invalid-feedback">{{ $message }}</div>@enderror
                           @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                       @endforeach
@@ -139,7 +139,7 @@
                   <div class="col-lg-6 mb-3">
                     <label for="purchase_price">Закупочная цена</label>
                     <div class="input-group">
-                      <input type="text" wire:model="purchase_price" class="form-control" id="purchase_price" required>
+                      <input type="text" wire:model="purchase_price" class="form-control" id="purchase_price">
                       <div class="input-group-text">{{ $currency }}</div>
                     </div>
                   </div>
@@ -147,14 +147,14 @@
                   <div class="col-lg-6 mb-3">
                     <label for="wholesale_price">Оптовая цена</label>
                     <div class="input-group">
-                      <input type="text" wire:model="wholesale_price" class="form-control" id="wholesale_price" required>
+                      <input type="text" wire:model="wholesale_price" class="form-control" id="wholesale_price">
                       <div class="input-group-text">{{ $currency }}</div>
                     </div>
                   </div>
                   <div class="col-lg-6 mb-3">
                     <label for="wholesale_price_markup">Наценка</label>
                     <div class="input-group">
-                      <input type="text" wire:model="wholesale_price_markup" class="form-control" id="wholesale_price_markup" required>
+                      <input type="text" wire:model="wholesale_price_markup" class="form-control" id="wholesale_price_markup">
                       <div class="input-group-text">%</div>
                     </div>
                   </div>
@@ -170,7 +170,7 @@
                 <div class="col-lg-6 mb-3">
                   <label for="price_markup">Наценка</label>
                   <div class="input-group">
-                    <input type="text" wire:model="price_markup" class="form-control @error('price_markup') is-invalid @enderror" id="price_markup" required>
+                    <input type="text" wire:model="price_markup" class="form-control @error('price_markup') is-invalid @enderror" id="price_markup">
                     <div class="input-group-text">%</div>
                   </div>
                 </div>
@@ -201,6 +201,7 @@
       </div>
     </div>
   </div>
+
   <!-- Modal Add Company -->
   <livewire:store.add-company>
 

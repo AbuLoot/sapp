@@ -10,18 +10,22 @@ use App\Models\Store;
 use App\Models\Company;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\StoreDoc;
 use App\Models\IncomingDoc;
+use App\Models\DocType;
 
 class AddProduct extends Component
 {
     public $lang;
     public $product;
     public $productBarcodes = [];
+    public $company;
     public $companies;
     public $categories;
     public $barcodes = [''];
     public $doc_no;
     public $id_code;
+    public $countInStores = [];
     public $purchase_price;
     public $wholesale_price;
     public $wholesale_price_markup;
@@ -35,7 +39,7 @@ class AddProduct extends Component
         'product.category_id' => 'required|numeric',
         'product.type' => 'required|numeric',
         'product.price' => 'required',
-        'product.count' => 'required|numeric',
+        'countInStores.*' => 'required|numeric',
         'product.unit' => 'required|numeric',
         'doc_no' => 'required',
         'productBarcodes.*' => 'required',
@@ -43,9 +47,10 @@ class AddProduct extends Component
 
     public function mount()
     {
+        $this->company = auth()->user()->profile->company;
+        $this->companies = Company::where('is_supplier', 1)->get();
         $this->product = new Product;
         $this->product->type = 1;
-        $this->companies = Company::where('is_supplier', 1)->get();
     }
 
     public function updated($key)
@@ -99,11 +104,28 @@ class AddProduct extends Component
         return $barcode;
     }
 
+    public function generateDocNo($store_id, $docNo = null)
+    {
+        $lastDoc = IncomingDoc::orderByDesc('id')->first();
+        $docNo = (is_null($docNo)) ? $store_id.'/'.++$lastDoc->id : $docNo;
+
+        $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
+
+        if ($existDoc) {
+            list($first, $second) = explode('/', $docNo);
+            $docNo = $first.'/'.++$second;
+            $this->generateDocNo($store_id, $docNo);
+        }
+
+        return $docNo;
+    }
+
     public function saveProduct()
     {
         $this->validate();
 
         $lastProduct = Product::orderByDesc('id')->first();
+        $amoutCount = collect($this->countInStores)->sum();
 
         $product = Product::create([
             'sort_id' => $lastProduct->id + 1,
@@ -115,10 +137,10 @@ class AddProduct extends Component
             'barcodes' => json_encode($this->productBarcodes),
             'id_code' => $this->id_code ?? NULL,
             'purchase_price' => $this->purchase_price ?? 0,
-            'wholesale_price' => $this->wholesale_price,
+            'wholesale_price' => $this->wholesale_price ?? 0,
             'price' => $this->product->price,
-            'count_in_stores' => json_encode([]),
-            'count' => $this->product->count,
+            'count_in_stores' => json_encode($this->countInStores),
+            'count' => $amoutCount,
             'type' => $this->product->type,
             'unit' => $this->product->unit,
             'image' => 'no-image-middle.png',
@@ -126,44 +148,77 @@ class AddProduct extends Component
             'status' => 1,
         ]);
 
-        // Store
-        $company = auth()->user()->profile->company;
+        // Getting Incoming Doc
+        $docType = DocType::where('slug', 'forma-z-1')->first();
+        $contractorCompany = Company::find($this->product->company_id)->title;
+        $product_data = [];
+        $incomingDocsId = [];
 
-        /*$incomingDoc = new IncomingDoc;
-        $incomingDoc->store_id = 1;
-        $incomingDoc->company_id = $company->id;
-        $incomingDoc->user_id = auth()->user()->id;
-        $incomingDoc->username = auth()->user()->name;
-        $incomingDoc->doc_no = $this->doc_no;
-        $incomingDoc->doc_type_id = 3;
-        $incomingDoc->products_data = json_encode($product->id);
-        $incomingDoc->from_contractor = Company::find($this->product->company_id)->title;
-        $incomingDoc->sum = $this->purchase_price * $this->product->count;
-        $incomingDoc->currency = auth()->user()->profile->company->currency->code;
-        $incomingDoc->count = $this->product->count;
-        $incomingDoc->unit = $this->unit;
-        $incomingDoc->comment = '';
-        $incomingDoc->save();*/
+        foreach ($this->countInStores as $storeId => $countInStore) {
 
-        // $this->reset();
+            $docNo = $this->generateDocNo($storeId, $this->doc_no);
+
+            $product_data[$product->id]['count'] = $countInStore;
+            $product_data[$product->id]['unit'] = $product->unit;
+            $product_data[$product->id]['barcodes'] = $product->barcodes;
+
+            $incomingDoc = new IncomingDoc;
+            $incomingDoc->store_id = $storeId;
+            $incomingDoc->company_id = $this->company->id;
+            $incomingDoc->user_id = auth()->user()->id;
+            $incomingDoc->username = auth()->user()->name;
+            $incomingDoc->doc_no = $docNo;
+            $incomingDoc->doc_type_id = $docType->id;
+            $incomingDoc->products_data = json_encode($product_data);
+            $incomingDoc->from_contractor = $contractorCompany;
+            $incomingDoc->sum = $amoutCount * $product->price;
+            $incomingDoc->currency = $this->company->currency->code;
+            $incomingDoc->count = $countInStore;
+            $incomingDoc->unit = $product->unit;
+            $incomingDoc->comment = '';
+            $incomingDoc->save();
+
+            $incomingDocsId[] = $incomingDoc->id;
+        }
+
+        $product_data[$product->id]['count'] = $amoutCount;
+
+        $storeDoc = new StoreDoc;
+        $storeDoc->store_id = $this->company->stores->first()->id;
+        $storeDoc->company_id = $this->company->id;
+        $storeDoc->user_id = auth()->user()->id;
+        $storeDoc->docs_id = json_encode($incomingDocsId);
+        $storeDoc->doc_type_id = $docType->id;
+        $storeDoc->products_data = json_encode($product_data);
+        $storeDoc->from_contractor = $contractorCompany;
+        $storeDoc->incoming_price = 0;
+        $storeDoc->outgoing_price = $amoutCount * $product->price;
+        $storeDoc->amount = $amoutCount;
+        $storeDoc->unit = $product->unit;
+        $storeDoc->comment = '';
+        $storeDoc->save();
+
         // $this->product = new Product;
         // $this->product->type = 1;
 
-        $this->reset('doc_no', 'productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
-        $this->product->title = null;
-        $this->product->price = null;
-        $this->product->count = null;
-        $this->barcodes = [''];
+        // $this->reset('doc_no', 'productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
+        // $this->product->title = null;
+        // $this->product->price = null;
+        // $this->product->count = null;
+        // $this->barcodes = [''];
+        // $this->countInStores = [];
+
+        $this->reset();
 
         session()->flash('message', 'Запись добавлена.');
     }
 
     public function render()
     {
-        $companyStore = auth()->user()->profile->company;
-        $currency = $companyStore->currency->symbol;
-        $stores = Store::where('company_id', $companyStore->id)->get();
+        $currency = $this->company->currency->symbol;
+        $stores = Store::where('company_id', $this->company->id)->get();
         $units = Unit::all();
+        $this->doc_no = $this->generateDocNo($stores->first()->id);
 
         return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
             ->layout('store.layout');

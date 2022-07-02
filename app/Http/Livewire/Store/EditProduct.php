@@ -37,7 +37,7 @@ class EditProduct extends Component
         'product.price' => 'required',
         'product.count.*' => 'required|numeric',
         'product.unit' => 'required|numeric',
-        'productBarcodes.*' => 'required',
+        // 'productBarcodes.*' => 'required',
     ];
 
     public function mount($id)
@@ -49,7 +49,7 @@ class EditProduct extends Component
         $this->barcodes = $this->productBarcodes;
         $this->id_code = $this->product->id_code;
 
-        $this->countInStores = json_decode($this->product->count_in_stores, true) ?? [''];
+        $this->countInStores = json_decode($this->product->count_in_stores, true) ?? [];
 
         foreach($this->stores as $index => $store) {
             if (empty($this->countInStores[$store->id]) && $index == 0) {
@@ -58,8 +58,6 @@ class EditProduct extends Component
                 $this->countInStores[$store->id] = null;
             }
         }
-
-        $this->product['count'] = $this->countInStores;
 
         $this->purchase_price = $this->product->purchase_price;
         $this->wholesale_price = $this->product->wholesale_price;
@@ -122,9 +120,11 @@ class EditProduct extends Component
     {
         $this->validate();
 
+        $amoutCount = collect($this->countInStores)->sum();
+
         Product::where('id', $this->product->id)->update([
             // 'sort_id' => $lastProduct->id + 1,
-            // 'user_id' => auth()->user()->id,
+            'user_id' => auth()->user()->id,
             'company_id' => $this->product->company_id ?? 0,
             'category_id' => $this->product->category_id,
             'slug' => Str::slug($this->product->title),
@@ -134,14 +134,11 @@ class EditProduct extends Component
             'purchase_price' => $this->purchase_price ?? 0,
             'wholesale_price' => $this->wholesale_price ?? 0,
             'price' => $this->product->price,
-            'count_in_stores' => json_encode([]),
-            'count' => $this->product->count,
+            'count_in_stores' => json_encode($this->countInStores),
+            'count' => $amoutCount,
             'unit' => $this->product->unit,
             'type' => $this->product->type,
         ]);
-
-        // Store
-        // $companyStore = auth()->user()->profile->company;
 
         session()->flash('message', 'Запись изменена.');
     }

@@ -109,6 +109,7 @@ class Income extends Component
 
         // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
+
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $company->stores->first()->id;
         $incomingDoc->company_id = $company->id;

@@ -113,27 +113,18 @@
                   </div>
                   <div class="mb-3">
                     <label for="count">Количество</label>
-                    <div style="max-height: 130px; overflow-y: auto;" class="py-1">
+                    <div style="max-height: 210px; overflow-y: auto;" class="py-1">
                       @foreach($stores as $index => $store)
-                        <?php $countInStores = json_decode($product->count_in_stores, true) ?? ['']; ?>
-                        <?php
-                          if (empty($countInStores[$store->id]) && $index == 0) {
-                            $countInStores[$store->id] = $product->count;
-                          } elseif (empty($countInStores[$store->id])) {
-                            $countInStores[$store->id] = 0;
-                          }
-                        ?>
-                        <?php // dd($countInStores); //$countInStores[$store->id] = (empty($countInStores[$store->id]) && $index == 0) ? $product->count : $countInStores[$store->id]; ?>
                         <div class="input-group mb-1">
                           <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
-                          <input type="number" wire:model.defer="product.count.{{ $store->id }}" class="form-control @error('product.count.'.$store->id) is-invalid @enderror" id="count" required>
-                          <select class="form-control @error('product.unit') is-invalid @enderror" wire:model.defer="product.unit" id="unit">
+                          <input type="number" wire:model.defer="countInStores.{{ $store->id }}" class="form-control @error('countInStores.'.$store->id) is-invalid @enderror" id="count">
+                          <select class="form-control @error('product.unit') is-invalid @enderror" wire:model="product.unit" id="unit">
                             <option value="">Ед. измерения</option>
                             @foreach($units as $unit)
                               <option value="{{ $unit->id }}">{{ $unit->title }}</option>
                             @endforeach
                           </select>
-                          @error('product.count.'.$store->id)<div class="invalid-feedback">{{ $message }}</div>@enderror
+                          @error('countInStores.'.$store->id)<div class="invalid-feedback">{{ $message }}</div>@enderror
                           @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                       @endforeach
