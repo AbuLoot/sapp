@@ -36,6 +36,27 @@
 
   <!-- Content -->
   <div class="container">
+
+    @if(session()->has('message'))
+      <div class="toast-container position-fixed bottom-0 end-0 p-4">
+        <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body text-white">{{ session('message') }}</div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+    @endif
+
+    <div class="text-end">
+      @foreach($company->stores as $index => $store)
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" wire:model="store_id" id="store{{ $store->id }}" value="{{ $store->id }}" @if($store_id == $store->id) checked @endif>
+          <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
+        </div>
+      @endforeach
+    </div>
+
     <div class="table-responsive">
       <table class="table table-sm align-middle table-striped">
         <thead>

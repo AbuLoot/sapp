@@ -83,8 +83,8 @@ class Writeoff extends Component
             if (isset($countInStores[$this->store_id])) {
                 $countInStore = $countInStores[$this->store_id];
             } else {
-                session()->flash('message', 'Произошла ошибка.');
-                return false;
+                $countInStore = 0;
+                $countInStores[$this->store_id] = 0;
             }
 
             $writeoffCountProduct = 0;
@@ -160,8 +160,8 @@ class Writeoff extends Component
         $storeDoc->comment = $this->comment;
         $storeDoc->save();
 
-        session()->forget('writeoffProducts');
-        $this->writeoffProducts = [];
+        // session()->forget('writeoffProducts');
+        // $this->writeoffProducts = [];
 
         session()->flash('message', 'Запись изменена.');
     }

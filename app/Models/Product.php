@@ -30,6 +30,7 @@ class Product extends Model
         'price',
         'count_in_stores',
         'count',
+        'unit',
         'type',
         'description',
         'characteristic',

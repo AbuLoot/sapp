@@ -114,8 +114,11 @@ class AddProduct extends Component
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            $this->generateDocNo($store_id, $docNo);
+            return $this->generateDocNo($store_id, $docNo);
         }
+        // if ($store_id == 3) {
+            // dd($store_id, $docNo, $existDoc);
+        // }
 
         return $docNo;
     }
@@ -151,12 +154,13 @@ class AddProduct extends Component
         // Getting Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
         $contractorCompany = Company::find($this->product->company_id)->title;
+
         $product_data = [];
         $incomingDocsId = [];
 
         foreach ($this->countInStores as $storeId => $countInStore) {
 
-            $docNo = $this->generateDocNo($storeId, $this->doc_no);
+            $docNo = $this->generateDocNo($storeId);
 
             $product_data[$product->id]['count'] = $countInStore;
             $product_data[$product->id]['unit'] = $product->unit;
@@ -171,7 +175,8 @@ class AddProduct extends Component
             $incomingDoc->doc_type_id = $docType->id;
             $incomingDoc->products_data = json_encode($product_data);
             $incomingDoc->from_contractor = $contractorCompany;
-            $incomingDoc->sum = $amoutCount * $product->price;
+            // $incomingDoc->to_contractor = '';
+            $incomingDoc->sum = $countInStore * $product->price;
             $incomingDoc->currency = $this->company->currency->code;
             $incomingDoc->count = $countInStore;
             $incomingDoc->unit = $product->unit;
@@ -187,6 +192,7 @@ class AddProduct extends Component
         $storeDoc->store_id = $this->company->stores->first()->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
+        // $storeDoc->doc_id = $incomingDoc; // For One Doc
         $storeDoc->docs_id = json_encode($incomingDocsId);
         $storeDoc->doc_type_id = $docType->id;
         $storeDoc->products_data = json_encode($product_data);
@@ -194,21 +200,17 @@ class AddProduct extends Component
         $storeDoc->incoming_price = 0;
         $storeDoc->outgoing_price = $amoutCount * $product->price;
         $storeDoc->amount = $amoutCount;
-        $storeDoc->unit = $product->unit;
         $storeDoc->comment = '';
         $storeDoc->save();
 
         // $this->product = new Product;
         // $this->product->type = 1;
 
-        // $this->reset('doc_no', 'productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
-        // $this->product->title = null;
-        // $this->product->price = null;
-        // $this->product->count = null;
-        // $this->barcodes = [''];
-        // $this->countInStores = [];
-
-        $this->reset();
+        $this->reset('doc_no', 'productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
+        $this->product->title = null;
+        $this->product->price = null;
+        $this->barcodes = [''];
+        $this->countInStores = [];
 
         session()->flash('message', 'Запись добавлена.');
     }

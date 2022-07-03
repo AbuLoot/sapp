@@ -59,6 +59,22 @@ class Income extends Component
         }
     }
 
+    public function generateDocNo($store_id, $docNo = null)
+    {
+        $lastDoc = IncomingDoc::orderByDesc('id')->first();
+        $docNo = (is_null($docNo)) ? $store_id.'/'.++$lastDoc->id : $docNo;
+
+        $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
+
+        if ($existDoc) {
+            list($first, $second) = explode('/', $docNo);
+            $docNo = $first.'/'.++$second;
+            $this->generateDocNo($store_id, $docNo);
+        }
+
+        return $docNo;
+    }
+
     public function makeDoc()
     {
         if (empty($this->store_id) || !is_numeric($this->store_id)) {
@@ -86,8 +102,8 @@ class Income extends Component
             $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $incomeProduct['income_count']);
 
             if (is_object(json_decode($product->count_in_stores))) {
-                $count_in_stores = json_decode($product->count_in_stores, true);
-                $count_in_stores[$this->store_id] + $incomeProduct['income_count'];
+                $count_in_stores = json_decode($product->count_in_stores, true) ?? [''];
+                $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
             }
             else {
                 $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
@@ -99,13 +115,8 @@ class Income extends Component
         }
 
         $company = auth()->user()->profile->company;
-        $lastDoc = IncomingDoc::orderByDesc('id')->first();
-        $docNo = $this->store_id . '/' . $lastDoc->id++;
-        $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
 
-        if ($existDoc) {
-            $docNo = $this->store_id . '/' . $lastDoc->id + 2;
-        }
+        $docNo = $this->generateDocNo($this->store_id);
 
         // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
