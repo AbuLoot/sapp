@@ -120,7 +120,7 @@ class EditProduct extends Component
     {
         $this->validate();
 
-        $amoutCount = collect($this->countInStores)->sum();
+        $amountCount = collect($this->countInStores)->sum();
 
         Product::where('id', $this->product->id)->update([
             // 'sort_id' => $lastProduct->id + 1,
@@ -135,7 +135,7 @@ class EditProduct extends Component
             'wholesale_price' => $this->wholesale_price ?? 0,
             'price' => $this->product->price,
             'count_in_stores' => json_encode($this->countInStores),
-            'count' => $amoutCount,
+            'count' => $amountCount,
             'unit' => $this->product->unit,
             'type' => $this->product->type,
         ]);

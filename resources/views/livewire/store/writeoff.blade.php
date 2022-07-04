@@ -21,7 +21,7 @@
         @endif
       </form>
 
-      <ul class="nav col-lg-auto text-end me-lg-2 text-small">
+      <!-- <ul class="nav col-lg-auto text-end me-lg-2 text-small">
         <li>
           <a href="#" class="nav-link text-primary"><i class="bi bi-journals"></i></a>
         </li>
@@ -36,7 +36,7 @@
         </li>
       </ul>
 
-      <!-- <div class="text-end ms-md-auto ms-lg-0">
+      <div class="text-end ms-md-auto ms-lg-0">
         <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
       </div> -->
     </div>
@@ -111,12 +111,11 @@
                 }
               ?>
               <td>{{ $countInStore - $writeoffCountProduct . $unit }}</td>
-              <td>{{ ($writeoffProduct->count - $writeoffCountProduct) . $unit }}</td>
+              <td>{{ $writeoffProduct->count - $writeoffCountProduct . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
                   <input type="number" wire:model="writeoff_count.{{ $writeoffProduct->id }}.{{ $store_id }}" class="form-control @error('writeoff_count.'.$writeoffProduct->id.'.'.$store_id) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
-                  @error('writeoff_count.'.$writeoffProduct->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
               <td>{{ $writeoffProduct->company->title }}</td>

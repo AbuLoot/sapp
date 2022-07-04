@@ -128,7 +128,7 @@ class AddProduct extends Component
         $this->validate();
 
         $lastProduct = Product::orderByDesc('id')->first();
-        $amoutCount = collect($this->countInStores)->sum();
+        $amountCount = collect($this->countInStores)->sum();
 
         $product = Product::create([
             'sort_id' => $lastProduct->id + 1,
@@ -143,7 +143,7 @@ class AddProduct extends Component
             'wholesale_price' => $this->wholesale_price ?? 0,
             'price' => $this->product->price,
             'count_in_stores' => json_encode($this->countInStores),
-            'count' => $amoutCount,
+            'count' => $amountCount,
             'type' => $this->product->type,
             'unit' => $this->product->unit,
             'image' => 'no-image-middle.png',
@@ -186,7 +186,7 @@ class AddProduct extends Component
             $incomingDocsId[] = $incomingDoc->id;
         }
 
-        $product_data[$product->id]['count'] = $amoutCount;
+        $product_data[$product->id]['count'] = $amountCount;
 
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $this->company->stores->first()->id;
@@ -198,8 +198,8 @@ class AddProduct extends Component
         $storeDoc->products_data = json_encode($product_data);
         $storeDoc->from_contractor = $contractorCompany;
         $storeDoc->incoming_price = 0;
-        $storeDoc->outgoing_price = $amoutCount * $product->price;
-        $storeDoc->amount = $amoutCount;
+        $storeDoc->outgoing_price = $amountCount * $product->price;
+        $storeDoc->amount = $amountCount;
         $storeDoc->comment = '';
         $storeDoc->save();
 

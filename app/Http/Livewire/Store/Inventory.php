@@ -55,6 +55,22 @@ class Inventory extends Component
         }
     }
 
+    public function generateDocNo($store_id, $docNo = null)
+    {
+        $lastDoc = Revision::orderByDesc('id')->first();
+        $docNo = (is_null($docNo)) ? $store_id.'/'.++$lastDoc->id : $docNo;
+
+        $existDoc = Revision::where('doc_no', $docNo)->first();
+
+        if ($existDoc) {
+            list($first, $second) = explode('/', $docNo);
+            $docNo = $first.'/'.++$second;
+            $this->generateDocNo($store_id, $docNo);
+        }
+
+        return $docNo;
+    }
+
     public function makeDoc()
     {
         if (empty($this->store_id) || !is_numeric($this->store_id)) {
@@ -95,16 +111,10 @@ class Inventory extends Component
             $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $revisionProduct['revision_count']);
 
             $product->count += $revisionProduct['revision_count'];
-            // $product->save();
+            $product->save();
         }
 
-        $lastDoc = Revision::orderByDesc('id')->first();
-        $docNo = $this->store_id . '/' . $lastDoc->id++;
-        $existDoc = Revision::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            $docNo = $this->store_id . '/' . $lastDoc->id + 2;
-        }
+        $docNo = $this->generateDocNo($this->store_id);
 
         $revision = new Revision;
         $revision->store_id = $this->company->stores->first()->id;

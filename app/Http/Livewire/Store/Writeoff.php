@@ -55,6 +55,22 @@ class Writeoff extends Component
         }
     }
 
+    public function generateDocNo($store_id, $docNo = null)
+    {
+        $lastDoc = OutgoingDoc::orderByDesc('id')->first();
+        $docNo = (is_null($docNo)) ? $store_id.'/'.++$lastDoc->id : $docNo;
+
+        $existDoc = OutgoingDoc::where('doc_no', $docNo)->first();
+
+        if ($existDoc) {
+            list($first, $second) = explode('/', $docNo);
+            $docNo = $first.'/'.++$second;
+            $this->generateDocNo($store_id, $docNo);
+        }
+
+        return $docNo;
+    }
+
     public function makeDoc()
     {
         if (empty($this->comment)) {
@@ -80,6 +96,9 @@ class Writeoff extends Component
 
             $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
 
+            /*
+             * Determine real count in store & If count in store empty, create & assing 0
+             */
             if (isset($countInStores[$this->store_id])) {
                 $countInStore = $countInStores[$this->store_id];
             } else {
@@ -87,50 +106,53 @@ class Writeoff extends Component
                 $countInStores[$this->store_id] = 0;
             }
 
-            $writeoffCountProduct = 0;
-
-            if (isset($this->writeoff_count[$productId][$this->store_id])) {
-                if ($countInStore >= 1 && $this->writeoff_count[$productId][$this->store_id] <= $countInStore) {
-                    $writeoffCountProduct = $this->writeoff_count[$productId][$this->store_id];
-                } elseif ($countInStore < $this->writeoff_count[$productId][$this->store_id]) {
-                    $writeoffCountProduct = $countInStore;
-                }
+            if (empty($this->writeoff_count[$productId][$this->store_id]) || $this->writeoff_count[$productId][$this->store_id] <= 0) {
+                $this->addError('writeoff_count.'.$productId.'.'.$this->store_id, 'Wrong');
+                return false;
             }
 
-            $finalCount = ($product->count <= $writeoffCountProduct)
-                ? 0
-                : $countInStore - $writeoffCountProduct;
+            $writeoffCount = 0;
 
-            $products_data[$productId]['outgoing_count'] = $writeoffCountProduct;
+            /*
+             * Prepare writeoff count & If writeoff count greater, assign $countInStore
+             */
+            if ($countInStore >= 1 && $this->writeoff_count[$productId][$this->store_id] <= $countInStore) {
+                $writeoffCount = $this->writeoff_count[$productId][$this->store_id];
+            } elseif ($countInStore < $this->writeoff_count[$productId][$this->store_id]) {
+                $writeoffCount = $countInStore;
+            }
+
+            unset($this->writeoff_count[$productId][$this->store_id]);
+
+            $finalCount = $countInStore - $writeoffCount;
+
+            $products_data[$productId]['outgoing_count'] = $writeoffCount;
             $products_data[$productId]['count'] = $finalCount;
             $products_data[$productId]['unit'] = $product->unit;
             $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
-            $writeoffAmountCount = $writeoffAmountCount + $writeoffCountProduct;
-            $writeoffAmountPrice = $writeoffAmountPrice + ($product->purchase_price * $writeoffCountProduct);
+            $writeoffAmountCount = $writeoffAmountCount + $writeoffCount;
+            $writeoffAmountPrice = $writeoffAmountPrice + ($product->purchase_price * $writeoffCount);
 
             $countInStores[$this->store_id] = $finalCount;
+            $amountCount = collect($countInStores)->sum();
+
+            $this->writeoffProducts[$productId]['count_in_stores'] = json_encode($countInStores);
+            $this->writeoffProducts[$productId]['count'] = $amountCount;
 
             $product->count_in_stores = json_encode($countInStores);
-            $product->count = $finalCount;
+            $product->count = $amountCount;
             $product->save();
         }
 
-        $company = auth()->user()->profile->company;
-        $lastDoc = OutgoingDoc::orderByDesc('id')->first();
-        $docNo = $this->store_id . '/' . $lastDoc->id++;
-        $existDoc = OutgoingDoc::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            $docNo = $this->store_id . '/' . $lastDoc->id + 2;
-        }
+        $docNo = $this->generateDocNo($this->store_id);
 
         // Writeoff Doc
         $docType = DocType::where('slug', 'forma-z-6')->first();
 
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $this->store_id;
-        $outgoingDoc->company_id = $company->id;
+        $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->username = auth()->user()->name;
         $outgoingDoc->doc_no = $docNo;
@@ -138,20 +160,22 @@ class Writeoff extends Component
         $outgoingDoc->products_data = json_encode($products_data);
         $outgoingDoc->to_contractor = '';
         $outgoingDoc->sum = $outgoingDoc->sum - $writeoffAmountPrice;
-        $outgoingDoc->currency = $company->currency->code;
+        $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $writeoffAmountCount;
         // $outgoingDoc->unit = $this->unit;
         $outgoingDoc->comment = $this->comment;
         $outgoingDoc->save();
 
+        session()->put('writeoffProducts', $this->writeoffProducts);
+
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $this->store_id;
-        $storeDoc->company_id = $company->id;
+        $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docType->id;
         $storeDoc->products_data = json_encode($products_data);
-        $storeDoc->from_contractor = $company->title;
+        $storeDoc->from_contractor = $this->company->title;
         $storeDoc->to_contractor = '';
         $storeDoc->incoming_price = 0;
         $storeDoc->outgoing_price = $writeoffAmountPrice;
@@ -162,6 +186,7 @@ class Writeoff extends Component
 
         // session()->forget('writeoffProducts');
         // $this->writeoffProducts = [];
+        $this->comment = null;
 
         session()->flash('message', 'Запись изменена.');
     }
@@ -174,7 +199,7 @@ class Writeoff extends Component
 
             $writeoffProducts = session()->get('writeoffProducts');
             $writeoffProducts[$id] = $product;
-            $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
+            // $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
 
             session()->put('writeoffProducts', $writeoffProducts);
             $this->search = '';
@@ -183,7 +208,7 @@ class Writeoff extends Component
         }
 
         $writeoffProducts[$id] = $product;
-        $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
+        // $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
 
         session()->put('writeoffProducts', $writeoffProducts);
         $this->search = '';
