@@ -42,7 +42,7 @@ class Writeoff extends Component
 
             $writeoffProducts = session()->get('writeoffProducts');
 
-            if (empty($value) || !is_numeric($value)) {
+            if ($value <= 0 || !is_numeric($value)) {
                 $writeoffProducts[$parts[1]]['writeoff_count'] = [$this->store_id => null];
                 $this->writeoff_count[$parts[1]][$this->store_id] = null;
                 session()->put('writeoffProducts', $writeoffProducts);
@@ -57,8 +57,14 @@ class Writeoff extends Component
 
     public function generateDocNo($store_id, $docNo = null)
     {
-        $lastDoc = OutgoingDoc::orderByDesc('id')->first();
-        $docNo = (is_null($docNo)) ? $store_id.'/'.++$lastDoc->id : $docNo;
+        $lastDoc = OutgoingDoc::where('doc_no', 'like', $store_id.'/_')->orderByDesc('id')->first();
+
+        if ($lastDoc && is_null($docNo)) {
+            list($first, $second) = explode('/', $lastDoc->doc_no);
+            $docNo = $first.'/'.++$second;
+        } elseif (is_null($docNo)) {
+            $docNo = $store_id.'/1';
+        }
 
         $existDoc = OutgoingDoc::where('doc_no', $docNo)->first();
 
@@ -85,9 +91,6 @@ class Writeoff extends Component
         $writeoffAmountCount = 0;
         $writeoffAmountPrice = 0;
 
-        // $this->writeoffProducts[962]['count_in_stores'] = json_encode(['1' => 5]);
-        // $this->writeoffProducts[963]['count_in_stores'] = json_encode(['1' => 5, '2' => 6]);
-
         $this->writeoffProducts = session()->get('writeoffProducts') ?? [];
 
         foreach($this->writeoffProducts as $productId => $writeoffProduct) {
@@ -97,23 +100,19 @@ class Writeoff extends Component
             $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
 
             /*
-             * Determine real count in store & If count in store empty, create & assing 0
+             * If writeoff count or count in store empty, return wrong
              */
-            if (isset($countInStores[$this->store_id])) {
-                $countInStore = $countInStores[$this->store_id];
-            } else {
-                $countInStore = 0;
-                $countInStores[$this->store_id] = 0;
-            }
-
-            if (empty($this->writeoff_count[$productId][$this->store_id]) || $this->writeoff_count[$productId][$this->store_id] <= 0) {
+            if (empty($this->writeoff_count[$productId][$this->store_id])
+                    || $this->writeoff_count[$productId][$this->store_id] <= 0
+                    || empty($countInStores[$this->store_id])) {
                 $this->addError('writeoff_count.'.$productId.'.'.$this->store_id, 'Wrong');
-                return false;
+                continue;
             }
 
+            $countInStore = $countInStores[$this->store_id] ?? 0;
             $writeoffCount = 0;
 
-            /*
+            /**
              * Prepare writeoff count & If writeoff count greater, assign $countInStore
              */
             if ($countInStore >= 1 && $this->writeoff_count[$productId][$this->store_id] <= $countInStore) {
@@ -145,10 +144,10 @@ class Writeoff extends Component
             $product->save();
         }
 
-        $docNo = $this->generateDocNo($this->store_id);
-
         // Writeoff Doc
         $docType = DocType::where('slug', 'forma-z-6')->first();
+
+        $docNo = $this->generateDocNo($this->store_id);
 
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $this->store_id;

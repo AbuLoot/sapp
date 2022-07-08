@@ -70,10 +70,14 @@ use App\Http\Livewire\Store\Writeoff;
 // use App\Http\Controllers\Cashbook\OutgoingOrderController;
 // use App\Http\Controllers\Cashbook\CashShiftJournalController;
 
-// Sanapp Store
-Route::redirect('/store', '/'.app()->getLocale().'/store');
+Route::get('test', function() {
+    echo 1 - -2;
+});
 
-Route::group(['prefix' => '{lang}/store', 'name' => 'store', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
+// Sanapp Store
+Route::redirect('/storage', '/'.app()->getLocale().'/storage');
+
+Route::group(['prefix' => '{lang}/storage', 'name' => 'storage', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
 
     // Route::get('/', [StoreIndexController::class, 'index']);
     // Route::get('/income', [StoreIndexController::class, 'income']);

@@ -20,11 +20,8 @@ class CreateRevisionsTable extends Migration
             $table->integer('user_id');
             $table->integer('doc_no');
             $table->json('products_ids');
-            $table->integer('products_count');
-            $table->integer('sum');
-            $table->char('title');
-            $table->integer('actual_count');
-            $table->integer('difference');
+            $table->integer('surplus_count');
+            $table->integer('shortage_count');
             $table->integer('surplus_sum');
             $table->integer('shortage_sum');
             $table->char('currency');

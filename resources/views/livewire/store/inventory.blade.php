@@ -2,7 +2,7 @@
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-      <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Ревизия</h4>
+      <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Ревизия {{ $docNo }}</h4>
 
       <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto" style="position: relative;">
         <input wire:model="search" type="search" list="datalistOptions" class="form-control" placeholder="Поиск..." aria-label="Search">
@@ -62,10 +62,9 @@
           </tr>
         </thead>
         <tbody>
-          <?php print_r($actualCount); ?>
           @forelse($revisionProducts as $index => $revisionProduct)
             <tr>
-              <td><a href="/{{ $lang }}/store/edit-product/{{ $revisionProduct->id }}">{{ $revisionProduct->title }}</a></td>
+              <td><a href="/{{ $lang }}/storage/edit-product/{{ $revisionProduct->id }}">{{ $revisionProduct->title }}</a></td>
               <td>
                 <?php $barcodes = json_decode($revisionProduct->barcodes, true) ?? ['']; ?>
                 @foreach($barcodes as $barcode)
@@ -97,8 +96,8 @@
                 <div class="input-group">
                   <input type="number" wire:model="actualCount.{{ $revisionProduct->id }}.{{ $store_id }}" class="form-control @error('actualCount.'.$revisionProduct->id.'.'.$store_id) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
-                  @error('actualCount.'.$revisionProduct->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
+                @error('actualCount.'.$revisionProduct->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
               </td>
               <td class="text-end"><a wire:click="deleteFromRevision({{ $revisionProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>

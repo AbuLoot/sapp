@@ -29,7 +29,7 @@
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">
-        <a href="/{{ $lang }}/store/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить товар</a>
+        <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить товар</a>
       </div>
     </div>
   </div>
@@ -76,7 +76,7 @@
         <tbody>
           @forelse($incomeProducts as $index => $incomeProduct)
             <tr>
-              <td><a href="/{{ $lang }}/store/edit-product/{{ $incomeProduct->id }}">{{ $incomeProduct->title }}</a></td>
+              <td><a href="/{{ $lang }}/storage/edit-product/{{ $incomeProduct->id }}">{{ $incomeProduct->title }}</a></td>
               <td>
                 <?php $barcodes = json_decode($incomeProduct->barcodes, true) ?? ['']; ?>
                 @foreach($barcodes as $barcode)

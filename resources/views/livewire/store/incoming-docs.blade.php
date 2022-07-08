@@ -27,7 +27,7 @@
             <a class="nav-link active" aria-current="page" href="#">Приходные</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/{{ $lang }}/store/docs/outgoing">Расходные</a>
+            <a class="nav-link" href="/{{ $lang }}/storage/docs/outgoing">Расходные</a>
           </li>
         </ul>
       </div>
@@ -51,7 +51,7 @@
         <tbody>
           @forelse($incomingDocs as $index => $incomingDoc)
             <tr>
-              <td><a href="/{{ $lang }}/store/edit-incomingDoc/{{ $incomingDoc->id }}">{{ $incomingDoc->doc_no }}</a></td>
+              <td><a href="/{{ $lang }}/storage/edit-incomingDoc/{{ $incomingDoc->id }}">{{ $incomingDoc->doc_no }}</a></td>
               <td>{{ $incomingDoc->sum }}</td>
               <td>{{ $incomingDoc->count }}</td>
               <td>{{ $incomingDoc->user->name }}</td>
@@ -140,7 +140,7 @@
                 <tbody>
                   @forelse($docProducts as $index => $product)
                     <tr>
-                      <td><a href="/{{ $lang }}/store/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+                      <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
                       <td>
                         <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
                         @foreach($barcodes as $barcode)

@@ -117,7 +117,7 @@ class ProductExtensionController extends Controller
             $products = Product::search($text)->where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
         }
 
-        $categories = Category::get()->toTree();
+        $categories = Category::orderBy('sort_id')->get()->toTree();
         $modes = Mode::all();
 
         $products->appends([
@@ -186,7 +186,7 @@ class ProductExtensionController extends Controller
 
     public function categoryProducts($lang, $id)
     {
-        $categories = Category::get()->toTree();
+        $categories = Category::orderBy('sort_id')->get()->toTree();
         $category = Category::find($id);
 
         if ($category->children && count($category->children) > 0) {

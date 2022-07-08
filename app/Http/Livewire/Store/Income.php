@@ -26,10 +26,6 @@ class Income extends Component
     public $incomeProducts = [];
     public $count = [];
 
-    protected $rules = [
-        // 'count.*' => 'require|numeric'
-    ];
-
     public function mount()
     {
         $this->lang = app()->getLocale();
@@ -61,8 +57,14 @@ class Income extends Component
 
     public function generateDocNo($store_id, $docNo = null)
     {
-        $lastDoc = IncomingDoc::orderByDesc('id')->first();
-        $docNo = (is_null($docNo)) ? $store_id.'/'.++$lastDoc->id : $docNo;
+        $lastDoc = IncomingDoc::where('doc_no', 'like', $store_id.'/_')->orderByDesc('id')->first();
+
+        if ($lastDoc && is_null($docNo)) {
+            list($first, $second) = explode('/', $lastDoc->doc_no);
+            $docNo = $first.'/'.++$second;
+        } elseif (is_null($docNo)) {
+            $docNo = $store_id.'/1';
+        }
 
         $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
 
@@ -101,13 +103,8 @@ class Income extends Component
             $incomeAmountCount = $incomeAmountCount + $incomeProduct['income_count'];
             $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $incomeProduct['income_count']);
 
-            if (is_object(json_decode($product->count_in_stores))) {
-                $count_in_stores = json_decode($product->count_in_stores, true) ?? [''];
-                $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
-            }
-            else {
-                $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
-            }
+            $count_in_stores = json_decode($product->count_in_stores, true) ?? [''];
+            $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
 
             $product->count_in_stores = json_encode($count_in_stores);
             $product->count += $incomeProduct['income_count'];
@@ -116,10 +113,10 @@ class Income extends Component
 
         $company = auth()->user()->profile->company;
 
-        $docNo = $this->generateDocNo($this->store_id);
-
         // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
+
+        $docNo = $this->generateDocNo($this->store_id);
 
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $company->stores->first()->id;
@@ -155,7 +152,6 @@ class Income extends Component
 
         session()->forget('incomeProducts');
         $this->incomeProducts = [];
-        // dd($product, $products_data, $incomingDoc, $storeDoc);
     }
 
     public function addToIncome($id)

@@ -106,8 +106,14 @@ class AddProduct extends Component
 
     public function generateDocNo($store_id, $docNo = null)
     {
-        $lastDoc = IncomingDoc::orderByDesc('id')->first();
-        $docNo = (is_null($docNo)) ? $store_id.'/'.++$lastDoc->id : $docNo;
+        $lastDoc = IncomingDoc::where('doc_no', 'like', $store_id.'/_')->orderByDesc('id')->first();
+
+        if ($lastDoc && is_null($docNo)) {
+            list($first, $second) = explode('/', $lastDoc->doc_no);
+            $docNo = $first.'/'.++$second;
+        } elseif (is_null($docNo)) {
+            $docNo = $store_id.'/1';
+        }
 
         $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
 
@@ -116,9 +122,6 @@ class AddProduct extends Component
             $docNo = $first.'/'.++$second;
             return $this->generateDocNo($store_id, $docNo);
         }
-        // if ($store_id == 3) {
-            // dd($store_id, $docNo, $existDoc);
-        // }
 
         return $docNo;
     }

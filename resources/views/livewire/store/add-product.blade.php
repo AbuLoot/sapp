@@ -194,7 +194,7 @@
         <div class="row">
           <div class="offset-lg-6 col-lg-6">
             <div class="d-grid" role="group" aria-label="Basic example">
-              <a href="/{{ $lang }}/store" class="btn btn-secondary"><i class="be bi-arrow-left-circle-fill me-2"></i> Назад</a>
+              <a href="/{{ $lang }}/storage" class="btn btn-secondary"><i class="be bi-arrow-left-circle-fill me-2"></i> Назад</a>
             </div>
           </div>
         </div>

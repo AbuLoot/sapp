@@ -24,7 +24,7 @@
       <div class="col-6">
         <ul class="nav nav-pills gap-2 small mb-3">
           <li class="nav-item">
-            <a class="nav-link" href="/{{ $lang }}/store/docs">Приходные</a>
+            <a class="nav-link" href="/{{ $lang }}/storage/docs">Приходные</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">Расходные</a>
@@ -51,7 +51,7 @@
         <tbody>
           @forelse($outgoingDocs as $index => $outgoingDoc)
             <tr>
-              <td><a href="/{{ $lang }}/store/edit-outgoingDoc/{{ $outgoingDoc->id }}">{{ $outgoingDoc->doc_no }}</a></td>
+              <td><a href="/{{ $lang }}/storage/edit-outgoingDoc/{{ $outgoingDoc->id }}">{{ $outgoingDoc->doc_no }}</a></td>
               <td>{{ $outgoingDoc->sum }}</td>
               <td>{{ $outgoingDoc->count }}</td>
               <td>{{ $outgoingDoc->user->name }}</td>
@@ -141,7 +141,7 @@
                 <tbody>
                   @forelse($docProducts as $index => $product)
                     <tr>
-                      <td><a href="/{{ $lang }}/store/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+                      <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
                       <td>
                         <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
                         @foreach($barcodes as $barcode)

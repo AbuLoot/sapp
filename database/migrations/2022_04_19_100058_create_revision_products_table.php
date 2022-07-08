@@ -18,8 +18,6 @@ class CreateRevisionProductsTable extends Migration
             $table->integer('revision_id');
             $table->integer('product_id');
             $table->integer('category_id');
-            $table->char('title');
-            $table->char('slug');
             $table->char('barcode');
             $table->integer('purchase_price');
             $table->integer('selling_price');
@@ -27,6 +25,8 @@ class CreateRevisionProductsTable extends Migration
             $table->integer('estimated_count');
             $table->integer('actual_count');
             $table->integer('difference');
+            $table->integer('surplus_count');
+            $table->integer('shortage_count');
         });
     }
 

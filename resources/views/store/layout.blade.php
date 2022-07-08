@@ -48,19 +48,22 @@
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav py-2 mx-auto">
           <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/store')) active @endif" aria-current="page" href="/{{ $lang }}/store">Главная</a>
+            <a class="nav-link px-3 @if(Request::is($lang.'/storage')) active @endif" aria-current="page" href="/{{ $lang }}/storage">Главная</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/store/docs*')) active @endif" href="/{{ $lang }}/store/docs">Накладные</a>
+            <a class="nav-link px-3 @if(Request::is($lang.'/storage/docs*')) active @endif" href="/{{ $lang }}/storage/docs">Накладные</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/store/inventory*')) active @endif" href="/{{ $lang }}/store/inventory">Ревизия</a>
+            <a class="nav-link px-3 @if(Request::is($lang.'/storage/inventory*')) active @endif" href="/{{ $lang }}/storage/inventory">Ревизия</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/store/income*')) active @endif" href="/{{ $lang }}/store/income">Новый приход</a>
+            <a class="nav-link px-3 @if(Request::is($lang.'/storage/income*')) active @endif" href="/{{ $lang }}/storage/income">Новый приход</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/store/writeoff*')) active @endif" href="/{{ $lang }}/store/writeoff">Списание</a>
+            <a class="nav-link px-3 @if(Request::is($lang.'/storage/writeoff*')) active @endif" href="/{{ $lang }}/storage/writeoff">Списание</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 @if(Request::is($lang.'/storage/storedocs*')) active @endif" href="/{{ $lang }}/storage/storedocs">Складская книга</a>
           </li>
         </ul>
 
