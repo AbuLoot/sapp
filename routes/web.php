@@ -60,6 +60,7 @@ use App\Http\Livewire\Store\Income;
 use App\Http\Livewire\Store\IncomingDocs;
 use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Inventory;
+use App\Http\Livewire\Store\InventoryHistory;
 use App\Http\Livewire\Store\Writeoff;
 
 // Cashbook
@@ -79,9 +80,7 @@ Route::redirect('/storage', '/'.app()->getLocale().'/storage');
 
 Route::group(['prefix' => '{lang}/storage', 'name' => 'storage', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
 
-    // Route::get('/', [StoreIndexController::class, 'index']);
-    // Route::get('/income', [StoreIndexController::class, 'income']);
-
+    // Livewire Routes
     Route::get('/', Index::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
@@ -89,9 +88,14 @@ Route::group(['prefix' => '{lang}/storage', 'name' => 'storage', 'middleware' =>
     Route::get('docs', IncomingDocs::class);
     Route::get('docs/outgoing', OutgoingDocs::class);
     Route::get('inventory', Inventory::class);
+    Route::get('inventory-history', InventoryHistory::class);
+    Route::get('inventory-detail/{id}', InventoryDetails::class);
     Route::get('writeoff', Writeoff::class);
 
-    /*Route::resources([
+    /*Route::get('/', [StoreIndexController::class, 'index']);
+    Route::get('/income', [StoreIndexController::class, 'income']);
+
+    Route::resources([
         'store' => StoreController::class,
         'docs' => IncomingDocController::class,
         'outgoing_docs' => OutgoingDocController::class,

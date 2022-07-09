@@ -136,12 +136,12 @@ class Writeoff extends Component
             $countInStores[$this->store_id] = $finalCount;
             $amountCount = collect($countInStores)->sum();
 
-            $this->writeoffProducts[$productId]['count_in_stores'] = json_encode($countInStores);
-            $this->writeoffProducts[$productId]['count'] = $amountCount;
-
             $product->count_in_stores = json_encode($countInStores);
             $product->count = $amountCount;
             $product->save();
+
+            $this->writeoffProducts[$productId]['count_in_stores'] = json_encode($countInStores);
+            $this->writeoffProducts[$productId]['count'] = $amountCount;
         }
 
         // Writeoff Doc

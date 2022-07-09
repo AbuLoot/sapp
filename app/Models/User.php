@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\OutgoingDoc');
     }
+
+    public function revisions()
+    {
+        return $this->hasMany('App\Models\Revision');
+    }
 }

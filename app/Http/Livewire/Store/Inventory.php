@@ -94,7 +94,7 @@ class Inventory extends Component
         // If revision count empty, return wrong
         foreach($this->revisionProducts as $productId => $revisionProduct) {
 
-            if (is_null($this->actualCount[$productId][$this->store_id])
+            if (empty($this->actualCount[$productId][$this->store_id])
                     || $this->actualCount[$productId][$this->store_id] < 0) {
                 $this->addError('actualCount.'.$productId.'.'.$this->store_id, 'Wrong');
                 return false;
@@ -104,9 +104,9 @@ class Inventory extends Component
         $products_data = [];
         $countInStores = [];
         $shortageAmountCount = null;
-        $shortageAmountPrice = null;
+        $shortageAmountPrice = 0;
         $surplusAmountCount = null;
-        $surplusAmountPrice = null;
+        $surplusAmountPrice = 0;
 
         // Store revision products
         foreach($this->revisionProducts as $productId => $revisionProduct) {
@@ -114,6 +114,7 @@ class Inventory extends Component
             $product = Product::findOrFail($productId);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
+            unset($countInStores[0]);
             $countInStore = $countInStores[$this->store_id] ?? 0;
 
             // If count in store and revision count equal, return error
@@ -126,7 +127,7 @@ class Inventory extends Component
             $difference = $this->actualCount[$productId][$this->store_id] - $countInStore;
 
             $barcodes = json_decode($product->barcodes, true) ?? [];
-            $barcode = $barcodes[0];
+            $barcode = (isset($barcodes[0])) ? $barcodes[0] : '';
 
             $products_data[$productId]['barcode'] = $barcode;
             $products_data[$productId]['purchase_price'] = $product->purchase_price;
@@ -139,7 +140,7 @@ class Inventory extends Component
                 $products_data[$productId]['shortage_count'] = abs($difference);
                 $products_data[$productId]['shortage_sum'] = $product->purchase_price * abs($difference);
                 $products_data[$productId]['surplus_count'] = null;
-                $products_data[$productId]['surplus_sum'] = null;
+                $products_data[$productId]['surplus_sum'] = 0;
 
                 $shortageAmountCount = $shortageAmountCount + abs($difference);
                 $shortageAmountPrice = $shortageAmountPrice + ($product->purchase_price * abs($difference));
@@ -148,7 +149,7 @@ class Inventory extends Component
                 $products_data[$productId]['surplus_count'] = $difference;
                 $products_data[$productId]['surplus_sum'] = $product->purchase_price * $difference;
                 $products_data[$productId]['shortage_count'] = null;
-                $products_data[$productId]['shortage_sum'] = null;
+                $products_data[$productId]['shortage_sum'] = 0;
 
                 $surplusAmountCount = $surplusAmountCount + $difference;
                 $surplusAmountPrice = $surplusAmountPrice + ($product->purchase_price * $difference);
@@ -159,11 +160,11 @@ class Inventory extends Component
             $product->count_in_stores = json_encode($countInStores);
             $product->count = $amountCount;
             $product->save();
+
+            $this->revisionProducts[$productId] = $product;
         }
 
         $docNo = $this->generateDocNo($this->store_id, $this->docNo);
-
-        // dd($docNo, $products_data, $surplusAmountCount, $surplusAmountPrice, $shortageAmountCount, $shortageAmountPrice);
 
         $revision = new Revision;
         $revision->store_id = $this->store_id;
@@ -178,6 +179,8 @@ class Inventory extends Component
         $revision->currency = $this->company->currency->code;
         // $revision->comment = '';
         $revision->save();
+
+        session()->put('revisionProducts', $this->revisionProducts);
 
         /*$revisionProduct = new RevisionProduct;
         $revisionProduct->revision_id = $revision->id;
@@ -227,7 +230,6 @@ class Inventory extends Component
 
             $revisionProducts = session()->get('revisionProducts');
             $revisionProducts[$id] = $product;
-            $revisionProducts[$id]['revision_count'] = 0;
 
             session()->put('revisionProducts', $revisionProducts);
             $this->search = '';
@@ -236,7 +238,6 @@ class Inventory extends Component
         }
 
         $revisionProducts[$id] = $product;
-        $revisionProducts[$id]['revision_count'] = 0;
 
         session()->put('revisionProducts', $revisionProducts);
         $this->search = '';
@@ -258,14 +259,14 @@ class Inventory extends Component
 
     public function render()
     {
-        if (strlen($this->search) >= 2) {
-            $products = Product::search($this->search)->orderBy('id', 'desc')->paginate(5);
-        } else {
-            $products = [];
-        }
+        $products = (strlen($this->search) >= 2)
+            ? Product::search($this->search)->orderBy('id', 'desc')->paginate(5)
+            : [];
 
         $this->revisionProducts = session()->get('revisionProducts') ?? [];
         $this->docNo = $this->generateDocNo($this->store_id);
+
+        // session()->forget('revisionProducts');
 
         return view('livewire.store.inventory', ['products' => $products])
             ->layout('store.layout');

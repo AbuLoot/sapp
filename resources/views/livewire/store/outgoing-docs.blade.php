@@ -47,8 +47,7 @@
             <th scope="col">Дата и время</th>
             <th class="text-end" scope="col">Функции</th>
           </tr>
-        </thead>
-        <tbody>
+        </thead>        <tbody>
           @forelse($outgoingDocs as $index => $outgoingDoc)
             <tr>
               <td><a href="/{{ $lang }}/storage/edit-outgoingDoc/{{ $outgoingDoc->id }}">{{ $outgoingDoc->doc_no }}</a></td>

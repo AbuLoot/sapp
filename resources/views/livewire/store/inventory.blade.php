@@ -29,14 +29,25 @@
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">
-        <a href="revision-history.html" class="btn btn-primary"><i class="bi bi-clock-history me-2"></i> История ревизий</a>
+        <a href="/{{ $lang }}/storage/inventory-history" class="btn btn-primary"><i class="bi bi-clock-history me-2"></i> История ревизий</a>
       </div>
     </div>
   </div>
 
   <!-- Content -->
   <div class="container">
-    
+
+    @if(session()->has('message'))
+      <div class="toast-container position-fixed bottom-0 end-0 p-4">
+        <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body text-white">{{ session('message') }}</div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+    @endif
+
     <div class="text-end">
       @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
@@ -79,19 +90,14 @@
 
                 $countInStores = json_decode($revisionProduct->count_in_stores, true) ?? [];
                 $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
-
-                $revisionCountProduct = 0;
+                $difference = 0;
 
                 if (isset($actualCount[$revisionProduct->id][$store_id])) {
-                  if ($countInStore >= 1 && $actualCount[$revisionProduct->id][$store_id] < $countInStore) {
-                    $defferentCount = $countInStore - $actualCount[$revisionProduct->id][$store_id];
-                  } elseif ($countInStore < $actualCount[$revisionProduct->id][$store_id]) {
-                    $defferentCount = $actualCount[$revisionProduct->id][$store_id] - $countInStore;
-                  }
+                  $difference = $actualCount[$revisionProduct->id][$store_id] - $countInStore;
                 }
               ?>
-              <td>{{ $revisionProduct->count + $revisionCountProduct . $unit }}</td>
-              <td>{{ $countInStore - $revisionCountProduct . $unit }}</td>
+              <td>{{ $revisionProduct->count + $difference . $unit }}</td>
+              <td>{{ $countInStore + $difference . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
                   <input type="number" wire:model="actualCount.{{ $revisionProduct->id }}.{{ $store_id }}" class="form-control @error('actualCount.'.$revisionProduct->id.'.'.$store_id) is-invalid @enderror" required>
