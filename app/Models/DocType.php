@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class DocType extends Model
 {
     use HasFactory;
+
+    public function store_docs()
+    {
+        return $this->hasMany('App\Models\StoreDoc');
+    }
 }

@@ -32,8 +32,8 @@ class InventoryHistory extends Component
     public function render()
     {
         $revisions = ($this->search)
-            ? Revision::where('doc_no', 'like', '%'.$this->search.'%')->orderBy('id', 'desc')->paginate(25)
-            : Revision::orderBy('id', 'desc')->paginate(25);
+            ? Revision::where('doc_no', 'like', '%'.$this->search.'%')->where('store_id', $this->store_id)->orderBy('id', 'desc')->paginate(25)
+            : Revision::orderBy('id', 'desc')->where('store_id', $this->store_id)->paginate(25);
 
         return view('livewire.store.inventory-history', ['revisions' => $revisions])
             ->layout('store.layout');

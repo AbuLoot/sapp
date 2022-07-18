@@ -119,10 +119,11 @@
     <div class="row">
       <div class="col-3">
         <div class="form-floating">
-          <textarea wire:model="barcodeAndCount" class="form-control @error('barcodeAndCount') is-invalid @enderror" id="barcode-and-count" style="height: 120px" placeholder="Причина списания"></textarea>
-          @error('barcodeAndCount')<div class="text-danger">{{ $message }}</div>@enderror
+          <textarea wire:model="barcodesCount" class="form-control @error('barcodesCount') is-invalid @enderror" id="barcode-and-count" style="height: 120px" placeholder="Причина списания"></textarea>
+          @error('barcodesCount')<div class="text-danger">{{ $message }}</div>@enderror
           <label for="barcode-and-count">Штрихкод и количество</label>
         </div>
+        <a href="#" wire:click="checkBarcodesCount" class="btn btn-primary mt-3"><i class="bi bi-file-check-fill me-2"></i> Проверить</a>
       </div>
       <div class="col-auto">
         <select wire:model="store_id" class="form-control @error('store_id') is-invalid @enderror" id="store_id">
@@ -137,6 +138,46 @@
         @if($revisionProducts)
           <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
         @endif
+      </div>
+    </div>
+  </div>
+
+  @if($revisionModal)
+    <script type="text/javascript">
+      var myModal = new bootstrap.Modal(document.getElementById("revisionModal"), {});
+      myModal.show();
+
+      // Refresh page
+      var revisionModal = document.getElementById('revisionModal');
+      revisionModal.addEventListener('hide.bs.modal', event => {
+        document.location.reload()
+      })
+    </script>
+  @endif
+
+  <!-- Modal -->
+  <div class="modal fade" id="revisionModal" tabindex="-1" aria-labelledby="revisionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="revisionModalLabel">Результат ревизии</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          @if(!empty($products_data))
+            <div class="row">
+              <div class="col-6">Количество товаров:</div>
+              <div class="col-6">{{ $products_data['products_count'] }}</div>
+              <div class="col-6">Количество недостач:</div>
+              <div class="col-6">{{ $products_data['shortage_count'] }}</div>
+              <div class="col-6">Количество излишек:</div>
+              <div class="col-6">{{ $products_data['surplus_count'] }}</div>
+            </div>
+          @endif
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
       </div>
     </div>
   </div>

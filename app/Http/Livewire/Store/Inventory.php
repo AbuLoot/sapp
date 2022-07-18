@@ -25,7 +25,11 @@ class Inventory extends Component
     public $search = '';
     public $revisionProducts = [];
     public $actualCount = [];
-    public $barcodeAndCount = [];
+    public $barcodesCount = [];
+    public $products_data = [];
+    public $revisionModal = false;
+
+    protected $listeners = ['checkData' => '$refresh'];
 
     public function mount()
     {
@@ -56,6 +60,18 @@ class Inventory extends Component
         }
     }
 
+    public function render()
+    {
+        $products = (strlen($this->search) >= 2)
+            ? Product::search($this->search)->orderBy('id', 'desc')->paginate(5)
+            : [];
+
+        $this->revisionProducts = session()->get('revisionProducts') ?? [];
+        $this->docNo = $this->generateDocNo($this->store_id);
+
+        return view('livewire.store.inventory', ['products' => $products])->layout('store.layout');
+    }
+
     public function generateDocNo($store_id, $docNo = null)
     {
         if (is_null($docNo)) {
@@ -79,6 +95,58 @@ class Inventory extends Component
         }
 
         return $docNo;
+    }
+
+    public function checkBarcodesCount()
+    {
+        // If store id empty, return wrong
+        if (empty($this->barcodesCount) || strlen($this->barcodesCount) < 14) {
+            $this->addError('barcodesCount', 'Некорректное значение');
+            return false;
+        } else {
+            $this->resetErrorBag('barcodesCount');
+        }
+
+        $barcodesCount = explode("\n", trim($this->barcodesCount));
+
+        $products_data['products_count'] = 0;
+        $products_data['shortage_count'] = 0;
+        $products_data['surplus_count'] = 0;
+
+        foreach ($barcodesCount as $barcodeCount) {
+
+            list($barcode) = explode(' ', $barcodeCount);
+            $count = trim(strstr($barcodeCount, ' '));
+
+            if (empty($barcodeCount) || strlen($barcodeCount) < 14) {
+                continue;
+            }
+
+            // If count empty, return wrong
+            if (!isset($count) || strlen($barcodeCount) > 24) {
+                $this->addError('barcodesCount', 'Некорректное значение');
+                return false;
+            }
+
+            $product = Product::whereJsonContains('barcodes', $barcode)->first();
+
+            $countInStores = json_decode($product->count_in_stores, true) ?? [];
+            unset($countInStores[0]);
+            $countInStore = $countInStores[$this->store_id] ?? 0;
+
+            $difference = (int) $count - (int) $countInStore;
+
+            $products_data['products_count'] += 1;
+
+            if ($difference < 0) {
+                $products_data['shortage_count'] += abs($difference);
+            } elseif($difference > 0) {
+                $products_data['surplus_count'] += $difference;
+            }
+        }
+
+        $this->products_data = $products_data;
+        $this->revisionModal = true;
     }
 
     public function makeDoc()
@@ -255,20 +323,5 @@ class Inventory extends Component
 
         session()->forget('revisionProducts');
         $this->revisionProducts = [];
-    }
-
-    public function render()
-    {
-        $products = (strlen($this->search) >= 2)
-            ? Product::search($this->search)->orderBy('id', 'desc')->paginate(5)
-            : [];
-
-        $this->revisionProducts = session()->get('revisionProducts') ?? [];
-        $this->docNo = $this->generateDocNo($this->store_id);
-
-        // session()->forget('revisionProducts');
-
-        return view('livewire.store.inventory', ['products' => $products])
-            ->layout('store.layout');
     }
 }

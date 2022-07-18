@@ -61,19 +61,17 @@ use App\Http\Livewire\Store\IncomingDocs;
 use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Inventory;
 use App\Http\Livewire\Store\InventoryHistory;
+use App\Http\Livewire\Store\InventoryDetail;
 use App\Http\Livewire\Store\Writeoff;
+use App\Http\Livewire\Store\StoreDocs;
 
 // Cashbook
-// use App\Http\Controllers\Cashbook\CashbookIndexController;
+use App\Http\Controllers\Cashbook\CashbookIndexController;
 // use App\Http\Controllers\Cashbook\CashDocController;
 // use App\Http\Controllers\Cashbook\IncomingOrderController;
 // use App\Http\Controllers\Cashbook\IncomingCheckController;
 // use App\Http\Controllers\Cashbook\OutgoingOrderController;
 // use App\Http\Controllers\Cashbook\CashShiftJournalController;
-
-Route::get('test', function() {
-    echo 1 - -2;
-});
 
 // Sanapp Store
 Route::redirect('/storage', '/'.app()->getLocale().'/storage');
@@ -89,8 +87,9 @@ Route::group(['prefix' => '{lang}/storage', 'name' => 'storage', 'middleware' =>
     Route::get('docs/outgoing', OutgoingDocs::class);
     Route::get('inventory', Inventory::class);
     Route::get('inventory-history', InventoryHistory::class);
-    Route::get('inventory-detail/{id}', InventoryDetails::class);
+    Route::get('inventory-detail/{id}', InventoryDetail::class);
     Route::get('writeoff', Writeoff::class);
+    Route::get('storedocs', StoreDocs::class);
 
     /*Route::get('/', [StoreIndexController::class, 'index']);
     Route::get('/income', [StoreIndexController::class, 'income']);
