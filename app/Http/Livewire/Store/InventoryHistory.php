@@ -36,6 +36,6 @@ class InventoryHistory extends Component
             : Revision::orderBy('id', 'desc')->where('store_id', $this->store_id)->paginate(25);
 
         return view('livewire.store.inventory-history', ['revisions' => $revisions])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

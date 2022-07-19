@@ -57,6 +57,6 @@ class StoreDocs extends Component
         }
 
         return view('livewire.store.store-docs', ['storeDocs' => $storeDocs])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

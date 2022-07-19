@@ -25,6 +25,15 @@ use App\Http\Controllers\Joystick\RoleController;
 use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
 
+// Site Controllers
+use App\Http\Controllers\InputController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavouriteController;
+use App\Http\Controllers\PostController as NewsController;
+use App\Http\Controllers\PageController as SiteController;
+
 // Sanapp Admin Controllers
 use App\Http\Controllers\Joystick\OfficeController;
 use App\Http\Controllers\Joystick\StoreController;
@@ -35,25 +44,8 @@ use App\Http\Controllers\Joystick\PaymentTypeController;
 use App\Http\Controllers\Joystick\DocTypeController;
 use App\Http\Controllers\Joystick\DiscountController;
 
-// Site Controllers
-use App\Http\Controllers\InputController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\FavouriteController;
-use App\Http\Controllers\PostController as NewsController;
-use App\Http\Controllers\PageController as SiteController;
-
 // Store
-// use App\Http\Controllers\Store\StoreIndexController;
-// use App\Http\Controllers\Store\DocController;
-// use App\Http\Controllers\Store\RevisionController;
-// use App\Http\Controllers\Store\RevisionProductController;
-// use App\Http\Controllers\Store\WriteoffController;
-// use App\Http\Controllers\Store\IncomingDocController;
-// use App\Http\Controllers\Store\OutgoingDocController;
-
-use App\Http\Livewire\Store\Index;
+use App\Http\Livewire\Store\Index as StoreIndex;
 use App\Http\Livewire\Store\AddProduct;
 use App\Http\Livewire\Store\EditProduct;
 use App\Http\Livewire\Store\Income;
@@ -66,20 +58,15 @@ use App\Http\Livewire\Store\Writeoff;
 use App\Http\Livewire\Store\StoreDocs;
 
 // Cashbook
-use App\Http\Controllers\Cashbook\CashbookIndexController;
-// use App\Http\Controllers\Cashbook\CashDocController;
-// use App\Http\Controllers\Cashbook\IncomingOrderController;
-// use App\Http\Controllers\Cashbook\IncomingCheckController;
-// use App\Http\Controllers\Cashbook\OutgoingOrderController;
-// use App\Http\Controllers\Cashbook\CashShiftJournalController;
+use App\Http\Livewire\Cashbook\Index as CashbookIndex;
 
-// Sanapp Store
+// Sanapp Storage
 Route::redirect('/storage', '/'.app()->getLocale().'/storage');
 
-Route::group(['prefix' => '{lang}/storage', 'name' => 'storage', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
+Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
 
     // Livewire Routes
-    Route::get('/', Index::class);
+    Route::get('/', StoreIndex::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
     Route::get('income', Income::class);
@@ -90,37 +77,15 @@ Route::group(['prefix' => '{lang}/storage', 'name' => 'storage', 'middleware' =>
     Route::get('inventory-detail/{id}', InventoryDetail::class);
     Route::get('writeoff', Writeoff::class);
     Route::get('storedocs', StoreDocs::class);
-
-    /*Route::get('/', [StoreIndexController::class, 'index']);
-    Route::get('/income', [StoreIndexController::class, 'income']);
-
-    Route::resources([
-        'store' => StoreController::class,
-        'docs' => IncomingDocController::class,
-        'outgoing_docs' => OutgoingDocController::class,
-        'revision' => RevisionController::class,
-        'writeoff' => WriteoffController::class,
-        'companies' => CompanyController::class,
-        'categories' => CategoryController::class,
-        'products' => ProductController::class,
-    ]);*/
 });
 
 // Sanapp Cashbook
-// Route::redirect('/cashbook', '/'.app()->getLocale().'/cashbook');
+Route::redirect('/cashbook', '/'.app()->getLocale().'/cashbook');
 
 Route::group(['prefix' => '{lang}/cashbook', 'middleware' => ['auth' , 'roles:admin|cashier']], function () {
 
-    Route::get('/', [CashbookIndexController::class, 'index']);
-
-    Route::resources([
-        // 'cashbook' => CashbookIndexController::class,
-        // 'cash_docs' => CashDocController::class,
-        // 'cash_shift_journal' => CashShiftJournalController::class,
-        // 'incoming_orders' => IncomingOrderController::class,
-        // 'incoming_checks' => IncomingCheckController::class,
-        // 'outgoing_orders' => OutgoingOrderController::class,
-    ]);
+    // Livewire Routes
+    Route::get('/', CashbookIndex::class);
 });
 
 // Sanapp Joystick Administration

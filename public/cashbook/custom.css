@@ -21,8 +21,12 @@
   background-color: #75b798;
 }
 
+.bg-brand-border {
+  border-bottom: 5px solid #463bab;
+}
 .cash-operations .btn {
   font-size: 1.1rem;
   line-height: 1.4;
   padding: 0.375rem 0.375rem;
+  /*border-bottom: 3px solid #464e54;*/
 }

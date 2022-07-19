@@ -38,6 +38,6 @@ class Index extends Component
         }
 
         return view('livewire.store.index', ['products' => $products])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

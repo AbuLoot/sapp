@@ -60,18 +60,6 @@ class Inventory extends Component
         }
     }
 
-    public function render()
-    {
-        $products = (strlen($this->search) >= 2)
-            ? Product::search($this->search)->orderBy('id', 'desc')->paginate(5)
-            : [];
-
-        $this->revisionProducts = session()->get('revisionProducts') ?? [];
-        $this->docNo = $this->generateDocNo($this->store_id);
-
-        return view('livewire.store.inventory', ['products' => $products])->layout('store.layout');
-    }
-
     public function generateDocNo($store_id, $docNo = null)
     {
         if (is_null($docNo)) {
@@ -250,7 +238,7 @@ class Inventory extends Component
 
         session()->put('revisionProducts', $this->revisionProducts);
 
-        /*$revisionProduct = new RevisionProduct;
+        $revisionProduct = new RevisionProduct;
         $revisionProduct->revision_id = $revision->id;
         $revisionProduct->product_id = $product->id;
         $revisionProduct->category_id = $product->category_id;
@@ -264,7 +252,7 @@ class Inventory extends Component
         $revisionProduct->difference = $difference;
         $revisionProduct->surplus_count = $surplus_count;
         $revisionProduct->shortage_count = $shortage_count;
-        $revisionProduct->save();*/
+        $revisionProduct->save();
 
         // Inventory Doc
         $docType = DocType::where('slug', 'forma-inv-6')->first();
@@ -311,7 +299,7 @@ class Inventory extends Component
         $this->search = '';
     }
 
-    public function deleteFromRevision($id)
+    public function removeFromRevision($id)
     {
         $revisionProducts = session()->get('revisionProducts');
 
@@ -323,5 +311,18 @@ class Inventory extends Component
 
         session()->forget('revisionProducts');
         $this->revisionProducts = [];
+    }
+
+    public function render()
+    {
+        $products = (strlen($this->search) >= 2)
+            ? Product::search($this->search)->get()->take(7)
+            : [];
+
+        $this->revisionProducts = session()->get('revisionProducts') ?? [];
+        $this->docNo = $this->generateDocNo($this->store_id);
+
+        return view('livewire.store.inventory', ['products' => $products])
+            ->layout('livewire.store.layout');
     }
 }

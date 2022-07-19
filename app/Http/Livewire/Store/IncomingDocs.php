@@ -51,6 +51,6 @@ class IncomingDocs extends Component
         }
 
         return view('livewire.store.incoming-docs', ['incomingDocs' => $incomingDocs])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

@@ -35,6 +35,6 @@ class InventoryDetail extends Component
     public function render()
     {
         return view('livewire.store.inventory-detail')
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

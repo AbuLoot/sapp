@@ -149,6 +149,6 @@ class EditProduct extends Component
         $units = Unit::all();
 
         return view('livewire.store.edit-product', ['units' => $units, 'currency' => $currency])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

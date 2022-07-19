@@ -240,6 +240,6 @@ class Writeoff extends Component
         $this->writeoffProducts = session()->get('writeoffProducts') ?? [];
 
         return view('livewire.store.writeoff', ['products' => $products])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

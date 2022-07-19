@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
-  <header class="p-3 bg-brand">
+  <header class="p-3 bg-brand bg-brand-border">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="#" class="me-4">

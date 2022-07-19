@@ -202,6 +202,6 @@ class Income extends Component
         $this->incomeProducts = session()->get('incomeProducts') ?? [];
 
         return view('livewire.store.income', ['products' => $products])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

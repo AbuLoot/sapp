@@ -51,6 +51,6 @@ class OutgoingDocs extends Component
         }
 
         return view('livewire.store.outgoing-docs', ['outgoingDocs' => $outgoingDocs])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }

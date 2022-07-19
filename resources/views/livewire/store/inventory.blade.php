@@ -5,7 +5,7 @@
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Ревизия {{ $docNo }}</h4>
 
       <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto" style="position: relative;">
-        <input wire:model="search" type="search" list="datalistOptions" class="form-control" placeholder="Поиск..." aria-label="Search">
+        <input wire:model="search" type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
         @if($products)
           <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
             <ul class="list-unstyled mb-0">
@@ -105,7 +105,7 @@
                 </div>
                 @error('actualCount.'.$revisionProduct->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
               </td>
-              <td class="text-end"><a wire:click="deleteFromRevision({{ $revisionProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+              <td class="text-end"><a wire:click="removeFromRevision({{ $revisionProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
           @empty
             <tr>
@@ -160,7 +160,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="revisionModalLabel">Результат ревизии</h5>
+          <h5 class="modal-title" id="revisionModalLabel">Ревизия cклада {{ $store_id }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

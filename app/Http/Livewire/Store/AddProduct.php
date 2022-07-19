@@ -226,6 +226,6 @@ class AddProduct extends Component
         $this->doc_no = $this->generateDocNo($stores->first()->id);
 
         return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
-            ->layout('store.layout');
+            ->layout('livewire.store.layout');
     }
 }
