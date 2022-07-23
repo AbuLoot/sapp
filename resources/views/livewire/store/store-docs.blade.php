@@ -42,9 +42,9 @@
               <td>{{ $storeDoc->store->id }}</td>
               <td>{{ $storeDoc->user->name }}</td>
               <td>{{ $storeDoc->to_contractor }}</td>
-              <td>{{ $storeDoc->incoming_price }}</td>
-              <td>{{ $storeDoc->outgoing_price }}</td>
-              <td>{{ $storeDoc->amount }}</td>
+              <td>{{ $storeDoc->incoming_amount }}</td>
+              <td>{{ $storeDoc->outgoing_amount }}</td>
+              <td>{{ $storeDoc->sum }}</td>
               <td>{{ $storeDoc->created_at }}</td>
               <td class="text-end"><button wire:click="docDetail({{ $storeDoc->id }})" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
             </tr>
@@ -108,15 +108,15 @@
                     </tr>
                     <tr>
                       <th scope="row">Сумма прихода</th>
-                      <td>{{ $docDetail->incoming_price }}</td>
+                      <td>{{ $docDetail->incoming_amount }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Сумма расхода</th>
-                      <td>{{ $docDetail->outgoing_price }}</td>
+                      <td>{{ $docDetail->outgoing_amount }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Количество</th>
-                      <td>{{ $docDetail->amount }}</td>
+                      <td>{{ $docDetail->sum }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Дата и время</th>

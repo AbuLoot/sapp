@@ -45,7 +45,7 @@ class AddCategory extends Component
         }
 
         $this->emitUp('newData');
-        session()->flash('message', 'Запись добавлена.');
+        session()->flash('message', 'Запись добавлена');
         // $this->dispatchBrowserEvent('hide-modal');
     }
 

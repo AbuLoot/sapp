@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class CashDoc extends Model
 {
     use HasFactory;
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
+
+    public function cashbook()
+    {
+        return $this->belongsTo('App\Models\Cashbook', 'cashbook_id');
+    }
+
+    public function doc_type()
+    {
+        return $this->belongsTo('App\Models\DocType', 'doc_type_id');
+    }
 }

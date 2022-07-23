@@ -19,7 +19,7 @@ class CreateIncomingChecksTable extends Migration
             $table->integer('company_id');
             $table->integer('user_id');
             $table->integer('doc_type_id');
-            $table->json('products_ids');
+            $table->json('products_data')->nullable();
             $table->char('from_contractor');
             $table->integer('sum');
             $table->char('currency');

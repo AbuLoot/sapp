@@ -140,7 +140,7 @@ class EditProduct extends Component
             'type' => $this->product->type,
         ]);
 
-        session()->flash('message', 'Запись изменена.');
+        session()->flash('message', 'Запись изменена');
     }
 
     public function render()

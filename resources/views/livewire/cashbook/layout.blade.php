@@ -23,7 +23,6 @@
   <meta name="theme-color" content="#7952b3">
 
   <!-- Custom styles for this template -->
-  <link href="/cashbook/offcanvas.css" rel="stylesheet">
   <link href="/cashbook/custom.css" rel="stylesheet">
   <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -35,14 +34,7 @@
 
   {{ $slot }}
 
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
-  <script type="text/javascript">
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-  </script>
-  <!-- <script src="/cashbook/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
-  <script src="/cashbook/offcanvas.js"></script>
 
   @livewireScripts
 

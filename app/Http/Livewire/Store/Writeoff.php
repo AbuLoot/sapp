@@ -80,7 +80,7 @@ class Writeoff extends Component
     public function makeDoc()
     {
         if (empty($this->comment)) {
-            $this->addError('comment', 'Напишите комментарий.');
+            $this->addError('comment', 'Напишите комментарий');
             return false;
         } else {
             $this->resetErrorBag('comment');
@@ -88,8 +88,8 @@ class Writeoff extends Component
 
         $products_data = [];
         $countInStores = [];
-        $writeoffAmountCount = 0;
-        $writeoffAmountPrice = 0;
+        $writeoffTotalCount = 0;
+        $writeoffTotalAmount = 0;
 
         $this->writeoffProducts = session()->get('writeoffProducts') ?? [];
 
@@ -130,8 +130,8 @@ class Writeoff extends Component
             $products_data[$productId]['unit'] = $product->unit;
             $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
-            $writeoffAmountCount = $writeoffAmountCount + $writeoffCount;
-            $writeoffAmountPrice = $writeoffAmountPrice + ($product->purchase_price * $writeoffCount);
+            $writeoffTotalCount = $writeoffTotalCount + $writeoffCount;
+            $writeoffTotalAmount = $writeoffTotalAmount + ($product->purchase_price * $writeoffCount);
 
             $countInStores[$this->store_id] = $finalCount;
             $amountCount = collect($countInStores)->sum();
@@ -158,9 +158,9 @@ class Writeoff extends Component
         $outgoingDoc->doc_type_id = $docType->id;
         $outgoingDoc->products_data = json_encode($products_data);
         $outgoingDoc->to_contractor = '';
-        $outgoingDoc->sum = $outgoingDoc->sum - $writeoffAmountPrice;
+        $outgoingDoc->sum = $outgoingDoc->sum - $writeoffTotalAmount;
         $outgoingDoc->currency = $this->company->currency->code;
-        $outgoingDoc->count = $writeoffAmountCount;
+        $outgoingDoc->count = $writeoffTotalCount;
         // $outgoingDoc->unit = $this->unit;
         $outgoingDoc->comment = $this->comment;
         $outgoingDoc->save();
@@ -176,9 +176,9 @@ class Writeoff extends Component
         $storeDoc->products_data = json_encode($products_data);
         $storeDoc->from_contractor = $this->company->title;
         $storeDoc->to_contractor = '';
-        $storeDoc->incoming_price = 0;
-        $storeDoc->outgoing_price = $writeoffAmountPrice;
-        $storeDoc->amount = $writeoffAmountCount;
+        $storeDoc->incoming_amount = 0;
+        $storeDoc->outgoing_amount = $writeoffTotalAmount;
+        $storeDoc->sum = $writeoffTotalAmount;
         // $storeDoc->unit = $this->unit;
         $storeDoc->comment = $this->comment;
         $storeDoc->save();
@@ -187,7 +187,7 @@ class Writeoff extends Component
         // $this->writeoffProducts = [];
         $this->comment = null;
 
-        session()->flash('message', 'Запись изменена.');
+        session()->flash('message', 'Запись изменена');
     }
 
     public function addToWriteoff($id)

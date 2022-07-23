@@ -18,13 +18,20 @@ class Index extends Component
     public $searchClient = '';
     public $cartProducts = [];
 
+    protected $listeners = ['newData' => 'newData'];
+
     public function mount()
     {
         $this->units = Unit::get();
         $this->lang = app()->getLocale();
     }
 
-    public function deleteProducts()
+    public function newData()
+    {
+        session()->flash('message', 'Операция выполнена');
+    }
+
+    public function removeProducts()
     {
         // $this->lang = app()->getLocale();
     }   

@@ -88,8 +88,8 @@ class Income extends Component
 
         $products_data = [];
         $count_in_stores = [];
-        $incomeAmountCount = 0;
-        $incomeAmountPrice = 0;
+        $incomeTotalCount = 0;
+        $incomeTotalAmount = 0;
 
         foreach($this->incomeProducts as $productId => $incomeProduct) {
 
@@ -100,8 +100,8 @@ class Income extends Component
             $products_data[$productId]['title'] = $product->title;
             $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
-            $incomeAmountCount = $incomeAmountCount + $incomeProduct['income_count'];
-            $incomeAmountPrice = $incomeAmountPrice + ($product->purchase_price * $incomeProduct['income_count']);
+            $incomeTotalCount = $incomeTotalCount + $incomeProduct['income_count'];
+            $incomeTotalAmount = $incomeTotalAmount + ($product->purchase_price * $incomeProduct['income_count']);
 
             $count_in_stores = json_decode($product->count_in_stores, true) ?? [''];
             $count_in_stores[$this->store_id] = $incomeProduct['income_count'];
@@ -127,9 +127,9 @@ class Income extends Component
         $incomingDoc->doc_type_id = $docType->id;
         $incomingDoc->products_data = json_encode($products_data);
         $incomingDoc->from_contractor = '';
-        $incomingDoc->sum = $incomeAmountPrice;
+        $incomingDoc->sum = $incomeTotalAmount;
         $incomingDoc->currency = $company->currency->code;
-        $incomingDoc->count = $incomeAmountCount;
+        $incomingDoc->count = $incomeTotalCount;
         // $incomingDoc->unit = $this->unit;
         $incomingDoc->comment = '';
         $incomingDoc->save();
@@ -143,9 +143,9 @@ class Income extends Component
         $storeDoc->products_data = json_encode($products_data);
         $storeDoc->from_contractor = '';
         $storeDoc->to_contractor = $company->title;
-        $storeDoc->incoming_price = 0;
-        $storeDoc->outgoing_price = $incomeAmountPrice;
-        $storeDoc->amount = $incomeAmountCount;
+        $storeDoc->incoming_amount = 0;
+        $storeDoc->outgoing_amount = $incomeTotalAmount;
+        $storeDoc->sum = $incomeTotalAmount;
         // $storeDoc->unit = $this->unit;
         $storeDoc->comment = '';
         $storeDoc->save();

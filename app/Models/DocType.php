@@ -13,4 +13,9 @@ class DocType extends Model
     {
         return $this->hasMany('App\Models\StoreDoc');
     }
+
+    public function cashbook_docs()
+    {
+        return $this->hasMany('App\Models\CashbookDoc');
+    }
 }

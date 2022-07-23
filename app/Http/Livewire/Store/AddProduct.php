@@ -200,9 +200,9 @@ class AddProduct extends Component
         $storeDoc->doc_type_id = $docType->id;
         $storeDoc->products_data = json_encode($product_data);
         $storeDoc->from_contractor = $contractorCompany;
-        $storeDoc->incoming_price = 0;
-        $storeDoc->outgoing_price = $amountCount * $product->price;
-        $storeDoc->amount = $amountCount;
+        $storeDoc->incoming_amount = 0;
+        $storeDoc->outgoing_amount = $amountCount * $product->price;
+        $storeDoc->sum = $amountCount;
         $storeDoc->comment = '';
         $storeDoc->save();
 
@@ -215,7 +215,7 @@ class AddProduct extends Component
         $this->barcodes = [''];
         $this->countInStores = [];
 
-        session()->flash('message', 'Запись добавлена.');
+        session()->flash('message', 'Запись добавлена');
     }
 
     public function render()

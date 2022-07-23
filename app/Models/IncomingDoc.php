@@ -20,7 +20,7 @@ class IncomingDoc extends Model
         'doc_type_id',
         'products_data',
         'from_contractor',
-        'sum',
+        'amount',
         'currency',
         'count',
         'unit',

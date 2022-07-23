@@ -159,10 +159,10 @@ class Inventory extends Component
 
         $products_data = [];
         $countInStores = [];
-        $shortageAmountCount = null;
-        $shortageAmountPrice = 0;
-        $surplusAmountCount = null;
-        $surplusAmountPrice = 0;
+        $shortageTotalCount = null;
+        $surplusTotalCount = null;
+        $shortageTotalAmount = 0;
+        $surplusTotalAmount = 0;
 
         // Store revision products
         foreach($this->revisionProducts as $productId => $revisionProduct) {
@@ -198,8 +198,8 @@ class Inventory extends Component
                 $products_data[$productId]['surplus_count'] = null;
                 $products_data[$productId]['surplus_sum'] = 0;
 
-                $shortageAmountCount = $shortageAmountCount + abs($difference);
-                $shortageAmountPrice = $shortageAmountPrice + ($product->purchase_price * abs($difference));
+                $shortageTotalCount = $shortageTotalCount + abs($difference);
+                $shortageTotalAmount = $shortageTotalAmount + ($product->purchase_price * abs($difference));
 
             } else {
                 $products_data[$productId]['surplus_count'] = $difference;
@@ -207,8 +207,8 @@ class Inventory extends Component
                 $products_data[$productId]['shortage_count'] = null;
                 $products_data[$productId]['shortage_sum'] = 0;
 
-                $surplusAmountCount = $surplusAmountCount + $difference;
-                $surplusAmountPrice = $surplusAmountPrice + ($product->purchase_price * $difference);
+                $surplusTotalCount = $surplusTotalCount + $difference;
+                $surplusTotalAmount = $surplusTotalAmount + ($product->purchase_price * $difference);
             }
 
             $amountCount = collect($countInStores)->sum();
@@ -228,10 +228,10 @@ class Inventory extends Component
         $revision->user_id = auth()->user()->id;
         $revision->doc_no = $docNo;
         $revision->products_data = json_encode($products_data);
-        $revision->surplus_count = $surplusAmountCount;
-        $revision->shortage_count = $shortageAmountCount;
-        $revision->surplus_sum = $surplusAmountPrice;
-        $revision->shortage_sum = $shortageAmountPrice;
+        $revision->surplus_count = $surplusTotalCount;
+        $revision->shortage_count = $shortageTotalCount;
+        $revision->surplus_sum = $surplusTotalAmount;
+        $revision->shortage_sum = $shortageTotalAmount;
         $revision->currency = $this->company->currency->code;
         // $revision->comment = '';
         $revision->save();
@@ -266,15 +266,15 @@ class Inventory extends Component
         $storeDoc->products_data = json_encode($products_data);
         $storeDoc->from_contractor = $this->company->title;
         $storeDoc->to_contractor = '';
-        $storeDoc->incoming_price = $surplusAmountPrice;
-        $storeDoc->outgoing_price = $shortageAmountPrice;
-        $storeDoc->amount = $amountCount;
+        $storeDoc->incoming_amount = $surplusTotalAmount;
+        $storeDoc->outgoing_amount = $shortageTotalAmount;
+        $storeDoc->sum = $amountCount;
         $storeDoc->comment = '';
         $storeDoc->save();
 
         // session()->forget('revisionProducts');
         // $this->revisionProducts = [];
-        session()->flash('message', 'Запись изменена.');
+        session()->flash('message', 'Запись изменена');
         // dd($product, $products_data, $revision, $revisionProduct);
     }
 

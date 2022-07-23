@@ -20,7 +20,7 @@ class OutgoingDoc extends Model
         'doc_type_id',
         'products_data',
         'to_contractor',
-        'sum',
+        'amount',
         'currency',
         'count',
         'unit',

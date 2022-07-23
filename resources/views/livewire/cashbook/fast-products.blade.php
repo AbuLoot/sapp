@@ -18,7 +18,7 @@
           <div class="row">
             <div class="col-3 mb-3">
               <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
+                <!-- <img src="..." class="card-img" alt="..." style="min-height: 100px;"> -->
                 <div class="card-img-overlay">
                   <div class="text-end">
                     <i class="bi bi-file-x"></i>
@@ -30,7 +30,7 @@
             </div>
             <div class="col-3 mb-3">
               <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
+                <!-- <img src="..." class="card-img" alt="..." style="min-height: 100px;"> -->
                 <div class="card-img-overlay">
                   <div class="text-end">
                     <i class="bi bi-file-x"></i>
@@ -42,7 +42,7 @@
             </div>
             <div class="col-3 mb-3">
               <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
+                <!-- <img src="..." class="card-img" alt="..." style="min-height: 100px;"> -->
                 <div class="card-img-overlay">
                   <div class="text-end">
                     <i class="bi bi-check-circle"></i>
@@ -54,7 +54,7 @@
             </div>
             <div class="col-3 mb-3">
               <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
+                <!-- <img src="..." class="card-img" alt="..." style="min-height: 100px;"> -->
                 <div class="card-img-overlay">
                   <div class="text-end">
                     <i class="bi bi-check-circle"></i>
@@ -66,7 +66,7 @@
             </div>
             <div class="col-3 mb-3">
               <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
+                <!-- <img src="..." class="card-img" alt="..." style="min-height: 100px;"> -->
                 <div class="card-img-overlay">
                   <div class="text-end">
                     <i class="bi bi-check-circle"></i>

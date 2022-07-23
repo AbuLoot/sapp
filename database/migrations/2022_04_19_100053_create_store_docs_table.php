@@ -23,9 +23,9 @@ class CreateStoreDocsTable extends Migration
             $table->json('products_data');
             $table->char('from_contractor')->nullable();
             $table->char('to_contractor')->nullable();
-            $table->integer('incoming_price');
-            $table->integer('outgoing_price')->nullable();
-            $table->integer('amount');
+            $table->integer('incoming_amount');
+            $table->integer('outgoing_amount')->nullable();
+            $table->integer('sum');
             $table->string('comment')->nullable();
             $table->timestamps();
         });

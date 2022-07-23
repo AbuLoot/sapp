@@ -21,9 +21,9 @@ class CreateCashDocsTable extends Migration
             $table->integer('doc_id');
             $table->integer('doc_type_id');
             $table->char('from_contractor');
-            $table->char('to_contrator');
-            $table->integer('incoming_price');
-            $table->integer('outgoing_price');
+            $table->char('to_contractor');
+            $table->integer('incoming_amount');
+            $table->integer('outgoing_amount');
             $table->integer('sum');
             $table->char('currency');
             $table->string('comment');
