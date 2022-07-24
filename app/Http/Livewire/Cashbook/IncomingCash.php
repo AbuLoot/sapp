@@ -17,8 +17,8 @@ class IncomingCash extends Component
     public $incomingCash = false;
 
     protected $rules = [
-        'amount' => 'required|numeric|min:4',
-        'comment' => 'required|numeric|min:4|max:500',
+        'amount' => 'required|numeric|min:2',
+        'comment' => 'required|max:2000',
     ];
 
     public function mount()
@@ -52,12 +52,17 @@ class IncomingCash extends Component
         return $docNo;
     }
 
+    public function test()
+    {
+        $this->dispatchBrowserEvent('close-modal');
+    }
+
     public function credit()
     {
         $this->validate();
 
         $company = auth()->user()->profile->company;
-        $cashbook = $company->first();
+        $cashbook = $company->cashbooks->first();
 
         // Incoming Order
         $docType = DocType::where('slug', 'forma-ko-1')->first();
@@ -97,7 +102,7 @@ class IncomingCash extends Component
         $cashDoc->save();
 
         $this->emitUp('newData');
-        // $this->dispatchBrowserEvent('close-modal', ['newCash' => 'newCash']);
+        $this->dispatchBrowserEvent('close-modal');
     }
 
     public function render()

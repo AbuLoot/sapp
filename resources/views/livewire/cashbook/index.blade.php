@@ -47,8 +47,21 @@
         @endif
       </form>
 
-      <form class="col-4 col-lg-4 me-4">
+      <form class="col-4 col-lg-4 me-4" style="position: relative;">
         <input wire:model="searchClient" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
+        @if($clients)
+          <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
+            <ul class="list-unstyled mb-0">
+              @forelse($clients as $client)
+                <li>
+                  <a wire:click="check({{ $client->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $client->name.' '.$client->lastname.' '.$client->tel }}</a>
+                </li>
+              @empty
+                <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled">No data</a></li>
+              @endforelse
+            </ul>
+          </div>
+        @endif
       </form>
 
       <button class="btn btn-dark btn-lg ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#closingCash">Закрыть смену</button>
@@ -74,10 +87,14 @@
           <th>Наименование товара</th>
           <th>Штрихкод</th>
           <th>Категория</th>
-          <th>Цена оптовая</th>
-          <th>Цена продажи</th>
-          <th>Кол-во</th>
-          <th>Поставщик</th>
+          @if($priceMode == 'retail')
+            <th>Цена продажи</th>
+          @else
+            <th>Цена оптовая</th>
+          @endif
+          <th>В&nbsp;базе</th>
+          <th class="text-end">Кол-во</th>
+          <th class="text-end">Поставщик</th>
           <th></th>
         </tr>
       </thead>
@@ -92,13 +109,19 @@
                 @endforeach
               </td>
               <td>{{ $cartProduct->category->title }}</td>
-              <td>{{ $cartProduct->wholesale_price }}</td>
-              <td>{{ $cartProduct->price }}</td>
-              <?php
-                $unit = $units->where('id', $cartProduct->unit)->first()->title ?? '?';
-              ?>
+              @if($priceMode == 'retail')
+                <td>{{ $cartProduct->price }}</td>
+              @else
+                <td>{{ $cartProduct->wholesale_price }}</td>
+              @endif
+              <?php $unit = $units->where('id', $cartProduct->unit)->first()->title ?? '?'; ?>
+              <td>{{ $cartProduct->count . $unit }}</td>
               <td class="text-nowrap text-end">
-                {{ $cartProduct->count . $unit }} <a href="#"><i class="bi bi-pencil-square text-primary"></i></a>
+                <div class="input-group">
+                  <input type="number" wire:model="product.{{ $cartProduct->id }}" class="form-control @error('product.'.$cartProduct->id) is-invalid @enderror" required>
+                  <span class="input-group-text">{{ $unit }}</span>
+                  @error('product.'.$cartProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
+                </div>
               </td>
               <td class="text-end">{{ $cartProduct->company->title }}</td>
               <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
@@ -129,7 +152,11 @@
             </div>
             <div class="col-3 gy-2">
               <div class="d-grid gap-2 h-100">
-                <button class="btn btn-secondary" type="button">Оптовые<br> цены</button>
+                @if($priceMode == 'retail')
+                  <button class="btn btn-secondary" wire:click="switchPriceMode" type="button">Оптовые<br> цены</button>
+                @else
+                  <button class="btn btn-secondary" wire:click="switchPriceMode" type="button">Розничные<br> цены</button>
+                @endif
               </div>
             </div>
             <div class="col-3 gy-2">
@@ -188,7 +215,21 @@
   <livewire:cashbook.fast-products>
 
   <!-- Modal Add Client -->
-  <livewire:cashbook.add-client>
+  <div class="modal fade" id="addClient" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content  bg-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Добавить клиента</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <livewire:cashbook.add-client>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Closing Cash -->
   <livewire:cashbook.closing-cash>
@@ -200,11 +241,53 @@
   <livewire:cashbook.list-of-deptors>
 
   <!-- Modal Incoming Cash -->
-  <livewire:cashbook.incoming-cash>
+  <div class="modal fade" id="incomingCash" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content bg-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Внести деньги в кассу</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <livewire:cashbook.incoming-cash>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Outgoing Cash -->
-  <livewire:cashbook.outgoing-cash>
+  <div class="modal fade" id="outgoingCash" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content bg-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Оформить расход</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <livewire:cashbook.outgoing-cash>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Deferred Checks -->
   <livewire:cashbook.deferred-checks>
 </div>
+
+@section('scripts')
+  <script type="text/javascript">
+    window.addEventListener('close-modal', event => {
+      // const incomingCash = document.getElementById('incomingCash')
+      // incomingCash.hide() // it is asynchronous
+      console.log(1);
+      var myModal = new bootstrap.Modal(document.getElementById("incomingCash"), {});
+      console.log(2);
+      myModal.hide();
+      console.log(3);
+    })
+  </script>
+@endsection

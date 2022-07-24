@@ -17,8 +17,9 @@ class Index extends Component
     public $searchProduct = '';
     public $searchClient = '';
     public $cartProducts = [];
+    public $priceMode = 'retail';
 
-    protected $listeners = ['newData' => 'newData'];
+    protected $listeners = ['newData'];
 
     public function mount()
     {
@@ -29,6 +30,15 @@ class Index extends Component
     public function newData()
     {
         session()->flash('message', 'Операция выполнена');
+    }
+
+    public function switchPriceMode()
+    {
+        if (session()->get('priceMode') == 'retail') {
+            session()->put('priceMode', 'wholesale');
+        } else {
+            session()->put('priceMode', 'retail');
+        }
     }
 
     public function removeProducts()
@@ -73,13 +83,24 @@ class Index extends Component
 
     public function render()
     {
-        $products = (strlen($this->searchProduct) >= 2)
-            ? Product::search($this->searchProduct)->get()->take(7)
-            : [];
+        $products = [];
+        $clients = [];
 
+        if (strlen($this->searchProduct) >= 2) {
+            $products = Product::search($this->searchProduct)->get()->take(7);
+        }
+
+        if (strlen($this->searchClient) >= 2) {
+            $clients = User::where('name', 'like', $this->searchClient.'%')
+                ->orWhere('lastname', 'like', $this->searchClient.'%')
+                ->orWhere('tel', 'like', $this->searchClient.'%')
+                ->get()->take(7);
+        }
+
+        $this->priceMode = session()->get('priceMode');
         $this->cartProducts = session()->get('cartProducts') ?? [];
 
-        return view('livewire.cashbook.index', ['products' => $products])
+        return view('livewire.cashbook.index', ['products' => $products, 'clients' => $clients])
             ->layout('livewire.cashbook.layout');
     }
 }
