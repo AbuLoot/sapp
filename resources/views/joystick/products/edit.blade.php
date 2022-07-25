@@ -154,7 +154,7 @@
               <div class="col-md-12">
                 <label>Галерея</label><br>
               </div>
-              <?php $images = ($product->images == true) ? unserialize($product->images) : []; ?>
+              <?php $images = ($product->images) ? unserialize($product->images) : []; ?>
               <?php $key_last = array_key_last($images); ?>
               @for ($i = 0; $i <= (($key_last >= 4) ? $key_last : 3); $i++)
                 @if(array_key_exists($i, $images))

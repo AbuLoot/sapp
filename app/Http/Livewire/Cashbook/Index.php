@@ -19,7 +19,7 @@ class Index extends Component
     public $cartProducts = [];
     public $priceMode = 'retail';
 
-    protected $listeners = ['newData'];
+    protected $listeners = ['newData', 'addToCart'];
 
     public function mount()
     {

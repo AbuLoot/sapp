@@ -98,40 +98,40 @@
           <th></th>
         </tr>
       </thead>
-        <tbody>
-          @forelse($cartProducts as $index => $cartProduct)
-            <tr>
-              <td><a href="/{{ $lang }}/storage/edit-product/{{ $cartProduct->id }}">{{ $cartProduct->title }}</a></td>
-              <td>
-                <?php $barcodes = json_decode($cartProduct->barcodes, true) ?? ['']; ?>
-                @foreach($barcodes as $barcode)
-                  {{ $barcode }}<br>
-                @endforeach
-              </td>
-              <td>{{ $cartProduct->category->title }}</td>
-              @if($priceMode == 'retail')
-                <td>{{ $cartProduct->price }}</td>
-              @else
-                <td>{{ $cartProduct->wholesale_price }}</td>
-              @endif
-              <?php $unit = $units->where('id', $cartProduct->unit)->first()->title ?? '?'; ?>
-              <td>{{ $cartProduct->count . $unit }}</td>
-              <td class="text-nowrap text-end">
-                <div class="input-group">
-                  <input type="number" wire:model="product.{{ $cartProduct->id }}" class="form-control @error('product.'.$cartProduct->id) is-invalid @enderror" required>
-                  <span class="input-group-text">{{ $unit }}</span>
-                  @error('product.'.$cartProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
-                </div>
-              </td>
-              <td class="text-end">{{ $cartProduct->company->title }}</td>
-              <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="9">No data</td>
-            </tr>
-          @endforelse
-        </tbody>
+      <tbody>
+        @forelse($cartProducts as $index => $cartProduct)
+          <tr>
+            <td><a href="/{{ $lang }}/storage/edit-product/{{ $cartProduct->id }}">{{ $cartProduct->title }}</a></td>
+            <td>
+              <?php $barcodes = json_decode($cartProduct->barcodes, true) ?? ['']; ?>
+              @foreach($barcodes as $barcode)
+                {{ $barcode }}<br>
+              @endforeach
+            </td>
+            <td>{{ $cartProduct->category->title }}</td>
+            @if($priceMode == 'retail')
+              <td>{{ $cartProduct->price }}</td>
+            @else
+              <td>{{ $cartProduct->wholesale_price }}</td>
+            @endif
+            <?php $unit = $units->where('id', $cartProduct->unit)->first()->title ?? '?'; ?>
+            <td>{{ $cartProduct->count . $unit }}</td>
+            <td class="text-nowrap text-end">
+              <div class="input-group">
+                <input type="number" wire:model="product.{{ $cartProduct->id }}" class="form-control @error('product.'.$cartProduct->id) is-invalid @enderror" required>
+                <span class="input-group-text">{{ $unit }}</span>
+                @error('product.'.$cartProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
+              </div>
+            </td>
+            <td class="text-end">{{ $cartProduct->company->title }}</td>
+            <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="9">No data</td>
+          </tr>
+        @endforelse
+      </tbody>
     </table>
   </main>
 
@@ -212,7 +212,21 @@
   </footer>
 
   <!-- Modal Fast Products -->
-  <livewire:cashbook.fast-products>
+  <div class="modal fade" id="fastProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content bg-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Быстрые товары</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <livewire:cashbook.fast-products>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Add Client -->
   <div class="modal fade" id="addClient" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">

@@ -7,7 +7,7 @@
 
   <div class="row">
     <div class="col-md-6">
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-pills">
         @foreach ($languages as $language)
           <li role="presentation" @if ($language->slug == $lang) class="active" @endif><a href="/{{ $language->slug }}/admin/modes/{{ $mode->id }}/edit">{{ $language->title }}</a></li>
         @endforeach

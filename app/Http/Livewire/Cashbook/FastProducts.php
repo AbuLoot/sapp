@@ -4,10 +4,48 @@ namespace App\Http\Livewire\Cashbook;
 
 use Livewire\Component;
 
+use App\Models\Mode;
+use App\Models\Product;
+
 class FastProducts extends Component
 {
+    protected $queryString = ['search'];
+
+    public $search = '';
+    public $company;
+    public $fastMode;
+    public $fastProducts = [];
+
+    public function mount()
+    {
+        $this->company = auth()->user()->profile->company;
+        $this->fastMode = Mode::where('slug', 'fast-products')->first();
+        $this->fastProducts = $this->fastMode->products;
+    }
+
+    public function toggleFastMode($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->modes()->toggle($this->fastMode->id);
+
+        $this->fastMode = Mode::where('slug', 'fast-products')->first();
+        $this->fastProducts = $this->fastMode->products;
+        $this->search = '';
+    }
+
+    public function addToCart($id)
+    {
+        $this->emitUp('addToCart', $id);
+    }
+
     public function render()
     {
-        return view('livewire.cashbook.fast-products');
+        $products = [];
+
+        if (strlen($this->search) >= 2) {
+            $products = Product::search($this->search)->get()->take(7);
+        }
+
+        return view('livewire.cashbook.fast-products', ['products' => $products]);
     }
 }
