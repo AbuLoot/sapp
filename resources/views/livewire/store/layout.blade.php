@@ -35,7 +35,7 @@
   <?php $lang = app()->getLocale(); ?>
   <nav class="navbar navbar-expand-lg navbar-dark bg-brand" aria-label="Main navigation">
     <div class="container-xl">
-      <a href="#">
+      <a href="/{{ app()->getLocale() }}/storage">
         <img src="/img/logo.svg" width="auto" height="40">
       </a>
       <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">

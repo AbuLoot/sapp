@@ -20,12 +20,12 @@
   <div class="row">
     <?php $currency = $company->currency->symbol; ?>
     @foreach($fastProducts as $fastProduct)
-      <div class="col-3 mb-3">
+      <div class="col-lg-3 col-md-4 mb-3">
         <div class="card position-relative">
           <a wire:click="toggleFastMode({{ $fastProduct->id }})" href="#" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
             <i class="h6 bi bi-x"></i> <span class="visually-hidden">unread messages</span>
           </a>
-          <img src="/img/products/{{ $fastProduct->path.'/'.$fastProduct->image }}" class="card-img-top mx-auto" style="width: auto; height: 150px;">
+          <img src="/img/products/{{ $fastProduct->path.'/'.$fastProduct->image }}" class="img-fluid card-img-top mx-auto" style="width: auto; height: 150px;">
           <div wire:click="addToCart({{ $fastProduct->id }})" class="card-body d-block bg-white opacity-75 px-2 py-1" style="margin-top: -82px; cursor: pointer;">
             <h6 class="card-title">{{ $fastProduct->title }}</h6>
             <h6 class="card-subtitle mb-2">{{ $fastProduct->price . $currency }}</h6>

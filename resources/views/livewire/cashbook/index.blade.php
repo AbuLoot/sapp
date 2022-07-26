@@ -30,6 +30,8 @@
 
   <div class="px-3 py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap">
+
+      <!-- Search Products -->
       <form class="col-4 col-lg-4 me-4" style="position: relative;">
         <input wire:model="searchProduct" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
         @if($products)
@@ -47,7 +49,8 @@
         @endif
       </form>
 
-      <form class="col-4 col-lg-4 me-4" style="position: relative;">
+      <!-- Search Clients -->
+      <form class="col-3 col-lg-3 me-4" style="position: relative;">
         <input wire:model="searchClient" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
         @if($clients)
           <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
@@ -64,7 +67,18 @@
         @endif
       </form>
 
-      <button class="btn btn-dark btn-lg ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#closingCash">Закрыть смену</button>
+      <!-- Storages List -->
+      <div class="col-auto ms-auto">
+        <select wire:model="store" class="form-control form-control-lg @error('store') is-invalid @enderror" id="store">
+          @foreach ($company->stores as $storeObj)
+            <option value="{{ $storeObj->id }}">{{ $storeObj->title }}</option>
+          @endforeach
+        </select>
+        @error('store')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
+
+      <!-- Closing Cash -->
+      <button class="btn btn-dark btn-lg ms-4" type="button" data-bs-toggle="modal" data-bs-target="#closingCash">Закрыть смену</button>
     </div>
   </div>
 
@@ -80,59 +94,69 @@
   @endif
 
   <main class="container" style="margin-bottom: 170px;">
-
-    <table class="table table-striped table-borderless border">
-      <thead>
-        <tr>
-          <th>Наименование товара</th>
-          <th>Штрихкод</th>
-          <th>Категория</th>
-          @if($priceMode == 'retail')
-            <th>Цена продажи</th>
-          @else
-            <th>Цена оптовая</th>
-          @endif
-          <th>В&nbsp;базе</th>
-          <th class="text-end">Кол-во</th>
-          <th class="text-end">Поставщик</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @forelse($cartProducts as $index => $cartProduct)
+    <div class="table-responsive">
+      <table class="table table-striped table-borderless border align-middle">
+        <caption>
+          <button wire:click="clearCart" type="button" class="btn btn-link">Очистить корзину</button>
+        </caption>
+        <thead>
           <tr>
-            <td><a href="/{{ $lang }}/storage/edit-product/{{ $cartProduct->id }}">{{ $cartProduct->title }}</a></td>
-            <td>
-              <?php $barcodes = json_decode($cartProduct->barcodes, true) ?? ['']; ?>
-              @foreach($barcodes as $barcode)
-                {{ $barcode }}<br>
-              @endforeach
-            </td>
-            <td>{{ $cartProduct->category->title }}</td>
+            <th>Наименование товара</th>
+            <th>Штрихкод</th>
+            <th>Категория</th>
             @if($priceMode == 'retail')
-              <td>{{ $cartProduct->price }}</td>
+              <th>Цена продажи</th>
             @else
-              <td>{{ $cartProduct->wholesale_price }}</td>
+              <th>Цена оптовая</th>
             @endif
-            <?php $unit = $units->where('id', $cartProduct->unit)->first()->title ?? '?'; ?>
-            <td>{{ $cartProduct->count . $unit }}</td>
-            <td class="text-nowrap text-end">
-              <div class="input-group">
-                <input type="number" wire:model="product.{{ $cartProduct->id }}" class="form-control @error('product.'.$cartProduct->id) is-invalid @enderror" required>
-                <span class="input-group-text">{{ $unit }}</span>
-                @error('product.'.$cartProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
-              </div>
-            </td>
-            <td class="text-end">{{ $cartProduct->company->title }}</td>
-            <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+            <th>В&nbsp;базе</th>
+            <th>{{ $store->title }}</th>
+            <th class="text-end">Кол-во</th>
+            <th class="text-end">Скидка</th>
+            <th class="text-end">Поставщик</th>
+            <th></th>
           </tr>
-        @empty
-          <tr>
-            <td colspan="9">No data</td>
-          </tr>
-        @endforelse
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @forelse($cartProducts as $index => $cartProduct)
+            <tr>
+              <td>{{ $cartProduct->title }}</td>
+              <td>
+                <?php $barcodes = json_decode($cartProduct->barcodes, true) ?? ['']; ?>
+                @foreach($barcodes as $barcode)
+                  {{ $barcode }}<br>
+                @endforeach
+              </td>
+              <td>{{ $cartProduct->category->title }}</td>
+              @if($priceMode == 'retail')
+                <td>{{ $cartProduct->price }}</td>
+              @else
+                <td>{{ $cartProduct->wholesale_price }}</td>
+              @endif
+              <?php
+                $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
+                $countInStore = (isset($countInStores[$store->id])) ? $countInStores[$store->id] : 0;
+              ?>
+              <td>{{ $cartProduct->count }}</td>
+              <td>{{ $countInStore }}</td>
+              <td class="text-nowrap text-end" style="width:10%;">
+                <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
+                @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
+              </td>
+              <td class="text-nowrap text-end">
+                <a wire:click="discount" href="#">0% <i class="bi bi-pencil-square text-primary"></i></a>
+              </td>
+              <td class="text-end">{{ $cartProduct->company->title }}</td>
+              <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="9">No data</td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
   </main>
 
   <footer class="d-flex flex-wrap fixed-bottom bg-light justify-content-between align-items-center py-2 border-top border-3">
