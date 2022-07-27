@@ -29,10 +29,14 @@
                 <div wire:click.prevent="saveProduct({{ $index }})" class="btn btn-link btn-xs"><i class="material-icons md-18">save</i></div>
               @endif
             </td>
-            <td>
-              @if($product_index !== $index)
-                <img src="/img/products/{{ $product->path.'/'.$product->image }}" class="img-responsive" style="width:80px;height:auto;">
-              @else
+            @if($product_index !== $index)
+              <td><img src="/img/products/{{ $product->path.'/'.$product->image }}" class="img-responsive" style="width:80px;height:auto;"></td>
+              <td>{{ $product->title }}</td>
+              <td>{{ $product->price }}</td>
+              <td>{{ $product->count }}</td>
+              <td class="text-nowrap">{{ $product->category->title }}</td>
+            @else
+              <td>
                 <form wire:submit.prevent="uploadImages({{ $index }})">
                   <div class="form-group">
                     <input type="file" wire:model.defer="images" accept="image/*" style="max-width:100px;" multiple>
@@ -40,36 +44,20 @@
                   <button type="submit">Сохранить</button>
                   @error('images')<div class="text-danger">{{ $message }}</div>@enderror
                 </form>
-              @endif
-            </td>
-            <td>
-              @if($product_index !== $index)
-                {{ $product->title }}
-              @else
+              </td>
+              <td>
                 <textarea wire:model.defer="products.{{ $index }}.title" class="form-control"></textarea>
                 @error('products.'.$index.'.title')<div class="text-danger">{{ $message }}</div>@enderror
-              @endif
-            </td>
-            <td>
-              @if($product_index !== $index)
-                {{ $product->price }}
-              @else
+              </td>
+              <td>
                 <input type="text" wire:model.defer="products.{{ $index }}.price" class="form-control">
                 @error('products.'.$index.'.price')<div class="text-danger">{{ $message }}</div>@enderror
-              @endif
-            </td>
-            <td>
-              @if($product_index !== $index)
-                {{ $product->count }}
-              @else
+              </td>
+              <td>
                 <input type="text" wire:model.defer="products.{{ $index }}.count" class="form-control">
                 @error('products.'.$index.'.count')<div class="text-danger">{{ $message }}</div>@enderror
-              @endif
-            </td>
-            <td class="text-nowrap">
-              @if($product_index !== $index)
-                {{ $product->category->title }}
-              @else
+              </td>
+              <td class="text-nowrap">
                 <select wire:model.defer="products.{{ $index }}.category_id" class="form-control">
                   <?php $traverse = function ($nodes, $prefix = null) use (&$traverse, $product) { ?>
                     <?php foreach ($nodes as $node) : ?>
@@ -80,9 +68,9 @@
                   <?php $traverse($categories); ?>
                 </select>
                 @error('products.'.$index.'.categories')<div class="text-danger">{{ $message }}</div>@enderror
-              @endif
-            </td>
-            <td>{{ $product->barcode }}</td>
+              </td>
+            @endif
+            <td>{{ $product->barcodes }}</td>
             <td class="text-{{ trans('statuses.product.'.$product->status.'.style') }}">{{ trans('statuses.product.'.$product->status.'.title') }}</td>
             <th class="fix-col">
               @if($product_index !== $index)

@@ -69,12 +69,11 @@
 
       <!-- Storages List -->
       <div class="col-auto ms-auto">
-        <select wire:model="store" class="form-control form-control-lg @error('store') is-invalid @enderror" id="store">
+        <select wire:model="store_id" class="form-control form-control-lg">
           @foreach ($company->stores as $storeObj)
             <option value="{{ $storeObj->id }}">{{ $storeObj->title }}</option>
           @endforeach
         </select>
-        @error('store')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
 
       <!-- Closing Cash -->
@@ -111,9 +110,9 @@
             @endif
             <th>В&nbsp;базе</th>
             <th>{{ $store->title }}</th>
-            <th class="text-end">Кол-во</th>
-            <th class="text-end">Скидка</th>
-            <th class="text-end">Поставщик</th>
+            <th>Кол-во</th>
+            <th>Скидка</th>
+            <th>Поставщик</th>
             <th></th>
           </tr>
         </thead>
@@ -135,18 +134,28 @@
               @endif
               <?php
                 $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-                $countInStore = (isset($countInStores[$store->id])) ? $countInStores[$store->id] : 0;
+                $countInStore = $countInStores[$store->id] ?? 0;
               ?>
               <td>{{ $cartProduct->count }}</td>
-              <td>{{ $countInStore }}</td>
-              <td class="text-nowrap text-end" style="width:10%;">
+              <td><div class="@if($countInStore == 0) text-danger @endif">{{ $countInStore }}</div></td>
+              <td class="text-nowrap-" style="width:10%;">
                 <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
                 @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
               </td>
-              <td class="text-nowrap text-end">
-                <a wire:click="discount" href="#">0% <i class="bi bi-pencil-square text-primary"></i></a>
+              <td class="text-nowrap" style="width:10%;">
+                @if($cartProduct->input)
+                  <div class="input-group input-group-sm">
+                    <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
+                    <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
+                  </div>
+                @else
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">{{ $cartProduct['discount'] }}%</span>
+                    <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-primary" type="button"><i class="bi bi-pencil-square"></i></button>
+                  </div>
+                @endif
               </td>
-              <td class="text-end">{{ $cartProduct->company->title }}</td>
+              <td>{{ $cartProduct->company->title }}</td>
               <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
           @empty
@@ -185,7 +194,7 @@
             </div>
             <div class="col-3 gy-2">
               <div class="d-grid gap-2 h-100">
-                <button class="btn btn-secondary" type="button">Отложить<br> данный чек</button>
+                <button wire:click="deferCheck" class="btn btn-secondary" type="button">Отложить<br> данный чек</button>
               </div>
             </div>
             <div class="col-3 gy-2">
@@ -216,12 +225,53 @@
             <tbody>
               <tr>
                 <td>Скидка:</td>
-                <td>10%</td>
-                <td class="text-center text-bg-success" rowspan="2"><h5>Сумма</h5> <b>1 950 000〒</b></td>
+                <td>
+                  @if($totalDiscountView)
+                    <div class="input-group input-group-sm" style="width:90px;">
+                      <input type="number" wire:model="totalDiscount" class="form-control" required>
+                      <button wire:click="switchTotalDiscountView()" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
+                    </div>
+                  @else
+                    <a wire:click="switchTotalDiscountView()" href="#">{{ $totalDiscount }}% <i class="bi bi-pencil-square"></i></a>
+                  @endif
+                </td>
+                <?php
+
+                  $percent = 0;
+                  $totalCount = 0;
+                  $sumDiscounted = 0;
+                  $sumUndiscounted = 0;
+
+                  foreach($cartProducts as $index => $cartProduct) {
+
+                    if ($cartProduct->countInCart == 0) {
+                      continue;
+                    }
+
+                    $price = ($priceMode == 'retail') ? $cartProduct->price : $cartProduct->wholesale_price ?? 0;
+
+                    if ($cartProduct->discount != 0) {
+                      $percent = $cartProduct->discount;
+                    } elseif($totalDiscount != 0) {
+                      $percent = $totalDiscount;
+                    }
+
+                    $percentage = $price / 100;
+                    $amount = $price - ($percentage * $percent);
+
+                    $sumDiscounted += $cartProduct->countInCart * $amount;
+                    $sumUndiscounted += $cartProduct->countInCart * $price;
+                  }
+                ?>
+                <td class="text-center text-bg-success" rowspan="2">
+                  <h5>Сумма</h5>
+                  <b>{{ number_format(round($sumDiscounted, -1), 0, '.', ',') . $company->currency->symbol }}</b><br>
+                  <b>{{ $sumDiscounted . $company->currency->symbol }}</b>
+                </td>
               </tr>
               <tr>
                 <td>Без скидки:</td>
-                <td>1 990 000〒</td>
+                <td>{{ number_format(round($sumUndiscounted, -1), 0, '.', ',') }}〒</td>
               </tr>
             </tbody>
           </table>
@@ -321,7 +371,6 @@
     window.addEventListener('close-modal', event => {
       // const incomingCash = document.getElementById('incomingCash')
       // incomingCash.hide() // it is asynchronous
-      console.log(1);
       var myModal = new bootstrap.Modal(document.getElementById("incomingCash"), {});
       console.log(2);
       myModal.hide();

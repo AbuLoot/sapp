@@ -16,6 +16,7 @@ class OutgoingDocs extends Component
     protected $queryString = ['search'];
 
     public $lang;
+    public $company;
     public $search = [];
     public $docDetail;
     public $docProducts = [];
@@ -25,6 +26,7 @@ class OutgoingDocs extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
+        $this->company = auth()->user()->profile->company;
     }
 
     public function docDetail($id)

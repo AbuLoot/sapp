@@ -32,7 +32,7 @@
         </ul>
       </div>
       <div class="col-6 text-end">
-        <h6>Обшая сумма накладных: {{ number_format($incomingDocs->sum('sum'), 0, '.', ',') }}KZT</h6>
+        <h6>Обшая сумма накладных: {{ number_format($incomingDocs->sum('sum'), 0, '.', ',') . $company->currency->code }}</h6>
       </div>
     </div>
 

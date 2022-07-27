@@ -238,21 +238,21 @@ class Inventory extends Component
 
         session()->put('revisionProducts', $this->revisionProducts);
 
-        $revisionProduct = new RevisionProduct;
-        $revisionProduct->revision_id = $revision->id;
-        $revisionProduct->product_id = $product->id;
-        $revisionProduct->category_id = $product->category_id;
-        $revisionProduct->barcode = $barcodes;
-        $revisionProduct->purchase_price = $purchase_price;
-        $revisionProduct->selling_price = $selling_price;
-        $revisionProduct->currency = $this->company->currency->code;
+        // $revisionProduct = new RevisionProduct;
+        // $revisionProduct->revision_id = $revision->id;
+        // $revisionProduct->product_id = $product->id;
+        // $revisionProduct->category_id = $product->category_id;
+        // $revisionProduct->barcode = $barcodes;
+        // $revisionProduct->purchase_price = $purchase_price;
+        // $revisionProduct->selling_price = $selling_price;
+        // $revisionProduct->currency = $this->company->currency->code;
 
-        $revisionProduct->estimated_count = $estimated_count;
-        $revisionProduct->actual_count = $actual_count;
-        $revisionProduct->difference = $difference;
-        $revisionProduct->surplus_count = $surplus_count;
-        $revisionProduct->shortage_count = $shortage_count;
-        $revisionProduct->save();
+        // $revisionProduct->estimated_count = $estimated_count;
+        // $revisionProduct->actual_count = $actual_count;
+        // $revisionProduct->difference = $difference;
+        // $revisionProduct->surplus_count = $surplus_count;
+        // $revisionProduct->shortage_count = $shortage_count;
+        // $revisionProduct->save();
 
         // Inventory Doc
         $docType = DocType::where('slug', 'forma-inv-6')->first();
@@ -272,10 +272,7 @@ class Inventory extends Component
         $storeDoc->comment = '';
         $storeDoc->save();
 
-        // session()->forget('revisionProducts');
-        // $this->revisionProducts = [];
         session()->flash('message', 'Запись изменена');
-        // dd($product, $products_data, $revision, $revisionProduct);
     }
 
     public function addToRevision($id)
@@ -283,14 +280,7 @@ class Inventory extends Component
         $product = Product::findOrFail($id);
 
         if (session()->has('revisionProducts')) {
-
             $revisionProducts = session()->get('revisionProducts');
-            $revisionProducts[$id] = $product;
-
-            session()->put('revisionProducts', $revisionProducts);
-            $this->search = '';
-
-            return true;
         }
 
         $revisionProducts[$id] = $product;
@@ -303,14 +293,12 @@ class Inventory extends Component
     {
         $revisionProducts = session()->get('revisionProducts');
 
-        if (count($revisionProducts) >= 1) {
-            unset($revisionProducts[$id]);
-            session()->put('revisionProducts', $revisionProducts);
-            return true;
+        if (count($revisionProducts) == 0) {
+            session()->forget('revisionProducts');
         }
 
-        session()->forget('revisionProducts');
-        $this->revisionProducts = [];
+        unset($revisionProducts[$id]);
+        session()->put('revisionProducts', $revisionProducts);
     }
 
     public function render()

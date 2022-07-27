@@ -197,44 +197,33 @@ class Writeoff extends Component
         if (session()->has('writeoffProducts')) {
 
             $writeoffProducts = session()->get('writeoffProducts');
-            $writeoffProducts[$id] = $product;
-            // $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
-
-            session()->put('writeoffProducts', $writeoffProducts);
-            $this->search = '';
-
-            return true;
         }
 
         $writeoffProducts[$id] = $product;
-        // $writeoffProducts[$id]['writeoff_count'] = [$this->store_id => 0];
 
         session()->put('writeoffProducts', $writeoffProducts);
         $this->search = '';
     }
 
-    public function deleteFromWriteoff($id)
+    public function removeFromWriteoff($id)
     {
         $writeoffProducts = session()->get('writeoffProducts');
 
-        if (count($writeoffProducts) >= 1) {
-            unset($writeoffProducts[$id]);
-            unset($this->writeoff_count[$id]);
-            session()->put('writeoffProducts', $writeoffProducts);
-            return true;
+        if (count($writeoffProducts) == 0) {
+            session()->forget('writeoffProducts');
         }
 
-        session()->forget('writeoffProducts');
-        $this->writeoffProducts = [];
-        $this->writeoff_count = [];
+        unset($writeoffProducts[$id]);
+        unset($this->writeoff_count[$id]);
+        session()->put('writeoffProducts', $writeoffProducts);
     }
 
     public function render()
     {
+        $products = [];
+
         if (strlen($this->search) >= 2) {
             $products = Product::search($this->search)->orderBy('id', 'desc')->paginate(5);
-        } else {
-            $products = [];
         }
 
         $this->writeoffProducts = session()->get('writeoffProducts') ?? [];

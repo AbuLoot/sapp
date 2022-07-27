@@ -57,7 +57,7 @@ use App\Http\Livewire\Store\InventoryDetail;
 use App\Http\Livewire\Store\Writeoff;
 use App\Http\Livewire\Store\StoreDocs;
 
-// Cashbook
+// Cashdesk
 use App\Http\Livewire\Cashbook\Index as CashbookIndex;
 
 // Sanapp Storage
@@ -79,14 +79,16 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
     Route::get('storedocs', StoreDocs::class);
 });
 
-// Sanapp Cashbook
-Route::redirect('/cashbook', '/'.app()->getLocale().'/cashbook');
 
-Route::group(['prefix' => '{lang}/cashbook', 'middleware' => ['auth' , 'roles:admin|cashier']], function () {
+// Sanapp Cashdesk
+Route::redirect('/cashdesk', '/'.app()->getLocale().'/cashdesk');
+
+Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|cashier']], function () {
 
     // Livewire Routes
     Route::get('/', CashbookIndex::class);
 });
+
 
 // Sanapp Joystick Administration
 Route::redirect('/admin', '/'.app()->getLocale().'/admin');

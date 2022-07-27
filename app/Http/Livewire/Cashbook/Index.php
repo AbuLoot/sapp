@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Cashbook;
 
+use Illuminate\Support\Facades\Cache;
+
 use Livewire\Component;
 
 use App\Models\Store;
@@ -14,13 +16,16 @@ class Index extends Component
 {
     protected $queryString = ['searchProduct', 'searchClient'];
 
-    public $lang;
-    public $units;
+    // public $lang;
     public $company;
     public $store;
+    public $store_id;
     public $searchProduct = '';
     public $searchClient = '';
     public $cartProducts = [];
+    public $discounts = [];
+    public $totalDiscount = 0;
+    public $totalDiscountView;
     public $priceMode = 'retail';
 
     protected $listeners = ['newData', 'addToCart'];
@@ -28,58 +33,106 @@ class Index extends Component
     protected $rules = [
         'store' => 'required|numeric',
         'cartProducts.*.countInCart' => 'required|numeric',
+        'discounts.*' => 'required|numeric',
     ];
-
-    public function mount()
-    {
-        $this->units = Unit::get();
-        $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
-
-        if (session()->has('store') == false) {
-            session()->put('store', $this->company->stores->first());
-        }
-    }
-
-    public function updated($key, $value)
-    {
-        $parts = explode('.', $key);
-
-        if ($key == 'store') {
-            session()->put('store', $this->company->stores->where('id', $value)->first());
-            $this->store = session()->get('store');
-            // $this->reset();
-            $this->emit('$refresh');
-        }
-
-        if (count($parts) == 3 && $parts[2] == 'countInCart') {
-
-            $cartProducts = session()->get('cartProducts');
-
-            if ($value <= 0 || !is_numeric($value)) {
-                $cartProducts[$parts[1]]['countInCart'] = 1;
-                session()->put('cartProducts', $cartProducts);
-                return false;
-            }
-
-            $countInStores = json_decode($cartProducts[$parts[1]]->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$this->store->id] ?? 0;
-
-            if ($countInStore == 0) {
-                $this->addError('cartProducts.'.$parts[1].'.countInCart', 'Нет в наличии');
-            } elseif ($countInStore < $value) {
-                $cartProducts[$parts[1]]['countInCart'] = $countInStore;
-            } else {
-                $cartProducts[$parts[1]]['countInCart'] = $value;
-            }
-
-            session()->put('cartProducts', $cartProducts);
-        }
-    }
 
     public function newData()
     {
         session()->flash('message', 'Операция выполнена');
+    }
+
+    public function mount()
+    {
+        // $this->lang = app()->getLocale();
+        $this->company = auth()->user()->profile->company;
+
+        if (is_null(session()->get('store'))) {
+            session()->put('store', Store::first());
+        }
+
+        $this->store = session()->get('store');
+        $this->store_id = $this->store->id;
+    }
+
+    public function updated($key, $value)
+    {
+        // Stores Switching
+        if ($key == 'store_id') {
+            $this->store = Store::where('id', $value)->first();
+            session()->put('store', $this->store);
+            session()->forget('cartProducts');
+            $this->discounts = [];
+        }
+
+        // Setting Total Discount
+        if ($key == 'totalDiscount') {
+
+            if ($value < 0 || !is_numeric($value)) {
+                $this->totalDiscount = 0;
+            } else {
+                $this->totalDiscount = (10 < $value)
+                    ? 10
+                    : $value;
+            }
+        }
+
+        $parts = explode('.', $key);
+
+        // Setting Discount
+        if (count($parts) == 3 && $parts[2] == 'discount') {
+            $this->setValidDiscount($parts[1], $value);
+        }
+
+        // Setting Correct Count
+        if (count($parts) == 3 && $parts[2] == 'countInCart') {
+            $this->setValidCount($parts[1], $value);
+        }
+    }
+
+    public function setValidCount($product_id, $value)
+    {
+        $cartProducts = session()->get('cartProducts');
+        $countInStores = json_decode($cartProducts[$product_id]->count_in_stores, true) ?? [];
+        $countInStore = $countInStores[$this->store->id] ?? 0;
+
+        if ($value <= 0 || !is_numeric($value)) {
+            $validCount = ($countInStore == 0) ? 0 : 1;
+        } else {
+            $validCount = ($countInStore < $value)
+                ? $countInStore
+                : $value;
+        }
+
+        $cartProducts[$product_id]['countInCart'] = $validCount;
+        session()->put('cartProducts', $cartProducts);
+    }
+
+    public function setValidDiscount($product_id, $value)
+    {
+        $cartProducts = session()->get('cartProducts');
+
+        if ($value < 0 || !is_numeric($value)) {
+            $validDiscount = 0;
+        } else {
+            $validDiscount = (10 < $value)
+                ? 10
+                : $value;
+        }
+
+        $cartProducts[$product_id]['discount'] = $validDiscount;
+        session()->put('cartProducts', $cartProducts);
+    }
+
+    public function switchDiscountView($id)
+    {
+        $cartProducts = session()->get('cartProducts');
+        $cartProducts[$id]['input'] = ($cartProducts[$id]['input']) ? false : true;
+        session()->put('cartProducts', $cartProducts);
+    }
+
+    public function switchTotalDiscountView()
+    {
+        $this->totalDiscountView = ($this->totalDiscountView) ? false : true;
     }
 
     public function switchPriceMode()
@@ -95,29 +148,17 @@ class Index extends Component
     {
         $product = Product::findOrFail($id);
 
+        $countInStores = json_decode($product->count_in_stores, true) ?? [];
+        $countInStore = $countInStores[$this->store->id] ?? 0;
+
         if (session()->has('cartProducts')) {
-
             $cartProducts = session()->get('cartProducts');
-            $cartProducts[$id] = $product;
-
-            $countInStores = json_decode($product->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$this->store->id] ?? 0;
-
-            if ($countInStore == 0) {
-                $this->addError('cartProducts.'.$id.'.countInCart', 'Нет в наличии');
-                return false;
-            }
-
-            $cartProducts[$id]['countInCart'] = 1;
-
-            session()->put('cartProducts', $cartProducts);
-            $this->searchProduct = '';
-
-            return true;
         }
 
         $cartProducts[$id] = $product;
-        $cartProducts[$id]['countInCart'] = 1;
+        $cartProducts[$id]['countInCart'] = ($countInStore == 0) ? 0 : 1;
+        $cartProducts[$id]['discount'] = 0;
+        $cartProducts[$id]['input'] = false;
 
         session()->put('cartProducts', $cartProducts);
         $this->searchProduct = '';
@@ -127,20 +168,75 @@ class Index extends Component
     {
         $cartProducts = session()->get('cartProducts');
 
-        if (count($cartProducts) >= 1) {
-            unset($cartProducts[$id]);
-            session()->put('cartProducts', $cartProducts);
-            return true;
+        if (count($cartProducts) == 0) {
+            session()->forget('cartProducts');
         }
 
-        session()->forget('cartProducts');
-        $this->cartProducts = [];
+        unset($cartProducts[$id], $this->cartProducts[$id]);
+        session()->put('cartProducts', $cartProducts);
     }
 
     public function clearCart()
     {
         session()->forget('cartProducts');
-        $this->cartProducts = [];
+    }
+
+    public function deferCheck()
+    {
+        if (is_null(session()->get('cartProducts'))) {
+            session()->flash('message', 'No data');
+            return false;
+        }
+
+        // Count The Order
+        $percent = 0;
+        $totalCount = 0;
+        $sumDiscounted = 0;
+        $sumUndiscounted = 0;
+
+        $cartProducts = session()->get('cartProducts');
+
+        foreach($cartProducts as $index => $cartProduct) {
+
+            if ($cartProduct->countInCart == 0) {
+                continue;
+            }
+
+            $totalCount++;
+
+            $price = ($this->priceMode == 'retail') ? $cartProduct->price : $cartProduct->wholesale_price ?? 0;
+
+            if ($cartProduct->discount != 0) {
+                $percent = $cartProduct->discount;
+            } elseif($this->totalDiscount != 0) {
+                $percent = $this->totalDiscount;
+            }
+
+            $percentage = $price / 100;
+            $amount = $price - ($percentage * $percent);
+
+            $sumDiscounted += $cartProduct->countInCart * $amount;
+            $sumUndiscounted += $cartProduct->countInCart * $price;
+        }
+
+        $orderName = $this->store_id.'-'.$totalCount.'/'.date('m-d');
+
+        $deferredChecks[$orderName]['sum'] = number_format(round($sumDiscounted, -1), 0, '.', ',').$this->company->currency->symbol;
+        $deferredChecks[$orderName]['cart'] = $cartProducts;
+
+        Cache::put('deferredChecks', $deferredChecks);
+
+        /*foreach($cartProducts as $id => $cartProduct) {
+
+            $product = Product::findOrFail($id);
+            $countInStores = json_decode($product->count_in_stores, true) ?? [];
+            $countInStore = $countInStores[$this->store->id] ?? 0;
+
+            $cartProducts[$id] = $product;
+            $cartProducts[$id]['countInCart'] = ($countInStore == 0) ? 0 : 1;
+
+            session()->put('cartProducts', $cartProducts);
+        }*/
     }
 
     public function render()
@@ -161,7 +257,6 @@ class Index extends Component
 
         $this->priceMode = session()->get('priceMode');
         $this->cartProducts = session()->get('cartProducts') ?? [];
-        $this->store = session()->get('store');
 
         return view('livewire.cashbook.index', ['products' => $products, 'clients' => $clients])
             ->layout('livewire.cashbook.layout');

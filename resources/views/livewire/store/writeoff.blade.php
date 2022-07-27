@@ -119,7 +119,7 @@
                 </div>
               </td>
               <td>{{ $writeoffProduct->company->title }}</td>
-              <td class="text-end"><a wire:click="deleteFromWriteoff({{ $writeoffProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+              <td class="text-end"><a wire:click="removeFromWriteoff({{ $writeoffProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
           @empty
             <tr>

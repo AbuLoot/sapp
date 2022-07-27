@@ -16,66 +16,20 @@
           </form>
 
           <div class="row">
+            @foreach($deferredChecks as $index => $check)
             <div class="col-3 mb-3">
-              <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
+              <div class="card bg-dark text-white" style="height: 100px;">
+                <!-- <img src="..." class="card-img" alt="..." style="min-height: 100px;"> -->
                 <div class="card-img-overlay">
                   <div class="text-end">
                     <i class="bi bi-file-x"></i>
                   </div>
-                  <h6 class="card-title">Card title</h6>
-                  <p class="card-text">10 000 000KZT</p>
+                  <h6 class="card-title">{{ $index }}</h6>
+                  <p class="card-text">{{ $check['sum'] }}</p>
                 </div>
               </div>
             </div>
-            <div class="col-3 mb-3">
-              <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
-                <div class="card-img-overlay">
-                  <div class="text-end">
-                    <i class="bi bi-file-x"></i>
-                  </div>
-                  <h6 class="card-title">Card title</h6>
-                  <p class="card-text">10 000 000KZT</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-3 mb-3">
-              <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
-                <div class="card-img-overlay">
-                  <div class="text-end">
-                    <i class="bi bi-check-circle"></i>
-                  </div>
-                  <h6 class="card-title">Card title</h6>
-                  <p class="card-text">10 000 000KZT</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-3 mb-3">
-              <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
-                <div class="card-img-overlay">
-                  <div class="text-end">
-                    <i class="bi bi-check-circle"></i>
-                  </div>
-                  <h6 class="card-title">Card title</h6>
-                  <p class="card-text">10 000 000KZT</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-3 mb-3">
-              <div class="card bg-dark text-white">
-                <img src="..." class="card-img" alt="..." style="min-height: 100px;">
-                <div class="card-img-overlay">
-                  <div class="text-end">
-                    <i class="bi bi-check-circle"></i>
-                  </div>
-                  <h6 class="card-title">Card title</h6>
-                  <p class="card-text">10 000 000KZT</p>
-                </div>
-              </div>
-            </div>
+            @endforeach
           </div>
 
           <nav aria-label="Page navigation example">
