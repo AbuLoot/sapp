@@ -15,6 +15,7 @@
         <tr class="active">
           <td>№</td>
           <td>Картинка</td>
+          <td>Slug</td>
           <td>Название</td>
           <td>Язык</td>
           <td class="text-right">Функции</td>
@@ -26,6 +27,7 @@
           <tr>
             <td>{{ $i++ }}</td>
             <td><img src="{{ $payment_type->image }}" class="img-responsive" style="width:80px;height:auto;"></td>
+            <td>{{ $payment_type->slug }}</td>
             <td>{{ $payment_type->title }}</td>
             <td>{{ $payment_type->lang }}</td>
             <td class="text-right">

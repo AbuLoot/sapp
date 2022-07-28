@@ -23,8 +23,8 @@ class OutgoingCash extends Component
 
     public function mount()
     {
-        $company = auth()->user()->profile->company;
-        $this->cashbook = $company->first();
+        $this->company = auth()->user()->profile->company;
+        $this->cashbook = $this->company->cashbooks->first();
     }
 
     public function generateDocNo($cashbook_id, $docNo = null)
@@ -56,40 +56,37 @@ class OutgoingCash extends Component
     {
         $this->validate();
 
-        $company = auth()->user()->profile->company;
-        $cashbook = $company->cashbooks->first();
-
         // Outgoing Order
         $docType = DocType::where('slug', 'forma-ko-2')->first();
 
-        $docNo = $this->generateDocNo($cashbook->id);
+        $docNo = $this->generateDocNo($this->cashbook->id);
 
         $outgoingOrder = new OutgoingOrder;
-        $outgoingOrder->cashbook_id = $cashbook->id;
-        $outgoingOrder->company_id = $company->id;
+        $outgoingOrder->cashbook_id = $this->cashbook->id;
+        $outgoingOrder->company_id = $this->company->id;
         $outgoingOrder->user_id = auth()->user()->id;
         $outgoingOrder->cashier_name = auth()->user()->name;
         $outgoingOrder->doc_no = $docNo;
         $outgoingOrder->doc_type_id = $docType->id;
-        $outgoingOrder->to_contractors = json_encode([$company->title]);
+        $outgoingOrder->to_contractors = json_encode([$this->company->title]);
         $outgoingOrder->sum = $this->amount;
-        $outgoingOrder->currency = $company->currency->code;
+        $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = 0;
         $outgoingOrder->comment = $this->comment;
         $outgoingOrder->save();
 
         $cashDoc = new CashDoc;
-        $cashDoc->cashbook_id = $cashbook->id;
-        $cashDoc->company_id = $company->id;
+        $cashDoc->cashbook_id = $this->cashbook->id;
+        $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->doc_id = $outgoingOrder->id;
         $cashDoc->doc_type_id = $docType->id;
         $cashDoc->from_contractor = auth()->user()->name;
-        $cashDoc->to_contractor = $company->title;
+        $cashDoc->to_contractor = $this->company->title;
         $cashDoc->incoming_amount = 0;
         $cashDoc->outgoing_amount = $this->amount;
         $cashDoc->sum = $this->amount;
-        $cashDoc->currency = $company->currency->code;
+        $cashDoc->currency = $this->company->currency->code;
         $cashDoc->comment = $this->comment;
         $cashDoc->save();
 

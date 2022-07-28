@@ -160,7 +160,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="9">No data</td>
+              <td colspan="10">No data</td>
             </tr>
           @endforelse
         </tbody>
@@ -235,55 +235,28 @@
                     <a wire:click="switchTotalDiscountView()" href="#">{{ $totalDiscount }}% <i class="bi bi-pencil-square"></i></a>
                   @endif
                 </td>
-                <?php
-
-                  $percent = 0;
-                  $totalCount = 0;
-                  $sumDiscounted = 0;
-                  $sumUndiscounted = 0;
-
-                  foreach($cartProducts as $index => $cartProduct) {
-
-                    if ($cartProduct->countInCart == 0) {
-                      continue;
-                    }
-
-                    $price = ($priceMode == 'retail') ? $cartProduct->price : $cartProduct->wholesale_price ?? 0;
-
-                    if ($cartProduct->discount != 0) {
-                      $percent = $cartProduct->discount;
-                    } elseif($totalDiscount != 0) {
-                      $percent = $totalDiscount;
-                    }
-
-                    $percentage = $price / 100;
-                    $amount = $price - ($percentage * $percent);
-
-                    $sumDiscounted += $cartProduct->countInCart * $amount;
-                    $sumUndiscounted += $cartProduct->countInCart * $price;
-                  }
-                ?>
+                <?php $sumOfCart = \App\Http\Livewire\Cashbook\Index::sumOfCart(); ?>
                 <td class="text-center text-bg-success" rowspan="2">
                   <h5>Сумма</h5>
-                  <b>{{ number_format(round($sumDiscounted, -1), 0, '.', ',') . $company->currency->symbol }}</b><br>
-                  <b>{{ $sumDiscounted . $company->currency->symbol }}</b>
+                  <b>{{ $sumOfCart['sumDiscounted'] . $company->currency->symbol }}</b><br>
                 </td>
               </tr>
               <tr>
                 <td>Без скидки:</td>
-                <td>{{ number_format(round($sumUndiscounted, -1), 0, '.', ',') }}〒</td>
+                <td>{{ $sumOfCart['sumUndiscounted'] . $company->currency->symbol }}</td>
               </tr>
             </tbody>
           </table>
 
           <div class="d-grid">
-            <button class="btn btn-success btn-lg" type="button">Продать</button>
+            <a href="/{{ $lang }}/cashdesk/payment-types" class="btn btn-success btn-lg">Продать</a>
           </div>
 
         </div>
       </div>
     </div>
   </footer>
+
 
   <!-- Modal Fast Products -->
   <div class="modal fade" id="fastProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
@@ -293,7 +266,7 @@
           <h5 class="modal-title" id="modalLabel">Быстрые товары</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="min-height:270px;">
 
           <livewire:cashbook.fast-products>
 
@@ -301,6 +274,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Closing Cash -->
+  <livewire:cashbook.closing-cash>
 
   <!-- Modal Add Client -->
   <div class="modal fade" id="addClient" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
@@ -318,9 +294,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Modal Closing Cash -->
-  <livewire:cashbook.closing-cash>
 
   <!-- Modal Return Products -->
   <livewire:cashbook.return-products>

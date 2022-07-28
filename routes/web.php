@@ -59,6 +59,7 @@ use App\Http\Livewire\Store\StoreDocs;
 
 // Cashdesk
 use App\Http\Livewire\Cashbook\Index as CashbookIndex;
+use App\Http\Livewire\Cashbook\PaymentTypes;
 
 // Sanapp Storage
 Route::redirect('/storage', '/'.app()->getLocale().'/storage');
@@ -87,6 +88,7 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
 
     // Livewire Routes
     Route::get('/', CashbookIndex::class);
+    Route::get('/payment-types', PaymentTypes::class);
 });
 
 

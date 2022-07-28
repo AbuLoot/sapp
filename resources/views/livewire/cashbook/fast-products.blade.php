@@ -26,7 +26,7 @@
             <i class="h6 bi bi-x"></i> <span class="visually-hidden">unread messages</span>
           </a>
           <img src="/img/products/{{ $fastProduct->path.'/'.$fastProduct->image }}" class="img-fluid card-img-top mx-auto" style="width: auto; height: 150px;">
-          <div wire:click="addToCart({{ $fastProduct->id }})" class="card-body d-block bg-white opacity-75 px-2 py-1" style="margin-top: -82px; cursor: pointer;">
+          <div wire:click="addToCart({{ $fastProduct->id }})" class="card-body d-block bg-white opacity-75 px-2 pt-2 pb-1" style="margin-top: -82px; cursor: pointer;">
             <h6 class="card-title">{{ $fastProduct->title }}</h6>
             <h6 class="card-subtitle mb-2">{{ $fastProduct->price . $currency }}</h6>
             <a wire:click="addToCart({{ $fastProduct->id }})" href="#" class="card-link">В корзину</a>
