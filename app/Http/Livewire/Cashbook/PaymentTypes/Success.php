@@ -4,10 +4,10 @@ namespace App\Http\Livewire\Cashbook\PaymentTypes;
 
 use Livewire\Component;
 
-class BankCard extends Component
+class Success extends Component
 {
     public function render()
     {
-        return view('livewire.cashbook.payment-types.bank-card');
+        return view('livewire.cashbook.payment-types.success');
     }
 }

@@ -1,7 +1,7 @@
 <div>
   <div class="d-flex">
     <h2>Продажа в долг</h2>
-    <button type="button" class="btn btn-outline-dark btn-lg ms-auto">Закрыть</button>
+    <a href="/{{ app()->getLocale() }}/cashdesk/payment-types" class="btn btn-outline-dark btn-lg ms-auto">Закрыть</a>
   </div>
   <br>
 

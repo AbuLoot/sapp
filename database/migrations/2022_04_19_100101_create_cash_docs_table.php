@@ -20,13 +20,13 @@ class CreateCashDocsTable extends Migration
             $table->integer('user_id');
             $table->integer('doc_id');
             $table->integer('doc_type_id');
-            $table->char('from_contractor');
-            $table->char('to_contractor');
-            $table->integer('incoming_amount');
-            $table->integer('outgoing_amount');
+            $table->char('from_contractor')->nullable();
+            $table->char('to_contractor')->nullable();
+            $table->integer('incoming_amount')->nullable();
+            $table->integer('outgoing_amount')->nullable();
             $table->integer('sum');
             $table->char('currency');
-            $table->string('comment');
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }

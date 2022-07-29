@@ -98,10 +98,11 @@ class Index extends Component
         // Count The Order
         $percent = 0;
         $totalCount = 0;
+        $countProduct = 0;
         $sumDiscounted = 0;
         $sumUndiscounted = 0;
 
-        $cartProducts = session()->get('cartProducts');
+        $cartProducts = session()->get('cartProducts') ?? [];
 
         foreach($cartProducts as $index => $cartProduct) {
 
@@ -109,7 +110,8 @@ class Index extends Component
                 continue;
             }
 
-            $totalCount++;
+            $countProduct++;
+            $totalCount += $cartProduct->countInCart;
 
             $price = (session()->get('priceMode') == 'retail') ? $cartProduct->price : $cartProduct->wholesale_price ?? 0;
 
@@ -127,8 +129,9 @@ class Index extends Component
         }
 
         $data['totalCount'] = $totalCount;
-        $data['sumDiscounted'] = number_format(round($sumDiscounted, -1), 0, '.', ' ');
-        $data['sumUndiscounted'] = number_format(round($sumUndiscounted, -1), 0, '.', ' ');
+        $data['countProduct'] = $countProduct;
+        $data['sumDiscounted'] = round($sumDiscounted, -1); // number_format(round($sumDiscounted, -1), 0, '.', ' ');
+        $data['sumUndiscounted'] = round($sumUndiscounted, -1);
 
         return $data;
     }

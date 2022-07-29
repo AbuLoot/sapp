@@ -31,7 +31,7 @@ class OutgoingCash extends Component
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingOrder::where('doc_no', 'like', $cashbook_id.'/_')->orderByDesc('id')->first();
+            $lastDoc = OutgoingOrder::where('doc_no', 'like', $cashbook_id.'/*')->orderByDesc('id')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);

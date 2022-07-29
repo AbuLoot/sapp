@@ -96,7 +96,7 @@
     <div class="table-responsive">
       <table class="table table-striped table-borderless border align-middle">
         <caption>
-          <button wire:click="clearCart" type="button" class="btn btn-link">Очистить корзину</button>
+          <!-- <button wire:click="clearCart" type="button" class="btn btn-link">Очистить корзину</button> -->
         </caption>
         <thead>
           <tr>
@@ -113,7 +113,7 @@
             <th>Кол-во</th>
             <th>Скидка</th>
             <th>Поставщик</th>
-            <th></th>
+            <th><button wire:click="clearCart" type="button" class="btn btn-link p-0">Очистить</button></th>
           </tr>
         </thead>
         <tbody>
