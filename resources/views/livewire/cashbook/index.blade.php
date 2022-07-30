@@ -249,7 +249,7 @@
           </table>
 
           <div class="d-grid">
-            <a href="/{{ $lang }}/cashdesk/payment-types" class="btn btn-success btn-lg">Продать</a>
+            <button type="button" onclick="location.href='/{{ $lang }}/cashdesk/payment-types'" class="btn btn-success btn-lg" @if(!$cartProducts) disabled @endif>Продать</button>
           </div>
 
         </div>

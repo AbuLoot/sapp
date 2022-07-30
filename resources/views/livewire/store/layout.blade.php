@@ -60,7 +60,7 @@
             <a class="nav-link px-3 @if(Request::is($lang.'/storage/writeoff*')) active @endif" href="/{{ $lang }}/storage/writeoff">Списание</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/storage/storedocs*')) active @endif" href="/{{ $lang }}/storage/storedocs">Складская книга</a>
+            <a class="nav-link px-3 @if(Request::is($lang.'/storage/storedocs*')) active @endif" href="/{{ $lang }}/storage/storedocs">Карточка учета</a>
           </li>
         </ul>
 

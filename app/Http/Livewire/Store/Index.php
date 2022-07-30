@@ -17,14 +17,31 @@ class Index extends Component
 
     public $lang;
     public $search = '';
+    public $selectMode = false;
+    public $productsIds = [];
+    public $deleteMode = false;
 
     public function mount()
     {
         // $this->lang = app()->getLocale();
     }
 
+    public function updated($key)
+    {
+        if ($key == 'selectMode') {
+            
+        }
+    }
+
+    public function activateDeleteMode()
+    {
+        $this->deleteMode = true;
+        // $this->lang = app()->getLocale();
+    }   
+
     public function deleteProducts()
     {
+        $this->deleteMode = false;
         // $this->lang = app()->getLocale();
     }   
 
@@ -35,6 +52,12 @@ class Index extends Component
         }
         else {
             $products = Product::orderBy('id', 'desc')->paginate(30);
+        }
+
+        if ($this->selectAll) {
+            $this->productsIds = $products->pluck('id')->toArray();
+        } else {
+            $this->productsIds = [];
         }
 
         return view('livewire.store.index', ['products' => $products])

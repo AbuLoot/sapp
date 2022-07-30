@@ -20,6 +20,7 @@ class PaymentTypes extends Component
     public $view = false;
     public $company;
     public $cashbook;
+    public $store;
     public $docNo;
     public $sumOfCart;
     public $cartProducts;
@@ -28,8 +29,15 @@ class PaymentTypes extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
+        $this->cartProducts = session()->get('cartProducts') ?? [];
+
+        if (empty($this->cartProducts)) {
+            return redirect($this->lang.'/cashdesk');
+        }
+
         $this->company = auth()->user()->profile->company;
         $this->cashbook = $this->company->cashbooks->first();
+        $this->store = session()->get('store');
         $this->docNo = $this->generateCashDocNo($this->cashbook->id);
         $this->sumOfCart = Index::sumOfCart();
         $this->paymentTypes = PaymentType::get();
@@ -38,10 +46,16 @@ class PaymentTypes extends Component
     public function paymentType($slug)
     {
         $slug = trim(strip_tags($slug));
-
         $this->view = $slug;
 
-        $this->makeDocs($slug);
+        // Payment Types
+        $paymentType = $this->paymentTypes->where('slug', $slug)->first();
+
+        switch($paymentType->slug) {
+            case '';
+        }
+
+        $this->makeDocs($paymentType);
     }
 
     public function generateCashDocNo($cashbook_id, $docNo = null)
@@ -94,27 +108,21 @@ class PaymentTypes extends Component
         return $docNo;
     }
 
-    public function makeDocs($slugPayment)
+    public function makeDocs($paymentType)
     {
-        // Incoming Order
-        $cashDocType = DocType::where('slug', 'forma-ko-1')->first();
-
-        $paymentType = $this->paymentTypes->where('slug', $slugPayment)->first();
-
-        $store = session()->get('store');
         $products_data = [];
         $countInStores = [];
         $outgoingTotalCount = 0;
         $incomingTotalAmount = 0;
 
-        $this->cartProducts = session()->get('cartProducts') ?? [];
+        $cartProducts = session()->get('cartProducts') ?? [];
 
-        foreach($this->cartProducts as $productId => $cartProduct) {
+        foreach($cartProducts as $productId => $cartProduct) {
 
             $product = Product::findOrFail($productId);
 
             $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$store->id] ?? 0;
+            $countInStore = $countInStores[$this->store->id] ?? 0;
 
             $outgoingCount = 0;
 
@@ -139,13 +147,16 @@ class PaymentTypes extends Component
             $incomingTotalAmount = $incomingTotalAmount + ($price * $outgoingCount);
             $outgoingTotalCount = $outgoingTotalCount + $outgoingCount;
 
-            $countInStores[$store->id] = $stockCount;
+            $countInStores[$this->store->id] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
             $product->count = $amountCount;
             $product->save();
         }
+
+        // Incoming Order
+        $cashDocType = DocType::where('slug', 'forma-ko-1')->first();
 
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $this->cashbook->id;
@@ -155,44 +166,29 @@ class PaymentTypes extends Component
         $incomingOrder->doc_no = $this->docNo;
         $incomingOrder->doc_type_id = $cashDocType->id;
         $incomingOrder->products_data = json_encode($products_data);
-        $incomingOrder->from_contractor = null;
+        $incomingOrder->from_contractor = $this->store->title;
         $incomingOrder->payment_type_id = $paymentType->id;
-        $incomingOrder->payment_detail = null;
+        $incomingOrder->payment_detail = null; // Customer info
         $incomingOrder->sum = $this->sumOfCart['sumDiscounted'];
         $incomingOrder->currency = $this->company->currency->code;
         $incomingOrder->count = $this->sumOfCart['totalCount'];
         // $incomingOrder->comment = $this->comment;
         $incomingOrder->save();
 
-        $cashDoc = new CashDoc;
-        $cashDoc->cashbook_id = $this->cashbook->id;
-        $cashDoc->company_id = $this->company->id;
-        $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_id = $incomingOrder->id;
-        $cashDoc->doc_type_id = $cashDocType->id;
-        $cashDoc->from_contractor = auth()->user()->name;
-        $cashDoc->to_contractor = $this->company->title;
-        $cashDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
-        $cashDoc->outgoing_amount = 0;
-        $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
-        $cashDoc->currency = $this->company->currency->code;
-        // $cashDoc->comment = $this->comment;
-        $cashDoc->save();
-
         // Outgoing Doc
         $storeDocType = DocType::where('slug', 'forma-z-2')->first();
 
-        $storeDocNo = $this->generateStoreDocNo($store->id);
+        $storeDocNo = $this->generateStoreDocNo($this->store->id);
 
         $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $store->id;
+        $outgoingDoc->store_id = $this->store->id;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->username = auth()->user()->name;
         $outgoingDoc->doc_no = $storeDocNo;
         $outgoingDoc->doc_type_id = $storeDocType->id;
         $outgoingDoc->products_data = json_encode($products_data);
-        $outgoingDoc->to_contractor = '';
+        $outgoingDoc->to_contractor = $this->cashbook->id;
         $outgoingDoc->sum = $incomingTotalAmount;
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $outgoingTotalCount;
@@ -200,15 +196,32 @@ class PaymentTypes extends Component
         // $outgoingDoc->comment = $this->comment;
         $outgoingDoc->save();
 
+        // Cashbook
+        $cashDoc = new CashDoc;
+        $cashDoc->cashbook_id = $this->cashbook->id;
+        $cashDoc->company_id = $this->company->id;
+        $cashDoc->user_id = auth()->user()->id;
+        $cashDoc->doc_id = $incomingOrder->id;
+        $cashDoc->doc_type_id = $cashDocType->id;
+        $cashDoc->from_contractor = $this->store->title;
+        $cashDoc->to_contractor = $this->cashbook->title; // $this->company->title;
+        $cashDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
+        $cashDoc->outgoing_amount = 0;
+        $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
+        $cashDoc->currency = $this->company->currency->code;
+        // $cashDoc->comment = $this->comment;
+        $cashDoc->save();
+
+        // Storage
         $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $store->id;
+        $storeDoc->store_id = $this->store->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $storeDocType->id;
         $storeDoc->products_data = json_encode($products_data);
-        $storeDoc->from_contractor = $this->company->title;
-        $storeDoc->to_contractor = '';
+        $storeDoc->from_contractor = $this->cashbook->title;
+        $storeDoc->to_contractor = $this->store->title;
         $storeDoc->incoming_amount = $incomingTotalAmount;
         $storeDoc->outgoing_amount = 0;
         $storeDoc->sum = $outgoingTotalCount;
@@ -229,8 +242,6 @@ class PaymentTypes extends Component
 
     public function render()
     {
-        $this->cartProducts = session()->get('cartProducts') ?? [];
-
         return view('livewire.cashbook.payment-types')
             ->layout('livewire.cashbook.layout');
     }

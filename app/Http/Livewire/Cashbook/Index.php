@@ -244,8 +244,8 @@ class Index extends Component
         }
 
         $deferredChecks[$orderName]['totalDiscount'] = $this->totalDiscount;
-        $deferredChecks[$orderName]['sumDiscounted'] = number_format(round($sumOfCart['sumDiscounted'], -1), 0, '.', ' ').$this->company->currency->symbol;
-        $deferredChecks[$orderName]['sumUndiscounted'] = number_format(round($sumOfCart['sumUndiscounted'], -1), 0, '.', ' ').$this->company->currency->symbol;
+        $deferredChecks[$orderName]['sumDiscounted'] = number_format($sumOfCart['sumDiscounted'], 0, '.', ' ').$this->company->currency->symbol;
+        $deferredChecks[$orderName]['sumUndiscounted'] = number_format($sumOfCart['sumUndiscounted'], 0, '.', ' ').$this->company->currency->symbol;
         $deferredChecks[$orderName]['cart'] = $this->cartProducts;
 
         Cache::put('deferredChecks', $deferredChecks);
@@ -272,8 +272,15 @@ class Index extends Component
 
         foreach($deferredCheck['cart'] as $id => $check) {
 
-            $cartProducts[$id] = Product::findOrFail($id);
-            $cartProducts[$id]['countInCart'] = $check['countInCart'];
+            $product = Product::findOrFail($id);
+
+            $countInStores = json_decode($product->count_in_stores, true) ?? [];
+            $countInStore = $countInStores[$this->store->id] ?? 0;
+
+            $validCount = ($countInStore <= $check['countInCart']) ? $countInStore : $check['countInCart'];
+
+            $cartProducts[$id] = $product;
+            $cartProducts[$id]['countInCart'] = $validCount;
             $cartProducts[$id]['discount'] = $check['discount'];
             $cartProducts[$id]['input'] = false;
         }

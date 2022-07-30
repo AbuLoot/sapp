@@ -159,15 +159,7 @@ class Income extends Component
         $product = Product::findOrFail($id);
 
         if (session()->has('incomeProducts')) {
-
             $incomeProducts = session()->get('incomeProducts');
-            $incomeProducts[$id] = $product;
-            $incomeProducts[$id]['income_count'] = 0;
-
-            session()->put('incomeProducts', $incomeProducts);
-            $this->search = '';
-
-            return true;
         }
 
         $incomeProducts[$id] = $product;
@@ -177,18 +169,16 @@ class Income extends Component
         $this->search = '';
     }
 
-    public function deleteFromIncome($id)
+    public function removeFromIncome($id)
     {
         $incomeProducts = session()->get('incomeProducts');
 
-        if (count($incomeProducts) >= 1) {
-            unset($incomeProducts[$id]);
-            session()->put('incomeProducts', $incomeProducts);
-            return true;
+        if (count($incomeProducts) == 0) {
+            session()->forget('incomeProducts');
         }
 
-        session()->forget('incomeProducts');
-        $this->incomeProducts = [];
+        unset($incomeProducts[$id]);
+        session()->put('incomeProducts', $incomeProducts);
     }
 
     public function render()

@@ -4,3 +4,8 @@
 .navbar.bg-brand {
   border-bottom: 5px solid #463bab;
 }
+.checkbox-ids {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+}

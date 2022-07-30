@@ -33,10 +33,9 @@ class StoreDocs extends Component
     {
         $this->docDetail = StoreDoc::findOrFail($id);
         $this->docType = DocType::where('id', $this->docDetail->doc_type_id)->first();
-        // $products_data = json_decode($this->docDetail->products_data, true);
-        // $products_keys = collect($products_data)->keys();
-        // $this->docProducts = Product::whereIn('id', $products_keys->all())->get();
-        // dd($this->docDetail, $this->docType, $products_data, $products_keys,$this->docProducts);
+        $productsData = json_decode($this->docDetail->products_data, true);
+        $productsKeys = collect($productsData)->keys();
+        $this->docProducts = Product::whereIn('id', $productsKeys->all())->get();
     }
 
     public function render()

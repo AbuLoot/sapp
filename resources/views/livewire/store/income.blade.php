@@ -103,7 +103,7 @@
               </td>
               <!-- <td></td> -->
               <td>{{ $incomeProduct->company->title }}</td>
-              <td class="text-end"><a wire:click="deleteFromIncome({{ $incomeProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+              <td class="text-end"><a wire:click="removeFromIncome({{ $incomeProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
           @empty
             <tr>

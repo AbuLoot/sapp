@@ -100,7 +100,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Компания</th>
-                      <td>{{ $docDetail->from_contractor }} / Склад {{ $docDetail->store->id }}</td>
+                      <td>{{ $docDetail->from_contractor }} / {{ $docDetail->to_contractor }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Контрагент</th>
@@ -131,7 +131,6 @@
               @endif
             </div>
             <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-
               <table class="table table-sm table-striped">
                 <thead>
                   <tr  class="align-items-start">
@@ -147,7 +146,7 @@
                 <tbody>
                   @forelse($docProducts as $index => $product)
                     <tr>
-                      <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+                      <td><a href="/{{ $lang }}/storage/edit-product/{{ $index }}">{{ $product->title }}</a></td>
                       <td>
                         <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
                         @foreach($barcodes as $barcode)
