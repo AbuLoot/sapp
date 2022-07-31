@@ -10,9 +10,9 @@
       <form class="col-5 col-lg-auto mb-2 mb-lg-0 ms-lg-auto">
         <div class="input-group">
           <span class="input-group-text">От</span>
-          <input type="date" wire:model="startDate" class="form-control" placeholder="От..." data-date-format="dd/mm/yyyy">
+          <input type="date" wire:model="startDate" class="form-control" placeholder="От..." data-date-format="yyyy/mm/dd">
           <span class="input-group-text">До</span>
-          <input type="date" wire:model="endDate" class="form-control" placeholder="До..." data-date-format="dd/mm/yyyy">
+          <input type="date" wire:model="endDate" class="form-control" placeholder="До..." data-date-format="yyyy/mm/dd">
         </div>
       </form>
     </div>

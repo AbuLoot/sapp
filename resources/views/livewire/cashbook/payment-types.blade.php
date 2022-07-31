@@ -34,8 +34,7 @@
           </tbody>
         </table>
         <div class="d-flex">
-          <h5>Count</h5>
-          <h5 class="ms-auto">{{ $sumOfCart['countProduct'] }}</h5>
+          <h5>Количество</h5>
           <h5 class="ms-auto">{{ $sumOfCart['totalCount'] }}</h5>
         </div>
         <div class="d-flex">
@@ -92,7 +91,7 @@
             <div class="row gx-2 gy-2">
               @foreach($paymentTypes as $paymentType)
                 <div class="col-lg-6 d-grid">
-                  <button wire:click="paymentType('{{ $paymentType->slug }}')" type="button" class="btn btn-primary btn-lg text-start"><i class="bi bi-file-text-fill me-2"></i> <span>{{ $paymentType->title }}</span></button>
+                  <button wire:click="paymentType('{{ $paymentType->slug }}')" type="button" class="btn btn-primary btn-lg text-start"><i class="{{ $paymentType->image }} me-2"></i> <span>{{ $paymentType->title }}</span></button>
                 </div>
               @endforeach
             </div>
@@ -100,7 +99,7 @@
 
         <br>
 
-        <div class="col-lg-0 col-lg-10 offset-lg-1">
+        <!-- <div class="col-lg-0 col-lg-10 offset-lg-1">
 
           <div class="row gx-2 gy-2 h-100">
             <div class="col-4 d-grid">
@@ -143,7 +142,7 @@
               <button type="button" class="btn btn-secondary btn-lg fs-2" value=""><i class="bi bi-arrow-return-left"></i></button>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </main>

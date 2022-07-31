@@ -106,11 +106,11 @@ class AddProduct extends Component
 
     public function generateDocNo($store_id, $docNo = null)
     {
-        $lastDoc = IncomingDoc::where('doc_no', 'like', $store_id.'/_')->orderByDesc('id')->first();
+        $lastDoc = IncomingDoc::orderByDesc('id')->first();
 
         if ($lastDoc && is_null($docNo)) {
             list($first, $second) = explode('/', $lastDoc->doc_no);
-            $docNo = $first.'/'.++$second;
+            $docNo = $first.'/'.$second++;
         } elseif (is_null($docNo)) {
             $docNo = $store_id.'/1';
         }

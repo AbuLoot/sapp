@@ -39,18 +39,27 @@ class IncomingDocs extends Component
 
     public function render()
     {
+        $query = IncomingDoc::orderBy('id', 'desc');
+        $appends = [];
+
         if (is_numeric($this->search)) {
-            $incomingDocs = IncomingDoc::where('doc_no', 'like', '%'.$this->search)->orderBy('id', 'desc')->paginate(50);
+            $query->where('doc_no', 'like', '%'.$this->search.'%');
         }
-        elseif ($this->startDate || $this->endDate) {
-            $incomingDocs = IncomingDoc::where('created_at', '>=', $this->startDate)
-                ->where('created_at', '<=', $this->endDate)
-                ->orderBy('id', 'desc')
-                ->paginate(50);
+
+        if ($this->startDate || $this->endDate) {
+
+            $startDate = $this->startDate ?? '2020-01-01';
+            $endDate = $this->endDate ?? '3030-12-31';
+
+            $query->where('created_at', '>=', $startDate)
+                ->where('created_at', '<=', $endDate);
+
+            $appends['startDate'] = $startDate;            
+            $appends['endDate'] = $endDate;
         }
-        else {
-            $incomingDocs = IncomingDoc::orderBy('id', 'desc')->paginate(50);
-        }
+
+        $incomingDocs = $query->paginate(50);
+        $incomingDocs->appends($appends);
 
         return view('livewire.store.incoming-docs', ['incomingDocs' => $incomingDocs])
             ->layout('livewire.store.layout');

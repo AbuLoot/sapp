@@ -32,11 +32,11 @@ class IncomingCash extends Component
     {
         if (is_null($docNo)) {
 
-            $lastDoc = IncomingOrder::where('doc_no', 'like', $cashbook_id.'/_')->orderByDesc('id')->first();
+            $lastDoc = IncomingOrder::orderByDesc('id')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.++$second;
+                $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
                 $docNo = $cashbook_id.'/1';
             }

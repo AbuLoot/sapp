@@ -101,7 +101,7 @@
                   @error('count.'.$incomeProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
-              <!-- <td></td> -->
+              <!-- <td></td> -->  
               <td>{{ $incomeProduct->company->title }}</td>
               <td class="text-end"><a wire:click="removeFromIncome({{ $incomeProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>

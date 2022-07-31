@@ -39,18 +39,27 @@ class OutgoingDocs extends Component
 
     public function render()
     {
+        $query = OutgoingDoc::orderBy('id', 'desc');
+        $appends = [];
+
         if (is_numeric($this->search)) {
-            $outgoingDocs = OutgoingDoc::where('doc_no', 'like', '%'.$this->search)->orderBy('id', 'desc')->paginate(50);
+            $query->where('doc_no', 'like', '%'.$this->search.'%');
         }
-        elseif ($this->startDate || $this->endDate) {
-            $outgoingDocs = OutgoingDoc::where('created_at', '>=', $this->startDate)
-                ->where('created_at', '<=', $this->endDate)
-                ->orderBy('id', 'desc')
-                ->paginate(50);
+
+        if ($this->startDate || $this->endDate) {
+
+            $startDate = $this->startDate ?? '2020-01-01';
+            $endDate = $this->endDate ?? '3030-12-31';
+
+            $query->where('created_at', '>=', $startDate)
+                ->where('created_at', '<=', $endDate);
+
+            $appends['startDate'] = $startDate;            
+            $appends['endDate'] = $endDate;
         }
-        else {
-            $outgoingDocs = OutgoingDoc::orderBy('id', 'desc')->paginate(50);
-        }
+
+        $outgoingDocs = $query->paginate(50);
+        $outgoingDocs->appends($appends);
 
         return view('livewire.store.outgoing-docs', ['outgoingDocs' => $outgoingDocs])
             ->layout('livewire.store.layout');

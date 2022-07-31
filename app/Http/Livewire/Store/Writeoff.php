@@ -59,11 +59,11 @@ class Writeoff extends Component
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingDoc::where('doc_no', 'like', $store_id.'/_')->orderByDesc('id')->first();
+            $lastDoc = OutgoingDoc::orderByDesc('id')->first();
 
             if ($lastDoc && is_null($docNo)) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.++$second;
+                $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
                 $docNo = $store_id.'/1';
             }
@@ -181,7 +181,7 @@ class Writeoff extends Component
         $storeDoc->to_contractor = '';
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $writeoffTotalAmount;
-        $storeDoc->sum = $writeoffTotalAmount;
+        $storeDoc->sum = $writeoffTotalCount;
         // $storeDoc->unit = $this->unit;
         $storeDoc->comment = $this->comment;
         $storeDoc->save();

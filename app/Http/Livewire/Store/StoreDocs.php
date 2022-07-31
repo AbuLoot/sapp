@@ -40,20 +40,26 @@ class StoreDocs extends Component
 
     public function render()
     {
+        $query = StoreDoc::orderByDesc('id');
+        $appends = [];
+
         if (strlen($this->search) >= 2) {
-            $storeDocs = StoreDoc::where('to_contractor', 'like', '%'.$this->search.'%')
-                ->orderByDesc('id')
-                ->paginate(30);
+            $query->where('to_contractor', 'like', '%'.$this->search.'%');
         }
-        elseif ($this->startDate || $this->endDate) {
-            $storeDocs = StoreDoc::where('created_at', '>=', $this->startDate)
-                ->where('created_at', '<=', $this->endDate)
-                ->orderBy('id', 'desc')
-                ->paginate(30);
+
+        if ($this->startDate || $this->endDate) {
+            $startDate = $this->startDate ?? '2020-01-01';
+            $endDate = $this->endDate ?? '3030-12-31';
+
+            $query->where('created_at', '>=', $startDate)
+                ->where('created_at', '<=', $endDate);
+
+            $appends['startDate'] = $startDate;            
+            $appends['endDate'] = $endDate;
         }
-        else {
-            $storeDocs = StoreDoc::orderByDesc('id')->paginate(30);
-        }
+
+        $storeDocs = $query->paginate(50);
+        $storeDocs->appends($appends);
 
         return view('livewire.store.store-docs', ['storeDocs' => $storeDocs])
             ->layout('livewire.store.layout');

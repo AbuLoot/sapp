@@ -64,11 +64,11 @@ class Inventory extends Component
     {
         if (is_null($docNo)) {
 
-            $lastDoc = Revision::where('doc_no', 'like', $store_id.'/_')->orderByDesc('id')->first();
+            $lastDoc = Revision::orderByDesc('id')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.++$second;
+                $docNo = $first.'/'.$second++;
             } else {
                 $docNo = $store_id.'/1';
             }

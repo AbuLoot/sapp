@@ -26,7 +26,8 @@
         @foreach ($payment_types as $payment_type)
           <tr>
             <td>{{ $i++ }}</td>
-            <td><img src="{{ $payment_type->image }}" class="img-responsive" style="width:80px;height:auto;"></td>
+            <!-- <td><img src="/" class="img-responsive" style="width:80px;height:auto;"></td> -->
+            <td>{{ $payment_type->image }}</td>
             <td>{{ $payment_type->slug }}</td>
             <td>{{ $payment_type->title }}</td>
             <td>{{ $payment_type->lang }}</td>

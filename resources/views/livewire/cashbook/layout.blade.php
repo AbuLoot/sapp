@@ -36,5 +36,28 @@
 
   @yield('scripts')
 
+<!--   <script>
+    window.addEventListener('client-form', event => {
+      // const modal = new bootstrap.Modal(document.getElementById('addClient'))
+      const clientModal = document.querySelector('#addClient')
+      // clientModal.hide()
+      const modal = new bootstrap.Modal(clientModal)
+      modal.addEventListener('shown.bs.hidden', event => {
+        modal.dispose()
+      })
+      alert(event.detail.formMode)
+      // alert('Name updated to: ' + event.detail.data);
+      // if (event.detail.formMode) {
+        // const modal = new bootstrap.Modal('#addClient', {
+          // backdrop: true
+        // }) // initialized with defaults
+        // modal.hide()
+      // }
+      // else {
+        // modal.show()
+      // }
+    })
+
+  </script> -->
 </body>
 </html>
