@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Livewire\Cashbook;
+namespace App\Http\Livewire\Cashbook\PaymentTypes;
 
 use Livewire\Component;
 
-use App\Http\Livewire\Cashbook\Index;
+use App\Http\Livewire\Cashbook\Index as CashbookIndex;
 
 use App\Models\Product;
 use App\Models\PaymentType;
@@ -14,7 +14,7 @@ use App\Models\StoreDoc;
 use App\Models\IncomingOrder;
 use App\Models\OutgoingDoc;
 
-class PaymentTypes extends Component
+class PaymentTypesIndex extends Component
 {
     public $lang;
     public $view = false;
@@ -42,7 +42,7 @@ class PaymentTypes extends Component
         }
 
         $this->docNo = $this->generateCashDocNo(session()->get('cashbook')->id);
-        $this->sumOfCart = Index::sumOfCart();
+        $this->sumOfCart = CashbookIndex::sumOfCart();
         $this->paymentTypes = PaymentType::get();
     }
 
@@ -53,8 +53,9 @@ class PaymentTypes extends Component
 
     public function makeDocs($paymentDetail = [])
     {
-
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
+
+        dd($paymentDetail);
 
         $productsData = [];
         $countInStores = [];
@@ -100,9 +101,15 @@ class PaymentTypes extends Component
 
             $product->count_in_stores = json_encode($countInStores);
             $product->count = $amountCount;
-            $product->save();
+            // $product->save();
         }
 
+
+        dd($incomingTotalAmount, $this->sumOfCart['sumDiscounted']);
+
+        if ($paymentDetail['type'] == 'sale-on-credit') {
+
+        }
 
         // Incoming Order & Outgoing Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
@@ -231,7 +238,7 @@ class PaymentTypes extends Component
 
     public function backToCash()
     {
-        session()->forget('cartProducts');
+        // session()->forget('cartProducts');
 
         return redirect($this->lang.'/cashdesk');
     }
@@ -240,7 +247,7 @@ class PaymentTypes extends Component
     {
         $this->cartProducts = session()->get('cartProducts') ?? [];
 
-        return view('livewire.cashbook.payment-types')
+        return view('livewire.cashbook.payment-types.payment-types-index')
             ->layout('livewire.cashbook.layout');
     }
 }

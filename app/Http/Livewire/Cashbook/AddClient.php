@@ -15,15 +15,10 @@ class AddClient extends Component
     public $address;
 
     protected $rules = [
-        'name' => 'required|string|min:2',
-        'lastname' => 'required|string|min:2',
-        'tel' => 'required|string|min:11',
+        'name' => 'required|min:2',
+        'lastname' => 'required|min:2',
+        'tel' => 'required|min:11',
     ];
-
-    public function mount()
-    {
-        // $this->user = new User;
-    }
 
     public function save()
     {
@@ -38,7 +33,7 @@ class AddClient extends Component
         $user->address = $this->address;
         $user->save();
 
-        $this->emitUp('newData');
+        // $this->emitUp('newData');
         $this->dispatchBrowserEvent('close-modal');
     }
 

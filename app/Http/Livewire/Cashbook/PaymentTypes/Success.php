@@ -8,6 +8,7 @@ class Success extends Component
 {
     public function render()
     {
-        return view('livewire.cashbook.payment-types.success');
+        return view('livewire.cashbook.payment-types.success')
+            ->layout('livewire.cashbook.layout');
     }
 }

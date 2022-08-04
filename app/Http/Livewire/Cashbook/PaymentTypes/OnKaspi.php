@@ -9,7 +9,7 @@ use App\Http\Livewire\Cashbook\PaymentTypes;
 
 use App\Models\PaymentType;
 
-class CashPayment extends Component
+class OnKaspi extends Component
 {
     public $cash = null;
     public $change = 0;
@@ -35,7 +35,6 @@ class CashPayment extends Component
     public function pay()
     {
         $paymentDetail['typeId'] = $this->paymentType->id;
-        $paymentDetail['type'] = $this->paymentType->slug;
         $paymentDetail['cash'] = $this->cash;
         $paymentDetail['change'] = $this->change;
 
@@ -44,7 +43,6 @@ class CashPayment extends Component
 
     public function render()
     {
-        return view('livewire.cashbook.payment-types.cash-payment')
-            ->layout('livewire.cashbook.layout');
+        return view('livewire.cashbook.payment-types.cash-payment');
     }
 }

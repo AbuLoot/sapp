@@ -14,7 +14,7 @@ class AddCategory extends Component
     public $alert = false;
 
     protected $rules = [
-        'category.title' => 'required|string|min:2',
+        'category.title' => 'required|min:2',
     ];
 
     public function mount()

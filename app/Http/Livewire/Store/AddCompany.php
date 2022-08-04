@@ -15,7 +15,7 @@ class AddCompany extends Component
     public $alert = false;
 
     protected $rules = [
-        'company.title' => 'required|string|min:2',
+        'company.title' => 'required|min:2',
         'company.phones' => '',
         'company.legal_address' => ''
     ];

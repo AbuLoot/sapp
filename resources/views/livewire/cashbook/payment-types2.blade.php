@@ -91,7 +91,8 @@
             <div class="row gx-2 gy-2">
               @foreach($paymentTypes as $paymentType)
                 <div class="col-lg-6 d-grid">
-                  <button wire:click="paymentType('{{ $paymentType->slug }}')" type="button" class="btn btn-primary btn-lg text-start"><i class="{{ $paymentType->image }} me-2"></i> <span>{{ $paymentType->title }}</span></button>
+                  <a href="/{{ $lang }}/cashdesk/payment-type/{{ $paymentType->slug }}" class="btn btn-primary btn-lg text-start"><i class="{{ $paymentType->image }} me-2"></i> <span>{{ $paymentType->title }}</span></a>
+                  <!-- <button wire:click="paymentType('{{ $paymentType->slug }}')" type="button" class="btn btn-primary btn-lg text-start"><i class="{{ $paymentType->image }} me-2"></i> <span>{{ $paymentType->title }}</span></button> -->
                 </div>
               @endforeach
             </div>

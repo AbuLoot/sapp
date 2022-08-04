@@ -34,7 +34,7 @@ class AddProduct extends Component
     protected $listeners = ['newData' => '$refresh'];
 
     protected $rules = [
-        'product.title' => 'required|string|min:2',
+        'product.title' => 'required|min:2',
         'product.company_id' => 'required|numeric',
         'product.category_id' => 'required|numeric',
         'product.type' => 'required|numeric',

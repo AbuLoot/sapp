@@ -141,7 +141,11 @@ class UserController extends Controller
         $this->authorize('delete', $user);
 
         $user->roles()->detach();
-        $user->profile->delete();
+
+        if ($user->profile) {
+            $user->profile->delete();
+        }
+
         $user->delete();
 
         return redirect($lang.'/admin/users')->with('status', 'Запись удалена.');

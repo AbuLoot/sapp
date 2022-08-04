@@ -8,6 +8,7 @@ class ComplexPayment extends Component
 {
     public function render()
     {
-        return view('livewire.cashbook.payment-types.complex-payment');
+        return view('livewire.cashbook.payment-types.complex-payment')
+            ->layout('livewire.cashbook.layout');
     }
 }
