@@ -26,7 +26,7 @@ class PaymentTypesIndex extends Component
     public $cartProducts;
     public $paymentTypes;
 
-    protected $listeners = ['makeDocs'];
+    protected $listeners = ['makeDocs' => 'makeDocs'];
 
     public function mount()
     {
@@ -53,10 +53,6 @@ class PaymentTypesIndex extends Component
 
     public function makeDocs($paymentDetail = [])
     {
-        $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
-
-        dd($paymentDetail);
-
         $productsData = [];
         $countInStores = [];
         $outgoingTotalCount = 0;
@@ -102,13 +98,6 @@ class PaymentTypesIndex extends Component
             $product->count_in_stores = json_encode($countInStores);
             $product->count = $amountCount;
             // $product->save();
-        }
-
-
-        dd($incomingTotalAmount, $this->sumOfCart['sumDiscounted']);
-
-        if ($paymentDetail['type'] == 'sale-on-credit') {
-
         }
 
         // Incoming Order & Outgoing Doc
@@ -183,7 +172,7 @@ class PaymentTypesIndex extends Component
         $storeDoc->save();
 
         session()->forget('cartProducts');
-        $this->view = 'success';
+        return redirect($this->lang.'/cashdesk/payment-type/success');
     }
 
     public function generateCashDocNo($cashbook_id, $docNo = null)
