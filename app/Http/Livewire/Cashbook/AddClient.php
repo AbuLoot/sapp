@@ -33,7 +33,7 @@ class AddClient extends Component
         $user->address = $this->address;
         $user->save();
 
-        // $this->emitUp('newData');
+        $this->emitUp('newUser');
         $this->dispatchBrowserEvent('close-modal');
     }
 

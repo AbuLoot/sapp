@@ -12,37 +12,26 @@ use App\Models\PaymentType;
 class OnKaspi extends Component
 {
     public $cash = null;
-    public $change = 0;
     public $sumOfCart;
     public $payButton = false;
 
     public function mount()
     {
         $this->sumOfCart = Index::sumOfCart();
-        $this->paymentType = PaymentType::where('slug', 'cash-payment')->first();
-    }
-
-    public function updated($key, $value)
-    {
-        if (strlen($this->sumOfCart['sumDiscounted']) <= strlen($this->cash)) {
-            $this->change = (int) $this->cash - $this->sumOfCart['sumDiscounted'];
-            $this->payButton = true;
-        } else {
-            $this->payButton = false;
-        }
+        $this->paymentType = PaymentType::where('slug', 'on-kaspi')->first();
     }
 
     public function pay()
     {
         $paymentDetail['typeId'] = $this->paymentType->id;
-        $paymentDetail['cash'] = $this->cash;
-        $paymentDetail['change'] = $this->change;
+        $paymentDetail['typeSlug'] = $this->paymentType->slug;
+        $paymentDetail['sum'] = $this->sumOfCart['sumDiscounted'];
 
         $this->emitUp('makeDocs', $paymentDetail);
     }
 
     public function render()
     {
-        return view('livewire.cashbook.payment-types.cash-payment');
+        // return view('livewire.cashbook.payment-types.on-kaspi');
     }
 }

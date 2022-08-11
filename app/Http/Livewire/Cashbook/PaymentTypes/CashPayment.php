@@ -2,23 +2,21 @@
 
 namespace App\Http\Livewire\Cashbook\PaymentTypes;
 
-use Livewire\Component;
+// use Livewire\Component;
 
 use App\Http\Livewire\Cashbook\Index;
-use App\Http\Livewire\Cashbook\PaymentTypes;
+use App\Http\Livewire\Cashbook\PaymentTypes\PaymentTypesIndex;
 
 use App\Models\PaymentType;
 
-class CashPayment extends Component
+class CashPayment extends PaymentTypesIndex
 {
     public $cash = null;
     public $change = 0;
-    public $sumOfCart;
     public $payButton = false;
 
     public function mount()
     {
-        $this->sumOfCart = Index::sumOfCart();
         $this->paymentType = PaymentType::where('slug', 'cash-payment')->first();
     }
 
@@ -39,7 +37,9 @@ class CashPayment extends Component
         $paymentDetail['cash'] = $this->cash;
         $paymentDetail['change'] = $this->change;
 
-        $this->emitUp('makeDocs', $paymentDetail);
+        $this->makeDocs($paymentDetail);
+
+        // $this->emitUp('makeDocs', $paymentDetail);
     }
 
     public function render()

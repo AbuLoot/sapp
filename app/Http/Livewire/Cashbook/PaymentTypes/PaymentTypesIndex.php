@@ -26,7 +26,7 @@ class PaymentTypesIndex extends Component
     public $cartProducts;
     public $paymentTypes;
 
-    protected $listeners = ['makeDocs' => 'makeDocs'];
+    protected $listeners = ['makeDocs'];
 
     public function mount()
     {
@@ -44,6 +44,11 @@ class PaymentTypesIndex extends Component
         $this->docNo = $this->generateCashDocNo(session()->get('cashbook')->id);
         $this->sumOfCart = CashbookIndex::sumOfCart();
         $this->paymentTypes = PaymentType::get();
+    }
+
+    public function getDocNo()
+    {
+        return $this->docNo;
     }
 
     public function paymentType($slug)
@@ -97,7 +102,7 @@ class PaymentTypesIndex extends Component
 
             $product->count_in_stores = json_encode($countInStores);
             $product->count = $amountCount;
-            // $product->save();
+            $product->save();
         }
 
         // Incoming Order & Outgoing Doc
@@ -194,7 +199,7 @@ class PaymentTypesIndex extends Component
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            $this->generateCashDocNo($cashbook_id, $docNo);
+            self::generateCashDocNo($cashbook_id, $docNo);
         }
 
         return $docNo;
@@ -219,7 +224,7 @@ class PaymentTypesIndex extends Component
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            $this->generateStoreDocNo($store_id, $docNo);
+            self::generateStoreDocNo($store_id, $docNo);
         }
 
         return $docNo;

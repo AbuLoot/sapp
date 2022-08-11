@@ -1,5 +1,16 @@
 <div>
 
+  @if(session()->has('message'))
+    <div class="toast-container position-fixed -bottom-0 end-0 p-4">
+      <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body text-white">{{ session('message') }}</div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  @endif
+
   <main class="container my-4">
     <div class="row">
       <div class="col-lg-5">
@@ -14,17 +25,6 @@
           <a href="/{{ app()->getLocale() }}/cashdesk/payment-types" class="btn btn-outline-dark btn-lg ms-auto">Закрыть</a>
         </div>
         <br>
-
-        @if(session()->has('message'))
-          <div class="toast-container position-fixed -bottom-0 end-0 p-4">
-            <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
-              <div class="d-flex">
-                <div class="toast-body text-white">{{ session('message') }}</div>
-                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-              </div>
-            </div>
-          </div>
-        @endif
 
         <p class="text-muted">Выберите из поля поиска человека, которому хотите оформить долг</p>
 
@@ -70,8 +70,8 @@
               </div>
               <div class="modal-body">
 
-                <!-- <-livewire:cashbook.add-client> -->
-                <form wire:click.prevent="save">
+                <livewire:cashbook.add-client>
+                <!-- <form wire:click.prevent="save">
 
                   <div class="row">
                     <div class="col-6">
@@ -111,7 +111,9 @@
                   <div class="text-end">
                     <button type="submit" class="btn btn-success btn-lg">Добавить</button>
                   </div>
-                </form>
+                </form> -->
+
+                <button wire:click="test">123</button>
               </div>
             </div>
           </div>
@@ -127,8 +129,10 @@
 
   <script type="text/javascript">
     const myModalEl = document.querySelector('#addClient')
-    const modal = new bootstrap.Modal(myModalEl) // initialized with defaults
-
+    // const modal = new bootstrap.Modal(myModalEl) // initialized with defaults
+    myModalEl.addEventListener('hidden.bs.modal', event => {
+      myModal.dispose()
+    })
     // modal.show();
     window.addEventListener('close-modal', event => {
       // const incomingCash = document.getElementById('incomingCash')
@@ -138,6 +142,7 @@
 
       modal.hide();
     })
+
   </script>
 
 @endsection

@@ -20,6 +20,7 @@ class SaleOnCredit extends Component
     protected $queryString = ['search'];
 
     public $lang;
+    public $company;
     public $search = '';
     public $sumOfCart;
     public $name;
@@ -27,6 +28,8 @@ class SaleOnCredit extends Component
     public $tel;
     public $email;
     public $address;
+
+    protected $listeners = ['newUser'];
 
     protected $rules = [
         'name' => 'required|min:2',
@@ -42,9 +45,15 @@ class SaleOnCredit extends Component
         $this->paymentType = PaymentType::where('slug', 'sale-on-credit')->first();
     }
 
-    public function openModal()
+    public function test()
     {
-        $this->dispatchBrowserEvent('client-form', ['formMode' => 'yes!']);
+        $this->dispatchBrowserEvent('close-modal');
+    }
+
+    public function newUser()
+    {
+        session()->flash('message', 'Запись добавлена');
+        $this->dispatchBrowserEvent('close-modal');
     }
 
     public function save()
