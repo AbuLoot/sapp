@@ -28,7 +28,7 @@
               </div>
             </div>
           @endforeach
-          <button wire:click="pay" type="button" class="btn btn-success btn-lg" @if(!$payButton) disabled @endif>Оплатить</button>
+          <button wire:click="makeDocs" type="button" class="btn btn-success btn-lg" @if(!$payButton) disabled @endif>Оплатить</button>
         </form>
 
         <div class="d-flex">

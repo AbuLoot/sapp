@@ -204,7 +204,7 @@
             </div>
             <div class="col-3 gy-2">
               <div class="d-grid gap-2 h-100">
-                <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#listOfDeptors">Список<br> должников</button>
+                <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#listOfDebtors">Список<br> должников</button>
               </div>
             </div>
             <div class="col-3 gy-2">
@@ -298,8 +298,8 @@
   <!-- Modal Return Products -->
   <livewire:cashbook.return-products>
 
-  <!-- Modal List Of Deptors -->
-  <livewire:cashbook.list-of-deptors>
+  <!-- Modal List Of Debtors -->
+  <livewire:cashbook.list-of-debtors>
 
   <!-- Modal Incoming Cash -->
   <div class="modal fade" id="incomingCash" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">

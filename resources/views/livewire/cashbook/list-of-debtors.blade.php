@@ -1,7 +1,7 @@
 <div>
 
-  <!-- Modal List Of Deptors -->
-  <div class="modal fade" id="listOfDeptors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <!-- Modal List Of Debtors -->
+  <div class="modal fade" id="listOfDebtors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
@@ -13,46 +13,35 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Сумма долга</th>
+                <th scope="col">Номера чеков</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td class="text-end"><button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#repaymentOfDept">Погасить</button></td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td class="text-end"><button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#repaymentOfDept">Погасить</button></td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td class="text-end"><button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#repaymentOfDept">Погасить</button></td>
-              </tr>
+              @foreach($debtors as $debtor)
+                <?php
+                  $deptData = json_encode($debtor->dept_data, true);
+                  print_r($deptData);
+                ?>
+                <tr>
+                  <th scope="row">{{ $debtor->user->name . $debtor->user->username }}</th>
+                  <td>{{ $debtor->debt_sum . $company->currency->symbol }}</td>
+                  <td>{{ $debtor->user->name }}</td>
+                  <td class="text-end"><button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#repaymentOfDept">Погасить</button></td>
+                </tr>
+              @endforeach
             </tbody>
           </table>
 
           <nav aria-label="Page navigation example">
-            <ul class="pagination pagination-lg">
-              <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
+            {{ $debtors->links() }}
           </nav>
 
           <div class="d-flex">
             <h5>Общая сумма долгов</h5>
-            <h5 class="ms-auto">100 000 000KZT</h5>
+            <h5 class="ms-auto">{{ number_format($debtors->sum('debt_sum'), 0, '.', ',') . $company->currency->code }}</h5>
           </div>
         </div>
         <div class="modal-footer">

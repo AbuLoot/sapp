@@ -76,39 +76,6 @@ class SaleOnCredit extends Component
         // $this->dispatchBrowserEvent('client-form', ['formMode' => false]);
     }
 
-    public function debtorIs($id)
-    {
-        $user = User::findOrFail($id);
-
-        if (empty($user->profile)) {
-
-            $profile = new Profile;
-            $profile->user_id = $user->id;
-            $profile->region_id = 1;
-            $profile->is_debtor = true;
-            $profile->debt_sum = $this->sumOfCart['sumDiscounted'];
-            // $profile->save();
-        } else {
-            $user->profile->is_debtor = true;
-            $user->profile->debt_sum = $user->profile->debt_sum + $this->sumOfCart['sumDiscounted'];
-            // $user->profile->save();
-        }
-
-        $paymentDetail['typeId'] = $this->paymentType->id;
-        $paymentDetail['type'] = $this->paymentType->slug;
-        $paymentDetail['user_id'] = $user->id;
-        $paymentDetail['dept_sum'] = $this->sumOfCart['sumDiscounted'];
-        $paymentDetail['incoming_order'] = null;
-        $paymentDetail['outgoing_doc'] = null;
-
-        $this->makeDocs($paymentDetail);
-
-        // $this->emit('makeDocs', $paymentDetail);
-
-        // session()->forget('cartProducts');
-        // return redirect($this->lang.'/cashdesk/payment_type/success');
-    }
-
     public function makeDebtDocs($id)
     {
         $user = User::findOrFail($id);
@@ -215,11 +182,11 @@ class SaleOnCredit extends Component
             $profile->user_id = $user->id;
             $profile->region_id = 1;
             $profile->is_debtor = true;
-            $profile->debt_sum = $incomingTotalAmount;
+            $profile->debt_sum = $this->sumOfCart['sumDiscounted'];
 
             $debt_order[] = [
                 'docNo' => $incomingOrder->doc_no,
-                'sum' => $incomingTotalAmount,
+                'sum' => $this->sumOfCart['sumDiscounted'],
             ];
 
             $profile->debt_orders = json_encode($debt_order);
@@ -228,12 +195,12 @@ class SaleOnCredit extends Component
         } else {
 
             $user->profile->is_debtor = true;
-            $user->profile->debt_sum = $user->profile->debt_sum + $incomingTotalAmount;
+            $user->profile->debt_sum = $user->profile->debt_sum + $this->sumOfCart['sumDiscounted'];
 
             $debt_orders = json_decode($user->profile->debt_orders, true) ?? [];
             $debt_orders[] = [
                 'docNo' => $incomingOrder->doc_no,
-                'sum' => $incomingTotalAmount,
+                'sum' => $this->sumOfCart['sumDiscounted'],
             ];
 
             $user->profile->debt_orders = json_encode($debt_orders);

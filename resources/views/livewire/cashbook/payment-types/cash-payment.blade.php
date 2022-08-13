@@ -32,7 +32,7 @@
               <input wire:model="change" type="number" class="form-control form-control-lg" id="title" minlength="2" placeholder="Введите сумму">
             </div>
           </div>
-          <button wire:click="pay" type="button" class="btn btn-success btn-lg" @if(!$payButton) disabled @endif>Оплатить</button>
+          <button wire:click="makeDocs" type="button" class="btn btn-success btn-lg" @if(!$payButton) disabled @endif>Оплатить</button>
         </form>
 
         <div class="d-flex">
