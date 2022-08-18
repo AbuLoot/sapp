@@ -53,11 +53,6 @@ class IncomingCash extends Component
         return $docNo;
     }
 
-    public function test()
-    {
-        $this->dispatchBrowserEvent('close-modal');
-    }
-
     public function credit()
     {
         $this->validate();

@@ -112,8 +112,6 @@
                     <button type="submit" class="btn btn-success btn-lg">Добавить</button>
                   </div>
                 </form> -->
-
-                <button wire:click="test">123</button>
               </div>
             </div>
           </div>
@@ -128,19 +126,21 @@
 @section('scripts')
 
   <script type="text/javascript">
-    const myModalEl = document.querySelector('#addClient')
+    // const myModalEl = document.querySelector('#addClient')
     // const modal = new bootstrap.Modal(myModalEl) // initialized with defaults
-    myModalEl.addEventListener('hidden.bs.modal', event => {
-      myModal.dispose()
-    })
+    // myModalEl.addEventListener('hidden.bs.modal', event => {
+      // myModal.dispose()
+    // })
     // modal.show();
     window.addEventListener('close-modal', event => {
       // const incomingCash = document.getElementById('incomingCash')
       // incomingCash.hide() // it is asynchronous
-      const myModalEl = document.querySelector('#addClient')
-      const modal = new bootstrap.Modal(myModalEl) // initialized with defaults
+      // const myModalEl = document.querySelector('#addClient')
+      // const modal = new bootstrap.Modal(myModalEl) // initialized with defaults
 
-      modal.hide();
+      // alert(123);
+      // modal.hide();
+      window.location.reload()
     })
 
   </script>

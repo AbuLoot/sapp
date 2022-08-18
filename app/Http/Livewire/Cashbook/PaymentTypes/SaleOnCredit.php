@@ -45,17 +45,6 @@ class SaleOnCredit extends Component
         $this->paymentType = PaymentType::where('slug', 'sale-on-credit')->first();
     }
 
-    public function test()
-    {
-        $this->dispatchBrowserEvent('close-modal');
-    }
-
-    public function newUser()
-    {
-        session()->flash('message', 'Запись добавлена');
-        $this->dispatchBrowserEvent('close-modal');
-    }
-
     public function save()
     {
         $this->validate();
@@ -71,9 +60,7 @@ class SaleOnCredit extends Component
 
         session()->flash('message', 'Запись добавлена');
 
-        // $this->emitUp('newData');
         $this->dispatchBrowserEvent('close-modal');
-        // $this->dispatchBrowserEvent('client-form', ['formMode' => false]);
     }
 
     public function makeDebtDocs($id)

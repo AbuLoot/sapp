@@ -1,7 +1,7 @@
 <div>
 
   <!-- Modal List Of Debtors -->
-  <div class="modal fade" id="listOfDebtors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div wire:ignore.self class="modal fade" id="listOfDebtors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
@@ -21,15 +21,18 @@
             </thead>
             <tbody>
               @foreach($debtors as $debtor)
-                <?php
-                  $deptData = json_encode($debtor->dept_data, true);
-                  print_r($deptData);
-                ?>
+                <?php $debtOrders = json_decode($debtor->debt_orders, true) ?? []; ?>
                 <tr>
                   <th scope="row">{{ $debtor->user->name . $debtor->user->username }}</th>
                   <td>{{ $debtor->debt_sum . $company->currency->symbol }}</td>
-                  <td>{{ $debtor->user->name }}</td>
-                  <td class="text-end"><button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#repaymentOfDept">Погасить</button></td>
+                  <td>
+                    @foreach($debtOrders as $debtOrder)
+                      №{{ $debtOrder['docNo'] }},
+                    @endforeach
+                  </td>
+                  <td class="text-end">
+                    <button wire:click="repayFor({{ $debtor->id }})" class="btn btn-outline-success">Погасить</button>
+                  </td>
                 </tr>
               @endforeach
             </tbody>
@@ -52,7 +55,7 @@
   </div>
 
   <!-- Modal Repayment Of Dept -->
-  <div class="modal fade" id="repaymentOfDept" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div wire:ignore.self class="modal fade" id="repaymentOfDept" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content  bg-light">
         <div class="modal-header">
@@ -61,22 +64,33 @@
         </div>
         <div class="modal-body">
           <form>
+            <!-- <input id="debtor" type="hidden"> -->
             <div class="mb-3">
               <label for="title" class="form-label">Сумма погашение долга</label>
-              <input type="text" class="form-control form-control-lg" id="title" name="title" minlength="2" value="" required>
+              <input wire:model="repaymentAmount" class="form-control form-control-lg" id="title" name="title" minlength="2" required>
             </div>
           </form>
 
-          <div class="d-flex">
-            <h5>Общая сумма долгов</h5>
-            <h5 class="ms-auto">100 000 000KZT</h5>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-lg text-center">Погасить</button>
+          <button wire:click="repay" type="button" class="btn btn-success btn-lg ml-auto">Погасить</button>
         </div>
       </div>
     </div>
   </div>
 
 </div>
+
+@section('scripts')
+  <script>
+    window.addEventListener('toggle-modal', event => {
+      // const listOfDebtors = new bootstrap.Modal('listOfDebtors')
+      // listOfDebtors.hide() // it is asynchronous
+      const modalList = new bootstrap.Modal("#listOfDebtors")
+      modalList.hide()
+
+      // var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDept"), {});
+      // document.getElementById('debtor').value = event.detail.debtorId;
+      // modalRepayment.show();
+
+    })
+  </script>
+@endsection

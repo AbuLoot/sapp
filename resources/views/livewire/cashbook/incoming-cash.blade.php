@@ -10,7 +10,6 @@
     @error('comment')<div class="invalid-feedback">{{ $message }}</div>@enderror
   </div>
   <div class="text-end">
-    <button wire:click="test" class="btn btn-success btn-lg">Test</button>
     <button wire:click="credit" class="btn btn-success btn-lg">Внести</button>
   </div>
 </div>

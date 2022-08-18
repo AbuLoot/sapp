@@ -209,7 +209,7 @@
             </div>
             <div class="col-3 gy-2">
               <div class="d-grid gap-2 h-100">
-                <button class="btn btn-secondary" type="button">Повторная<br> печать</button>
+                <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#reprint">Повторная<br> печать</button>
               </div>
             </div>
             <div class="col-3 gy-2">
@@ -329,6 +329,23 @@
         <div class="modal-body">
 
           <livewire:cashbook.outgoing-cash>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Reprint -->
+  <div class="modal fade" id="reprint" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content bg-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Журнал чеков</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <livewire:cashbook.reprint>
 
         </div>
       </div>

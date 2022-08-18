@@ -1,0 +1,109 @@
+<div style="max-width: 620px;">
+  <br>
+  <p class="text-center">Организация ({{ $companyName }})</p>
+  <table class="table-bordered margin-left-auto">
+    <tbody>
+      <tr>
+        <td>
+          <p>ИИН/БИН</p>
+        </td>
+        <td>
+          <p>{{ $companyBin }}</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <table class="table-bordered margin-left-auto">
+    <tbody>
+      <tr>
+        <td>
+          <p>Номер документа</p>
+        </td>
+        <td>
+          <p>Дата составления</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <br>
+          <br>
+        </td>
+        <td>
+          <br>
+          <br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="text-center">ПРИХОДНЫЙ КАССОВЫЙ ОРДЕР</h3>
+
+  <table width="620" class="table-bordered">
+    <tbody>
+      <tr>
+        <th>№</th>
+        <th>Наименование</th>
+        <th>Код</th>
+        <th>Кол.</th>
+        <th>Цена</th>
+        <th>Сумма</th>
+      </tr>
+      <tr>
+        <td>{{ $no }}</td>
+        <td>{{ $title }}</td>
+        <td>{{ $code }}</td>
+        <td>{{ $count.$unit }}</td>
+        <td>{{ $price }}</td>
+        <td>{{ $sum }}</td>
+      </tr>
+      <tr>
+        <td>{{ $no }}</td>
+        <td>{{ $title }}</td>
+        <td>{{ $code }}</td>
+        <td>{{ $count.$unit }}</td>
+        <td>{{ $price }}</td>
+        <td>{{ $sum }}</td>
+      </tr>
+      <tr>
+        <td colspan="5">Итого</td>
+        <td>{{ $totalAmount }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <br><br>
+  <p>Принято от {{ $name }}</p>
+  <p>Метод оплаты {{ $paymentType }}</p>
+  <p>Кассир {{ $name }}</p>
+  <br>
+</div>
+<style type="text/css">
+  p {
+    display: flex;
+    align-items: center;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  .table-bordered,
+  .table-bordered tr,
+  .table-bordered tr td {
+    border: 1px solid;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .margin-left-auto {
+    margin-left: auto;
+  }
+
+  /*p:after {
+    content: "";
+    flex: 1;
+    border: 1px solid #c4c4c4;
+    margin-inline-start: 0.5rem;
+  }*/
+</style>

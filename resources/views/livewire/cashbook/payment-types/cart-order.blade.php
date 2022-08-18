@@ -55,4 +55,9 @@
     </div>
   </div>
 
+  <script>
+    var printPage = window.open("");
+    printPage.document.write(document.getElementById("TARGET").innerHTML);
+    printPage.print();
+  </script>
 </div>
