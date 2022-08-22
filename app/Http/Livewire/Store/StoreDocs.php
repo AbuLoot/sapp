@@ -36,6 +36,7 @@ class StoreDocs extends Component
         $productsData = json_decode($this->docDetail->products_data, true);
         $productsKeys = collect($productsData)->keys();
         $this->docProducts = Product::whereIn('id', $productsKeys->all())->get();
+        $this->dispatchBrowserEvent('open-modal');
     }
 
     public function render()

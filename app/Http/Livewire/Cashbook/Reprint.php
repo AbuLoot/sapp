@@ -9,16 +9,16 @@ use App\Models\IncomingOrder;
 class Reprint extends Component
 {
     public $search = '';
-    // public $incomingChecks;
+    // public $incomingOrders;
 
     public function render()
     {
-        $incomingChecks = [];
+        $incomingOrders = [];
 
         if (strlen($this->search) >= 2) {
-            $incomingChecks = IncomingOrder::where('doc_no', 'like', '%'.$this->search.'%')->paginate(12);
+            $incomingOrders = IncomingOrder::where('doc_no', 'like', '%'.$this->search.'%')->paginate(12);
         }
 
-        return view('livewire.cashbook.reprint', ['incomingChecks' => $incomingChecks]);
+        return view('livewire.cashbook.reprint', ['incomingOrders' => $incomingOrders]);
     }
 }

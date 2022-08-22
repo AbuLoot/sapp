@@ -20,6 +20,10 @@
   color: #000;
   background-color: #75b798;
 }
+.bg-gray-500 {
+  color: #000;
+  background-color: #adb5bd;
+}
 
 .bg-brand-border {
   border-bottom: 5px solid #463bab;

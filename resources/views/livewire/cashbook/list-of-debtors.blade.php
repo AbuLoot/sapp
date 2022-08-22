@@ -20,18 +20,19 @@
               </tr>
             </thead>
             <tbody>
+              <?php $currency = $company->currency->symbol; ?>
               @foreach($debtors as $debtor)
                 <?php $debtOrders = json_decode($debtor->debt_orders, true) ?? []; ?>
                 <tr>
                   <th scope="row">{{ $debtor->user->name . $debtor->user->username }}</th>
-                  <td>{{ $debtor->debt_sum . $company->currency->symbol }}</td>
+                  <td>{{ $debtor->debt_sum . $currency }}</td>
                   <td>
                     @foreach($debtOrders as $debtOrder)
                       №{{ $debtOrder['docNo'] }},
                     @endforeach
                   </td>
                   <td class="text-end">
-                    <button wire:click="repayFor({{ $debtor->id }})" class="btn btn-outline-success">Погасить</button>
+                    <button wire:click="repayFor({{ $debtor->id }})" class="btn btn-outline-success" data-bs-dismiss="modal">Погасить</button>
                   </td>
                 </tr>
               @endforeach
@@ -63,15 +64,16 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <form wire:submit.prevent="repay">
             <!-- <input id="debtor" type="hidden"> -->
             <div class="mb-3">
               <label for="title" class="form-label">Сумма погашение долга</label>
-              <input wire:model="repaymentAmount" class="form-control form-control-lg" id="title" name="title" minlength="2" required>
+              <input wire:model="repaymentAmount" type="number" class="form-control form-control-lg @error('message') is-invalid @enderror" id="title" name="title" minlength="2" required>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-success btn-lg">Погасить</button>
             </div>
           </form>
-
-          <button wire:click="repay" type="button" class="btn btn-success btn-lg ml-auto">Погасить</button>
         </div>
       </div>
     </div>
@@ -84,12 +86,12 @@
     window.addEventListener('toggle-modal', event => {
       // const listOfDebtors = new bootstrap.Modal('listOfDebtors')
       // listOfDebtors.hide() // it is asynchronous
-      const modalList = new bootstrap.Modal("#listOfDebtors")
-      modalList.hide()
+      // const modalList = new bootstrap.Modal("#listOfDebtors")
+      // modalList.hide()
 
-      // var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDept"), {});
+      var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDept"), {});
       // document.getElementById('debtor').value = event.detail.debtorId;
-      // modalRepayment.show();
+      modalRepayment.show();
 
     })
   </script>

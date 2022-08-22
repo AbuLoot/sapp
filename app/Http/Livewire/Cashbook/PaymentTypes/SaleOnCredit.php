@@ -17,8 +17,6 @@ use App\Models\OutgoingDoc;
 
 class SaleOnCredit extends Component
 {
-    protected $queryString = ['search'];
-
     public $lang;
     public $company;
     public $search = '';
@@ -104,9 +102,17 @@ class SaleOnCredit extends Component
             $stockCount = $countInStore - $outgoingCount;
 
             $price = (session()->get('priceMode') == 'retail') ? $product->price : $product->wholesale_price;
+            $discount = 0;
+
+            if ($cartProduct->discount != 0) {
+                $discount = $cartProduct->discount;
+            } elseif(session()->get('totalDiscount') != 0) {
+                $discount = session()->get('totalDiscount');
+            }
 
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoing_count'] = $outgoingCount;
+            $productsData[$productId]['discount'] = $discount;
             $productsData[$productId]['stockCount'] = $stockCount;
             $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
 

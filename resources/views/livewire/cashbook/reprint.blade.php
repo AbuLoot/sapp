@@ -5,7 +5,7 @@
   </form>
 
   <div class="row">
-    @forelse($incomingChecks as $index => $check)
+    @forelse($incomingOrders as $index => $check)
       <div class="col-3 mb-3 position-relative">
         <div wire:click="getCheck('{{ $index }}')" class="card bg-dark text-white" style="height: 100px; cursor: pointer;">
           <div class="card-img-overlay">

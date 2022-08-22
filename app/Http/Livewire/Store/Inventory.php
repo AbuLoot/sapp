@@ -255,7 +255,7 @@ class Inventory extends Component
         // $revisionProduct->save();
 
         // Inventory Doc
-        $docType = DocType::where('slug', 'forma-inv-6')->first();
+        $docType = DocType::where('slug', 'forma-inv-10')->first();
 
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $this->store_id;
