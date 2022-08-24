@@ -87,83 +87,64 @@ class ReturnProducts extends Component
     public function return($id)
     {
         $outgoingCount = $this->productsData[$id]['outgoing_count'];
+
         $this->returnedProducts[$id]['incomingCount']
-            = ($this->productsData[$id]['outgoing_count'] == $this->productsDataCopy[$id]['outgoing_count'])
-                ? 
-                : 
+            = $outgoingCount == $this->productsDataCopy[$id]['outgoing_count']
+                ? $outgoingCount
+                : $outgoingCount - $this->productsDataCopy[$id]['outgoing_count'];
 
         $this->returnedProducts[$id]['discount'] = $this->productsData[$id]['discount'];
-
-        dd($outgoingCount, $discount);
+        dd($this->returnedProducts);
+        // $this-> 
     }
 
-    public function makeDebtDocs($id)
+    public function makeReturnDocs()
     {
-        $user = User::findOrFail($id);
-
-        $paymentDetail['typeId'] = $this->paymentType->id;
-        $paymentDetail['type'] = $this->paymentType->slug;
-        $paymentDetail['user_id'] = $user->id;
-        $paymentDetail['dept_sum'] = $this->sumOfCart['sumDiscounted'];
-        $paymentDetail['incoming_order'] = null;
-        $paymentDetail['outgoing_doc'] = null;
-
         $productsData = [];
         $countInStores = [];
-        $outgoingTotalCount = 0;
-        $incomingTotalAmount = 0;
+        $outgoingTotalAmount = 0;
+        $incomingTotalCount = 0;
 
         $store = session()->get('store');
-        $cashbook = session()->get('cashbook');
-        $cartProducts = session()->get('cartProducts') ?? [];
+        $cashbook = $this->company->cashbooks->first();
 
-        foreach($cartProducts as $productId => $cartProduct) {
+        foreach($this->returnedProducts as $productId => $returnedProduct) {
 
             $product = Product::findOrFail($productId);
 
-            $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
+            $countInStores = json_decode($product->count_in_stores, true) ?? [];
             $countInStore = $countInStores[$store->id] ?? 0;
 
-            $outgoingCount = 0;
+            $incomingCount = $returnedProduct['incomingCount'];
+            $stockCount = $countInStore + $incomingCount;
 
-            /**
-             * Prepare outgoing count & If outgoing count greater, assign $countInStore
-             */
-            if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
-                $outgoingCount = $cartProduct['countInCart'];
-            } elseif ($countInStore < $cartProduct['countInCart']) {
-                $outgoingCount = $countInStore;
-            }
+            $percentage = $this->productsData[$product->id]['price'] / 100;
+            $amount = $this->productsData[$product->id]['price'] - ($percentage * $returnedProduct['discount']);
+            $amountDiscounted = $incomingCount * $amount;
 
-            $stockCount = $countInStore - $outgoingCount;
-
-            $price = (session()->get('priceMode') == 'retail') ? $product->price : $product->wholesale_price;
-            $discount = 0;
-
-            if ($cartProduct->discount != 0) {
-                $discount = $cartProduct->discount;
-            } elseif(session()->get('totalDiscount') != 0) {
-                $discount = session()->get('totalDiscount');
-            }
-
-            $productsData[$productId]['price'] = $price;
-            $productsData[$productId]['outgoing_count'] = $outgoingCount;
-            $productsData[$productId]['discount'] = $discount;
+            $productsData[$productId]['price'] = $amountDiscounted;
+            $productsData[$productId]['incomingCount'] = $incomingCount;
+            $productsData[$productId]['discount'] = $returnedProduct['discount'];
             $productsData[$productId]['stockCount'] = $stockCount;
-            $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
-            $incomingTotalAmount = $incomingTotalAmount + ($price * $outgoingCount);
-            $outgoingTotalCount = $outgoingTotalCount + $outgoingCount;
+            $outgoingTotalAmount = $outgoingTotalAmount + ($amount * $incomingCount);
+            $incomingTotalCount = $incomingTotalCount + $incomingCount;
 
             $countInStores[$store->id] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
             $product->count = $amountCount;
-            $product->save();
+            // $product->save();
         }
 
-        // dd($incomingTotalAmount, $this->sumOfCart['sumDiscounted']);
+        dd($incomingTotalCount, $outgoingTotalAmount, $product);
+
+        $paymentDetail['user_id'] = $user->id;
+        $paymentDetail['dept_sum'] = $this->sumOfCart['sumDiscounted'];
+        $paymentDetail['incoming_order'] = null;
+        $paymentDetail['outgoing_doc'] = null;
+        $paymentDetail['incoming_count'] = null;
 
         // Incoming Order & Outgoing Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();

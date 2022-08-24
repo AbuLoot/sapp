@@ -33,7 +33,7 @@
 
       <!-- Search Products -->
       <form class="col-4 col-lg-4 me-4" style="position: relative;">
-        <input wire:model="searchProduct" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
+        <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
         @if($products)
           <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
             <ul class="list-unstyled mb-0">

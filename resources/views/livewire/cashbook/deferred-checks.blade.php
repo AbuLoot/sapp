@@ -1,5 +1,4 @@
 <div>
-  <!-- Modal Deffered Checks -->
   <div class="modal fade" id="defferedChecks" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">

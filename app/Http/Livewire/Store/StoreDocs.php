@@ -14,7 +14,6 @@ class StoreDocs extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['search'];
 
     public $lang;
     public $search = '';

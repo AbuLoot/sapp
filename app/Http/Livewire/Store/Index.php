@@ -13,7 +13,6 @@ class Index extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['search'];
 
     public $lang;
     public $search = '';
@@ -64,7 +63,7 @@ class Index extends Component
         $appends = [];
 
         if (strlen($this->search) >= 2) {
-            $query->search($this->search);
+            $query->where('title', 'like', '%'.$this->search.'%');
         }
 
         if ($this->category_id) {

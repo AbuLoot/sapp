@@ -182,41 +182,38 @@ Route::post('send-app', [InputController::class, 'sendApp']);
 // Shop
 Route::get('/', [ShopController::class, 'index']);
 
-// Route::get('brand/{company}', [ShopController::class, 'brandProducts']);
-// Route::get('brand/{company}/{project}/{id}', [ShopController::class, 'brandCategoryProducts']);
+// Route::get('b/{project}/{id}', [ShopController::class, 'projectProducts']);
+// Route::get('b/{project}/{subproject}/{id}', [ShopController::class, 'subProjectProducts']);
 
-Route::get('b/{project}/{id}', [ShopController::class, 'projectProducts']);
-Route::get('b/{project}/{subproject}/{id}', [ShopController::class, 'subProjectProducts']);
+// Route::get('c/{category}/{id}', [ShopController::class, 'categoryProducts']);
+// Route::get('c/{category}/{subcategory}/{id}', [ShopController::class, 'subCategoryProducts']);
 
-Route::get('c/{category}/{id}', [ShopController::class, 'categoryProducts']);
-Route::get('c/{category}/{subcategory}/{id}', [ShopController::class, 'subCategoryProducts']);
-
-Route::get('p/{id}-{product}', [ShopController::class, 'product']);
-Route::post('comment-product', [ShopController::class, 'saveComment']);
+// Route::get('p/{id}-{product}', [ShopController::class, 'product']);
+// Route::post('comment-product', [ShopController::class, 'saveComment']);
 
 
 // Cart Actions
-Route::get('cart', [CartController::class, 'cart']);
-Route::get('checkout', [CartController::class, 'checkout']);
-Route::get('add-to-cart/{id}', [CartController::class, 'addToCart']);
-Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart']);
-Route::get('clear-cart', [CartController::class, 'clearCart']);
-Route::post('store-order', [CartController::class, 'storeOrder']);
-Route::get('destroy-from-cart/{id}', [CartController::class, 'destroy']);
+// Route::get('cart', [CartController::class, 'cart']);
+// Route::get('checkout', [CartController::class, 'checkout']);
+// Route::get('add-to-cart/{id}', [CartController::class, 'addToCart']);
+// Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart']);
+// Route::get('clear-cart', [CartController::class, 'clearCart']);
+// Route::post('store-order', [CartController::class, 'storeOrder']);
+// Route::get('destroy-from-cart/{id}', [CartController::class, 'destroy']);
 
 
 // Favourite Actions
-Route::get('favorite', [FavouriteController::class, 'getFavorite']);
-Route::get('toggle-favourite/{id}', [FavouriteController::class, 'toggleFavourite']);
+// Route::get('favorite', [FavouriteController::class, 'getFavorite']);
+// Route::get('toggle-favourite/{id}', [FavouriteController::class, 'toggleFavourite']);
 
 // User Profile
-Route::group(['middleware' => 'auth'], function() {
+// Route::group(['middleware' => 'auth'], function() {
 
-    Route::get('profile', [ProfileController::class, 'profile']);
-    Route::get('profile/edit', [ProfileController::class, 'editProfile']);
-    Route::put('profile', [ProfileController::class, 'updateProfile']);
-    Route::get('orders', [ProfileController::class, 'myOrders']);
-});
+//     Route::get('profile', [ProfileController::class, 'profile']);
+//     Route::get('profile/edit', [ProfileController::class, 'editProfile']);
+//     Route::put('profile', [ProfileController::class, 'updateProfile']);
+//     Route::get('orders', [ProfileController::class, 'myOrders']);
+// });
 
 // News
 Route::get('news', [NewsController::class, 'posts']);

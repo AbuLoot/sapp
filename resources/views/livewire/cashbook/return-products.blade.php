@@ -1,6 +1,4 @@
 <div>
-
-  <!-- Modal Return Products -->
   <div wire:ignore.self class="modal fade" id="returnProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
@@ -33,7 +31,7 @@
               $currency = $company->currency->symbol;
               $sumDiscounted = 0;
             ?>
-            <table class="table">
+            <table class="table align-middle">
               <thead>
                 <tr>
                   <th>Наименование</th>
@@ -62,20 +60,33 @@
                       $sumDiscounted += $productsDataCopy[$product->id]['outgoing_count'] * $amount;
                     ?>
                     <td>{{ $amountDiscounted . $currency }}</td>
-                    <td class="text-end"><button wire:click="return({{ $product->id }})" class="btn btn-outline-success">Возврат</button></td>
+                    <td class="mx-auto">
+                      <div class="form-check form-switch" wire:click="return({{ $product->id }})">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck{{ $product->id }}" 
+                          @if(isset($returnedProducts[$product->id])) checked @endif>
+                        <label class="form-check-label" for="flexSwitchCheck{{ $product->id }}">Возврат</label>
+                      </div>
+                    </td>
                   </tr>
                 @endforeach
               </tbody>
             </table>
 
             <div class="d-flex">
+              <h5>Возвратов</h5>
+              <h5 class="ms-auto">{{ collect($returnedProducts)->sum('incomingCount') ?? 0 }}</h5>
+            </div>
+            <div class="d-flex">
+              <h5>Сдача</h5>
+              <h5 class="ms-auto">{{ $incomingOrder->sum - $sumDiscounted . $currency }}</h5>
+            </div>
+            <div class="d-flex">
               <h5>Общая сумма</h5>
-              <h5 class="ms-auto">{{ $sumDiscounted . $currency }}</h5>
               <h5 class="ms-auto">{{ $incomingOrder->sum . $currency }}</h5>
             </div>
 
             <div class="text-end">
-              <button type="button" class="btn btn-primary btn-lg text-end"><i class="be bi-hdd-fill me-2"></i> Сохранить</button>
+              <button type="button" class="btn btn-primary btn-lg text-end"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
               <button type="button" class="btn btn-dark btn-lg text-end"><i class="be bi-printer-fill me-2"></i> Печать</button>
             </div>
           @endif

@@ -14,7 +14,6 @@ use App\Models\Product;
 class InventoryHistory extends Component
 {
     protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['search'];
 
     public $lang;
     public $company;

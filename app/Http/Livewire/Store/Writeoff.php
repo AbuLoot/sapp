@@ -15,7 +15,6 @@ use App\Models\Product;
 class Writeoff extends Component
 {
     protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['search'];
 
     public $lang;
     public $units;

@@ -16,7 +16,6 @@ use App\Models\Product;
 class Inventory extends Component
 {
     protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['search'];
 
     public $lang;
     public $units;

@@ -8,8 +8,6 @@ use Livewire\Component;
 
 class DeferredChecks extends Component
 {
-    protected $queryString = ['search'];
-
     public $search = '';
     public $deferredChecks = [];
 

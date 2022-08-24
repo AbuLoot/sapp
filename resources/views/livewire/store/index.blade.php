@@ -99,7 +99,7 @@
     {{ $products->links() }}
 
     <!-- Modal -->
-    <div class="modal fade" id="filter" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="filter" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">

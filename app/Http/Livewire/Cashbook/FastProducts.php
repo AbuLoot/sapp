@@ -9,8 +9,6 @@ use App\Models\Product;
 
 class FastProducts extends Component
 {
-    protected $queryString = ['search'];
-
     public $search = '';
     public $company;
     public $fastMode;

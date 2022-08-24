@@ -1,6 +1,7 @@
 html,
 body {
-  overflow-x: hidden; /* Prevent scroll on narrow devices */
+  /* Prevent scroll on narrow devices */
+  /*overflow-x: hidden;*/
 }
 
 

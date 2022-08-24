@@ -13,7 +13,6 @@ class IncomingDocs extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['search'];
 
     public $lang;
     public $company;

@@ -14,13 +14,11 @@ use App\Models\Product;
 
 class Index extends Component
 {
-    protected $queryString = ['searchProduct', 'searchClient'];
-
     public $lang;
     public $company;
     public $store;
     public $store_id;
-    public $searchProduct = '';
+    public $search = '';
     public $searchClient = '';
     public $cartProducts = [];
     public $discounts = [];
@@ -209,7 +207,7 @@ class Index extends Component
         $cartProducts[$id]['input'] = false;
 
         session()->put('cartProducts', $cartProducts);
-        $this->searchProduct = '';
+        $this->search = '';
     }
 
     public function removeFromCart($id)
@@ -295,8 +293,8 @@ class Index extends Component
         $products = [];
         $clients = [];
 
-        if (strlen($this->searchProduct) >= 2) {
-            $products = Product::search($this->searchProduct)->get()->take(7);
+        if (strlen($this->search) >= 2) {
+            $products = Product::search($this->search)->get()->take(7);
         }
 
         if (strlen($this->searchClient) >= 2) {

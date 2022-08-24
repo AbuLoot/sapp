@@ -1,15 +1,13 @@
 <div>
 
-  <!-- Modal List Of Debtors -->
   <div wire:ignore.self class="modal fade" id="listOfDebtors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Детали накладной</h5>
+          <h5 class="modal-title" id="modalLabel">Список должников</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-
           <table class="table">
             <thead>
               <tr>
@@ -28,7 +26,7 @@
                   <td>{{ $debtor->debt_sum . $currency }}</td>
                   <td>
                     @foreach($debtOrders as $debtOrder)
-                      №{{ $debtOrder['docNo'] }},
+                      №{{ $debtOrder['docNo'] ?? null }},
                     @endforeach
                   </td>
                   <td class="text-end">
@@ -55,8 +53,19 @@
     </div>
   </div>
 
+  @if(session()->has('message'))
+    <div class="toast-container position-fixed -bottom-0 end-0 p-4">
+      <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body text-white">{{ session('message') }}</div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  @endif
+
   <!-- Modal Repayment Of Dept -->
-  <div wire:ignore.self class="modal fade" id="repaymentOfDept" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div wire:ignore.self class="modal fade" id="repaymentOfDebt" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content  bg-light">
         <div class="modal-header">
@@ -65,10 +74,14 @@
         </div>
         <div class="modal-body">
           <form wire:submit.prevent="repay">
-            <!-- <input id="debtor" type="hidden"> -->
-            <div class="mb-3">
-              <label for="title" class="form-label">Сумма погашение долга</label>
-              <input wire:model="repaymentAmount" type="number" class="form-control form-control-lg @error('message') is-invalid @enderror" id="title" name="title" minlength="2" required>
+            <label for="title" class="form-label">Сумма погашение долга</label>
+            <div class="input-group mb-3">
+              <select wire:model="paymentTypeId" class="form-select w-50">
+                @foreach($paymentTypes as $paymentType)
+                  <option value="{{ $paymentType->id }}">{{ $paymentType->title }}</option>
+                @endforeach
+              </select>
+              <input wire:model="repaymentAmount" type="number" class="form-control form-control-lg w-50 @error('message') is-invalid @enderror" required>
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-success btn-lg">Погасить</button>
@@ -79,20 +92,17 @@
     </div>
   </div>
 
-</div>
-
-@section('scripts')
   <script>
-    window.addEventListener('toggle-modal', event => {
-      // const listOfDebtors = new bootstrap.Modal('listOfDebtors')
-      // listOfDebtors.hide() // it is asynchronous
-      // const modalList = new bootstrap.Modal("#listOfDebtors")
-      // modalList.hide()
+    window.addEventListener('refresh-page', event => {
+      document.location.reload()
+      // var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDebt"));
+      // modalRepayment.hide()
+    })
 
-      var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDept"), {});
+    window.addEventListener('toggle-modal', event => {
+      var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDebt"), {});
       // document.getElementById('debtor').value = event.detail.debtorId;
       modalRepayment.show();
-
     })
   </script>
-@endsection
+</div>
