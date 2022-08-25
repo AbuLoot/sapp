@@ -48,6 +48,7 @@ class IncomingCash extends Component
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
             $this->generateDocNo($cashbook_id, $docNo);
+            return;
         }
 
         return $docNo;

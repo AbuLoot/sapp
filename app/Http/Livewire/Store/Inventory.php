@@ -78,7 +78,7 @@ class Inventory extends Component
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            $this->generateDocNo($store_id, $docNo);
+            return $this->generateDocNo($store_id, $docNo);
         }
 
         return $docNo;

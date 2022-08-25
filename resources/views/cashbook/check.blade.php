@@ -1,44 +1,49 @@
-<div style="max-width: 300px;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Document">
+  <meta name="author" content="Sanapp">
+  <title>Sanapp Cashbook</title>
+</head>
+<body>
+
+  <div>
+    {{ $slot }}
+  </div>
+  <div style="max-width: 300px;">
   <br>
   <p class="text-center">Организация (индивидуальный предприниматель)</p>
   <h3 class="text-center">Квитанция к приходному кассовому ордеру</h3>
   <p class="text-center">№{{ $docNo }}</p>
-  <p>Принято от {{ $name }}</p>
+  <p>Принято от {{ $clientName }}</p>
   <hr>
   <table>
     <tbody>
-      <tr>
-        <td>Product title</td>
-        <td>10шт.</td>
-        <td>100000tg</td>
-      </tr>
-      <tr>
-        <td>Product title</td>
-        <td>10шт.</td>
-        <td>100000tg</td>
-      </tr>
-      <tr>
-        <td>Product title</td>
-        <td>10шт.</td>
-        <td>100000tg</td>
-      </tr>
-      <tr>
-        <td>Product title</td>
-        <td>10шт.</td>
-        <td>100000tg</td>
-      </tr>
-
+      <?php 
+        $sumUndiscounted = 0;
+        $sumDiscounted = 0;
+      ?>
+      @foreach($productsList as $product)
+        <tr>
+          <td>{{ $product['title'] }}</td>
+          <td>{{ $product['count'] }}</td>
+          <td>{{ $product['price'] }}</td>
+        </tr>
+        <?php
+          $percentage = $product['price'] / 100;
+          $sumDiscounted += $product['count'] * ($product['price'] - $percentage * $product['discount']);
+          $sumUndiscounted += $product['count'] * $product['price'];
+        ?>
+      @endforeach
       <tr>
         <td>Сумма без скидки</td>
-        <td>300000tg</td>
-      </tr>
-      <tr>
-        <td>Скидка</td>
-        <td>10%</td>
+        <td>{{ $sumUndiscounted }}</td>
       </tr>
       <tr>
         <td>Итоговая сумма</td>
-        <td>270000tg</td>
+        <td>{{ $sumDiscounted }}</td>
       </tr>
     </tbody>
   </table>
@@ -46,7 +51,7 @@
   <hr>
   <p>Метод оплаты: {{ $paymentType }}</p>
   <p>Дата: {{ $date }}</p>
-  <p>Кассир: {{ $name }}</p>
+  <p>Кассир: {{ $cashierName }}</p>
 </div>
 
 <style type="text/css">
@@ -64,13 +69,8 @@
   p {
     display: flex;
     align-items: center;
-    /*font-size: 1.5rem;*/
   }
-
-  /*p:after {
-    content: "";
-    flex: 1;
-    border: 1px solid #c4c4c4;
-    margin-inline-start: 0.5rem;
-  }*/
 </style>
+
+</body>
+</html>

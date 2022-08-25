@@ -361,7 +361,7 @@
     window.addEventListener('close-modal', event => {
       // const incomingCash = document.getElementById('incomingCash')
       // incomingCash.hide() // it is asynchronous
-      var myModal = new bootstrap.Modal(document.getElementById("incomingCash"), {});
+      var myModal = new bootstrap.Modal(document.getElementById("outgoingCash"));
       console.log(2);
       myModal.hide();
       console.log(3);

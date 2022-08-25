@@ -106,6 +106,7 @@ class CashPayment extends Component
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
 
         $cashDocNo = $this->generateCashDocNo($cashbook->id);
+        $storeDocNo = $this->generateStoreDocNo($store->id);
 
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $cashbook->id;
@@ -115,7 +116,7 @@ class CashPayment extends Component
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $incomingOrder->products_data = json_encode($productsData);
-        $incomingOrder->from_contractor = $store->title;
+        $incomingOrder->from_contractor = $store->id;
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = $this->sumOfCart['sumDiscounted'];
@@ -123,8 +124,6 @@ class CashPayment extends Component
         $incomingOrder->count = $this->sumOfCart['totalCount'];
         // $incomingOrder->comment = $this->comment;
         $incomingOrder->save();
-
-        $storeDocNo = $this->generateStoreDocNo($store->id);
 
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $store->id;
@@ -199,6 +198,7 @@ class CashPayment extends Component
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
             self::generateCashDocNo($cashbook_id, $docNo);
+            return;
         }
 
         return $docNo;
@@ -224,6 +224,7 @@ class CashPayment extends Component
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
             self::generateStoreDocNo($store_id, $docNo);
+            return;
         }
 
         return $docNo;

@@ -5,13 +5,15 @@
   </form>
 
   <div class="row">
-    @forelse($incomingOrders as $index => $check)
+    @forelse($incomingOrders as $check)
       <div class="col-3 mb-3 position-relative">
-        <div wire:click="getCheck('{{ $index }}')" class="card bg-dark text-white" style="height: 100px; cursor: pointer;">
-          <div class="card-img-overlay">
-            <h6 class="card-title">№{{ $check->doc_no }}</h6>
-            <p class="card-text">{{ $check['sumDiscounted'] }}</p>
-          </div>
+        <div>
+          <a href="/{{ $lang }}/cashdesk/cashdoc-type/check/{{ $check->id }}" class="card bg-dark text-white" style="height: 100px; cursor: pointer;">
+            <div class="card-img-overlay">
+              <h6 class="card-title">№{{ $check->doc_no }}</h6>
+              <small class="card-text">{{ $check->sum . $company->currency->symbol }}</small>
+            </div>
+          </a>
         </div>
       </div>
     @endforeach

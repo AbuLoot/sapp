@@ -163,6 +163,7 @@ class ListOfDebtors extends Component
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
             $this->generateCashDocNo($cashbook_id, $docNo);
+            return;
         }
 
         return $docNo;

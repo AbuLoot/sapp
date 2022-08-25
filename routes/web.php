@@ -66,6 +66,7 @@ use App\Http\Livewire\Cashbook\PaymentTypes\ComplexPayment;
 use App\Http\Livewire\Cashbook\PaymentTypes\SaleOnCredit;
 use App\Http\Livewire\Cashbook\PaymentTypes\OnKaspi;
 use App\Http\Livewire\Cashbook\PaymentTypes\Success;
+use App\Http\Livewire\Cashbook\CashDocsPrint;
 
 // Sanapp Storage
 Route::redirect('/storage', '/'.app()->getLocale().'/storage');
@@ -94,13 +95,14 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
 
     // Livewire Routes
     Route::get('/', CashbookIndex::class);
-    Route::get('/payment-types', PaymentTypesIndex::class);
-    Route::get('/payment-type/cash-payment', CashPayment::class);
-    Route::get('/payment-type/bank-card', BankCard::class);
-    Route::get('/payment-type/complex-payment', ComplexPayment::class);
-    Route::get('/payment-type/sale-on-credit', SaleOnCredit::class);
-    Route::get('/payment-type/on-kaspi', OnKaspi::class);
-    Route::get('/payment-type/success', Success::class);
+    Route::get('payment-types', PaymentTypesIndex::class);
+    Route::get('payment-type/cash-payment', CashPayment::class);
+    Route::get('payment-type/bank-card', BankCard::class);
+    Route::get('payment-type/complex-payment', ComplexPayment::class);
+    Route::get('payment-type/sale-on-credit', SaleOnCredit::class);
+    Route::get('payment-type/on-kaspi', OnKaspi::class);
+    Route::get('payment-type/success', Success::class);
+    Route::get('cashdoc-type/{type}/{id}', CashDocsPrint::class);
 });
 
 

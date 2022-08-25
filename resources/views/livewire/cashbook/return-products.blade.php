@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Детали накладной</h5>
+          <h5 class="modal-title" id="modalLabel">Офрмление возврата</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="min-height:270px;">
@@ -30,6 +30,7 @@
             <?php
               $currency = $company->currency->symbol;
               $sumDiscounted = 0;
+              $change = 0;
             ?>
             <table class="table align-middle">
               <thead>
@@ -38,8 +39,7 @@
                   <th>Цена</th>
                   <th>Кол.</th>
                   <th>Скидка</th>
-                  <th>Итого</th>
-                  <th></th>
+                  <th colspan="2">Итого</th>
                 </tr>
               </thead>
               <tbody>
@@ -60,12 +60,13 @@
                       $sumDiscounted += $productsDataCopy[$product->id]['outgoing_count'] * $amount;
                     ?>
                     <td>{{ $amountDiscounted . $currency }}</td>
-                    <td class="mx-auto">
-                      <div class="form-check form-switch" wire:click="return({{ $product->id }})">
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck{{ $product->id }}" 
-                          @if(isset($returnedProducts[$product->id])) checked @endif>
-                        <label class="form-check-label" for="flexSwitchCheck{{ $product->id }}">Возврат</label>
-                      </div>
+                    <td class="text-end">
+                      @if(isset($returnedProducts[$product->id]))
+                        <?php $change += $amount * $returnedProducts[$product->id]['incomingCount']; ?>
+                        <button wire:click="cancel({{ $product->id }})" class="btn btn-dark">Отмена</button>
+                      @else
+                        <button wire:click="return({{ $product->id }})" class="btn btn-success">Возврат</button>
+                      @endif
                     </td>
                   </tr>
                 @endforeach
@@ -74,11 +75,11 @@
 
             <div class="d-flex">
               <h5>Возвратов</h5>
-              <h5 class="ms-auto">{{ collect($returnedProducts)->sum('incomingCount') ?? 0 }}</h5>
+              <h5 class="ms-auto"><?php echo collect($returnedProducts)->sum('incomingCount') ?? 0; ?></h5>
             </div>
             <div class="d-flex">
               <h5>Сдача</h5>
-              <h5 class="ms-auto">{{ $incomingOrder->sum - $sumDiscounted . $currency }}</h5>
+              <h5 class="ms-auto">{{ $change . $currency }}</h5>
             </div>
             <div class="d-flex">
               <h5>Общая сумма</h5>
@@ -86,7 +87,7 @@
             </div>
 
             <div class="text-end">
-              <button type="button" class="btn btn-primary btn-lg text-end"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
+              <button wire:click="makeReturnDocs" type="button" class="btn btn-primary btn-lg text-end"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
               <button type="button" class="btn btn-dark btn-lg text-end"><i class="be bi-printer-fill me-2"></i> Печать</button>
             </div>
           @endif

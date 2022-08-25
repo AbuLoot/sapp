@@ -129,7 +129,7 @@
       // const myModalEl = document.querySelector('#addClient')
       // const modal = new bootstrap.Modal(myModalEl) // initialized with defaults
       // modal.hide();
-      window.location.reload()
+      document.location.reload()
     })
   </script>
 @endsection

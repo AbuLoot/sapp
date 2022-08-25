@@ -8,7 +8,7 @@
               <i class="bi bi-x-octagon-fill"></i>
             </div>
             <h4>Вы действительно хотите закрыть смену?</h4>
-            <button type="button" class="btn btn-outline-dark btn-lg me-1 mb-2">Отмена</button>
+            <button type="button" class="btn btn-outline-dark btn-lg me-1 mb-2" data-bs-dismiss="modal">Отмена</button>
             <button type="button" class="btn btn-dark btn-lg me-1 mb-2">Закрыть смену</button>
             <br>
             <br>
