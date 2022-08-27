@@ -21,6 +21,7 @@ class Index extends Component
     public $search = '';
     public $searchClient = '';
     public $cartProducts = [];
+    public $client;
     public $discounts = [];
     public $totalDiscount = 0;
     public $totalDiscountView;
@@ -210,6 +211,12 @@ class Index extends Component
         $this->search = '';
     }
 
+    public function checkClient($id)
+    {
+        $this->client = User::find($id);
+        $this->searchClient = '';
+    }
+
     public function removeFromCart($id)
     {
         $cartProducts = session()->get('cartProducts');
@@ -230,7 +237,8 @@ class Index extends Component
     public function deferCheck()
     {
         if (is_null(session()->get('cartProducts'))) {
-            session()->flash('message', 'No data');
+            // session()->flash('message', 'No data');
+            $this->dispatchBrowserEvent('show-toast', ['message' => 'No data']);
             return false;
         }
 

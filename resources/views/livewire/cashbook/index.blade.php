@@ -55,9 +55,9 @@
         @if($clients)
           <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
             <ul class="list-unstyled mb-0">
-              @forelse($clients as $client)
+              @forelse($clients as $clientObj)
                 <li>
-                  <a wire:click="check({{ $client->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $client->name.' '.$client->lastname.' '.$client->tel }}</a>
+                  <a wire:click="checkClient({{ $clientObj->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $clientObj->name.' '.$clientObj->lastname.' '.$clientObj->tel }}</a>
                 </li>
               @empty
                 <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled">No data</a></li>
@@ -81,16 +81,15 @@
     </div>
   </div>
 
-  @if(session()->has('message'))
-    <div class="toast-container position-fixed -bottom-0 end-0 p-4">
-      <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-          <div class="toast-body text-white">{{ session('message') }}</div>
-          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
+  <!-- Toast notification -->
+  <div class="toast-container position-fixed end-0 p-4">
+    <div class="toast align-items-center text-bg-info border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body text-white" id="toast-body"></div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
     </div>
-  @endif
+  </div>
 
   <main class="container" style="margin-bottom: 170px;">
     <div class="table-responsive">
@@ -358,13 +357,32 @@
 
 @section('scripts')
   <script type="text/javascript">
-    window.addEventListener('close-modal', event => {
+    window.addEventListener('show-toast', event => {
+      const toastBody = document.getElementById('toast-body')
+      toastBody.innerHTML = event.detail.message;
+
       // const incomingCash = document.getElementById('incomingCash')
-      // incomingCash.hide() // it is asynchronous
-      var myModal = new bootstrap.Modal(document.getElementById("outgoingCash"));
-      console.log(2);
-      myModal.hide();
-      console.log(3);
+      // incomingCash.hide()
+      // var incomingCash = new bootstrap.Modal(document.getElementById("incomingCash"));
+      // incomingCash.hide()
+      // const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+      // toast.show()
+    })
+
+    // const myModalEl = document.getElementById('incomingCash')
+    // myModalEl.addEventListener('hidden.bs.modal', event => {
+      
+    // })
+
+
+    window.addEventListener('close-modal', event => {
+      const myModal = new bootstrap.Modal('#incomingCash', {
+        backdrop: false
+      })
+      const incomingCash = document.getElementById('incomingCash')
+      incomingCash.hide() // it is asynchronous
+      // var myModal = new bootstrap.Modal(document.getElementById("outgoingCash"));
+      // myModal.hide();
     })
   </script>
 @endsection

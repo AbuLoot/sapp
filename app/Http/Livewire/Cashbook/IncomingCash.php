@@ -47,8 +47,7 @@ class IncomingCash extends Component
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            $this->generateDocNo($cashbook_id, $docNo);
-            return;
+            return $this->generateDocNo($cashbook_id, $docNo);
         }
 
         return $docNo;
@@ -95,8 +94,10 @@ class IncomingCash extends Component
         $cashDoc->comment = $this->comment;
         $cashDoc->save();
 
-        $this->emitUp('newData');
-        $this->dispatchBrowserEvent('close-modal');
+        // session()->flash('message', 'Операция выполнена');
+        // $this->emitUp('newData');
+
+        $this->dispatchBrowserEvent('show-toast', ['message' => 'Операция выполнена']);
     }
 
     public function render()

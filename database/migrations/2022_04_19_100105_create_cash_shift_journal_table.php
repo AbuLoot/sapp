@@ -25,6 +25,7 @@ class CreateCashShiftJournalTable extends Migration
             $table->json('banknotes_and_coins');
             $table->integer('sum');
             $table->char('currency');
+            $table->enum('mode', ['open', 'close']);
             $table->time('shift_time');
             $table->timestamps();
         });

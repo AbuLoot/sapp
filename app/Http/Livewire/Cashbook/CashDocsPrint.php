@@ -12,13 +12,17 @@ use App\Models\Product;
 class CashDocsPrint extends Component
 {
     public $search = '';
+    public $lang;
     public $company;
-    public $docType;
-    public $docId;
+    public $data = [];
+    public $view;
     // public $incomingOrders;
 
     public function mount($type, $id)
     {
+        $this->lang = app()->getLocale();
+        $this->company = auth()->user()->profile->company;
+
         switch ($type) {
             case 'check':
                 $this->incomingCheck($id);
@@ -30,8 +34,6 @@ class CashDocsPrint extends Component
                 $this->outgoingOrder($id);
                 break;
         }
-
-        $this->company = auth()->user()->profile->company;
     }
 
     public function incomingCheck($id)
@@ -46,7 +48,7 @@ class CashDocsPrint extends Component
             $clientName = $user->name;
         }
 
-        $productsData = json_decode($incomingOrder->products_data, true);
+        $productsData = json_decode($incomingOrder->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
         $productsList = [];
 
@@ -57,17 +59,19 @@ class CashDocsPrint extends Component
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
         }
 
-            // response()
-        return view('cashbook.check', [
-                'docNo' => $incomingOrder->doc_no,
-                'clientName' => $clientName,
-                'productsList' => $productsList,
-                'paymentType' => $paymentType->title,
-                'date' => $incomingOrder->created_at,
-                'cashierName' => $incomingOrder->cashier_name
-            ])
-            ->layout('cashbook.layout');
-            // ->header('Content-Type', 'text/plain');
+        $this->data = [
+            'companyName' => $this->company->title,
+            'docNo' => $incomingOrder->doc_no,
+            'clientName' => $clientName,
+            'productsList' => $productsList,
+            'paymentType' => $paymentType->title,
+            'currency' => $this->company->currency->symbol,
+            'date' => $incomingOrder->created_at,
+            'cashierName' => $incomingOrder->cashier_name,
+            'prevPage' => '/'.$this->lang.'/cashdesk',
+        ];
+
+        $this->view = 'check';
     }
 
     public function incomingOrder($id)
@@ -98,6 +102,7 @@ class CashDocsPrint extends Component
             'clientName' => $clientName,
             'productsList' => $productsList,
             'paymentType' => $paymentType->title,
+            'currency' => $this->company->currency->symbol,
             'date' => $incomingOrder->created_at,
             'cashierName' => $incomingOrder->cashier_name
         ]);
@@ -138,6 +143,7 @@ class CashDocsPrint extends Component
 
     public function render()
     {
-        return view('livewire.cashbook.cash-docs-print');
+        return view('livewire.docs.'.$this->view, $this->data)
+            ->layout('livewire.docs.layout');
     }
 }
