@@ -14,9 +14,12 @@ use App\Models\CashDoc;
 use App\Models\StoreDoc;
 use App\Models\IncomingOrder;
 use App\Models\OutgoingDoc;
+use App\Traits\GenerateDocNo;
 
 class BankCard extends Component
 {
+    use GenerateDocNo;
+
     public $lang;
     public $cash = null;
     public $sumOfCart;
@@ -96,8 +99,8 @@ class BankCard extends Component
         // Incoming Order & Outgoing Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
 
-        $cashDocNo = $this->generateCashDocNo($cashbook->id);
-        $storeDocNo = $this->generateStoreDocNo($store->id);
+        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
+        $storeDocNo = $this->generateOutgoingStoreDocNo($store->id);
 
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $cashbook->id;
@@ -167,58 +170,6 @@ class BankCard extends Component
 
         session()->forget('cartProducts');
         return redirect($this->lang.'/cashdesk/payment-type/success');
-    }
-
-    public function generateCashDocNo($cashbook_id, $docNo = null)
-    {
-        if (is_null($docNo)) {
-
-            $lastDoc = IncomingOrder::orderByDesc('id')->first();
-
-            if ($lastDoc) {
-                list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.$second++;
-            } elseif (is_null($docNo)) {
-                $docNo = $cashbook_id.'/1';
-            }
-        }
-
-        $existDoc = IncomingOrder::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            list($first, $second) = explode('/', $docNo);
-            $docNo = $first.'/'.++$second;
-            self::generateCashDocNo($cashbook_id, $docNo);
-            return;
-        }
-
-        return $docNo;
-    }
-
-    public function generateStoreDocNo($store_id, $docNo = null)
-    {
-        if (is_null($docNo)) {
-
-            $lastDoc = OutgoingDoc::orderByDesc('id')->first();
-
-            if ($lastDoc && is_null($docNo)) {
-                list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.$second++;
-            } elseif (is_null($docNo)) {
-                $docNo = $store_id.'/1';
-            }
-        }
-
-        $existDoc = OutgoingDoc::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            list($first, $second) = explode('/', $docNo);
-            $docNo = $first.'/'.++$second;
-            self::generateStoreDocNo($store_id, $docNo);
-            return;
-        }
-
-        return $docNo;
     }
 
     public function render()

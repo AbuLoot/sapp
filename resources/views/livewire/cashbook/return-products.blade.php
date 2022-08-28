@@ -55,7 +55,7 @@
                     </td>
                     <?php
                       $percentage = $productsData[$product->id]['price'] / 100;
-                      $amount = $productsData[$product->id]['price'] - ($percentage * $productsData[$product->id]['discount']);
+                      $amount = $productsData[$product->id]['price'] - ($percentage * $productsData[$product->id]['discount'] ?? 0);
                       $amountDiscounted = $productsDataCopy[$product->id]['outgoing_count'] * $amount;
                       $sumDiscounted += $productsDataCopy[$product->id]['outgoing_count'] * $amount;
                     ?>
@@ -87,7 +87,7 @@
             </div>
 
             <div class="text-end">
-              <button wire:click="makeReturnDocs" type="button" class="btn btn-primary btn-lg text-end"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
+              <button wire:click="makeReturnDocs" type="button" class="btn btn-primary btn-lg text-end" @if($change == 0) disabled @endif><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
               <button type="button" class="btn btn-dark btn-lg text-end"><i class="be bi-printer-fill me-2"></i> Печать</button>
             </div>
           @endif

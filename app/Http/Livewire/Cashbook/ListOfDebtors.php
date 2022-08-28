@@ -15,9 +15,11 @@ use App\Models\DocType;
 use App\Models\CashDoc;
 use App\Models\IncomingOrder;
 
+use App\Traits\GenerateDocNo;
+
 class ListOfDebtors extends Component
 {
-    use WithPagination;
+    use GenerateDocNo, WithPagination;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -107,7 +109,7 @@ class ListOfDebtors extends Component
         // Incoming Order
         $docType = DocType::where('slug', 'forma-ko-1')->first();
 
-        $cashDocNo = $this->generateCashDocNo($cashbook->id);
+        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
 
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $cashbook->id;
@@ -141,32 +143,6 @@ class ListOfDebtors extends Component
         $cashDoc->currency = $this->company->currency->code;
         // $cashDoc->comment = $this->comment;
         $cashDoc->save();
-    }
-
-    public function generateCashDocNo($cashbook_id, $docNo = null)
-    {
-        if (is_null($docNo)) {
-
-            $lastDoc = IncomingOrder::orderByDesc('id')->first();
-
-            if ($lastDoc) {
-                list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.$second++;
-            } elseif (is_null($docNo)) {
-                $docNo = $cashbook_id.'/1';
-            }
-        }
-
-        $existDoc = IncomingOrder::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            list($first, $second) = explode('/', $docNo);
-            $docNo = $first.'/'.++$second;
-            $this->generateCashDocNo($cashbook_id, $docNo);
-            return;
-        }
-
-        return $docNo;
     }
 
     public function render()

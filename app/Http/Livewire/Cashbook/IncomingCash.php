@@ -8,8 +8,12 @@ use App\Models\DocType;
 use App\Models\CashDoc;
 use App\Models\IncomingOrder;
 
+use App\Traits\GenerateDocNo;
+
 class IncomingCash extends Component
 {
+    use GenerateDocNo;
+
     public $amount;
     public $comment;
     public $company;
@@ -28,31 +32,6 @@ class IncomingCash extends Component
         $this->cashbook = $this->company->cashbooks->first();
     }
 
-    public function generateDocNo($cashbook_id, $docNo = null)
-    {
-        if (is_null($docNo)) {
-
-            $lastDoc = IncomingOrder::orderByDesc('id')->first();
-
-            if ($lastDoc) {
-                list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.$second++;
-            } elseif (is_null($docNo)) {
-                $docNo = $cashbook_id.'/1';
-            }
-        }
-
-        $existDoc = IncomingOrder::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            list($first, $second) = explode('/', $docNo);
-            $docNo = $first.'/'.++$second;
-            return $this->generateDocNo($cashbook_id, $docNo);
-        }
-
-        return $docNo;
-    }
-
     public function credit()
     {
         $this->validate();
@@ -60,7 +39,7 @@ class IncomingCash extends Component
         // Incoming Order
         $docType = DocType::where('slug', 'forma-ko-1')->first();
 
-        $docNo = $this->generateDocNo($this->cashbook->id);
+        $docNo = $this->generateIncomingCashDocNo($this->cashbook->id);
 
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $this->cashbook->id;

@@ -7,7 +7,6 @@ use Livewire\Component;
 use App\Models\DocType;
 use App\Models\CashDoc;
 use App\Models\CashShiftJournal;
-use App\Models\IncomingOrder;
 
 class ClosingCash extends Component
 {

@@ -12,9 +12,11 @@ use App\Models\IncomingDoc;
 use App\Models\DocType;
 use App\Models\Product;
 
+use App\Traits\GenerateDocNo;
+
 class Income extends Component
 {
-    use WithPagination;
+    use GenerateDocNo, WithPagination;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -52,28 +54,6 @@ class Income extends Component
             $incomeProducts[$parts[1]]['income_count'] = $value;
             session()->put('incomeProducts', $incomeProducts);
         }
-    }
-
-    public function generateDocNo($store_id, $docNo = null)
-    {
-        $lastDoc = IncomingDoc::orderByDesc('id')->first();
-
-        if ($lastDoc && is_null($docNo)) {
-            list($first, $second) = explode('/', $lastDoc->doc_no);
-            $docNo = $first.'/'.$second++;
-        } elseif (is_null($docNo)) {
-            $docNo = $store_id.'/1';
-        }
-
-        $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            list($first, $second) = explode('/', $docNo);
-            $docNo = $first.'/'.++$second;
-            return $this->generateDocNo($store_id, $docNo);
-        }
-
-        return $docNo;
     }
 
     public function makeDoc()
@@ -115,7 +95,7 @@ class Income extends Component
         // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
 
-        $docNo = $this->generateDocNo($this->store_id);
+        $docNo = $this->generateIncomingStoreDocNo($this->store_id);
 
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $company->stores->first()->id;

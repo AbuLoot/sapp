@@ -8,8 +8,12 @@ use App\Models\DocType;
 use App\Models\CashDoc;
 use App\Models\OutgoingOrder;
 
+use App\Traits\GenerateDocNo;
+
 class OutgoingCash extends Component
 {
+    use GenerateDocNo;
+
     public $amount;
     public $comment;
     public $cashbook;
@@ -27,32 +31,6 @@ class OutgoingCash extends Component
         $this->cashbook = $this->company->cashbooks->first();
     }
 
-    public function generateDocNo($cashbook_id, $docNo = null)
-    {
-        if (is_null($docNo)) {
-
-            $lastDoc = OutgoingOrder::orderByDesc('id')->first();
-
-            if ($lastDoc) {
-                list($first, $second) = explode('/', $lastDoc->doc_no);
-                $docNo = $first.'/'.$second++;
-            } elseif (is_null($docNo)) {
-                $docNo = $cashbook_id.'/1';
-            }
-        }
-
-        $existDoc = OutgoingOrder::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            list($first, $second) = explode('/', $docNo);
-            $docNo = $first.'/'.++$second;
-            $this->generateDocNo($cashbook_id, $docNo);
-            return;
-        }
-
-        return $docNo;
-    }
-
     public function debit()
     {
         $this->validate();
@@ -60,7 +38,7 @@ class OutgoingCash extends Component
         // Outgoing Order
         $docType = DocType::where('slug', 'forma-ko-2')->first();
 
-        $docNo = $this->generateDocNo($this->cashbook->id);
+        $docNo = $this->generateOutgoingCashDocNo($this->cashbook->id);
 
         $outgoingOrder = new OutgoingOrder;
         $outgoingOrder->cashbook_id = $this->cashbook->id;
@@ -91,8 +69,8 @@ class OutgoingCash extends Component
         $cashDoc->comment = $this->comment;
         $cashDoc->save();
 
-        $this->emitUp('newData');
-        $this->dispatchBrowserEvent('close-modal');
+        // $this->emitUp('newData');
+        $this->dispatchBrowserEvent('show-toast', ['message' => 'Операция выполнена']);
     }
 
     public function render()

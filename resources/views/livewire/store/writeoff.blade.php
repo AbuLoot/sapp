@@ -100,7 +100,7 @@
                 $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
                 $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
 
-                $writeoffCountProduct = 0;
+                /*$writeoffCountProduct = 0;
 
                 if (isset($writeoff_count[$writeoffProduct->id][$store_id])) {
                   if ($countInStore >= 1 && $writeoff_count[$writeoffProduct->id][$store_id] <= $countInStore) {
@@ -108,13 +108,13 @@
                   } elseif ($countInStore < $writeoff_count[$writeoffProduct->id][$store_id]) {
                     $writeoffCountProduct = $countInStore;
                   }
-                }
+                }*/
               ?>
-              <td>{{ $countInStore - $writeoffCountProduct . $unit }}</td>
-              <td>{{ $writeoffProduct->count - $writeoffCountProduct . $unit }}</td>
+              <td>{{ $countInStore - $writeoffProduct[$store_id] . $unit }}</td>
+              <td>{{ $writeoffProduct->count - $writeoffProduct[$store_id] . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
-                  <input type="number" wire:model="writeoff_count.{{ $writeoffProduct->id }}.{{ $store_id }}" class="form-control @error('writeoff_count.'.$writeoffProduct->id.'.'.$store_id) is-invalid @enderror" required>
+                  <input type="number" wire:model="writeoffProducts.{{ $writeoffProduct->id .'.'. $store_id }}" class="form-control @error('writeoffProducts.'.$writeoffProduct->id.'.'.$store_id) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
                 </div>
               </td>

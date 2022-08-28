@@ -54,7 +54,7 @@ use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Inventory;
 use App\Http\Livewire\Store\InventoryHistory;
 use App\Http\Livewire\Store\InventoryDetail;
-use App\Http\Livewire\Store\Writeoff;
+// use App\Http\Livewire\Store\Writeoff;
 use App\Http\Livewire\Store\StoreDocs;
 
 // Cashdesk
@@ -83,7 +83,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
     Route::get('inventory', Inventory::class);
     Route::get('inventory-history', InventoryHistory::class);
     Route::get('inventory-detail/{id}', InventoryDetail::class);
-    Route::get('writeoff', Writeoff::class);
+    // Route::get('writeoff', Writeoff::class);
     Route::get('storedocs', StoreDocs::class);
 });
 

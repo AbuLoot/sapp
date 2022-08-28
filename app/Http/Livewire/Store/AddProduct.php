@@ -14,8 +14,12 @@ use App\Models\StoreDoc;
 use App\Models\IncomingDoc;
 use App\Models\DocType;
 
+use App\Traits\GenerateDocNo;
+
 class AddProduct extends Component
 {
+    use GenerateDocNo;
+
     public $lang;
     public $product;
     public $productBarcodes = [];
@@ -104,28 +108,6 @@ class AddProduct extends Component
         return $barcode;
     }
 
-    public function generateDocNo($store_id, $docNo = null)
-    {
-        $lastDoc = IncomingDoc::orderByDesc('id')->first();
-
-        if ($lastDoc && is_null($docNo)) {
-            list($first, $second) = explode('/', $lastDoc->doc_no);
-            $docNo = $first.'/'.$second++;
-        } elseif (is_null($docNo)) {
-            $docNo = $store_id.'/1';
-        }
-
-        $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
-
-        if ($existDoc) {
-            list($first, $second) = explode('/', $docNo);
-            $docNo = $first.'/'.++$second;
-            return $this->generateDocNo($store_id, $docNo);
-        }
-
-        return $docNo;
-    }
-
     public function saveProduct()
     {
         $this->validate();
@@ -163,7 +145,7 @@ class AddProduct extends Component
 
         foreach ($this->countInStores as $storeId => $countInStore) {
 
-            $docNo = $this->generateDocNo($storeId);
+            $docNo = $this->generateIncomingStoreDocNo($storeId);
 
             $product_data[$product->id]['count'] = $countInStore;
             $product_data[$product->id]['unit'] = $product->unit;
@@ -223,7 +205,7 @@ class AddProduct extends Component
         $currency = $this->company->currency->symbol;
         $stores = Store::where('company_id', $this->company->id)->get();
         $units = Unit::all();
-        $this->doc_no = $this->generateDocNo($stores->first()->id);
+        $this->doc_no = $this->generateIncomingStoreDocNo($stores->first()->id);
 
         return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
             ->layout('livewire.store.layout');
