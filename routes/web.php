@@ -27,11 +27,11 @@ use App\Http\Controllers\Joystick\LanguageController;
 
 // Site Controllers
 use App\Http\Controllers\InputController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\FavouriteController;
-use App\Http\Controllers\PostController as NewsController;
+// use App\Http\Controllers\ShopController;
+// use App\Http\Controllers\ProfileController;
+// use App\Http\Controllers\CartController;
+// use App\Http\Controllers\FavouriteController;
+// use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
 // Sanapp Admin Controllers
@@ -54,7 +54,7 @@ use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Inventory;
 use App\Http\Livewire\Store\InventoryHistory;
 use App\Http\Livewire\Store\InventoryDetail;
-// use App\Http\Livewire\Store\Writeoff;
+use App\Http\Livewire\Store\Writeoff;
 use App\Http\Livewire\Store\StoreDocs;
 
 // Cashdesk
@@ -67,6 +67,7 @@ use App\Http\Livewire\Cashbook\PaymentTypes\SaleOnCredit;
 use App\Http\Livewire\Cashbook\PaymentTypes\OnKaspi;
 use App\Http\Livewire\Cashbook\PaymentTypes\Success;
 use App\Http\Livewire\Cashbook\CashDocsPrint;
+
 
 // Sanapp Storage
 Route::redirect('/storage', '/'.app()->getLocale().'/storage');
@@ -83,7 +84,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
     Route::get('inventory', Inventory::class);
     Route::get('inventory-history', InventoryHistory::class);
     Route::get('inventory-detail/{id}', InventoryDetail::class);
-    // Route::get('writeoff', Writeoff::class);
+    Route::get('writeoff', Writeoff::class);
     Route::get('storedocs', StoreDocs::class);
 });
 
@@ -218,10 +219,10 @@ Route::get('/', [ShopController::class, 'index']);
 // });
 
 // News
-Route::get('news', [NewsController::class, 'posts']);
-Route::get('i/news-category', [NewsController::class, 'postsCategory']);
-Route::get('news/{page}', [NewsController::class, 'postSingle']);
-Route::post('comment-news', [NewsController::class, 'saveComment']);
+// Route::get('news', [NewsController::class, 'posts']);
+// Route::get('i/news-category', [NewsController::class, 'postsCategory']);
+// Route::get('news/{page}', [NewsController::class, 'postSingle']);
+// Route::post('comment-news', [NewsController::class, 'saveComment']);
 
 // Pages
 Route::get('i/catalogs', [SiteController::class, 'catalogs']);

@@ -51,7 +51,7 @@
     <div class="text-end">
       @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
-          <input class="form-check-input" wire:model="store_id" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
+          <input class="form-check-input" wire:model="storeId" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
           <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
         </div>
       @endforeach
@@ -89,21 +89,21 @@
                 $unit = $units->where('id', $revisionProduct->unit)->first()->title ?? '?';
 
                 $countInStores = json_decode($revisionProduct->count_in_stores, true) ?? [];
-                $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
+                $countInStore = (isset($countInStores[$storeId])) ? $countInStores[$storeId] : 0;
                 $difference = 0;
 
-                if (isset($actualCount[$revisionProduct->id][$store_id])) {
-                  $difference = $actualCount[$revisionProduct->id][$store_id] - $countInStore;
+                if (isset($actualCount[$revisionProduct->id][$storeId])) {
+                  $difference = $actualCount[$revisionProduct->id][$storeId] - $countInStore;
                 }
               ?>
               <td>{{ $revisionProduct->count + $difference . $unit }}</td>
               <td>{{ $countInStore + $difference . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
-                  <input type="number" wire:model="actualCount.{{ $revisionProduct->id }}.{{ $store_id }}" class="form-control @error('actualCount.'.$revisionProduct->id.'.'.$store_id) is-invalid @enderror" required>
+                  <input type="number" wire:model="actualCount.{{ $revisionProduct->id }}.{{ $storeId }}" class="form-control @error('actualCount.'.$revisionProduct->id.'.'.$storeId) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
                 </div>
-                @error('actualCount.'.$revisionProduct->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
+                @error('actualCount.'.$revisionProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
               </td>
               <td class="text-end"><a wire:click="removeFromRevision({{ $revisionProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>
@@ -126,13 +126,13 @@
         <a href="#" wire:click="checkBarcodesCount" class="btn btn-primary mt-3"><i class="bi bi-file-check-fill me-2"></i> Проверить</a>
       </div>
       <div class="col-auto">
-        <select wire:model="store_id" class="form-control @error('store_id') is-invalid @enderror" id="store_id">
+        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
           <option value="">Выберите склад...</option>
           @foreach ($company->stores as $store)
             <option value="{{ $store->id }}"> {{ $store->title }}</option>
           @endforeach
         </select>
-        @error('store_id')<div class="text-danger">{{ $message }}</div>@enderror
+        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <div class="col-auto">    
         @if($revisionProducts)
@@ -160,7 +160,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="revisionModalLabel">Ревизия cклада {{ $store_id }}</h5>
+          <h5 class="modal-title" id="revisionModalLabel">Ревизия cклада {{ $storeId }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

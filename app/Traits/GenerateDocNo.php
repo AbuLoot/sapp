@@ -9,17 +9,17 @@ use App\Models\OutgoingDoc;
 
 trait GenerateDocNo {
 
-    public function generateIncomingCashDocNo($cashbook_id, $docNo = null)
+    public function generateIncomingCashDocNo($cashbookId, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = IncomingOrder::orderByDesc('id')->first();
+            $lastDoc = IncomingOrder::where('doc_no', 'like', $cashbookId.'/%')->orderByDesc('id')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $cashbook_id.'/1';
+                $docNo = $cashbookId.'/1';
             }
         }
 
@@ -28,23 +28,23 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateIncomingCashDocNo($cashbook_id, $docNo);
+            return self::generateIncomingCashDocNo($cashbookId, $docNo);
         }
 
         return $docNo;
     }
 
-    public function generateOutgoingCashDocNo($cashbook_id, $docNo = null)
+    public function generateOutgoingCashDocNo($cashbookId, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingOrder::orderByDesc('id')->first();
+            $lastDoc = OutgoingOrder::where('doc_no', 'like', $cashbookId.'/%')->orderByDesc('id')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $cashbook_id.'/1';
+                $docNo = $cashbookId.'/1';
             }
         }
 
@@ -53,23 +53,23 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateOutgoingCashDocNo($cashbook_id, $docNo);
+            return self::generateOutgoingCashDocNo($cashbookId, $docNo);
         }
 
         return $docNo;
     }
 
-    public function generateIncomingStoreDocNo($store_id, $docNo = null)
+    public function generateIncomingStoreDocNo($storeId, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = IncomingDoc::where('doc_no', 'like', $store_id.'/%')->orderByDesc('id')->first();
+            $lastDoc = IncomingDoc::where('doc_no', 'like', $storeId.'/%')->orderByDesc('id')->first();
 
             if ($lastDoc && is_null($docNo)) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $store_id.'/1';
+                $docNo = $storeId.'/1';
             }
         }
 
@@ -78,23 +78,23 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateIncomingStoreDocNo($store_id, $docNo);
+            return self::generateIncomingStoreDocNo($storeId, $docNo);
         }
 
         return $docNo;
     }
 
-    public function generateOutgoingStoreDocNo($store_id, $docNo = null)
+    public function generateOutgoingStoreDocNo($storeId, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingDoc::orderByDesc('id')->first();
+            $lastDoc = OutgoingDoc::where('doc_no', 'like', $storeId.'/%')->orderByDesc('id')->first();
 
             if ($lastDoc && is_null($docNo)) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $store_id.'/1';
+                $docNo = $storeId.'/1';
             }
         }
 
@@ -103,7 +103,7 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateOutgoingStoreDocNo($store_id, $docNo);
+            return self::generateOutgoingStoreDocNo($storeId, $docNo);
         }
 
         return $docNo;

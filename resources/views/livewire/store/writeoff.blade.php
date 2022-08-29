@@ -59,7 +59,7 @@
     <div class="text-end">
       @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" wire:model="store_id" id="store{{ $store->id }}" value="{{ $store->id }}" @if($store_id == $store->id) checked @endif>
+          <input class="form-check-input" type="radio" wire:model="storeId" id="store{{ $store->id }}" value="{{ $store->id }}" @if($storeId == $store->id) checked @endif>
           <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
         </div>
       @endforeach
@@ -74,7 +74,7 @@
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
-            <th scope="col">{{ $company->stores->where('id', $store_id)->first()->title }}</th>
+            <th scope="col">{{ $company->stores->where('id', $storeId)->first()->title }}</th>
             <th scope="col">Общее кол-во</th>
             <th scope="col">Кол-во</th>
             <th scope="col">Поставщик</th>
@@ -98,23 +98,18 @@
                 $unit = $units->where('id', $writeoffProduct->unit)->first()->title ?? '?';
 
                 $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
-                $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
+                $countInStore = (isset($countInStores[$storeId])) ? $countInStores[$storeId] : 0;
+                $writeoffCountProduct = 0;
 
-                /*$writeoffCountProduct = 0;
-
-                if (isset($writeoff_count[$writeoffProduct->id][$store_id])) {
-                  if ($countInStore >= 1 && $writeoff_count[$writeoffProduct->id][$store_id] <= $countInStore) {
-                    $writeoffCountProduct = $writeoff_count[$writeoffProduct->id][$store_id];
-                  } elseif ($countInStore < $writeoff_count[$writeoffProduct->id][$store_id]) {
-                    $writeoffCountProduct = $countInStore;
-                  }
-                }*/
+                if (isset($writeoffCounts[$writeoffProduct->id][$storeId])) {
+                  $writeoffCountProduct = $writeoffCounts[$writeoffProduct->id][$storeId];
+                }
               ?>
-              <td>{{ $countInStore - $writeoffProduct[$store_id] . $unit }}</td>
-              <td>{{ $writeoffProduct->count - $writeoffProduct[$store_id] . $unit }}</td>
+              <td>{{ $countInStore - $writeoffCountProduct . $unit }}</td>
+              <td>{{ $writeoffProduct->count - $writeoffCountProduct . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
-                  <input type="number" wire:model="writeoffProducts.{{ $writeoffProduct->id .'.'. $store_id }}" class="form-control @error('writeoffProducts.'.$writeoffProduct->id.'.'.$store_id) is-invalid @enderror" required>
+                  <input type="number" wire:model="writeoffCounts.{{ $writeoffProduct->id .'.'. $storeId }}" class="form-control @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeId) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
                 </div>
               </td>

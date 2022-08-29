@@ -23,14 +23,15 @@ class Writeoff extends Component
     public $lang;
     public $units;
     public $company;
-    public $store_id;
+    public $storeId;
     public $search = '';
     public $writeoffProducts = [];
+    public $writeoffCounts = [];
     public $comment;
-    public $writeoff_count = [];
 
     protected $rules = [
-        'writeoffProducts.*.*' => 'required|numeric',
+        'writeoffCounts.*.*' => 'required|numeric',
+        'comment' => 'required',
     ];
 
     public function mount()
@@ -38,40 +39,34 @@ class Writeoff extends Component
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
         $this->company = auth()->user()->profile->company;
-        $this->store_id = 3; //$this->company->first()->id;
+        $this->storeId = $this->company->first()->id;
     }
 
     public function updated($key, $value)
     {
         $parts = explode('.', $key);
 
-        if ($parts[0] == 'writeoffProducts' && $parts[2] == $this->store_id) {
+        // Validating Writeoff Counts
+        if ($parts[0] == 'writeoffCounts' && $parts[2] == $this->storeId) {
 
-            $writeoffProducts = session()->get('writeoffProducts');
+            $product = Product::findOrFail($parts[1]);
+            $countInStores = json_decode($product->count_in_stores, true) ?? [];
+            $countInStore = $countInStores[$this->storeId] ?? 0;
 
             if ($value <= 0 || !is_numeric($value)) {
-                $writeoffProducts[$parts[1]][$this->store_id] = null;
-                // $this->writeoff_count[$parts[1]][$this->store_id] = null;
-                session()->put('writeoffProducts', $writeoffProducts);
+                $this->writeoffCounts[$parts[1]][$this->storeId] = null;
                 return;
             }
 
-            $writeoffProducts[$parts[1]][$this->store_id] = $value;
-            // $this->writeoff_count[$parts[1]][$this->store_id] = $value;
-            session()->put('writeoffProducts', $writeoffProducts);
+            $this->writeoffCounts[$parts[1]][$this->storeId] = ($countInStore < $value) ? $countInStore : $value;
         }
     }
 
     public function makeDoc()
     {
-        if (empty($this->comment)) {
-            $this->addError('comment', 'Напишите комментарий');
-            return false;
-        } else {
-            $this->resetErrorBag('comment');
-        }
+        $this->validate();
 
-        $products_data = [];
+        $productsData = [];
         $countInStores = [];
         $writeoffTotalCount = 0;
         $writeoffTotalAmount = 0;
@@ -83,42 +78,22 @@ class Writeoff extends Component
             $product = Product::findOrFail($productId);
 
             $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
+            $countInStore = $countInStores[$this->storeId] ?? 0;
+            $writeoffCount = $this->writeoffCounts[$productId][$this->storeId];
 
-            /*
-             * If writeoff count or count in store empty, return wrong
-             */
-            if (empty($this->writeoff_count[$productId][$this->store_id])
-                    || $this->writeoff_count[$productId][$this->store_id] <= 0
-                    || empty($countInStores[$this->store_id])) {
-                $this->addError('writeoff_count.'.$productId.'.'.$this->store_id, 'Wrong');
-                continue;
-            }
+            unset($this->writeoffCounts[$productId][$this->storeId]);
 
-            $countInStore = $countInStores[$this->store_id] ?? 0;
-            $writeoffCount = 0;
+            $stockCount = $countInStore - $writeoffCount;
 
-            /**
-             * Prepare writeoff count & If writeoff count greater, assign $countInStore
-             */
-            if ($countInStore >= 1 && $this->writeoff_count[$productId][$this->store_id] <= $countInStore) {
-                $writeoffCount = $this->writeoff_count[$productId][$this->store_id];
-            } elseif ($countInStore < $this->writeoff_count[$productId][$this->store_id]) {
-                $writeoffCount = $countInStore;
-            }
-
-            unset($this->writeoff_count[$productId][$this->store_id]);
-
-            $finalCount = $countInStore - $writeoffCount;
-
-            $products_data[$productId]['outgoing_count'] = $writeoffCount;
-            $products_data[$productId]['count'] = $finalCount;
-            $products_data[$productId]['unit'] = $product->unit;
-            $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
+            $productsData[$productId]['outgoing_count'] = $writeoffCount;
+            $productsData[$productId]['count'] = $stockCount;
+            $productsData[$productId]['unit'] = $product->unit;
+            $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
             $writeoffTotalCount = $writeoffTotalCount + $writeoffCount;
             $writeoffTotalAmount = $writeoffTotalAmount + ($product->purchase_price * $writeoffCount);
 
-            $countInStores[$this->store_id] = $finalCount;
+            $countInStores[$this->storeId] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -132,18 +107,18 @@ class Writeoff extends Component
         // Writeoff Doc
         $docType = DocType::where('slug', 'forma-z-6')->first();
 
-        $docNo = $this->generateOutgoingStoreDocNo($this->store_id);
+        $docNo = $this->generateOutgoingStoreDocNo($this->storeId);
 
         $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $this->store_id;
+        $outgoingDoc->store_id = $this->storeId;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->username = auth()->user()->name;
         $outgoingDoc->doc_no = $docNo;
         $outgoingDoc->doc_type_id = $docType->id;
-        $outgoingDoc->products_data = json_encode($products_data);
+        $outgoingDoc->products_data = json_encode($productsData);
         $outgoingDoc->to_contractor = '';
-        $outgoingDoc->sum = $outgoingDoc->sum - $writeoffTotalAmount;
+        $outgoingDoc->sum = $writeoffTotalAmount;
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $writeoffTotalCount;
         // $outgoingDoc->unit = $this->unit;
@@ -153,23 +128,21 @@ class Writeoff extends Component
         session()->put('writeoffProducts', $this->writeoffProducts);
 
         $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $this->store_id;
+        $storeDoc->store_id = $this->storeId;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docType->id;
-        $storeDoc->products_data = json_encode($products_data);
+        $storeDoc->products_data = json_encode($productsData);
         $storeDoc->from_contractor = $this->company->title;
         $storeDoc->to_contractor = '';
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $writeoffTotalAmount;
-        $storeDoc->sum = $writeoffTotalCount;
+        $storeDoc->sum = $writeoffTotalAmount;
         // $storeDoc->unit = $this->unit;
         $storeDoc->comment = $this->comment;
         $storeDoc->save();
 
-        // session()->forget('writeoffProducts');
-        // $this->writeoffProducts = [];
         $this->comment = null;
 
         session()->flash('message', 'Запись изменена');
@@ -184,7 +157,7 @@ class Writeoff extends Component
         }
 
         $writeoffProducts[$id] = $product;
-        $writeoffProducts[$id][$this->store_id] = null;
+        $this->writeoffCounts[$id][$this->storeId] = null;
 
         session()->put('writeoffProducts', $writeoffProducts);
         $this->search = '';
