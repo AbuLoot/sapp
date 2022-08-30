@@ -25,10 +25,10 @@
       </div>
     @endif
 
-    <div class="text-end">
+    <div class="text-end mb-3">
       @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
-          <input class="form-check-input" wire:model="store_id" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
+          <input class="form-check-input" wire:model="storeId" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
           <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
         </div>
       @endforeach
@@ -41,10 +41,11 @@
             <th scope="col">Номер ревизии</th>
             <th scope="col">Количество позиции</th>
             <th scope="col">Автор</th>
-            <th scope="col">Дата и время</th>
             <th scope="col">Количество недостачи</th>
             <th scope="col">Количество излишки</th>
             <th scope="col">Сумма недостачи</th>
+            <th scope="col">Сумма излишек</th>
+            <th scope="col">Дата и время</th>
             <th class="text-end" scope="col">Функции</th>
           </tr>
         </thead>
@@ -52,16 +53,14 @@
           @forelse($revisions as $index => $revision)
             <tr>
               <td>{{ $revision->doc_no }}</td>
-              <?php
-                $products_data = json_decode($revision->products_data, true) ?? [];
-                $products_count = count($products_data);
-              ?>
-              <td>{{ $products_count }}</td>
+              <?php $productsData = json_decode($revision->products_data, true) ?? []; ?>
+              <td>{{ count($productsData) }}</td>
               <td>{{ $revision->user->name }}</td>
-              <td>{{ $revision->created_at }}</td>
               <td>{{ $revision->surplus_count }}</td>
               <td>{{ $revision->shortage_count }}</td>
               <td>{{ $revision->shortage_sum }}</td>
+              <td>{{ $revision->surplus_sum }}</td>
+              <td>{{ $revision->created_at }}</td>
               <td class="text-end"><a href="/{{ $lang }}/storage/inventory-detail/{{ $revision->id }}" class="btn btn-outline-primary btn-sm">Посмотреть</a></td>
             </tr>
           @empty
@@ -71,27 +70,6 @@
           @endforelse
         </tbody>
       </table>
-    </div>
-
-    <div class="row mb-3">
-      <div class="col-5">
-        <div class="mb-3">
-          <label for="storages" class="form-label">Склады</label>
-          <select class="form-select" aria-label="Default select example">
-            <option selected>Выберите склад</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="barcode-count" class="form-label">Example textarea</label>
-          <textarea class="form-control" id="barcode-count" rows="3" placeholder="Штрихкод и количество"></textarea>
-          <p>@Введите штрихкод товара и количество товара через пробел</p>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Проверить</button>
-      </div>
     </div>
 
   </div>

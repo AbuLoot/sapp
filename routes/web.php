@@ -52,6 +52,7 @@ use App\Http\Livewire\Store\Income;
 use App\Http\Livewire\Store\IncomingDocs;
 use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Inventory;
+use App\Http\Livewire\Store\InventoryDraft;
 use App\Http\Livewire\Store\InventoryHistory;
 use App\Http\Livewire\Store\InventoryDetail;
 use App\Http\Livewire\Store\Writeoff;
@@ -82,6 +83,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
     Route::get('docs', IncomingDocs::class);
     Route::get('docs/outgoing', OutgoingDocs::class);
     Route::get('inventory', Inventory::class);
+    Route::get('inventory/drafts', InventoryDraft::class);
     Route::get('inventory-history', InventoryHistory::class);
     Route::get('inventory-detail/{id}', InventoryDetail::class);
     Route::get('writeoff', Writeoff::class);

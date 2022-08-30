@@ -49,8 +49,7 @@ class ListOfDebtors extends Component
     public function repayFor($debtor_id)
     {
         $this->profile = Profile::find($debtor_id);
-
-        $this->dispatchBrowserEvent('toggle-modal');
+        $this->dispatchBrowserEvent('show-modal');
     }
 
     public function repay()
@@ -98,7 +97,9 @@ class ListOfDebtors extends Component
         $paymentDetail['repaymentAmount'] = $this->repaymentAmount;
 
         $this->makeRepaymentDocs($paymentDetail);
-        $this->dispatchBrowserEvent('refresh-page');
+        $this->dispatchBrowserEvent('show-toast', [
+            'message' => 'Операция выполнена', 'selector' => 'closeRepaymentOfDebt'
+        ]);
     }
 
     public function makeRepaymentDocs($paymentDetail)

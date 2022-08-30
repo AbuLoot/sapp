@@ -85,7 +85,7 @@
   <div class="toast-container position-fixed end-0 p-4">
     <div class="toast align-items-center text-bg-info border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
-        <div class="toast-body text-white" id="toast-body"></div>
+        <div class="toast-body text-white" id="toastBody"></div>
         <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
     </div>
@@ -283,7 +283,7 @@
       <div class="modal-content  bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Добавить клиента</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" id="closeAddClient" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
@@ -306,7 +306,7 @@
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Внести деньги в кассу</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" id="closeIncomingCash" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
@@ -323,7 +323,7 @@
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Оформить расход</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" id="closeOutgoingCash" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
@@ -358,31 +358,20 @@
 @section('scripts')
   <script type="text/javascript">
     window.addEventListener('show-toast', event => {
-      const toastBody = document.getElementById('toast-body')
-      toastBody.innerHTML = event.detail.message;
+      if (event.detail.reload) {
+        document.location.reload()
+      }
 
-      // const incomingCash = document.getElementById('incomingCash')
-      // incomingCash.hide()
-      // var incomingCash = new bootstrap.Modal(document.getElementById("incomingCash"));
-      // incomingCash.hide()
-      // const toast = new bootstrap.Toast(document.getElementById('liveToast'))
-      // toast.show()
-    })
+      if (event.detail.selector) {
+        const btnCloseModal = document.getElementById(event.detail.selector)
+        btnCloseModal.click()
+      }
 
-    // const myModalEl = document.getElementById('incomingCash')
-    // myModalEl.addEventListener('hidden.bs.modal', event => {
-      
-    // })
+      const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+      toast.show()
 
-
-    window.addEventListener('close-modal', event => {
-      const myModal = new bootstrap.Modal('#incomingCash', {
-        backdrop: false
-      })
-      const incomingCash = document.getElementById('incomingCash')
-      incomingCash.hide() // it is asynchronous
-      // var myModal = new bootstrap.Modal(document.getElementById("outgoingCash"));
-      // myModal.hide();
+      const toastBody = document.getElementById('toastBody')
+      toastBody.innerHTML = event.detail.message
     })
   </script>
 @endsection

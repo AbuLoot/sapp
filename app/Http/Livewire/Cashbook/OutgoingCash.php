@@ -16,6 +16,7 @@ class OutgoingCash extends Component
 
     public $amount;
     public $comment;
+    public $company;
     public $cashbook;
     public $alert = false;
     public $outgoingCash = false;
@@ -69,8 +70,9 @@ class OutgoingCash extends Component
         $cashDoc->comment = $this->comment;
         $cashDoc->save();
 
-        // $this->emitUp('newData');
-        $this->dispatchBrowserEvent('show-toast', ['message' => 'Операция выполнена']);
+        $this->dispatchBrowserEvent('show-toast', [
+            'message' => 'Операция выполнена', 'selector' => 'closeOutgoingCash'
+        ]);
     }
 
     public function render()

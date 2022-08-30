@@ -33,8 +33,9 @@ class AddClient extends Component
         $user->address = $this->address;
         $user->save();
 
-        $this->emitUp('newUser');
-        $this->dispatchBrowserEvent('close-modal');
+        $this->dispatchBrowserEvent('show-toast', [
+            'message' => 'Запись добавлена', 'selector' => 'closeAddClient'
+        ]);
     }
 
     public function render()

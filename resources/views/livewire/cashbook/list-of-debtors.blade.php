@@ -5,7 +5,7 @@
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Список должников</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" id="closeListOfDebtors" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <table class="table">
@@ -70,7 +70,7 @@
       <div class="modal-content  bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Погашение долга</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" id="closeRepaymentOfDebt" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form wire:submit.prevent="repay">
@@ -93,15 +93,8 @@
   </div>
 
   <script>
-    window.addEventListener('refresh-page', event => {
-      document.location.reload()
-      // var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDebt"));
-      // modalRepayment.hide()
-    })
-
-    window.addEventListener('toggle-modal', event => {
+    window.addEventListener('show-modal', event => {
       var modalRepayment = new bootstrap.Modal(document.getElementById("repaymentOfDebt"), {});
-      // document.getElementById('debtor').value = event.detail.debtorId;
       modalRepayment.show();
     })
   </script>

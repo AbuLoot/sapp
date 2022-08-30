@@ -9,7 +9,7 @@
       </form>
 
       <div class="text-end ms-md-auto ms-lg-0">
-        <a href="/{{ $lang }}/inventory-history" class="btn btn-primary"><i class="bi bi-clock-history me-2"></i> История ревизий</a>
+        <a href="/{{ $lang }}/storage/inventory-history" class="btn btn-primary"><i class="bi bi-clock-history me-2"></i> История ревизий</a>
       </div>
     </div>
   </div>
@@ -28,14 +28,7 @@
       </div>
     @endif
 
-    <div class="text-end">
-      @foreach($company->stores as $index => $store)
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" wire:model="store_id" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
-          <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
-        </div>
-      @endforeach
-    </div>
+    <h5 class="text-end mb-3">{{ $company->stores->where('id', $storeId)->first()->title }}</h5>
 
     <div class="table-responsive">
       <table class="table table-sm align-middle table-striped">
@@ -46,97 +39,45 @@
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
-            <th scope="col">Общее<br> кол-во</th>
             <th scope="col">Расчетное<br> кол-во</th>
             <th scope="col">Фактическое<br> кол-во</th>
-            <th scope="col"></th>
+            <th scope="col">Кол-во недостачи</th>
+            <th scope="col">Кол-во излишек</th>
+            <th scope="col">Сумма недостачи</th>
+            <th scope="col">Сумма излишек</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($revisions as $index => $revision)
+          @forelse($revisionProducts as $index => $revisionProduct)
+
             <tr>
-              <td><a href="/{{ $lang }}/storage/edit-product/{{ $revision->id }}">{{ $revision->title }}</a></td>
+              <td>{{ $revisionProduct->title }}</td>
               <td>
-                <?php $products_data = json_decode($revision->products_data, true) ?? ['']; ?>
-                @foreach($products_data as $product_id => $product_data)
-                  {{ $product_id }}<br>
+                <?php $barcodes = json_decode($revisionProduct->barcodes, true) ?? []; ?>
+                @foreach($barcodes as $barcode)
+                  {{ $barcode }}<br>
                 @endforeach
               </td>
-              <td>{{ $revision->company->title }}</td>
-              <td>{{ $revision->purchase_price }}</td>
-              <td>{{ $revision->price }}</td>
-              <?php
-                // $unit = $units->where('id', $revision->unit)->first()->title ?? '?';
-
-                // $countInStores = json_decode($revision->count_in_stores, true) ?? [];
-                // $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
-                // $difference = 0;
-
-                // if (isset($actualCount[$revision->id][$store_id])) {
-                //   $difference = $actualCount[$revision->id][$store_id] - $countInStore;
-                // }
-              ?>
-              <td>{{ $revision->count + $difference . $unit }}</td>
-              <td>{{ $countInStore + $difference . $unit }}</td>
-              <td class="col-2">
-                <div class="input-group">
-                  <input type="number" wire:model="actualCount.{{ $revision->id }}.{{ $store_id }}" class="form-control @error('actualCount.'.$revision->id.'.'.$store_id) is-invalid @enderror" required>
-                  <span class="input-group-text">{{ $unit }}</span>
-                </div>
-                @error('actualCount.'.$revision->id.'.'.$store_id)<div class="text-danger">{{ $message }}</div>@enderror
-              </td>
-              <td class="text-end"><a wire:click="deleteFromRevision({{ $revision->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+              <td>{{ $revisionProduct->category->title }}</td>
+              <td>{{ $revisionProduct->purchase_price }}</td>
+              <td>{{ $revisionProduct->price }}</td>
+              <?php $unit = $units->where('id', $revisionProduct->unit)->first()->title ?? '?'; ?>
+              <td>{{ $revisionProduct->estimatedCount . $unit }}</td>
+              <td>{{ $revisionProduct->actualCount . $unit }}</td>
+              <td>{{ $revisionProduct->shortageCount . $unit }}</td>
+              <td>{{ $revisionProduct->surplusCount . $unit }}</td>
+              <td>{{ $revisionProduct->shortageSum . $company->currency->symbol }}</td>
+              <td>{{ $revisionProduct->surplusSum . $company->currency->symbol }}</td>
             </tr>
           @empty
             <tr>
-              <td colspan="9">No data</td>
+              <td colspan="12">No data</td>
             </tr>
           @endforelse
         </tbody>
       </table>
     </div>
 
-    <div class="row">
-      <div class="col-3">
-        <div class="form-floating">
-          <textarea wire:model="barcodeAndCount" class="form-control @error('barcodeAndCount') is-invalid @enderror" id="barcode-and-count" style="height: 120px" placeholder="Причина списания"></textarea>
-          @error('barcodeAndCount')<div class="text-danger">{{ $message }}</div>@enderror
-          <label for="barcode-and-count">Штрихкод и количество</label>
-        </div>
-      </div>
-      <div class="col-auto">
-        <select wire:model="store_id" class="form-control @error('store_id') is-invalid @enderror" id="store_id">
-          <option value="">Выберите склад...</option>
-          @foreach ($company->stores as $store)
-            <option value="{{ $store->id }}"> {{ $store->title }}</option>
-          @endforeach
-        </select>
-        @error('store_id')<div class="text-danger">{{ $message }}</div>@enderror
-      </div>
-      <div class="col-auto">    
-        @if($revisions)
-          <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
-        @endif
-      </div>
-    </div>
   </div>
 
-  <!-- Modal Barcodes Count Result -->
-  <div class="modal fade show" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

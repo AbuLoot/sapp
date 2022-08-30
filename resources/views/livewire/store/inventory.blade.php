@@ -22,10 +22,13 @@
       </form>
 
       <ul class="nav col-lg-auto text-end me-lg-2 text-small">
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="journals"><i class="bi bi-journals"></i></a></li>
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="file-text"><i class="bi bi-file-text-fill"></i></a></li>
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="file-earmark"><i class="bi bi-file-earmark-plus-fill"></i></a></li>
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="file-earmark"><i class="bi bi-file-earmark-text-fill"></i></a></li>
+        <li><a href="/{{ $lang }}/storage/inventory/drafts" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Черновики"><i class="bi bi-journals"></i></a></li>
+        <li><a href="#" wire:click="saveAsDraft" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Сохранить как черновик"><i class="bi bi-file-earmark-plus-fill"></i></a></li>
+        @if($revisionProducts)
+          <li><a href="#" wire:click="inventoryListCount" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Провести документ"><i class="bi bi-file-earmark-ruled-fill"></i></a></li>
+          <li><a href="#" wire:click="removeRevision" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Очистить все"><i class="bi bi-file-x-fill"></i></a></li>
+        @endif
+        <!-- <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="file-earmark"><i class="bi bi-file-earmark-text-fill"></i></a></li> -->
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">
@@ -48,13 +51,23 @@
       </div>
     @endif
 
-    <div class="text-end">
-      @foreach($company->stores as $index => $store)
+    <div class="row justify-content-end mb-3">
+      <div class="col-3">
+        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
+          <option value="">Выберите склад...</option>
+          @foreach ($company->stores as $store)
+            <option value="{{ $store->id }}"> {{ $store->title }}</option>
+          @endforeach
+        </select>
+        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
+
+      <!-- @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
           <input class="form-check-input" wire:model="storeId" type="radio" name="inlineRadioOptions" id="store{{ $store->id }}" value="{{ $store->id }}" @if($index == 0) checked @endif>
           <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
         </div>
-      @endforeach
+      @endforeach -->
     </div>
 
     <div class="table-responsive">
@@ -123,20 +136,12 @@
           @error('barcodesCount')<div class="text-danger">{{ $message }}</div>@enderror
           <label for="barcode-and-count">Штрихкод и количество</label>
         </div>
-        <a href="#" wire:click="checkBarcodesCount" class="btn btn-primary mt-3"><i class="bi bi-file-check-fill me-2"></i> Проверить</a>
+        <a href="#" wire:click="inventoryBarcodesCount" class="btn btn-primary mt-3"><i class="bi bi-file-check-fill me-2"></i> Проверить</a>
       </div>
+
       <div class="col-auto">
-        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
-          <option value="">Выберите склад...</option>
-          @foreach ($company->stores as $store)
-            <option value="{{ $store->id }}"> {{ $store->title }}</option>
-          @endforeach
-        </select>
-        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
-      </div>
-      <div class="col-auto">    
         @if($revisionProducts)
-          <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
+          <a href="#" wire:click="inventoryListCount" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>
         @endif
       </div>
     </div>
@@ -146,12 +151,6 @@
     <script type="text/javascript">
       var myModal = new bootstrap.Modal(document.getElementById("revisionModal"), {});
       myModal.show();
-
-      // Refresh page
-      var revisionModal = document.getElementById('revisionModal');
-      revisionModal.addEventListener('hide.bs.modal', event => {
-        document.location.reload()
-      })
     </script>
   @endif
 
@@ -164,14 +163,18 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          @if(!empty($products_data))
+          @if(!empty($inventoryData))
             <div class="row">
-              <div class="col-6">Количество товаров:</div>
-              <div class="col-6">{{ $products_data['products_count'] }}</div>
+              <div class="col-6">Количество позиции:</div>
+              <div class="col-6">{{ $inventoryData['productsCount'] }}</div>
               <div class="col-6">Количество недостач:</div>
-              <div class="col-6">{{ $products_data['shortage_count'] }}</div>
+              <div class="col-6">{{ $inventoryData['shortageTotalCount'] }}</div>
               <div class="col-6">Количество излишек:</div>
-              <div class="col-6">{{ $products_data['surplus_count'] }}</div>
+              <div class="col-6">{{ $inventoryData['surplusTotalCount'] }}</div>
+              <div class="col-6">Сумма недостачи:</div>
+              <div class="col-6">{{ $inventoryData['shortageTotalAmount'] }}</div>
+              <div class="col-6">Сумма излишек:</div>
+              <div class="col-6">{{ $inventoryData['surplusTotalAmount'] }}</div>
             </div>
           @endif
         </div>
@@ -181,4 +184,5 @@
       </div>
     </div>
   </div>
+
 </div>

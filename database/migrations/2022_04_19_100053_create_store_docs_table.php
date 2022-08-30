@@ -25,6 +25,7 @@ class CreateStoreDocsTable extends Migration
             $table->char('to_contractor')->nullable();
             $table->integer('incoming_amount');
             $table->integer('outgoing_amount')->nullable();
+            $table->integer('count');
             $table->integer('sum');
             $table->string('comment')->nullable();
             $table->timestamps();

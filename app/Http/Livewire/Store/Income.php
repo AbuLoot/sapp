@@ -46,7 +46,7 @@ class Income extends Component
             if ($value == 0 || !is_numeric($value)) {
                 $this->addError($key, 'Неверные данные');
                 $incomeProducts[$parts[1]]['income_count'] = 0;
-                return false;
+                return;
             } else {
                 $this->resetErrorBag($key);
             }
@@ -60,7 +60,7 @@ class Income extends Component
     {
         if (empty($this->store_id) || !is_numeric($this->store_id)) {
             $this->addError('store_id', 'Выберите склад');
-            return false;
+            return;
         } else {
             $this->resetErrorBag('store_id');
         }

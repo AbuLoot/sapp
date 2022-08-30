@@ -27,18 +27,13 @@ class Index extends Component
     public $totalDiscountView;
     public $priceMode = 'retail';
 
-    protected $listeners = ['newData', 'addToCart', 'returnDeferredCheck'];
+    protected $listeners = ['addToCart', 'returnDeferredCheck'];
 
     protected $rules = [
         'store' => 'required|numeric',
         'cartProducts.*.countInCart' => 'required|numeric',
         'discounts.*' => 'required|numeric',
     ];
-
-    public function newData()
-    {
-        session()->flash('message', 'Операция выполнена');
-    }
 
     public function mount()
     {
@@ -237,9 +232,8 @@ class Index extends Component
     public function deferCheck()
     {
         if (is_null(session()->get('cartProducts'))) {
-            // session()->flash('message', 'No data');
             $this->dispatchBrowserEvent('show-toast', ['message' => 'No data']);
-            return false;
+            return;
         }
 
         // Getting Sum Of Cart
@@ -259,10 +253,8 @@ class Index extends Component
 
         $this->totalDiscount = 0;
         session()->forget('cartProducts');
-        session()->flash('message', 'Операция выполнена');
 
-        // $this->emitTo('deferredchecks', 'newData');
-        $this->emit('$refresh');
+        $this->dispatchBrowserEvent('show-toast', ['reload' => true]);
     }
 
     public function returnDeferredCheck($orderName)
@@ -293,7 +285,12 @@ class Index extends Component
         }
 
         $this->totalDiscount = $deferredCheck['totalDiscount'];
+
         session()->put('cartProducts', $cartProducts);
+
+        $this->dispatchBrowserEvent('show-toast', [
+            'message' => 'Операция выполнена', 'selector' => 'closeDefferedChecks'
+        ]);
     }
 
     public function render()

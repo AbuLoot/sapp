@@ -8,34 +8,11 @@ use Livewire\Component;
 
 class DeferredChecks extends Component
 {
-    public $search = '';
     public $deferredChecks = [];
-
-    protected $listeners = ['newData', '$refresh'];
-
-    public function mount()
-    {
-        if (Cache::has('deferredChecks')) {
-            $this->deferredChecks = Cache::get('deferredChecks');
-        }
-    }
 
     public function returnCheck($orderName)
     {
         $this->emitUp('returnDeferredCheck', $orderName);
-    }
-
-    public function returnDeferredCheck($orderName)
-    {
-        if (Cache::has('deferredChecks')) {
-            $deferredChecks = Cache::get('deferredChecks');
-        }
-
-        $deferredCheck = $deferredChecks[$orderName];
-
-        session()->forget('cartProducts');
-        $this->cartProducts = [];
-        session()->put('cartProducts', $deferredCheck['cart']);
     }
 
     public function removeFromDeferred($orderName)
@@ -48,16 +25,16 @@ class DeferredChecks extends Component
 
         unset($deferredChecks[$orderName]);
         Cache::put('deferredChecks', $deferredChecks);
+
+        $this->dispatchBrowserEvent('show-toast', ['reload' => true]);
     }
 
     public function render()
     {
-        $checks = [];
+        $this->deferredChecks = (Cache::has('deferredChecks'))
+            ? Cache::get('deferredChecks')
+            : [];
 
-        if (strlen($this->search) >= 2) {
-            // $checks = $this->deferredChecks->where();
-        }
-
-        return view('livewire.cashbook.deferred-checks', ['checks' => $checks]);
+        return view('livewire.cashbook.deferred-checks');
     }
 }

@@ -47,7 +47,7 @@ class Writeoff extends Component
         $parts = explode('.', $key);
 
         // Validating Writeoff Counts
-        if ($parts[0] == 'writeoffCounts' && $parts[2] == $this->storeId) {
+        if (count($parts) == 3 && $parts[0] == 'writeoffCounts') {
 
             $product = Product::findOrFail($parts[1]);
             $countInStores = json_decode($product->count_in_stores, true) ?? [];

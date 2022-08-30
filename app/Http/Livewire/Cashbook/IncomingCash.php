@@ -73,10 +73,9 @@ class IncomingCash extends Component
         $cashDoc->comment = $this->comment;
         $cashDoc->save();
 
-        // session()->flash('message', 'Операция выполнена');
-        // $this->emitUp('newData');
-
-        $this->dispatchBrowserEvent('show-toast', ['message' => 'Операция выполнена']);
+        $this->dispatchBrowserEvent('show-toast', [
+            'message' => 'Операция выполнена', 'selector' => 'closeIncomingCash'
+        ]);
     }
 
     public function render()

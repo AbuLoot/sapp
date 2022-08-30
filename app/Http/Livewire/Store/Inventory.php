@@ -9,7 +9,7 @@ use App\Models\Unit;
 use App\Models\Store;
 use App\Models\StoreDoc;
 use App\Models\Revision;
-use App\Models\RevisionProduct;
+use App\Models\RevisionDraft;
 use App\Models\DocType;
 use App\Models\Product;
 
@@ -23,6 +23,7 @@ class Inventory extends Component
     public $storeId;
     public $search = '';
     public $revisionProducts = [];
+    public $draftProducts = [];
     public $actualCount = [];
     public $barcodesCount = [];
     public $productsData = [];
@@ -31,8 +32,7 @@ class Inventory extends Component
     protected $listeners = ['checkData' => '$refresh'];
 
     protected $rules = [
-        'storeId' => 'required|numeric',
-        'actualCount.*.*' => 'required|numeric',
+        'storeId' => 'required|numeric'
     ];
 
     public function mount()
@@ -49,82 +49,108 @@ class Inventory extends Component
 
         if (count($parts) == 3 && $parts[0] == 'actualCount') {
 
-            $revisionProducts = session()->get('revisionProducts');
-
-            if (!is_numeric($value) || $value < 0) {
-                $revisionProducts[$parts[1]]['actualCount'] = [$this->storeId => null];
+            if ($value < 0 || !is_numeric($value)) {
                 $this->actualCount[$parts[1]][$this->storeId] = null;
-                session()->put('revisionProducts', $revisionProducts);
-                return false;
+                return;
             }
 
-            $revisionProducts[$parts[1]]['actualCount'] = [$this->storeId => $value];
             $this->actualCount[$parts[1]][$this->storeId] = $value;
-            session()->put('revisionProducts', $revisionProducts);
         }
     }
 
-    public function checkBarcodesCount()
+    public function inventoryBarcodesCount()
     {
+        $this->validate();
+
         // If store id empty, return wrong
         if (empty($this->barcodesCount) || strlen($this->barcodesCount) < 14) {
             $this->addError('barcodesCount', 'Некорректное значение');
-            return false;
+            return;
         } else {
             $this->resetErrorBag('barcodesCount');
         }
 
         $barcodesCount = explode("\n", trim($this->barcodesCount));
 
-        $productsData['products_count'] = 0;
-        $productsData['shortage_count'] = 0;
-        $productsData['surplus_count'] = 0;
+        $productsData = [];
+        $inventoryData = [];
+        $shortageTotalCount = 0;
+        $surplusTotalCount = 0;
+        $shortageTotalAmount = 0;
+        $surplusTotalAmount = 0;
 
         foreach ($barcodesCount as $barcodeCount) {
-
-            list($barcode) = explode(' ', $barcodeCount);
-            $count = trim(strstr($barcodeCount, ' '));
 
             if (empty($barcodeCount) || strlen($barcodeCount) < 14) {
                 continue;
             }
 
-            // If count empty, return wrong
+            list($barcode) = explode(' ', $barcodeCount);
+            $count = trim(strstr($barcodeCount, ' '));
+
+            // If count empty or too big return wrong
             if (!isset($count) || strlen($barcodeCount) > 24) {
                 $this->addError('barcodesCount', 'Некорректное значение');
-                return false;
+                return;
             }
 
             $product = Product::whereJsonContains('barcodes', $barcode)->first();
+
+            $this->addToRevision($product->id, $count);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
             unset($countInStores[0]);
             $countInStore = $countInStores[$this->storeId] ?? 0;
 
+            $countInStores[$this->storeId] = $this->actualCount[$product->id][$this->storeId];
             $difference = (int) $count - (int) $countInStore;
 
-            $productsData['products_count'] += 1;
+            $productsData[$product->id]['estimatedCount'] = $countInStore;
+            $productsData[$product->id]['actualCount'] = $this->actualCount[$product->id][$this->storeId];
+            $productsData[$product->id]['difference'] = $difference;
 
             if ($difference < 0) {
-                $productsData['shortage_count'] += abs($difference);
-            } elseif($difference > 0) {
-                $productsData['surplus_count'] += $difference;
+                $productsData[$product->id]['shortageCount'] = abs($difference);
+                $productsData[$product->id]['surplusCount'] = 0;
+                $productsData[$product->id]['shortageSum'] = $product->purchase_price * abs($difference);
+                $productsData[$product->id]['surplusSum'] = 0;
+
+                $shortageTotalCount = $shortageTotalCount + abs($difference);
+                $shortageTotalAmount = $shortageTotalAmount + ($product->purchase_price * abs($difference));
+            } else {
+                $productsData[$product->id]['shortageCount'] = 0;
+                $productsData[$product->id]['surplusCount'] = $difference;
+                $productsData[$product->id]['shortageSum'] = 0;
+                $productsData[$product->id]['surplusSum'] = $product->purchase_price * $difference;
+
+                $surplusTotalCount = $surplusTotalCount + $difference;
+                $surplusTotalAmount = $surplusTotalAmount + ($product->purchase_price * $difference);
             }
+
+            $amountCount = collect($countInStores)->sum();
+
+            $product->count_in_stores = json_encode($countInStores);
+            $product->count = $amountCount;
+            $product->save();
+
+            $this->revisionProducts[$product->id] = $product;
         }
 
-        $this->productsData = $productsData;
+        $inventoryData['productsCount'] = count($productsData);
+        $inventoryData['shortageTotalCount'] = $shortageTotalCount;
+        $inventoryData['surplusTotalCount'] = $surplusTotalCount;
+        $inventoryData['shortageTotalAmount'] = $shortageTotalAmount;
+        $inventoryData['surplusTotalAmount'] = $surplusTotalAmount;
+
+        $this->makeInventoryDocs($inventoryData, $productsData);
+
+        $this->inventoryData = $inventoryData;
         $this->revisionModal = true;
     }
 
-    public function makeDoc()
+    public function inventoryListCount()
     {
-        // If store id empty, return wrong
-        if (empty($this->storeId) || !is_numeric($this->storeId)) {
-            $this->addError('storeId', 'Выберите склад');
-            return false;
-        } else {
-            $this->resetErrorBag('storeId');
-        }
+        $this->validate();
 
         // If revision count empty, return wrong
         foreach($this->revisionProducts as $productId => $revisionProduct) {
@@ -132,14 +158,14 @@ class Inventory extends Component
             if (empty($this->actualCount[$productId][$this->storeId])
                     || $this->actualCount[$productId][$this->storeId] < 0) {
                 $this->addError('actualCount.'.$productId.'.'.$this->storeId, 'Wrong');
-                return false;
+                return;
             }
         }
 
         $productsData = [];
-        $countInStores = [];
-        $shortageTotalCount = null;
-        $surplusTotalCount = null;
+        $inventoryData = [];
+        $shortageTotalCount = 0;
+        $surplusTotalCount = 0;
         $shortageTotalAmount = 0;
         $surplusTotalAmount = 0;
 
@@ -155,7 +181,7 @@ class Inventory extends Component
             // If count in store and revision count equal, return error
             if ($countInStore == $this->actualCount[$productId][$this->storeId]) {
                 $this->addError('actualCount.'.$productId.'.'.$this->storeId, 'No difference');
-                return false;
+                return;
             }
 
             $countInStores[$this->storeId] = $this->actualCount[$productId][$this->storeId];
@@ -164,27 +190,23 @@ class Inventory extends Component
             $barcodes = json_decode($product->barcodes, true) ?? [];
             $barcode = (isset($barcodes[0])) ? $barcodes[0] : '';
 
-            $productsData[$productId]['barcode'] = $barcode;
-            $productsData[$productId]['purchase_price'] = $product->purchase_price;
-            $productsData[$productId]['selling_price'] = $product->price;
-            $productsData[$productId]['estimated_count'] = $countInStore;
+            $productsData[$productId]['estimatedCount'] = $countInStore;
             $productsData[$productId]['actualCount'] = $this->actualCount[$productId][$this->storeId];
             $productsData[$productId]['difference'] = $difference;
 
             if ($difference < 0) {
-                $productsData[$productId]['shortage_count'] = abs($difference);
-                $productsData[$productId]['shortage_sum'] = $product->purchase_price * abs($difference);
-                $productsData[$productId]['surplus_count'] = null;
-                $productsData[$productId]['surplus_sum'] = 0;
+                $productsData[$productId]['shortageCount'] = abs($difference);
+                $productsData[$productId]['surplusCount'] = 0;
+                $productsData[$productId]['shortageSum'] = $product->purchase_price * abs($difference);
+                $productsData[$productId]['surplusSum'] = 0;
 
                 $shortageTotalCount = $shortageTotalCount + abs($difference);
                 $shortageTotalAmount = $shortageTotalAmount + ($product->purchase_price * abs($difference));
-
             } else {
-                $productsData[$productId]['surplus_count'] = $difference;
-                $productsData[$productId]['surplus_sum'] = $product->purchase_price * $difference;
-                $productsData[$productId]['shortage_count'] = null;
-                $productsData[$productId]['shortage_sum'] = 0;
+                $productsData[$productId]['shortageCount'] = 0;
+                $productsData[$productId]['surplusCount'] = $difference;
+                $productsData[$productId]['shortageSum'] = 0;
+                $productsData[$productId]['surplusSum'] = $product->purchase_price * $difference;
 
                 $surplusTotalCount = $surplusTotalCount + $difference;
                 $surplusTotalAmount = $surplusTotalAmount + ($product->purchase_price * $difference);
@@ -199,6 +221,17 @@ class Inventory extends Component
             $this->revisionProducts[$productId] = $product;
         }
 
+        $inventoryData['productsCount'] = count($productsData);
+        $inventoryData['shortageTotalCount'] = $shortageTotalCount;
+        $inventoryData['surplusTotalCount'] = $surplusTotalCount;
+        $inventoryData['shortageTotalAmount'] = $shortageTotalAmount;
+        $inventoryData['surplusTotalAmount'] = $surplusTotalAmount;
+
+        $this->makeInventoryDocs($inventoryData, $productsData);
+    }
+
+    public function makeInventoryDocs($inventoryData, $productsData)
+    {
         $docNo = $this->generateDocNo($this->storeId, $this->docNo);
 
         $revision = new Revision;
@@ -207,31 +240,15 @@ class Inventory extends Component
         $revision->user_id = auth()->user()->id;
         $revision->doc_no = $docNo;
         $revision->products_data = json_encode($productsData);
-        $revision->surplus_count = $surplusTotalCount;
-        $revision->shortage_count = $shortageTotalCount;
-        $revision->surplus_sum = $surplusTotalAmount;
-        $revision->shortage_sum = $shortageTotalAmount;
+        $revision->surplus_count = $inventoryData['surplusTotalCount'];
+        $revision->shortage_count = $inventoryData['shortageTotalCount'];
+        $revision->surplus_sum = $inventoryData['surplusTotalAmount'];
+        $revision->shortage_sum = $inventoryData['shortageTotalAmount'];
         $revision->currency = $this->company->currency->code;
         // $revision->comment = '';
         $revision->save();
 
         session()->put('revisionProducts', $this->revisionProducts);
-
-        // $revisionProduct = new RevisionProduct;
-        // $revisionProduct->revision_id = $revision->id;
-        // $revisionProduct->product_id = $product->id;
-        // $revisionProduct->category_id = $product->category_id;
-        // $revisionProduct->barcode = $barcodes;
-        // $revisionProduct->purchase_price = $purchase_price;
-        // $revisionProduct->selling_price = $selling_price;
-        // $revisionProduct->currency = $this->company->currency->code;
-
-        // $revisionProduct->estimated_count = $estimated_count;
-        // $revisionProduct->actual_count = $actual_count;
-        // $revisionProduct->difference = $difference;
-        // $revisionProduct->surplus_count = $surplus_count;
-        // $revisionProduct->shortage_count = $shortage_count;
-        // $revisionProduct->save();
 
         // Inventory Doc
         $docType = DocType::where('slug', 'forma-inv-10')->first();
@@ -245,9 +262,10 @@ class Inventory extends Component
         $storeDoc->products_data = json_encode($productsData);
         $storeDoc->from_contractor = $this->company->title;
         $storeDoc->to_contractor = '';
-        $storeDoc->incoming_amount = $surplusTotalAmount;
-        $storeDoc->outgoing_amount = $shortageTotalAmount;
-        $storeDoc->sum = $amountCount;
+        $storeDoc->incoming_amount = $inventoryData['surplusTotalAmount'];
+        $storeDoc->outgoing_amount = $inventoryData['shortageTotalAmount'];
+        $storeDoc->count = $inventoryData['productsCount'];
+        $storeDoc->sum = 0;
         $storeDoc->comment = '';
         $storeDoc->save();
 
@@ -279,7 +297,42 @@ class Inventory extends Component
         return $docNo;
     }
 
-    public function addToRevision($id)
+    public function saveAsDraft()
+    {
+        if (empty($this->revisionProducts)) {
+            session()->flash('message', 'Записи не найдены');
+            return;
+        }
+
+        $coincidence = 0;
+
+        foreach($this->revisionProducts as $productId => $revisionProduct) {
+
+            if (array_key_exists($productId, $this->draftProducts)) {
+                $coincidence++;
+            }
+
+            $this->draftProducts[$productId]['title'] = $revisionProduct['title'];
+            $this->draftProducts[$productId]['barcodes'] = $revisionProduct['barcodes'];
+        }
+
+        if ($coincidence == count($this->revisionProducts)) {
+            session()->flash('message', 'Черновик существует');
+            return;
+        }
+
+        $draft = new RevisionDraft;
+        $draft->user_id = auth()->user()->id;
+        $draft->title = 'Draft ' . ($draft->count() + 1);
+        $draft->products_data = json_encode($this->draftProducts);
+        $draft->count = count($this->draftProducts);
+        $draft->comment = null;
+        $draft->save();
+
+        session()->flash('message', 'Запись добавлена');
+    }
+
+    public function addToRevision($id, $count = null)
     {
         $product = Product::findOrFail($id);
 
@@ -288,7 +341,7 @@ class Inventory extends Component
         }
 
         $revisionProducts[$id] = $product;
-        $this->actualCounts[$id][$this->storeId] = null;
+        $this->actualCount[$id][$this->storeId] = $count;
 
         session()->put('revisionProducts', $revisionProducts);
         $this->search = '';
@@ -304,6 +357,11 @@ class Inventory extends Component
 
         unset($revisionProducts[$id]);
         session()->put('revisionProducts', $revisionProducts);
+    }
+
+    public function removeRevision()
+    {
+        session()->forget('revisionProducts');
     }
 
     public function render()

@@ -17,7 +17,7 @@ class InventoryHistory extends Component
 
     public $lang;
     public $company;
-    public $store_id;
+    public $storeId;
     public $search = '';
     // public $revisions = [];
 
@@ -25,14 +25,14 @@ class InventoryHistory extends Component
     {
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
-        $this->store_id = $this->company->first()->id;
+        $this->storeId = $this->company->first()->id;
     }
 
     public function render()
     {
         $revisions = ($this->search)
-            ? Revision::where('doc_no', 'like', '%'.$this->search.'%')->where('store_id', $this->store_id)->orderBy('id', 'desc')->paginate(25)
-            : Revision::orderBy('id', 'desc')->where('store_id', $this->store_id)->paginate(25);
+            ? Revision::where('doc_no', 'like', '%'.$this->search.'%')->where('store_id', $this->storeId)->orderBy('id', 'desc')->paginate(30)
+            : Revision::orderBy('id', 'desc')->where('store_id', $this->storeId)->paginate(30);
 
         return view('livewire.store.inventory-history', ['revisions' => $revisions])
             ->layout('livewire.store.layout');
