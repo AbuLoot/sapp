@@ -91,7 +91,7 @@ class ClosingCash extends Component
             ->orderByDesc('id')
             ->get();
 
-        // Opening The Cash
+        // Opening Cash
         $lastOpenCashShift = new CashShiftJournal;
         $lastOpenCashShift->from_user_id = null;
         $lastOpenCashShift->to_user_id = auth()->user->id;

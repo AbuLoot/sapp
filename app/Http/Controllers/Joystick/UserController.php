@@ -72,6 +72,7 @@ class UserController extends Controller
         $user->save();
 
         if (!$user->profile) {
+
             $profile = new Profile;
             $profile->user_id = $user->id;
             $profile->region_id = $request->region_id;
@@ -83,6 +84,7 @@ class UserController extends Controller
             $profile->is_debtor = ($request->debt_sum > 0) ? 1 : 0;
             $profile->debt_sum = $request->debt_sum;
             $profile->bonus = $request->bonus;
+            $profile->discount = $request->discount;
             $profile->save();
 
             return redirect($lang.'/admin/users')->with('status', 'Запись обновлена!');
@@ -97,6 +99,7 @@ class UserController extends Controller
         $user->profile->is_debtor = ($request->debt_sum > 0) ? 1 : 0;
         $user->profile->debt_sum = $request->debt_sum;
         $user->profile->bonus = $request->bonus;
+        $user->profile->discount = $request->discount;
         $user->profile->save();
 
         return redirect($lang.'/admin/users')->with('status', 'Запись обновлена!');

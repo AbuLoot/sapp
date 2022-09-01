@@ -17,7 +17,7 @@ class Index extends Component
     public $lang;
     public $company;
     public $store;
-    public $store_id;
+    public $storeId;
     public $search = '';
     public $searchClient = '';
     public $cartProducts = [];
@@ -45,15 +45,13 @@ class Index extends Component
         }
 
         $this->store = session()->get('store');
-        $this->store_id = $this->store->id;
-
-        session()->put('totalDiscount', $this->totalDiscount);
+        $this->storeId = $this->store->id;
     }
 
     public function updated($key, $value)
     {
         // Stores Switching
-        if ($key == 'store_id') {
+        if ($key == 'storeId') {
             $this->store = Store::where('id', $value)->first();
             session()->put('store', $this->store);
             session()->forget('cartProducts');
@@ -209,7 +207,18 @@ class Index extends Component
     public function checkClient($id)
     {
         $this->client = User::find($id);
+
+        session()->put('client', $this->client);
+        session()->put('totalDiscount', $this->client->profile->discount ?? 0);
+
         $this->searchClient = '';
+    }
+
+    public function removeClient()
+    {
+        session()->forget('client');
+        session()->put('totalDiscount', 0);
+        $this->client = null;
     }
 
     public function removeFromCart($id)
@@ -238,7 +247,7 @@ class Index extends Component
 
         // Getting Sum Of Cart
         $sumOfCart = $this->sumOfCart();
-        $orderName = $this->store_id.'/'.$sumOfCart['totalCount'].'/'.date("Y-m-d/H:i");
+        $orderName = $this->storeId.'/'.$sumOfCart['totalCount'].'/'.date("Y-m-d/H:i");
 
         if (Cache::has('deferredChecks')) {
             $deferredChecks = Cache::get('deferredChecks');

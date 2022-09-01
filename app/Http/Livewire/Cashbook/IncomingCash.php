@@ -18,8 +18,6 @@ class IncomingCash extends Component
     public $comment;
     public $company;
     public $cashbook;
-    public $alert = false;
-    public $incomingCash = false;
 
     protected $rules = [
         'amount' => 'required|numeric|min:2',

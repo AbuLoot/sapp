@@ -132,11 +132,15 @@
             </div>
             <div class="form-group">
               <label>Сумма долга</label>
-              <input type="text" class="form-control" name="debt_sum" maxlength="30" placeholder="Сумма долга" value="{{ (old('debt_sum')) ? old('debt_sum') : $user->profile->debt_sum }}">
+              <input type="number" class="form-control" name="debt_sum" maxlength="30" placeholder="Сумма долга" value="{{ (old('debt_sum')) ? old('debt_sum') : $user->profile->debt_sum }}">
             </div>
             <div class="form-group">
               <label>Бонус</label>
-              <input type="text" class="form-control" name="bonus" maxlength="30" placeholder="Бонус" value="{{ (old('bonus')) ? old('bonus') : $user->profile->bonus }}">
+              <input type="number" class="form-control" name="bonus" maxlength="30" placeholder="Бонус" value="{{ (old('bonus')) ? old('bonus') : $user->profile->bonus }}">
+            </div>
+            <div class="form-group">
+              <label>Скидка</label>
+              <input type="number" class="form-control" name="discount" minlength="0" maxlength="10" placeholder="Скидка" value="{{ (old('discount')) ? old('discount') : $user->profile->discount }}">
             </div>
           </div>
         </div>

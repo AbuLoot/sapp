@@ -18,8 +18,6 @@ class OutgoingCash extends Component
     public $comment;
     public $company;
     public $cashbook;
-    public $alert = false;
-    public $outgoingCash = false;
 
     protected $rules = [
         'amount' => 'required|numeric|min:2',

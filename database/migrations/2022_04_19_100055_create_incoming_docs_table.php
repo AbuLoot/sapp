@@ -22,7 +22,7 @@ class CreateIncomingDocsTable extends Migration
             $table->string('doc_no');
             $table->integer('doc_type_id');
             $table->json('products_data');
-            $table->char('from_contractor');
+            $table->char('from_contractor')->nullable();
             $table->integer('sum');
             $table->char('currency');
             $table->integer('count');

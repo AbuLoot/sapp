@@ -51,8 +51,8 @@
   
   <script>
     function printPage() {
-      var printPage = window.open("/");
-      printPage.document.write(document.getElementsById("doc").innerHTML);
+      // var printPage = window;
+      var printPage = window.document.write(document.getElementsById("doc").innerHTML);
       printPage.print();
     }
   </script>

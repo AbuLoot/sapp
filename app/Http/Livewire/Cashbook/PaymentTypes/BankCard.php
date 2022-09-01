@@ -48,6 +48,7 @@ class BankCard extends Component
 
         $store = session()->get('store');
         $cashbook = session()->get('cashbook');
+        $clientId = session()->get('client')->id ?? null;
         $cartProducts = session()->get('cartProducts') ?? [];
 
         foreach($cartProducts as $productId => $cartProduct) {
@@ -110,7 +111,7 @@ class BankCard extends Component
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $incomingOrder->products_data = json_encode($productsData);
-        $incomingOrder->from_contractor = $store->id;
+        $incomingOrder->from_contractor = $clientId;
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = $this->sumOfCart['sumDiscounted'];
@@ -118,6 +119,22 @@ class BankCard extends Component
         $incomingOrder->count = $this->sumOfCart['totalCount'];
         // $incomingOrder->comment = $this->comment;
         $incomingOrder->save();
+
+        // Cashbook
+        $cashDoc = new CashDoc;
+        $cashDoc->cashbook_id = $cashbook->id;
+        $cashDoc->company_id = $this->company->id;
+        $cashDoc->user_id = auth()->user()->id;
+        $cashDoc->doc_id = $incomingOrder->id;
+        $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
+        $cashDoc->from_contractor = $clientId;
+        $cashDoc->to_contractor = $store->id; // $this->company->title;
+        $cashDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
+        $cashDoc->outgoing_amount = 0;
+        $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
+        $cashDoc->currency = $this->company->currency->code;
+        // $cashDoc->comment = $this->comment;
+        $cashDoc->save();
 
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $store->id;
@@ -131,25 +148,8 @@ class BankCard extends Component
         $outgoingDoc->sum = $this->sumOfCart['sumDiscounted'];
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $outgoingTotalCount;
-        // $outgoingDoc->unit = $this->unit;
         // $outgoingDoc->comment = $this->comment;
         $outgoingDoc->save();
-
-        // Cashbook
-        $cashDoc = new CashDoc;
-        $cashDoc->cashbook_id = $cashbook->id;
-        $cashDoc->company_id = $this->company->id;
-        $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_id = $incomingOrder->id;
-        $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
-        $cashDoc->from_contractor = $store->title;
-        $cashDoc->to_contractor = $cashbook->title; // $this->company->title;
-        $cashDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
-        $cashDoc->outgoing_amount = 0;
-        $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
-        $cashDoc->currency = $this->company->currency->code;
-        // $cashDoc->comment = $this->comment;
-        $cashDoc->save();
 
         // Storage
         $storeDoc = new StoreDoc;
@@ -159,16 +159,17 @@ class BankCard extends Component
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
-        $storeDoc->from_contractor = $cashbook->title;
-        $storeDoc->to_contractor = $store->title;
+        $storeDoc->from_contractor = $clientId;
+        $storeDoc->to_contractor = $cashbook->id;
         $storeDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
         $storeDoc->outgoing_amount = 0;
         $storeDoc->sum = $outgoingTotalCount;
-        // $storeDoc->unit = $this->unit;
         // $storeDoc->comment = $this->comment;
         $storeDoc->save();
 
+        session()->forget('client');
         session()->forget('cartProducts');
+
         return redirect($this->lang.'/cashdesk/payment-type/success');
     }
 

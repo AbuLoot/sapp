@@ -41,6 +41,7 @@
     .functions {
       max-width: 300px;
       margin: auto;
+      padding: 5px;
       background-color: #fff;
     }
   </style>

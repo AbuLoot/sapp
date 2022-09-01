@@ -105,7 +105,8 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
     Route::get('payment-type/sale-on-credit', SaleOnCredit::class);
     Route::get('payment-type/on-kaspi', OnKaspi::class);
     Route::get('payment-type/success', Success::class);
-    Route::get('cashdoc-type/{type}/{id}', CashDocsPrint::class);
+    Route::get('cashdocprint/{type}/{id}', CashDocsPrint::class);
+    // Route::get('cashdocprint/{type}/{id}', CashDocsPrint::class);
 });
 
 

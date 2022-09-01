@@ -25,6 +25,7 @@ class CreateProfilesTable extends Migration
             $table->boolean('is_debtor')->nullable();
             $table->integer('debt_sum')->default(0);
             $table->json('debt_orders')->nullable();
+            $table->integer('discount')->default(0);
             $table->integer('bonus')->default(0);
             $table->timestamps();
         });

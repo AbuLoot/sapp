@@ -45,12 +45,12 @@
   <div class="row gx-2">
     <div class="col-lg-6">
       <div class="d-grid" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary btn-lg"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</button>
+        <button type="button" class="btn btn-primary btn-lg @if(session()->get('cartProducts')) disabled @endif"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</button>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="d-grid" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-dark btn-lg"><i class="be bi-printer-fill"></i>&nbsp;Печать<br> чека</button>
+        <button type="button" class="btn btn-dark btn-lg @if(session()->get('cartProducts')) disabled @endif"><i class="be bi-printer-fill"></i>&nbsp;Печать<br> чека</button>
       </div>
     </div>
   </div>

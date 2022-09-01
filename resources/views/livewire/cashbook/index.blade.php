@@ -51,25 +51,38 @@
 
       <!-- Search Clients -->
       <form class="col-3 col-lg-3 me-4" style="position: relative;">
-        <input wire:model="searchClient" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
-        @if($clients)
-          <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
-            <ul class="list-unstyled mb-0">
-              @forelse($clients as $clientObj)
-                <li>
-                  <a wire:click="checkClient({{ $clientObj->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $clientObj->name.' '.$clientObj->lastname.' '.$clientObj->tel }}</a>
-                </li>
-              @empty
-                <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled">No data</a></li>
-              @endforelse
-            </ul>
-          </div>
-        @endif
+        <div class="input-group">
+          <input wire:model="searchClient" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
+          @if($clients)
+            <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute; top: 50px;">
+              <ul class="list-unstyled mb-0">
+                @forelse($clients as $clientObj)
+                  <li>
+                    <a wire:click="checkClient({{ $clientObj->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $clientObj->name.' '.$clientObj->lastname.' '.$clientObj->tel }}</a>
+                  </li>
+                @empty
+                  <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled-">No data</a></li>
+                @endforelse
+              </ul>
+            </div>
+          @endif
+
+          @if($client)
+            <button class="btn btn-outline-secondary dropdown-toggle fs-5" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></button>
+            <div class="dropdown-menu dropdown-menu-end p-3" style="max-width: 200px;">
+              <p>{{ $client->name . ' ' . $client->lastname }}</p>
+              <p>Скидка: {{ $client->profile->discount ?? 0 }}%</p>
+              <div class="d-grid gap-2">
+                <button wire:click="removeClient" class="btn btn-outline-dark" type="button">Удалить из кассы</button>
+              </div>
+            </div>
+          @endif
+        </div>
       </form>
 
       <!-- Storages List -->
       <div class="col-auto ms-auto">
-        <select wire:model="store_id" class="form-control form-control-lg">
+        <select wire:model="storeId" class="form-control form-control-lg">
           @foreach ($company->stores as $storeObj)
             <option value="{{ $storeObj->id }}">{{ $storeObj->title }}</option>
           @endforeach
@@ -258,41 +271,13 @@
 
 
   <!-- Modal Fast Products -->
-  <div class="modal fade" id="fastProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content bg-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Быстрые товары</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" style="min-height:270px;">
-
-          <livewire:cashbook.fast-products>
-
-        </div>
-      </div>
-    </div>
-  </div>
+  <livewire:cashbook.fast-products>
 
   <!-- Modal Closing Cash -->
   <livewire:cashbook.closing-cash>
 
   <!-- Modal Add Client -->
-  <div class="modal fade" id="addClient" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content  bg-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Добавить клиента</h5>
-          <button type="button" id="closeAddClient" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-          <livewire:cashbook.add-client>
-
-        </div>
-      </div>
-    </div>
-  </div>
+  <livewire:cashbook.add-client>
 
   <!-- Modal Return Products -->
   <livewire:cashbook.return-products>
@@ -301,55 +286,13 @@
   <livewire:cashbook.list-of-debtors>
 
   <!-- Modal Incoming Cash -->
-  <div class="modal fade" id="incomingCash" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content bg-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Внести деньги в кассу</h5>
-          <button type="button" id="closeIncomingCash" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-          <livewire:cashbook.incoming-cash>
-
-        </div>
-      </div>
-    </div>
-  </div>
+  <livewire:cashbook.incoming-cash>
 
   <!-- Modal Outgoing Cash -->
-  <div class="modal fade" id="outgoingCash" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content bg-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Оформить расход</h5>
-          <button type="button" id="closeOutgoingCash" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-          <livewire:cashbook.outgoing-cash>
-
-        </div>
-      </div>
-    </div>
-  </div>
+  <livewire:cashbook.outgoing-cash>
 
   <!-- Modal Reprint -->
-  <div class="modal fade" id="reprint" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content bg-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Журнал чеков</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-          <livewire:cashbook.reprint>
-
-        </div>
-      </div>
-    </div>
-  </div>
+  <livewire:cashbook.reprint>
 
   <!-- Modal Deferred Checks -->
   <livewire:cashbook.deferred-checks>
