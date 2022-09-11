@@ -93,7 +93,7 @@ class ListOfDebtors extends Component
 
         $paymentDetail['typeId'] = $this->paymentTypeId;
         $paymentDetail['type'] = $this->paymentTypes->where('id', $this->paymentTypeId)->pluck('slug')->first();
-        $paymentDetail['user_id'] = $this->profile->user_id;
+        $paymentDetail['userId'] = $this->profile->user_id;
         $paymentDetail['repaymentAmount'] = $this->repaymentAmount;
 
         $this->makeRepaymentDocs($paymentDetail);

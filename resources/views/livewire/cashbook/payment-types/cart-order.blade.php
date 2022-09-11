@@ -1,5 +1,14 @@
 <div>
+  <?php
+    $docId = null;
+    $btnCartOrder = 'disabled';
 
+    if (session()->get('incomingOrder')) {
+      $docNo = session()->get('incomingOrder')['docNo'];
+      $docId = session()->get('incomingOrder')['docId'];
+      $btnCartOrder = null;
+    }
+  ?>
   <h2>Чек №{{ $docNo }}</h2><br>
   <table class="table table-sm- table-striped table-borderless border">
     <thead>
@@ -45,12 +54,13 @@
   <div class="row gx-2">
     <div class="col-lg-6">
       <div class="d-grid" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary btn-lg @if(session()->get('cartProducts')) disabled @endif"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</button>
+        <!-- <button type="button" class="btn btn-primary btn-lg @if(session()->get('cartProducts')) disabled @endif"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</button> -->
+        <a href="/{{ $lang }}/cashdesk/cashdocprint/incoming/{{ $docId }}" class="btn btn-primary btn-lg {{ $btnCartOrder }}"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</a>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="d-grid" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-dark btn-lg @if(session()->get('cartProducts')) disabled @endif"><i class="be bi-printer-fill"></i>&nbsp;Печать<br> чека</button>
+        <a href="/{{ $lang }}/cashdesk/cashdocprint/check/{{ $docId }}" class="btn btn-dark btn-lg {{ $btnCartOrder }}"><i class="be bi-printer-fill"></i>&nbsp;Печать<br> чека</a>
       </div>
     </div>
   </div>

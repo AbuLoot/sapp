@@ -14,9 +14,8 @@
           <br>
           <div class="display-1 text-success"><i class="be bi-patch-check-fill"></i></div>
           <br>
-          <a href="/{{ app()->getLocale() }}/cashdesk/payment-types" class="btn btn-outline-dark btn-lg ms-auto">Закрыть</a>
+          <button wire:click="backToCash" type="button" class="btn btn-outline-dark btn-lg ms-auto">Закрыть</button>
         </div>
-
       </div>
     </div>
   </main>

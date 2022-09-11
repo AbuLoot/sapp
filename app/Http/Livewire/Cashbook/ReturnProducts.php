@@ -36,7 +36,7 @@ class ReturnProducts extends Component
         $parts = explode('.', $key);
 
         // Setting Correct Count
-        if (count($parts) == 3 && $parts[2] == 'outgoing_count') {
+        if (count($parts) == 3 && $parts[2] == 'outgoingCount') {
             unset($this->returnedProducts[$parts[1]]);
             $this->setValidCount($parts[1], $value);
         }
@@ -62,7 +62,7 @@ class ReturnProducts extends Component
 
     public function setValidCount($product_id, $value)
     {
-        $outgoingCount = $this->productsData[$product_id]['outgoing_count'];
+        $outgoingCount = $this->productsData[$product_id]['outgoingCount'];
 
         if ($value < 0 || !is_numeric($value)) {
             $validCount = null;
@@ -72,7 +72,7 @@ class ReturnProducts extends Component
                 : $value;
         }
 
-        $this->productsDataCopy[$product_id]['outgoing_count'] = $validCount;
+        $this->productsDataCopy[$product_id]['outgoingCount'] = $validCount;
     }
 
     public function setValidDiscount($product_id, $value)
@@ -100,12 +100,12 @@ class ReturnProducts extends Component
 
     public function return($id)
     {
-        $outgoingCount = $this->productsData[$id]['outgoing_count'];
+        $outgoingCount = $this->productsData[$id]['outgoingCount'];
 
         $this->returnedProducts[$id]['incomingCount']
-            = $outgoingCount == $this->productsDataCopy[$id]['outgoing_count']
+            = $outgoingCount == $this->productsDataCopy[$id]['outgoingCount']
                 ? $outgoingCount
-                : $outgoingCount - $this->productsDataCopy[$id]['outgoing_count'];
+                : $outgoingCount - $this->productsDataCopy[$id]['outgoingCount'];
 
         $this->returnedProducts[$id]['discount'] = $this->productsData[$id]['discount'];
     }

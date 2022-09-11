@@ -10,7 +10,7 @@ use App\Models\Category;
 class AddCategory extends Component
 {
     public $category;
-    public $category_id;
+    public $categoryId;
     public $alert = false;
 
     protected $rules = [
@@ -36,11 +36,11 @@ class AddCategory extends Component
         $category->status = 1;
         $category->save();
 
-        if (is_null($this->category_id)) {
+        if (is_null($this->categoryId)) {
             $category->saveAsRoot();
         }
         else {
-            $parentNode = Category::find($this->category_id);
+            $parentNode = Category::find($this->categoryId);
             $category->appendToNode($parentNode)->save();
         }
 

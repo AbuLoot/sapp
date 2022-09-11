@@ -150,7 +150,7 @@
                       <td>{{ $product->category->title }}</td>
                       <td>{{ $product->purchase_price }}</td>
                       <td>{{ $product->price }}</td>
-                      <td>{{ $products_data[$product->id]['count'] }}</td>
+                      <td>{{ $products_data[$product->id]['incomingCount'] }}</td>
                       <td>{{ $product->count }}</td>
                       <td>{{ $product->company->title }}</td>
                     </tr>

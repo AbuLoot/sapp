@@ -277,6 +277,11 @@ class Index extends Component
         }
 
         $deferredCheck = $deferredChecks[$orderName];
+        $orderArrName = explode('/', $orderName);
+
+        session()->put('store', Store::find($orderArrName[0]));
+        $this->store = session()->get('store');
+        $this->storeId = $this->store->id;
 
         foreach($deferredCheck['cart'] as $id => $check) {
 
@@ -320,7 +325,7 @@ class Index extends Component
 
         $this->priceMode = session()->get('priceMode');
         $this->cartProducts = session()->get('cartProducts') ?? [];
-        $this->totalDiscount = session()->get('totalDiscount');
+        $this->totalDiscount = session()->get('totalDiscount') ?? 0;
 
         return view('livewire.cashbook.index', ['products' => $products, 'clients' => $clients])
             ->layout('livewire.cashbook.layout');

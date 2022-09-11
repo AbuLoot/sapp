@@ -77,10 +77,11 @@ class OnKaspi extends Component
                 $discount = $cartProduct->discount;
             } elseif(session()->get('totalDiscount') != 0) {
                 $discount = session()->get('totalDiscount');
+                session()->forget('totalDiscount');
             }
 
             $productsData[$productId]['price'] = $price;
-            $productsData[$productId]['outgoing_count'] = $outgoingCount;
+            $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
             $productsData[$productId]['stockCount'] = $stockCount;
             $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
@@ -168,7 +169,10 @@ class OnKaspi extends Component
         // $storeDoc->comment = $this->comment;
         $storeDoc->save();
 
+        session()->put('incomingOrder', ['docNo' => $incomingOrder->doc_no, 'docId' => $incomingOrder->id]);
+        session()->forget('client');
         session()->forget('cartProducts');
+
         return redirect($this->lang.'/cashdesk/payment-type/success');
     }
 

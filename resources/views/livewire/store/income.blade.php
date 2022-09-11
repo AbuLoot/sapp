@@ -51,7 +51,7 @@
     <div class="text-end">
       @foreach($company->stores as $index => $store)
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" wire:model="store_id" id="store{{ $store->id }}" value="{{ $store->id }}" @if($store_id == $store->id) checked @endif>
+          <input class="form-check-input" type="radio" wire:model="storeId" id="store{{ $store->id }}" value="{{ $store->id }}" @if($storeId == $store->id) checked @endif>
           <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
         </div>
       @endforeach
@@ -66,7 +66,7 @@
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
-            <th scope="col">{{ $company->stores->where('id', $store_id)->first()->title }}</th>
+            <th scope="col">{{ $company->stores->where('id', $storeId)->first()->title }}</th>
             <th scope="col">В&nbsp;базе</th>
             <th scope="col">Количество</th>
             <th scope="col">Поставщик</th>
@@ -90,7 +90,7 @@
                 $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?';
 
                 $countInStores = json_decode($incomeProduct->count_in_stores, true) ?? [];
-                $countInStore = (isset($countInStores[$store_id])) ? $countInStores[$store_id] : 0;
+                $countInStore = (isset($countInStores[$storeId])) ? $countInStores[$storeId] : 0;
               ?>
               <td>{{ $countInStore + $incomeProduct->income_count . $unit }}</td>
               <td>{{ $incomeProduct->count + $incomeProduct->income_count . $unit }}</td>
@@ -116,13 +116,13 @@
 
     <div class="row">
       <div class="col-auto">
-        <select wire:model="store_id" class="form-control @error('store_id') is-invalid @enderror" id="store_id">
+        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
           <option value="">Выберите склад...</option>
           @foreach ($company->stores as $store)
             <option value="{{ $store->id }}"> {{ $store->title }}</option>
           @endforeach
         </select>
-        @error('store_id')<div class="text-danger">{{ $message }}</div>@enderror
+        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <div class="col-auto">
         @if($incomeProducts)

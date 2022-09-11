@@ -42,18 +42,36 @@
     <hr>
     <p>Метод оплаты: {{ $paymentType }}<br>
     Дата: {{ $date }}<br>
-    Кассир: {{ $cashierName }}</p>    
+    Кассир: {{ $cashierName }}</p>
+    <style type="text/css">
+      body {
+        max-width: 300px;
+        margin: 0 auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .doc {
+        background-color: #fff;
+        max-width: 300px;
+        padding: 10px 5px 20px;
+      }
+    </style>
   </div>
   <div class="functions d-grid gap-2">
     <button type="button" onclick="printPage()" class="btn btn-success rounded-0 btn-lg">Печать чека</button>
     <a href="{{ $prevPage }}" class="btn btn-primary rounded-0 btn-lg">Назад</a>
   </div>
-  
+
   <script>
     function printPage() {
-      // var printPage = window;
-      var printPage = window.document.write(document.getElementsById("doc").innerHTML);
-      printPage.print();
+      var printContents = document.getElementById('doc').innerHTML;
+      var originalContents = document.body.innerHTML;
+
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
     }
   </script>
 </div>

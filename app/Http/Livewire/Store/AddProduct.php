@@ -27,8 +27,8 @@ class AddProduct extends Component
     public $companies;
     public $categories;
     public $barcodes = [''];
-    public $doc_no;
-    public $id_code;
+    public $docNo;
+    public $idCode;
     public $countInStores = [];
     public $purchase_price;
     public $wholesale_price;
@@ -45,7 +45,7 @@ class AddProduct extends Component
         'product.price' => 'required',
         'countInStores.*' => 'required|numeric',
         'product.unit' => 'required|numeric',
-        'doc_no' => 'required',
+        'docNo' => 'required',
         'productBarcodes.*' => 'required',
     ];
 
@@ -123,7 +123,7 @@ class AddProduct extends Component
             'slug' => Str::slug($this->product->title),
             'title' => $this->product->title,
             'barcodes' => json_encode($this->productBarcodes),
-            'id_code' => $this->id_code ?? NULL,
+            'id_code' => $this->idCode ?? NULL,
             'purchase_price' => $this->purchase_price ?? 0,
             'wholesale_price' => $this->wholesale_price ?? 0,
             'price' => $this->product->price,
@@ -191,7 +191,7 @@ class AddProduct extends Component
         // $this->product = new Product;
         // $this->product->type = 1;
 
-        $this->reset('doc_no', 'productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
+        $this->reset('docNo', 'productBarcodes', 'id_code', 'purchase_price', 'wholesale_price', 'wholesale_price_markup', 'price_markup');
         $this->product->title = null;
         $this->product->price = null;
         $this->barcodes = [''];

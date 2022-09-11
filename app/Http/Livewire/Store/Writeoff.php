@@ -85,7 +85,7 @@ class Writeoff extends Component
 
             $stockCount = $countInStore - $writeoffCount;
 
-            $productsData[$productId]['outgoing_count'] = $writeoffCount;
+            $productsData[$productId]['outgoingCount'] = $writeoffCount;
             $productsData[$productId]['count'] = $stockCount;
             $productsData[$productId]['unit'] = $product->unit;
             $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
@@ -100,7 +100,7 @@ class Writeoff extends Component
             $product->count = $amountCount;
             $product->save();
 
-            $this->writeoffProducts[$productId]['count_in_stores'] = json_encode($countInStores);
+            $this->writeoffProducts[$productId]['countInStores'] = json_encode($countInStores);
             $this->writeoffProducts[$productId]['count'] = $amountCount;
         }
 

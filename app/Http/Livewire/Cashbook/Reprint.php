@@ -28,8 +28,8 @@ class Reprint extends Component
         $paymentDetail = json_decode($incomingOrder->payment_detail, true);
         $clientName = 'No name';
 
-        if (isset($paymentDetail['user_id'])) {
-            $user = User::find($paymentDetail['user_id']);
+        if (isset($paymentDetail['userId'])) {
+            $user = User::find($paymentDetail['userId']);
             $clientName = $user->name;
         }
 
@@ -39,7 +39,7 @@ class Reprint extends Component
 
         foreach($products as $key => $product) {
             $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoing_count'];
+            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
             $productsList[$key]['price'] = $productsData[$product->id]['price'];
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
         }

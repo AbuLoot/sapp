@@ -10,14 +10,14 @@ use App\Models\Company;
 class AddCompany extends Component
 {
     public $company;
-    public $is_supplier = 1;
-    public $is_customer;
+    public $isSupplier = 1;
+    public $isCustomer;
     public $alert = false;
 
     protected $rules = [
         'company.title' => 'required|min:2',
         'company.phones' => '',
-        'company.legal_address' => ''
+        'company.legalAddress' => ''
     ];
 
     public function mount()
@@ -37,10 +37,10 @@ class AddCompany extends Component
             'slug' => Str::slug($data['title']),
             'title' => $data['title'],
             'phones' => $data['phones'] ?? null,
-            'legal_address' => $data['legal_address'] ?? null,
+            'legal_address' => $data['legalAddress'] ?? null,
             'image' => 'no-image-mini.png',
-            'is_supplier' => ($this->is_supplier) ? 1 : 0,
-            'is_customer' => ($this->is_customer) ? 1 : 0,
+            'is_supplier' => ($this->isSupplier) ? 1 : 0,
+            'is_customer' => ($this->isCustomer) ? 1 : 0,
             'status' => 1,
         ]);
 

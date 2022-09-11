@@ -8,6 +8,7 @@ use App\Models\IncomingOrder;
 use App\Models\OutgoingOrder;
 use App\Models\PaymentType;
 use App\Models\Product;
+use App\Models\User;
 
 class CashDocsPrint extends Component
 {
@@ -43,8 +44,8 @@ class CashDocsPrint extends Component
         $paymentDetail = json_decode($incomingOrder->payment_detail, true);
         $clientName = 'No name';
 
-        if (isset($paymentDetail['user_id'])) {
-            $user = User::find($paymentDetail['user_id']);
+        if (isset($paymentDetail['userId'])) {
+            $user = User::find($paymentDetail['userId']);
             $clientName = $user->name;
         }
 
@@ -54,7 +55,7 @@ class CashDocsPrint extends Component
 
         foreach($products as $key => $product) {
             $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoing_count'];
+            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
             $productsList[$key]['price'] = $productsData[$product->id]['price'];
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
         }
@@ -81,31 +82,35 @@ class CashDocsPrint extends Component
         $paymentDetail = json_decode($incomingOrder->payment_detail, true);
         $clientName = 'No name';
 
-        if (isset($paymentDetail['user_id'])) {
-            $user = User::find($paymentDetail['user_id']);
+        if (isset($paymentDetail['userId'])) {
+            $user = User::find($paymentDetail['userId']);
             $clientName = $user->name;
         }
 
-        $productsData = json_decode($incomingOrder->products_data, true);
+        $productsData = json_decode($incomingOrder->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
         $productsList = [];
 
         foreach($products as $key => $product) {
             $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoing_count'];
+            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
             $productsList[$key]['price'] = $productsData[$product->id]['price'];
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
         }
 
-        $view = response()->view('cashbook.check', [
+        $this->data = [
+            'companyName' => $this->company->title,
             'docNo' => $incomingOrder->doc_no,
             'clientName' => $clientName,
             'productsList' => $productsList,
             'paymentType' => $paymentType->title,
             'currency' => $this->company->currency->symbol,
             'date' => $incomingOrder->created_at,
-            'cashierName' => $incomingOrder->cashier_name
-        ]);
+            'cashierName' => $incomingOrder->cashier_name,
+            'prevPage' => '/'.$this->lang.'/cashdesk',
+        ];
+
+        $this->view = 'incoming-order';
     }
 
     public function outgoingOrder($id)
@@ -115,8 +120,8 @@ class CashDocsPrint extends Component
         $paymentDetail = json_decode($incomingOrder->payment_detail, true);
         $clientName = 'No name';
 
-        if (isset($paymentDetail['user_id'])) {
-            $user = User::find($paymentDetail['user_id']);
+        if (isset($paymentDetail['userId'])) {
+            $user = User::find($paymentDetail['userId']);
             $clientName = $user->name;
         }
 
@@ -126,7 +131,7 @@ class CashDocsPrint extends Component
 
         foreach($products as $key => $product) {
             $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoing_count'];
+            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
             $productsList[$key]['price'] = $productsData[$product->id]['price'];
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
         }

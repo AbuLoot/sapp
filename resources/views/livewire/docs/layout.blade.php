@@ -32,12 +32,6 @@
       width: 100%;
       border-collapse: collapse;
     }
-    .doc {
-      background-color: #fff;
-      max-width: 300px;
-      margin: auto;
-      padding: 10px 5px 20px;
-    }
     .functions {
       max-width: 300px;
       margin: auto;
@@ -45,6 +39,5 @@
       background-color: #fff;
     }
   </style>
-
 </body>
 </html>

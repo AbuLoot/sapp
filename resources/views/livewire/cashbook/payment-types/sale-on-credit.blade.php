@@ -61,61 +61,7 @@
         </form>
 
         <!-- Modal Add Client -->
-        <div class="modal fade" id="addClient" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content  bg-light">
-              <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">Добавить клиента</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-
-                <livewire:cashbook.add-client>
-                <!-- <form wire:click.prevent="save">
-
-                  <div class="row">
-                    <div class="col-6">
-                      <div class="mb-3">
-                        <label for="name" class="form-label">Имя</label>
-                        <input wire:model.defer="name" type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name" name="name">
-                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="mb-3">
-                        <label for="lastname" class="form-label">Фамилия</label>
-                        <input wire:model.defer="lastname" type="text" class="form-control form-control-lg @error('lastname') is-invalid @enderror" id="lastname" name="lastname">
-                        @error('lastname')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="mb-3">
-                        <label for="tel" class="form-label">Номер телефона</label>
-                        <input wire:model.defer="tel" type="tel" class="form-control form-control-lg @error('tel') is-invalid @enderror" id="tel" name="tel">
-                        @error('tel')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input wire:model.defer="email" type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" name="email">
-                        @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <label for="address" class="form-label">Адрес</label>
-                    <input wire:model.defer="address" type="text" class="form-control form-control-lg @error('address') is-invalid @enderror" id="address" name="address">
-                    @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                  </div>
-                  <div class="text-end">
-                    <button type="submit" class="btn btn-success btn-lg">Добавить</button>
-                  </div>
-                </form> -->
-              </div>
-            </div>
-          </div>
-        </div>
+        <livewire:cashbook.add-client>
 
       </div>
     </div>
@@ -125,11 +71,21 @@
 
 @section('scripts')
   <script type="text/javascript">
-    window.addEventListener('close-modal', event => {
-      // const myModalEl = document.querySelector('#addClient')
-      // const modal = new bootstrap.Modal(myModalEl) // initialized with defaults
-      // modal.hide();
-      document.location.reload()
+    window.addEventListener('show-toast', event => {
+      if (event.detail.reload) {
+        document.location.reload()
+      }
+
+      if (event.detail.selector) {
+        const btnCloseModal = document.getElementById(event.detail.selector)
+        btnCloseModal.click()
+      }
+
+      const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+      toast.show()
+
+      const toastBody = document.getElementById('toastBody')
+      toastBody.innerHTML = event.detail.message
     })
   </script>
 @endsection

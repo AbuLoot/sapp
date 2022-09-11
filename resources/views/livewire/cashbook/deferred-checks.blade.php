@@ -11,7 +11,7 @@
           <div class="row">
             @forelse($deferredChecks as $index => $check)
               <div class="col-3 mb-3 position-relative">
-                <a wire:click="removeFromDeferred('{{ $index }}')" href="#" class="position-absolute top-0 translate-middle badge rounded-pill bg-dark">
+                <a wire:click="removeFromDeferred('{{ $index }}')" href="#" class="position-absolute top-0 translate-middle badge rounded-pill bg-dark" style="z-index:1010;">
                   <i class="h6 bi bi-x"></i> <span class="visually-hidden">unread messages</span>
                 </a>
                 <div wire:click="returnCheck('{{ $index }}')" class="card bg-dark text-white" style="height: 100px; cursor: pointer;">

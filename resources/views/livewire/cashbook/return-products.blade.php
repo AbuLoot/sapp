@@ -48,7 +48,7 @@
                     <th scope="row">{{ $product->title }}</th>
                     <td>{{ $productsData[$product->id]['price'] . $currency }}</td>
                     <td class="text-nowrap" style="width:10%;">
-                      <input type="number" wire:model="productsDataCopy.{{ $product->id }}.outgoing_count" class="form-control @error('productsDataCopy.'.$product->id.'.outgoing_count') is-invalid @enderror" required>
+                      <input type="number" wire:model="productsDataCopy.{{ $product->id }}.outgoingCount" class="form-control @error('productsDataCopy.'.$product->id.'.outgoingCount') is-invalid @enderror" required>
                     </td>
                     <td class="text-nowrap" style="width:10%;">
                       <input type="number" wire:model="productsData.{{ $product->id }}.discount" class="form-control @error('productsData.'.$product->id.'.discount') is-invalid @enderror" required>
@@ -56,8 +56,8 @@
                     <?php
                       $percentage = $productsData[$product->id]['price'] / 100;
                       $amount = $productsData[$product->id]['price'] - ($percentage * $productsData[$product->id]['discount'] ?? 0);
-                      $amountDiscounted = $productsDataCopy[$product->id]['outgoing_count'] * $amount;
-                      $sumDiscounted += $productsDataCopy[$product->id]['outgoing_count'] * $amount;
+                      $amountDiscounted = $productsDataCopy[$product->id]['outgoingCount'] * $amount;
+                      $sumDiscounted += $productsDataCopy[$product->id]['outgoingCount'] * $amount;
                     ?>
                     <td>{{ $amountDiscounted . $currency }}</td>
                     <td class="text-end">

@@ -6,6 +6,20 @@ use Livewire\Component;
 
 class Success extends Component
 {
+    public $lang;
+
+    public function mount()
+    {
+        $this->lang = app()->getLocale();
+    }
+
+    public function backToCash()
+    {
+        session()->forget('incomingOrder');
+
+        return redirect($this->lang.'/cashdesk');
+    }
+
     public function render()
     {
         return view('livewire.cashbook.payment-types.success')
