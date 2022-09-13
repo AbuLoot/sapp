@@ -29,11 +29,23 @@
       /*font-family: sans-serif;*/
     }
     table {
-      width: 100%;
       border-collapse: collapse;
     }
+    .table-bordered,
+    .table-bordered tr,
+    .table-bordered tr td {
+      border: 1px solid;
+    }
+    .w-full {
+      width: 100%;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .text-end {
+      text-align: right;
+    }
     .functions {
-      max-width: 300px;
       margin: auto;
       padding: 5px;
       background-color: #fff;

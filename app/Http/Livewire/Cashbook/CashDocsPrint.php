@@ -31,7 +31,7 @@ class CashDocsPrint extends Component
             case 'incoming':
                 $this->incomingOrder($id);
                 break;
-            case 'outging':
+            case 'outgoing':
                 $this->outgoingOrder($id);
                 break;
         }
@@ -60,6 +60,8 @@ class CashDocsPrint extends Component
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
         }
 
+        $uri = session()->get('incomingOrder') ? '/payment-type/success' : '';
+
         $this->data = [
             'companyName' => $this->company->title,
             'docNo' => $incomingOrder->doc_no,
@@ -67,9 +69,9 @@ class CashDocsPrint extends Component
             'productsList' => $productsList,
             'paymentType' => $paymentType->title,
             'currency' => $this->company->currency->symbol,
-            'date' => $incomingOrder->created_at,
+            'createdAt' => $incomingOrder->created_at,
             'cashierName' => $incomingOrder->cashier_name,
-            'prevPage' => '/'.$this->lang.'/cashdesk',
+            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
         ];
 
         $this->view = 'check';
@@ -96,18 +98,22 @@ class CashDocsPrint extends Component
             $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
             $productsList[$key]['price'] = $productsData[$product->id]['price'];
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
+            $productsList[$key]['barcodes'] = $productsData[$product->id]['barcodes'];
         }
+
+        $uri = session()->get('incomingOrder') ? '/payment-type/success' : '';
 
         $this->data = [
             'companyName' => $this->company->title,
+            'companyBin' => $this->company->bin,
             'docNo' => $incomingOrder->doc_no,
-            'clientName' => $clientName,
+            'createdAt' => $incomingOrder->created_at,
             'productsList' => $productsList,
-            'paymentType' => $paymentType->title,
             'currency' => $this->company->currency->symbol,
-            'date' => $incomingOrder->created_at,
+            'clientName' => $clientName,
             'cashierName' => $incomingOrder->cashier_name,
-            'prevPage' => '/'.$this->lang.'/cashdesk',
+            'paymentType' => $paymentType->title,
+            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
         ];
 
         $this->view = 'incoming-order';
@@ -125,7 +131,7 @@ class CashDocsPrint extends Component
             $clientName = $user->name;
         }
 
-        $productsData = json_decode($incomingOrder->products_data, true);
+        $productsData = json_decode($incomingOrder->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
         $productsList = [];
 
@@ -134,16 +140,23 @@ class CashDocsPrint extends Component
             $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
             $productsList[$key]['price'] = $productsData[$product->id]['price'];
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'] ?? 0;
+            $productsList[$key]['barcodes'] = $productsData[$product->id]['barcodes'];
         }
 
-        $view = response()->view('cashbook.check', [
+        $this->data = [
+            'companyName' => $this->company->title,
+            'companyBin' => $this->company->bin,
             'docNo' => $incomingOrder->doc_no,
-            'clientName' => $clientName,
+            'createdAt' => $incomingOrder->created_at,
             'productsList' => $productsList,
+            'currency' => $this->company->currency->symbol,
+            'clientName' => $clientName,
+            'cashierName' => $incomingOrder->cashier_name,
             'paymentType' => $paymentType->title,
-            'date' => $incomingOrder->created_at,
-            'cashierName' => $incomingOrder->cashier_name
-        ]);
+            'prevPage' => '/'.$this->lang.'/cashdesk',
+        ];
+
+        $this->view = 'ougoing-order';
     }
 
     public function render()

@@ -41,7 +41,7 @@
 
     <hr>
     <p>Метод оплаты: {{ $paymentType }}<br>
-    Дата: {{ $date }}<br>
+    Дата: {{ $createdAt }}<br>
     Кассир: {{ $cashierName }}</p>
     <style type="text/css">
       body {

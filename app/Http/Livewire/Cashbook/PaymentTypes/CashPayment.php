@@ -36,7 +36,7 @@ class CashPayment extends Component
 
     public function updated($key, $value)
     {
-        if (strlen($this->sumOfCart['sumDiscounted']) <= strlen($this->cash)) {
+        if ($this->sumOfCart['sumDiscounted'] <= $this->cash) {
             $this->change = (int) $this->cash - $this->sumOfCart['sumDiscounted'];
             $this->payButton = true;
         } else {
