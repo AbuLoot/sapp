@@ -59,9 +59,10 @@
       }
     </style>
   </div>
+
   <div class="functions d-grid gap-2">
-    <button type="button" onclick="printPage()" class="btn btn-success rounded-0 btn-lg">Печать чека</button>
-    <a href="{{ $prevPage }}" class="btn btn-primary rounded-0 btn-lg">Назад</a>
+    <button type="button" onclick="printPage()" class="btn btn-success btn-lg">Печать чека</button>
+    <a href="{{ $prevPage }}" class="btn btn-primary btn-lg">Назад</a>
   </div>
 
   <script>

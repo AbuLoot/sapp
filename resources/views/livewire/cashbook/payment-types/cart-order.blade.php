@@ -3,13 +3,14 @@
     $docId = null;
     $btnCartOrder = 'disabled';
 
-    if (session()->get('incomingOrder')) {
-      $docNo = session()->get('incomingOrder')['docNo'];
-      $docId = session()->get('incomingOrder')['docId'];
+    if (session()->get('docs')) {
+      $incomingOrderDocNo = session()->get('docs')['incomingOrderDocNo'];
+      $incomingOrderId = session()->get('docs')['incomingOrderId'];
+      $outgoingDocId = session()->get('docs')['outgoingDocId'];
       $btnCartOrder = null;
     }
   ?>
-  <h2>Чек №{{ $docNo }}</h2><br>
+  <h2>Чек №{{ $incomingOrderDocNo }}</h2><br>
   <table class="table table-sm- table-striped table-borderless border">
     <thead>
       <tr>
@@ -55,12 +56,12 @@
     <div class="col-lg-6">
       <div class="d-grid" role="group" aria-label="Basic example">
         <!-- <button type="button" class="btn btn-primary btn-lg @if(session()->get('cartProducts')) disabled @endif"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</button> -->
-        <a href="/{{ $lang }}/cashdesk/cashdocprint/incoming/{{ $docId }}" class="btn btn-primary btn-lg {{ $btnCartOrder }}"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</a>
+        <a href="/{{ $lang }}/cashdesk/docsprint/outgoing-doc/{{ $outgoingDocId }}" class="btn btn-primary btn-lg {{ $btnCartOrder }}"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</a>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="d-grid" role="group" aria-label="Basic example">
-        <a href="/{{ $lang }}/cashdesk/cashdocprint/check/{{ $docId }}" class="btn btn-dark btn-lg {{ $btnCartOrder }}"><i class="be bi-printer-fill"></i>&nbsp;Печать<br> чека</a>
+        <a href="/{{ $lang }}/cashdesk/docsprint/incoming-check/{{ $incomingOrderId }}" class="btn btn-dark btn-lg {{ $btnCartOrder }}"><i class="be bi-printer-fill"></i>&nbsp;Печать<br> чека</a>
       </div>
     </div>
   </div>

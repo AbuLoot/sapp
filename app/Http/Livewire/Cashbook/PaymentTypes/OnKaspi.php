@@ -169,7 +169,11 @@ class OnKaspi extends Component
         // $storeDoc->comment = $this->comment;
         $storeDoc->save();
 
-        session()->put('incomingOrder', ['docNo' => $incomingOrder->doc_no, 'docId' => $incomingOrder->id]);
+        session()->put('docs', [
+            'incomingOrderDocNo' => $incomingOrder->doc_no,
+            'incomingOrderId' => $incomingOrder->id,
+            'outgoingDocId' => $outgoingDoc->id,
+        ]);
         session()->forget('client');
         session()->forget('cartProducts');
 

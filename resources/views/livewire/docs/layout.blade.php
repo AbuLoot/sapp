@@ -47,7 +47,7 @@
     }
     .functions {
       margin: auto;
-      padding: 5px;
+      padding: 12px;
       background-color: #fff;
     }
   </style>

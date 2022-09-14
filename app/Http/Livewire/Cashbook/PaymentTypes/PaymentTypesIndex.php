@@ -43,7 +43,7 @@ class PaymentTypesIndex extends Component
 
     public function backToCash()
     {
-        session()->forget('incomingOrder');
+        session()->forget('docs');
 
         return redirect($this->lang.'/cashdesk');
     }

@@ -69,6 +69,16 @@
     <p>Кассир: {{ $cashierName }}</p>
     <br>
   </div>
+
+  <div class="functions row">
+    <div class="col d-grid gap-2">
+      <button type="button" onclick="printPage()" class="btn btn-success btn-lg">Печать документа</button>
+    </div>
+    <div class="col d-grid gap-2">
+      <a href="{{ $prevPage }}" class="btn btn-primary btn-lg">Назад</a>
+    </div>
+  </div>
+
   <style type="text/css">
     body {
       max-width: 797px;
@@ -86,14 +96,6 @@
       padding: 10px 38px;
     }
   </style>
-  <div class="functions row">
-    <div class="col d-grid gap-2">
-      <button type="button" onclick="printPage()" class="btn btn-success rounded-0 btn-lg">Печать документа</button>
-    </div>
-    <div class="col d-grid gap-2">
-      <a href="{{ $prevPage }}" class="btn btn-primary rounded-0 btn-lg">Назад</a>
-    </div>
-  </div>
 
   <script>
     function printPage() {

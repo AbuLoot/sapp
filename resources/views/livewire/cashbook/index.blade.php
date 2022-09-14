@@ -150,11 +150,11 @@
               ?>
               <td>{{ $cartProduct->count }}</td>
               <td><div class="@if($countInStore == 0) text-danger @endif">{{ $countInStore }}</div></td>
-              <td class="text-nowrap-" style="width:10%;">
+              <td class="text-nowrap-" style="width:12%;">
                 <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
                 @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
               </td>
-              <td class="text-nowrap" style="width:10%;">
+              <td class="text-nowrap" style="width:12%;">
                 @if($cartProduct->input)
                   <div class="input-group input-group-sm">
                     <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
