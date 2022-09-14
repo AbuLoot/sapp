@@ -15,7 +15,7 @@ class CartOrder extends Component
     public $lang;
     public $company;
     public $cashbook;
-    public $docNo;
+    public $incomingOrderDocNo;
     public $sumOfCart;
     public $currency;
     public $cartProducts;
@@ -26,7 +26,7 @@ class CartOrder extends Component
         $this->company = auth()->user()->profile->company;
         $this->cashbook = $this->company->cashbooks->first();
         $this->currency = $this->company->currency->symbol;
-        $this->docNo = $this->generateIncomingCashDocNo($this->cashbook->id);
+        $this->incomingOrderDocNo = $this->generateIncomingCashDocNo($this->cashbook->id);
         $this->sumOfCart = CashbookIndex::sumOfCart();
     }
 

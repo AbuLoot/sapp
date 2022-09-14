@@ -1,22 +1,29 @@
 <div>
   <div class="doc" id="doc">
-    <p class="text-center">Организация (индивидуальный предприниматель) {{ $companyName }}</p>
-
-    <table class="table-bordered margin-left-auto">
+    <table border="0">
       <tbody>
         <tr>
-          <td>ИИН/БИН</td>
-          <td>{{ $companyBin }}</td>
+          <td>
+            <p>Организация (индивидуальный предприниматель) {{ $companyName }}</p>
+          </td>
+          <td>
+            <p>ИИН/БИН: {{ $companyBin }}</p>
+          </td>
         </tr>
       </tbody>
     </table>
-    <br>
-
+    <p></p>
+    <p><br></p>
+    <p></p>
     <table class="table-bordered margin-left-auto">
       <tbody>
         <tr>
-          <td>Номер документа</td>
-          <td>Дата составления</td>
+          <td>
+            <p>Номер документа</p>
+          </td>
+          <td>
+            <p>Дата составления</p>
+          </td>
         </tr>
         <tr>
           <td>№{{ $docNo }}</td>
@@ -30,11 +37,21 @@
     <table class="table-bordered">
       <tbody>
         <tr>
-          <td>Организация (индивидуальный предприниматель) - отправитель</td>
-          <td>Организация (индивидуальный предприниматель) - получатель</td>
-          <td>Ответственный за поставку (Ф.И.О.)</td>
-          <td>Транспортная организация</td>
-          <td>Товарно-транспортная накладная (номер, дата)</td>
+          <td>
+            <p>Организация (индивидуальный предприниматель) - отправитель</p>
+          </td>
+          <td>
+            <p>Организация (индивидуальный предприниматель)- получатель</p>
+          </td>
+          <td>
+            <p>Ответственный за поставку (Ф.И.О.)</p>
+          </td>
+          <td>
+            <p>Транспортная организация</p>
+          </td>
+          <td>
+            <p>Товарно-транспортная накладная (номер, дата)</p>
+          </td>
         </tr>
         <tr>
           <td>{{ $companyName }}</td>
@@ -45,63 +62,108 @@
         </tr>
       </tbody>
     </table>
-    <br>
-
-    <table class="table-bordered w-full">
+    <p></p>
+    <p><br></p>
+    <p></p>
+    <table class="table-bordered">
       <tbody>
         <tr>
-          <td rowspan="2">Номер по порядку</td>
-          <td rowspan="2">Наименование, характеристика</td>
-          <td rowspan="2">Номенкла-турный номер</td>
-          <td colspan="2">Количество</td>
-          <td rowspan="2">Цена за единицу, в тенге</td>
+          <td rowspan="2">
+            <p>Номер по порядку</p>
+          </td>
+          <td rowspan="2">
+            <p>Наименование, характеристика</p>
+          </td>
+          <td rowspan="2">
+            <p>Номенкла-</p>
+            <p>турный номер</p>
+          </td>
+          <td colspan="2">
+            <p>Количество</p>
+          </td>
+          <td rowspan="2">
+            <p>Цена за единицу, в тенге</p>
+          </td>
+          <td rowspan="2">
+            <p>Сумма с НДС, в тенге</p>
+          </td>
+          <td rowspan="2">
+            <p>Сумма НДС, в тенге</p>
+          </td>
         </tr>
         <tr>
-          <td>подлежит отпуску</td>
-          <td>отпущено</td>
+          <td>
+            <p>подлежит отпуску</p>
+          </td>
+          <td>
+            <p>отпущено</p>
+          </td>
         </tr>
         <tr>
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-          <td>4</td>
-          <td>5</td>
-          <td>6</td>
+          <td>
+            <p>1</p>
+          </td>
+          <td>
+            <p>2</p>
+          </td>
+          <td>
+            <p>3</p>
+          </td>
+          <td>
+            <p>4</p>
+          </td>
+          <td>
+            <p>5</p>
+          </td>
+          <td>
+            <p>6</p>
+          </td>
+          <td>
+            <p>7</p>
+          </td>
+          <td>
+            <p>8</p>
+          </td>
         </tr>
-        <?php
-          $sumDiscounted = 0;
+        <?php 
+          $totalAmount = 0;
         ?>
         @foreach($productsList as $key => $product)
           <?php
-            $unit = $units->where('id', $product['unit'])->first()->title ?? null;
-            $percentage = $product['price'] / 100;
-            $sumDiscounted += $product['count'] * ($product['price'] - $percentage * $product['discount']);
+            $unit = $units->where('id', $revisionProduct->unit)->first()->title ?? null;
+            $totalAmount += $product['count'] * $product['price'];
           ?>
           <tr>
             <td>{{ $key + 1 }}</td>
             <td>{{ $product['title'] }}</td>
-            <td>
-              @foreach($product['barcodes'] as $barcode)
-                {{ $barcode }}
-              @endforeach
-            </td>
+            <td>{{ $product['barcodes'] }}</td>
             <td>{{ $product['count'] . $unit }}</td>
-            <td>{{ $product['count'] . $unit }}</td>
-            <td>{{ $product['price'] - $percentage * $product['discount'] . $currency }}</td>
+            <td>{{ $product['price'] }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
         @endforeach
         <tr>
-          <th class="text-end" colspan="5">Итого</th>
-          <th>{{ $sumDiscounted . $currency }}</th>
+          <td colspan="4">
+            <p>Итого</p>
+          </td>
+          <td><br></td>
+          <td><br></td>
+          <td>
+            <p>х</p>
+          </td>
+          <td><br></td>
+          <td><br></td>
         </tr>
       </tbody>
     </table>
-    <br>
-
+    <p></p>
+    <p><br></p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Всего отпущено количество запасов (прописью)___________ на сумму</p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (прописью), в тенге___________________________</p>
-    <br>
-
+    <p></p>
     <table border="0">
       <tbody>
         <tr>

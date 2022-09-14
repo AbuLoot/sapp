@@ -2,7 +2,7 @@
   <div class="doc" id="doc">
     <br>
     <div class="text-center">
-      <p>{{ $companyName }}</p>
+      <p>Организация (индивидуальный предприниматель) {{ $companyName }}</p>
       <h5>Квитанция к приходному кассовому ордеру</h5>
       <p>№{{ $docNo }}</p>
     </div>

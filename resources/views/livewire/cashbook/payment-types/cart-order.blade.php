@@ -1,6 +1,7 @@
 <div>
   <?php
-    $docId = null;
+    $incomingOrderId = null;
+    $outgoingDocId = null;
     $btnCartOrder = 'disabled';
 
     if (session()->get('docs')) {
@@ -55,7 +56,6 @@
   <div class="row gx-2">
     <div class="col-lg-6">
       <div class="d-grid" role="group" aria-label="Basic example">
-        <!-- <button type="button" class="btn btn-primary btn-lg @if(session()->get('cartProducts')) disabled @endif"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</button> -->
         <a href="/{{ $lang }}/cashdesk/docsprint/outgoing-doc/{{ $outgoingDocId }}" class="btn btn-primary btn-lg {{ $btnCartOrder }}"><i class="bi bi-file-text-fill"></i>&nbsp;Оформить накладную</a>
       </div>
     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Cashbook;
 
 use Livewire\Component;
 
+use App\Models\User;
 use App\Models\Product;
 use App\Models\DocType;
 use App\Models\CashDoc;
@@ -42,10 +43,10 @@ class ReturnProducts extends Component
         }
 
         // Setting Discount
-        if (count($parts) == 3 && $parts[2] == 'discount') {
-            unset($this->returnedProducts[$parts[1]]);
-            $this->setValidDiscount($parts[1], $value);
-        }
+        // if (count($parts) == 3 && $parts[2] == 'discount') {
+        //     unset($this->returnedProducts[$parts[1]]);
+        //     $this->setValidDiscount($parts[1], $value);
+        // }
     }
 
     public function check($orderId)
@@ -78,7 +79,7 @@ class ReturnProducts extends Component
     public function setValidDiscount($product_id, $value)
     {
         if ($value < 0 || !is_numeric($value)) {
-            $validDiscount = 0;
+            $validDiscount = null;
         } else {
             $validDiscount = (10 < $value)
                 ? 10
@@ -121,6 +122,16 @@ class ReturnProducts extends Component
         $outgoingTotalAmount = 0;
         $incomingTotalCount = 0;
 
+        $paymentType = PaymentType::find($this->incomingOrder->payment_type_id);
+        $paymentDetail = json_decode($this->incomingOrder->payment_detail, true) ?? [];
+
+        $clientId = null;
+
+        if (isset($paymentDetail['userId'])) {
+            $user = User::find($paymentDetail['userId']);
+            $clientId = $user->id;
+        }
+
         $store = session()->get('store');
         $cashbook = $this->company->cashbooks->first();
 
@@ -154,7 +165,7 @@ class ReturnProducts extends Component
             $product->save();
         }
 
-        $paymentDetail['outgoing_amount'] = $outgoingTotalAmount;
+        $paymentDetail['outgoingAmount'] = $outgoingTotalAmount;
         $paymentDetail['count'] = $incomingTotalCount;
 
         // Outgoing Order & Incoming Doc
@@ -170,7 +181,7 @@ class ReturnProducts extends Component
         $outgoingOrder->cashier_name = auth()->user()->name;
         $outgoingOrder->doc_no = $cashDocNo;
         $outgoingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-2')->first()->id;
-        $outgoingOrder->to_contractors = $store->id;
+        $outgoingOrder->to_contractors = $clientId;
         $outgoingOrder->sum = $outgoingTotalAmount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = 0;
@@ -184,6 +195,7 @@ class ReturnProducts extends Component
         $incomingDoc->username = auth()->user()->name;
         $incomingDoc->doc_no = $storeDocNo;
         $incomingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-1')->first()->id;
+        $incomingDoc->out_order_id = $outgoingOrder->id;
         $incomingDoc->products_data = json_encode($productsData);
         $incomingDoc->from_contractor = $cashbook->id;
         $incomingDoc->sum = $outgoingTotalAmount;

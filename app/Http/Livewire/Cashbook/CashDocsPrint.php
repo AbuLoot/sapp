@@ -11,20 +11,21 @@ use App\Models\OutgoingDoc;
 use App\Models\PaymentType;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Unit;
 
 class CashDocsPrint extends Component
 {
-    public $search = '';
     public $lang;
     public $company;
     public $data = [];
+    public $units;
     public $view;
-    // public $incomingOrders;
 
     public function mount($type, $id)
     {
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
+        $this->units = Unit::get();
 
         switch ($type) {
             case 'incoming-check':
@@ -37,10 +38,10 @@ class CashDocsPrint extends Component
                 $this->outgoingOrder($id);
                 break;
             case 'incoming-doc':
-                $this->incomingOrder($id);
+                $this->incomingDoc($id);
                 break;
             case 'outgoing-doc':
-                $this->outgoingOrder($id);
+                $this->outgoingDoc($id);
                 break;
         }
     }
@@ -54,7 +55,7 @@ class CashDocsPrint extends Component
 
         if (isset($paymentDetail['userId'])) {
             $user = User::find($paymentDetail['userId']);
-            $clientName = $user->name;
+            $clientName = $user->name.' '.$user->lastname;
         }
 
         $productsData = json_decode($incomingOrder->products_data, true) ?? [];
@@ -75,6 +76,7 @@ class CashDocsPrint extends Component
             'docNo' => $incomingOrder->doc_no,
             'clientName' => $clientName,
             'productsList' => $productsList,
+            'units' => $this->units,
             'paymentType' => $paymentType->title,
             'currency' => $this->company->currency->symbol,
             'createdAt' => $incomingOrder->created_at,
@@ -94,7 +96,7 @@ class CashDocsPrint extends Component
 
         if (isset($paymentDetail['userId'])) {
             $user = User::find($paymentDetail['userId']);
-            $clientName = $user->name;
+            $clientName = $user->name.' '.$user->lastname;
         }
 
         $productsData = json_decode($incomingOrder->products_data, true) ?? [];
@@ -117,6 +119,7 @@ class CashDocsPrint extends Component
             'docNo' => $incomingOrder->doc_no,
             'createdAt' => $incomingOrder->created_at,
             'productsList' => $productsList,
+            'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'clientName' => $clientName,
             'cashierName' => $incomingOrder->cashier_name,
@@ -129,17 +132,15 @@ class CashDocsPrint extends Component
 
     public function outgoingOrder($id)
     {
-        $incomingOrder = IncomingOrder::find($id);
-        $paymentType = PaymentType::find($incomingOrder->payment_type_id);
-        $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+        $outgoingOrder = OutgoingOrder::find($id);
         $clientName = 'No name';
 
-        if (isset($paymentDetail['userId'])) {
+        if (!is_null($outgoingOrder->clientId)) {
             $user = User::find($paymentDetail['userId']);
-            $clientName = $user->name;
+            $clientName = $user->name.' '.$user->lastname;
         }
 
-        $productsData = json_decode($incomingOrder->products_data, true) ?? [];
+        $productsData = json_decode($outgoingOrder->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
         $productsList = [];
 
@@ -154,13 +155,14 @@ class CashDocsPrint extends Component
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $incomingOrder->doc_no,
-            'createdAt' => $incomingOrder->created_at,
+            'docNo' => $outgoingOrder->doc_no,
+            'createdAt' => $outgoingOrder->created_at,
+            'outgoingAmount' => $outgoingOrder->sum,
             'productsList' => $productsList,
+            'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'clientName' => $clientName,
-            'cashierName' => $incomingOrder->cashier_name,
-            'paymentType' => $paymentType->title,
+            'cashierName' => $outgoingOrder->cashier_name,
             'prevPage' => '/'.$this->lang.'/cashdesk',
         ];
 
@@ -176,7 +178,7 @@ class CashDocsPrint extends Component
 
         if (isset($paymentDetail['userId'])) {
             $user = User::find($paymentDetail['userId']);
-            $clientName = $user->name;
+            $clientName = $user->name.' '.$user->lastname;
         }
 
         $productsData = json_decode($incomingDoc->products_data, true) ?? [];
@@ -199,6 +201,7 @@ class CashDocsPrint extends Component
             'docNo' => $incomingDoc->doc_no,
             'createdAt' => $incomingDoc->created_at,
             'productsList' => $productsList,
+            'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'clientName' => $clientName,
             'cashierName' => $incomingDoc->cashier_name,
@@ -212,13 +215,14 @@ class CashDocsPrint extends Component
     public function outgoingDoc($id)
     {
         $outgoingDoc = OutgoingDoc::find($id);
-        $paymentType = PaymentType::find($outgoingDoc->payment_type_id);
-        $paymentDetail = json_decode($outgoingDoc->payment_detail, true);
+        $incomingOrder = IncomingOrder::find($outgoingDoc->inc_order_id);
+        $paymentType = PaymentType::find($incomingOrder->payment_type_id);
+        $paymentDetail = json_decode($incomingOrder->payment_detail, true);
         $clientName = 'No name';
 
         if (isset($paymentDetail['userId'])) {
             $user = User::find($paymentDetail['userId']);
-            $clientName = $user->name;
+            $clientName = $user->name.' '.$user->lastname;
         }
 
         $productsData = json_decode($outgoingDoc->products_data, true) ?? [];
@@ -228,10 +232,13 @@ class CashDocsPrint extends Component
         foreach($products as $key => $product) {
             $productsList[$key]['title'] = $product->title;
             $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
+            $productsList[$key]['unit'] = $product->unit;
             $productsList[$key]['price'] = $productsData[$product->id]['price'];
             $productsList[$key]['discount'] = $productsData[$product->id]['discount'];
             $productsList[$key]['barcodes'] = $productsData[$product->id]['barcodes'];
         }
+
+        $uri = session()->get('incomingDoc') ? '/payment-type/success' : '';
 
         $this->data = [
             'companyName' => $this->company->title,
@@ -239,11 +246,12 @@ class CashDocsPrint extends Component
             'docNo' => $outgoingDoc->doc_no,
             'createdAt' => $outgoingDoc->created_at,
             'productsList' => $productsList,
+            'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'clientName' => $clientName,
             'cashierName' => $outgoingDoc->cashier_name,
-            'paymentType' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/cashdesk',
+            // 'paymentType' => $paymentType->title,
+            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
         ];
 
         $this->view = 'outgoing-doc';

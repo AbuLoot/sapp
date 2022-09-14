@@ -1,7 +1,7 @@
 <div>
   <div class="doc" id="doc">
     <br>
-    <p class="text-center">Организация {{ $companyName }}</p>
+    <p class="text-center">Организация (индивидуальный предприниматель) {{ $companyName }}</p>
     <table class="table-bordered margin-left-auto">
       <tbody>
         <tr>

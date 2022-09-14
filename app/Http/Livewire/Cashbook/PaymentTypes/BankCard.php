@@ -144,6 +144,7 @@ class BankCard extends Component
         $outgoingDoc->username = auth()->user()->name;
         $outgoingDoc->doc_no = $storeDocNo;
         $outgoingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
+        $outgoingDoc->inc_order_id = $incomingOrder->id;
         $outgoingDoc->products_data = json_encode($productsData);
         $outgoingDoc->to_contractor = $cashbook->id;
         $outgoingDoc->sum = $this->sumOfCart['sumDiscounted'];
