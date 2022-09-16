@@ -17,7 +17,7 @@ use App\Models\OutgoingDoc;
 
 use App\Traits\GenerateDocNo;
 
-class OnKaspi extends Component
+class KaspiTransfer extends Component
 {
     use GenerateDocNo;
 
@@ -30,7 +30,7 @@ class OnKaspi extends Component
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
         $this->sumOfCart = Index::sumOfCart();
-        $this->paymentType = PaymentType::where('slug', 'on-kaspi')->first();
+        $this->paymentType = PaymentType::where('slug', 'kaspi-transfer')->first();
 
         $this->makeDocs();
     }
@@ -47,7 +47,7 @@ class OnKaspi extends Component
 
         $store = session()->get('store');
         $cashbook = session()->get('cashbook');
-        $clientId = session()->get('client')->id ?? null;
+        $clientId = session()->get('client') ? 'user:'.session()->get('client')->id : null;
         $cartProducts = session()->get('cartProducts') ?? [];
 
         foreach($cartProducts as $productId => $cartProduct) {
@@ -117,7 +117,6 @@ class OnKaspi extends Component
         $incomingOrder->sum = $this->sumOfCart['sumDiscounted'];
         $incomingOrder->currency = $this->company->currency->code;
         $incomingOrder->count = $this->sumOfCart['totalCount'];
-        // $incomingOrder->comment = $this->comment;
         $incomingOrder->save();
 
         // Cashbook
@@ -128,12 +127,11 @@ class OnKaspi extends Component
         $cashDoc->doc_id = $incomingOrder->id;
         $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $cashDoc->from_contractor = $clientId;
-        $cashDoc->to_contractor = $store->id; // $this->company->title;
+        $cashDoc->to_contractor = 'store:'.$store->id;
         $cashDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
         $cashDoc->currency = $this->company->currency->code;
-        // $cashDoc->comment = $this->comment;
         $cashDoc->save();
 
         $outgoingDoc = new OutgoingDoc;
@@ -145,12 +143,10 @@ class OnKaspi extends Component
         $outgoingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $outgoingDoc->inc_order_id = $incomingOrder->id;
         $outgoingDoc->products_data = json_encode($productsData);
-        $outgoingDoc->to_contractor = $cashbook->id;
+        $outgoingDoc->to_contractor = 'cashbook:'.$cashbook->id;
         $outgoingDoc->sum = $this->sumOfCart['sumDiscounted'];
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $outgoingTotalCount;
-        // $outgoingDoc->unit = $this->unit;
-        // $outgoingDoc->comment = $this->comment;
         $outgoingDoc->save();
 
         // Storage
@@ -162,27 +158,27 @@ class OnKaspi extends Component
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
         $storeDoc->from_contractor = $clientId;
-        $storeDoc->to_contractor = $cashbook->id;
+        $storeDoc->to_contractor = 'cashbook:'.$cashbook->id;
         $storeDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
         $storeDoc->outgoing_amount = 0;
         $storeDoc->sum = $outgoingTotalCount;
-        // $storeDoc->unit = $this->unit;
-        // $storeDoc->comment = $this->comment;
         $storeDoc->save();
+
+        session()->forget('client');
+        session()->forget('cartProducts');
 
         session()->put('docs', [
             'incomingOrderDocNo' => $incomingOrder->doc_no,
             'incomingOrderId' => $incomingOrder->id,
             'outgoingDocId' => $outgoingDoc->id,
         ]);
-        session()->forget('client');
-        session()->forget('cartProducts');
 
         return redirect($this->lang.'/cashdesk/payment-type/success');
     }
 
     public function render()
     {
-        // return view('livewire.cashbook.payment-types.on-kaspi');
+        // return view('livewire.cashbook.payment-types.kaspi-transfer')
+            // ->layout('livewire.cashbook.layout');
     }
 }

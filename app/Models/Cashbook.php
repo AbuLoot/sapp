@@ -21,7 +21,7 @@ class Cashbook extends Model
 
     public function workplaces()
     {
-        return $this->morphMany(Workplace::class, 'workplace_type');
+        return $this->morphMany(Workplace::class, 'workplace');
     }
 
     public function cashbook_docs()

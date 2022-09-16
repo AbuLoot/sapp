@@ -11,7 +11,7 @@
 
         <div class="d-flex">
           <h2>Оплата</h2>
-          <a href="/{{ app()->getLocale() }}/cashdesk/payment-types" class="btn btn-outline-dark btn-lg ms-auto">Закрыть</a>
+          <a href="/{{ $lang }}/cashdesk/payment-types" class="btn btn-outline-dark btn-lg ms-auto">Закрыть</a>
         </div>
         <br>
         <p class="text-muted">Выберите 2 метода оплаты из вариантов</p>

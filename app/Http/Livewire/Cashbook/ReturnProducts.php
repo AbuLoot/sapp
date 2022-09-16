@@ -129,7 +129,7 @@ class ReturnProducts extends Component
 
         if (isset($paymentDetail['userId'])) {
             $user = User::find($paymentDetail['userId']);
-            $clientId = $user->id;
+            $clientId = 'user:'.$user->id;
         }
 
         $store = session()->get('store');
@@ -185,8 +185,22 @@ class ReturnProducts extends Component
         $outgoingOrder->sum = $outgoingTotalAmount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = 0;
-        // $outgoingOrder->comment = $this->comment;
         $outgoingOrder->save();
+
+        // Cashbook
+        $cashDoc = new CashDoc;
+        $cashDoc->cashbook_id = $cashbook->id;
+        $cashDoc->company_id = $this->company->id;
+        $cashDoc->user_id = auth()->user()->id;
+        $cashDoc->doc_id = $outgoingOrder->id;
+        $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-2')->first()->id;
+        $cashDoc->from_contractor = $clientId;
+        $cashDoc->to_contractor = 'cashbook:'.$cashbook->id;
+        $cashDoc->incoming_amount = 0;
+        $cashDoc->outgoing_amount = $outgoingTotalAmount;
+        $cashDoc->sum = $outgoingTotalAmount;
+        $cashDoc->currency = $this->company->currency->code;
+        $cashDoc->save();
 
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $store->id;
@@ -197,29 +211,11 @@ class ReturnProducts extends Component
         $incomingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-1')->first()->id;
         $incomingDoc->out_order_id = $outgoingOrder->id;
         $incomingDoc->products_data = json_encode($productsData);
-        $incomingDoc->from_contractor = $cashbook->id;
+        $incomingDoc->from_contractor = 'cashbook:'.$cashbook->id;
         $incomingDoc->sum = $outgoingTotalAmount;
         $incomingDoc->currency = $this->company->currency->code;
         $incomingDoc->count = $incomingTotalCount;
-        // $incomingDoc->unit = $this->unit;
-        // $incomingDoc->comment = '';
         $incomingDoc->save();
-
-        // Cashbook
-        $cashDoc = new CashDoc;
-        $cashDoc->cashbook_id = $cashbook->id;
-        $cashDoc->company_id = $this->company->id;
-        $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_id = $outgoingOrder->id;
-        $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-2')->first()->id;
-        $cashDoc->from_contractor = $store->title;
-        $cashDoc->to_contractor = $cashbook->title; // $this->company->title;
-        $cashDoc->incoming_amount = 0;
-        $cashDoc->outgoing_amount = $outgoingTotalAmount;
-        $cashDoc->sum = $outgoingTotalAmount;
-        $cashDoc->currency = $this->company->currency->code;
-        // $cashDoc->comment = $this->comment;
-        $cashDoc->save();
 
         // Storage
         $storeDoc = new StoreDoc;
@@ -229,13 +225,11 @@ class ReturnProducts extends Component
         $storeDoc->doc_id = $incomingDoc->id;
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-1')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
-        $storeDoc->from_contractor = $cashbook->title;
-        $storeDoc->to_contractor = $store->title;
+        $storeDoc->from_contractor = 'cashbook:'.$cashbook->id;
+        $storeDoc->to_contractor = 'store:'.$store->id;
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $outgoingTotalAmount;
         $storeDoc->sum = $outgoingTotalAmount;
-        // $storeDoc->unit = $this->unit;
-        // $storeDoc->comment = $this->comment;
         $storeDoc->save();
 
         $this->emitUp('newData');

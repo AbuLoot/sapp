@@ -46,7 +46,7 @@ class OutgoingCash extends Component
         $outgoingOrder->cashier_name = auth()->user()->name;
         $outgoingOrder->doc_no = $docNo;
         $outgoingOrder->doc_type_id = $docType->id;
-        $outgoingOrder->to_contractors = json_encode([$this->company->title]);
+        $outgoingOrder->to_contractors = 'user:'.auth()->user()->id;
         $outgoingOrder->sum = $this->amount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = 0;
@@ -59,8 +59,8 @@ class OutgoingCash extends Component
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->doc_id = $outgoingOrder->id;
         $cashDoc->doc_type_id = $docType->id;
-        $cashDoc->from_contractor = auth()->user()->name;
-        $cashDoc->to_contractor = $this->company->title;
+        $cashDoc->from_contractor = 'cashbook:'.$this->cashbook->id;
+        $cashDoc->to_contractor = 'user:'.auth()->user()->id;
         $cashDoc->incoming_amount = 0;
         $cashDoc->outgoing_amount = $this->amount;
         $cashDoc->sum = $this->amount;

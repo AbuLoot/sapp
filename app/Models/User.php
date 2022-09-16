@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\StoreDoc');
     }
 
+    public function workplaces()
+    {
+        return $this->hasMany('App\Models\Workplace');
+    }
+
     public function incomingDocs()
     {
         return $this->hasMany('App\Models\IncomingDoc');

@@ -9,8 +9,13 @@ class Workplace extends Model
 {
     use HasFactory;
 
-    public function workplace_type()
+    public function workplace()
     {
         return $this->morphTo();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
     }
 }

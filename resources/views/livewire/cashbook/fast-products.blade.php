@@ -34,10 +34,11 @@
                     <i class="h6 bi bi-x"></i> <span class="visually-hidden">unread messages</span>
                   </a>
                   <img src="/img/products/{{ $fastProduct->path.'/'.$fastProduct->image }}" class="img-fluid card-img-top mx-auto" style="width: auto; height: 150px;">
-                  <div wire:click="addToCart({{ $fastProduct->id }})" data-bs-dismiss="modal" class="card-body d-block bg-white opacity-75 px-2 pt-2 pb-1" style="margin-top: -82px; cursor: pointer;">
-                    <h6 class="card-title mt-2">{{ $fastProduct->title }}</h6>
-                    <h6 class="card-subtitle -mb-2">{{ $fastProduct->price . $currency }}</h6>
-                    <a href="#" class="card-link">В корзину</a>
+                  <div wire:click="addToCart({{ $fastProduct->id }})" data-bs-dismiss="modal" class="card-body rounded-pill d-block bg-white opacity-75 px-2 pt-2 pb-1" style="margin-top: -82px; cursor: pointer; min-height: 85px;">
+                    <h6 class="card-title mt-2">
+                      <a href="#" class="card-link">{{ $fastProduct->title }}</a>
+                    </h6>
+                    <h6 class="card-subtitle">{{ $fastProduct->price . $currency }}</h6>
                   </div>
                 </div>
               </div>

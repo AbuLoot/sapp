@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-dark btn-lg text-end"><i class="be bi-printer-fill me-2"></i> Печать</button>
+          <button type="button" class="btn btn-dark btn-lg text-end" disabled><i class="be bi-printer-fill me-2"></i> Печать</button>
         </div>
       </div>
     </div>

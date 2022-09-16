@@ -120,13 +120,12 @@ class ListOfDebtors extends Component
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docType->id;
         $incomingOrder->products_data = null;
-        $incomingOrder->from_contractor = $this->profile->user_id;
+        $incomingOrder->from_contractor = 'user:'.$this->profile->user_id;
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = $this->repaymentAmount;
         $incomingOrder->currency = $this->company->currency->code;
         $incomingOrder->count = 0;
-        // $incomingOrder->comment = $this->comment;
         $incomingOrder->save();
 
         // Cashbook
@@ -136,13 +135,12 @@ class ListOfDebtors extends Component
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->doc_id = $incomingOrder->id;
         $cashDoc->doc_type_id = $docType->id;
-        $cashDoc->from_contractor = $store->title;
-        $cashDoc->to_contractor = $cashbook->title; // $this->company->title;
+        $cashDoc->from_contractor = 'user:'.$this->profile->user_id;
+        $cashDoc->to_contractor = 'store:'.$store->id;
         $cashDoc->incoming_amount = $this->repaymentAmount;
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->repaymentAmount;
         $cashDoc->currency = $this->company->currency->code;
-        // $cashDoc->comment = $this->comment;
         $cashDoc->save();
     }
 

@@ -66,7 +66,7 @@ use App\Http\Livewire\Cashbook\PaymentTypes\CashPayment;
 use App\Http\Livewire\Cashbook\PaymentTypes\BankCard;
 use App\Http\Livewire\Cashbook\PaymentTypes\ComplexPayment;
 use App\Http\Livewire\Cashbook\PaymentTypes\SaleOnCredit;
-use App\Http\Livewire\Cashbook\PaymentTypes\OnKaspi;
+use App\Http\Livewire\Cashbook\PaymentTypes\KaspiTransfer;
 use App\Http\Livewire\Cashbook\PaymentTypes\Success;
 
 
@@ -76,6 +76,7 @@ Route::redirect('/storage', '/'.app()->getLocale().'/storage');
 Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
 
     // Livewire Routes
+    // Route::get('/login', Store::class)->withoutMiddleware('workplace');, 'workplace'
     Route::get('/', StoreIndex::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
@@ -104,7 +105,7 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
     Route::get('payment-type/bank-card', BankCard::class);
     Route::get('payment-type/complex-payment', ComplexPayment::class);
     Route::get('payment-type/sale-on-credit', SaleOnCredit::class);
-    Route::get('payment-type/on-kaspi', OnKaspi::class);
+    Route::get('payment-type/kaspi-transfer', KaspiTransfer::class);
     Route::get('payment-type/success', Success::class);
 });
 
@@ -112,7 +113,7 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
 // Sanapp Joystick Administration
 Route::redirect('/admin', '/'.app()->getLocale().'/admin');
 
-Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|storekeeper|cashier|manager']], function () {
+Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
 
     Route::get('/', [AdminController::class, 'index']);
     Route::get('filemanager', [AdminController::class, 'filemanager']);
@@ -189,10 +190,8 @@ Route::get('/', [ShopController::class, 'index']);
 
 // Route::get('b/{project}/{id}', [ShopController::class, 'projectProducts']);
 // Route::get('b/{project}/{subproject}/{id}', [ShopController::class, 'subProjectProducts']);
-
 // Route::get('c/{category}/{id}', [ShopController::class, 'categoryProducts']);
 // Route::get('c/{category}/{subcategory}/{id}', [ShopController::class, 'subCategoryProducts']);
-
 // Route::get('p/{id}-{product}', [ShopController::class, 'product']);
 // Route::post('comment-product', [ShopController::class, 'saveComment']);
 
@@ -227,7 +226,6 @@ Route::get('/', [ShopController::class, 'index']);
 // Route::post('comment-news', [NewsController::class, 'saveComment']);
 
 // Pages
-Route::get('i/catalogs', [SiteController::class, 'catalogs']);
 Route::get('i/contacts', [SiteController::class, 'contacts']);
 Route::get('i/{page}', [SiteController::class, 'page']);
 

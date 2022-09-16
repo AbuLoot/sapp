@@ -28,7 +28,7 @@
     </div>
   </header>
 
-  <div class="px-3 py-3 border-bottom mb-3">
+  <div class="px-3 py-3 border-bottom-mb-3">
     <div class="container d-flex flex-wrap">
 
       <!-- Search Products -->
@@ -70,8 +70,10 @@
           @if($client)
             <button class="btn btn-outline-secondary dropdown-toggle fs-5" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></button>
             <div class="dropdown-menu dropdown-menu-end p-3" style="max-width: 200px;">
-              <p>{{ $client->name . ' ' . $client->lastname }}</p>
-              <p>Скидка: {{ $client->profile->discount ?? 0 }}%</p>
+              <p>
+                {{ $client->name . ' ' . $client->lastname }}<br>
+                Скидка: {{ $client->profile->discount ?? 0 }}%
+              </p>
               <div class="d-grid gap-2">
                 <button wire:click="removeClient" class="btn btn-outline-dark" type="button">Удалить из кассы</button>
               </div>
@@ -107,9 +109,6 @@
   <main class="container" style="margin-bottom: 170px;">
     <div class="table-responsive">
       <table class="table table-striped table-borderless border align-middle">
-        <caption>
-          <!-- <button wire:click="clearCart" type="button" class="btn btn-link">Очистить корзину</button> -->
-        </caption>
         <thead>
           <tr>
             <th>Наименование товара</th>
@@ -133,7 +132,7 @@
             <tr>
               <td>{{ $cartProduct->title }}</td>
               <td>
-                <?php $barcodes = json_decode($cartProduct->barcodes, true) ?? ['']; ?>
+                <?php $barcodes = json_decode($cartProduct->barcodes, true) ?? []; ?>
                 @foreach($barcodes as $barcode)
                   {{ $barcode }}<br>
                 @endforeach
@@ -150,7 +149,7 @@
               ?>
               <td>{{ $cartProduct->count }}</td>
               <td><div class="@if($countInStore == 0) text-danger @endif">{{ $countInStore }}</div></td>
-              <td class="text-nowrap-" style="width:12%;">
+              <td style="width:10%;">
                 <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
                 @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
               </td>
@@ -180,7 +179,7 @@
     </div>
   </main>
 
-  <footer class="d-flex flex-wrap fixed-bottom bg-light justify-content-between align-items-center py-2 border-top border-3">
+  <footer class="d-flex flex-wrap fixed-bottom bg-light justify-content-between align-items-center py-2 border-top shadow">
     <div class="container">
       <div class="row gx-2 pb-2">
         <div class="col-8 cash-operations">

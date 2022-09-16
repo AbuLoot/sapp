@@ -25,8 +25,8 @@
         @foreach ($workplaces as $workplace)
           <tr>
             <td>{{ $i++ }}</td>
-            <td>{{ $workplace->user_id }}</td>
-            <td>{{ $workplace->workplace_type }}</td>
+            <td>{{ $workplace->user->name }}</td>
+            <td>{{ $workplace->workplace->title }}</td>
             <td>{{ $workplace->comment }}</td>
             <td class="text-right">
               <a class="btn btn-link btn-xs" href="{{ route('workplaces.edit', [$lang, $workplace->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>

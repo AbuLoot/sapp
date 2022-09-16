@@ -83,7 +83,7 @@ class SaleOnCredit extends Component
 
         $store = session()->get('store');
         $cashbook = session()->get('cashbook');
-        $clientId = $user->id;
+        $clientId = 'user:'.$user->id;
         $cartProducts = session()->get('cartProducts') ?? [];
 
         foreach($cartProducts as $productId => $cartProduct) {
@@ -155,7 +155,6 @@ class SaleOnCredit extends Component
         $incomingOrder->sum = 0;
         $incomingOrder->currency = $this->company->currency->code;
         $incomingOrder->count = $this->sumOfCart['totalCount'];
-        // $incomingOrder->comment = $this->comment;
         $incomingOrder->save();
 
         // Cashbook
@@ -166,12 +165,11 @@ class SaleOnCredit extends Component
         $cashDoc->doc_id = $incomingOrder->id;
         $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $cashDoc->from_contractor = $clientId;
-        $cashDoc->to_contractor = $store->id; // $this->company->title;
+        $cashDoc->to_contractor = 'store:'.$store->id;
         $cashDoc->incoming_amount = 0;
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
         $cashDoc->currency = $this->company->currency->code;
-        // $cashDoc->comment = $this->comment;
         $cashDoc->save();
 
         if (empty($user->profile)) {
@@ -214,12 +212,10 @@ class SaleOnCredit extends Component
         $outgoingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $outgoingDoc->inc_order_id = $incomingOrder->id;
         $outgoingDoc->products_data = json_encode($productsData);
-        $outgoingDoc->to_contractor = $cashbook->id;
+        $outgoingDoc->to_contractor = 'cashbook:'.$cashbook->id;
         $outgoingDoc->sum = 0;
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $outgoingTotalCount;
-        // $outgoingDoc->unit = $this->unit;
-        // $outgoingDoc->comment = $this->comment;
         $outgoingDoc->save();
 
         // Storage
@@ -231,12 +227,10 @@ class SaleOnCredit extends Component
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
         $storeDoc->from_contractor = $clientId;
-        $storeDoc->to_contractor = $cashbook->id;
+        $storeDoc->to_contractor = 'cashbook:'.$cashbook->id;
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = 0;
         $storeDoc->sum = $outgoingTotalCount;
-        // $storeDoc->unit = $this->unit;
-        // $storeDoc->comment = $this->comment;
         $storeDoc->save();
 
         session()->put('docs', [

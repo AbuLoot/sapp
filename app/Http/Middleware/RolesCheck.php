@@ -29,14 +29,11 @@ class RolesCheck
      */
     public function handle(Request $request, Closure $next, $roles)
     {
-        if (strpos($roles, '|')) {
-            $roles = explode('|', $roles);
-        }
-        else {
-            $roles = [$roles];
-        }
+        $roles = strpos($roles, '|')
+            ? explode('|', $roles) : [$roles];
 
         foreach($roles as $role) {
+
             if (in_array($role, $request->user()->roles()->pluck('name')->toArray())) {
                 $result = true;
                 break;

@@ -47,7 +47,7 @@ class IncomingCash extends Component
         $incomingOrder->doc_no = $docNo;
         $incomingOrder->doc_type_id = $docType->id;
         $incomingOrder->products_data = null;
-        $incomingOrder->from_contractor = null;
+        $incomingOrder->from_contractor = 'user:'.auth()->user()->id;
         $incomingOrder->payment_type_id = null;
         $incomingOrder->payment_detail = null;
         $incomingOrder->sum = $this->amount;
@@ -62,8 +62,8 @@ class IncomingCash extends Component
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->doc_id = $incomingOrder->id;
         $cashDoc->doc_type_id = $docType->id;
-        $cashDoc->from_contractor = auth()->user()->name;
-        $cashDoc->to_contractor = $this->company->title;
+        $cashDoc->from_contractor = 'user:'.auth()->user()->id;
+        $cashDoc->to_contractor = 'cashbook:'.$this->cashbook->id;
         $cashDoc->incoming_amount = $this->amount;
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->amount;
