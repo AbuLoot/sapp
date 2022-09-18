@@ -1,0 +1,12 @@
+.bg-brand {
+  background-color: #6559d4;
+}
+.bg-brand-border {
+  border-bottom: 5px solid #463bab;
+}
+.icon-size-1 {
+  font-size: 10rem;
+}
+.text-brand-dark {
+  color: #463bab;
+}

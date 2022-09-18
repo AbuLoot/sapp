@@ -1,59 +1,57 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+<x-app-layout>
+  <x-slot name="title">
+      Регистрация
+  </x-slot>
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+  <div class="row">
+    <div class="col-lg-5 col-md-7 col-sm-9 mx-auto">
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+      <x-auth-validation-errors :errors="$errors" />
 
-            <!-- Name -->
-            <div>
-                <x-label for="name" :value="__('Name')" />
+      <form method="POST" action="{{ route('register') }}" class="p-4 p-md-5 bg-light border rounded-3 bg-light">
+        @csrf
+        <h2 class="fw-bold mb-0">Регистрация</h2>
+        <br>
 
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3">
+              <input type="text" name="name" class="form-control rounded-3" id="name" placeholder="Имя" value="{{ old('name') }}" required autofocus>
+              <label for="name">Имя</label>
             </div>
-
-            <!-- Email Address -->
-            <div class="mt-4">
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3">
+              <input type="text" name="lastname" class="form-control rounded-3" id="lastname" placeholder="Фамилия" value="{{ old('lastname') }}" required>
+              <label for="lastname">Фамилия</label>
             </div>
+          </div>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="email" name="email" class="form-control rounded-3" id="emailAddress" placeholder="name@example.com" value="{{ old('email') }}" required>
+          <label for="emailAddress">Email адрес</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="tel" name="tel" pattern="(\+?\d[- .]*){7,13}" class="form-control rounded-3" id="telNumber" placeholder="Номер телефона" value="{{ old('tel') }}" required>
+          <label for="telNumber">Номер телефона</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password" name="password" class="form-control rounded-3" id="floatingPassword" placeholder="Введите пароль" required>
+          <label for="floatingPassword">Введите пароль</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password" name="password_confirmation" class="form-control rounded-3" id="repeatPassword" placeholder="Повторно введите пароль" required>
+          <label for="repeatPassword">Повторно введите пароль</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="text" name="code" class="form-control rounded-3" id="code" placeholder="Код партнера" required>
+          <label for="code">Код партнера</label>
+        </div>
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="new-password" />
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                <x-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ml-4">
-                    {{ __('Register') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-guest-layout>
+        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Зарегистрироваться</button>
+        <hr class="my-4">
+        <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+      </form>
+    </div>
+  </div>
+</x-app-layout>

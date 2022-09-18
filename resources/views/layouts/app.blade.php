@@ -1,36 +1,84 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Sanapp</title>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
-        <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+  <!-- Favicons -->
+  <link rel="mask-icon" href="/img/icon.svg" color="#6559d4">
+  <link rel="icon" href="/img/icon.svg">
+  <meta name="theme-color" content="#6559d4">
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <!-- Custom styles for this template -->
+  <link href="/css/custom.css" rel="stylesheet">
+  <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
 
-        <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+  <nav class="navbar navbar-expand-lg navbar-dark bg-brand bg-brand-border py-3" aria-label="Main navigation">
+		<div class="container-xl">
+		  <a href="/dashboard" class="navbar-brand p-0">
+				<img src="/img/logo.svg" width="auto" height="40">
+				<span>{{ $title }}</span>
+		  </a>
 
-            <!-- Page Heading -->
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
+		  @auth
+			  <div class="flex-shrink-0 dropdown">
+					<a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					  <i class="bi bi-person-circle fs-4 text-white"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-end text-small shadow">
+					  <div class="px-3 py-1">
+					  	{{ Auth()->user()->name.' '.Auth()->user()->lastname }}<br>
+					  	{{ Auth::user()->email }}
+					  </div>
+					  <li><hr class="dropdown-divider"></li>
+					  <li>
+	            <form method="POST" action="{{ route('logout') }}">
+	              @csrf
+								<a class="dropdown-item" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
+	            </form>
+					  </li>
+					</ul>
+			  </div>
+		  @endauth
+		</div>
+  </nav>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-    </body>
+  <!-- <div class="px-3 py-3 border-bottom mb-3">
+		<div class="container d-flex flex-wrap justify-content-between align-items-center">
+		  <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">{{ $title }}</h4>
+		</div>
+  </div> -->
+
+  <main class="container my-5">
+		{{ $slot }}
+  </main>
+
+  <div class="container">
+		<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
+		  <p class="col-md-4 mb-0 text-muted">&copy; {{ date('Y') }} Sanapp Company</p>
+
+		  <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+				<img src="/img/logo-dark.svg" width="auto" height="40">
+		  </a>
+
+		  <ul class="nav col-md-4 justify-content-end">
+				<li class="nav-item"><a href="/{{ app()->getLocale() }}/main" class="nav-link px-2 text-muted">Главная</a></li>
+				@unless(Auth::check())
+				<li class="nav-item"><a href="/{{ '$appSlug' }}/login" class="nav-link px-2 text-muted">Вход</a></li>
+				<li class="nav-item"><a href="/{{ '$appSlug' }}/register" class="nav-link px-2 text-muted">Регистрация</a></li>
+				@endunless
+		  </ul>
+		</footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</body>
 </html>
+

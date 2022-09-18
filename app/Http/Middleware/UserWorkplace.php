@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class DefineWorkplaceByCode
+class UserWorkplace
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class DefineWorkplaceByCode
     public function handle(Request $request, Closure $next)
     {
         if (!$request->session()->has('userWorkplace')) {
-            return redirect($request->path().'/login');
+            return redirect($request->path().'/verification');
         }
 
         return $next($request);

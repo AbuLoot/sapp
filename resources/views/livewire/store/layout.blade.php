@@ -65,15 +65,21 @@
         </ul>
 
         <div class="dropdown d-flex text-end">
-          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle fs-4 text-white"></i>
           </a>
-          <ul class="dropdown-menu dropdown-menu-lg-end text-small" aria-labelledby="dropdownUser1" style="">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+          <ul class="dropdown-menu dropdown-menu-end text-small shadow">
+            <div class="px-3 py-1">
+              {{ Auth()->user()->name.' '.Auth()->user()->lastname }}<br>
+              {{ Auth::user()->email }}
+            </div>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
+            <li>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <a class="dropdown-item" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
+              </form>
+            </li>
           </ul>
         </div>
       </div>

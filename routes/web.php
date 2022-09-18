@@ -69,14 +69,18 @@ use App\Http\Livewire\Cashbook\PaymentTypes\SaleOnCredit;
 use App\Http\Livewire\Cashbook\PaymentTypes\KaspiTransfer;
 use App\Http\Livewire\Cashbook\PaymentTypes\Success;
 
+use App\Http\Controllers\Auth\WorkplaceSessionController;
 
 // Sanapp Storage
 Route::redirect('/storage', '/'.app()->getLocale().'/storage');
 
-Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper']], function () {
+Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper', 'workplace']], function () {
+
+    // Custom Auth Code
+    Route::get('verification', [WorkplaceSessionController::class, 'create'])->withoutMiddleware('workplace');
+    Route::post('verification', [WorkplaceSessionController::class, 'store'])->withoutMiddleware('workplace');
 
     // Livewire Routes
-    // Route::get('/login', Store::class)->withoutMiddleware('workplace');, 'workplace'
     Route::get('/', StoreIndex::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
@@ -95,7 +99,11 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
 // Sanapp Cashdesk
 Route::redirect('/cashdesk', '/'.app()->getLocale().'/cashdesk');
 
-Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|cashier']], function () {
+Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|cashier', 'workplace']], function () {
+
+    // Custom Auth Code
+    Route::get('verification', [WorkplaceSessionController::class, 'create'])->withoutMiddleware('workplace');
+    Route::post('verification', [WorkplaceSessionController::class, 'store'])->withoutMiddleware('workplace');
 
     // Livewire Routes
     Route::get('/', CashbookIndex::class);
