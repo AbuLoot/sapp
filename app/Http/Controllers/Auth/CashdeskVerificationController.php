@@ -12,22 +12,11 @@ use App\Models\Cashbook;
 
 class CashdeskVerificationController extends Controller
 {
-    /**
-     * Display the login view.
-     *
-     * @return \Illuminate\View\View
-     */
     public function create()
     {
         return view('auth.verification');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function store(Request $request)
     {
         $workplaces = Workplace::where('user_id', auth()->user()->id)
@@ -45,23 +34,6 @@ class CashdeskVerificationController extends Controller
         $request->session()->put('cashbook', $cashbook);
         $request->session()->put('cashdeskWorkplace', $workplace->id);
 
-        return redirect('/'.app()->getLocale().'/cashdesk');
-    }
-
-    /**
-     * Destroy an authenticated session.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Request $request)
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect()->back();
+        return redirect(app()->getLocale().'/cashdesk');
     }
 }

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class CashShiftJournal extends Model
 {
     use HasFactory;
+
+    protected $table = 'cash_shift_journal';
 }

@@ -17,7 +17,7 @@ class VerifyStorageSession
     public function handle(Request $request, Closure $next)
     {
         if (!$request->session()->has('storageWorkplace')) {
-            return redirect($request->path().'/verification');
+            return redirect(app()->getLocale().'/storage/verification');
         }
 
         return $next($request);

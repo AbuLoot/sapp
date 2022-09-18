@@ -1,4 +1,5 @@
 <div>
+
   <header class="p-3 bg-brand bg-brand-border">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -34,6 +35,13 @@
       </div>
     </div>
   </header>
+
+@if(!session()->has('openedCash'))
+
+  <!-- Opening Cash -->
+  <livewire:cashbook.opening-cash>
+
+@else
 
   <div class="px-3 py-3 border-bottom-mb-3">
     <div class="container d-flex flex-wrap">
@@ -113,6 +121,7 @@
     </div>
   </div>
 
+  <!-- Cart Of Products -->
   <main class="container" style="margin-bottom: 170px;">
     <div class="table-responsive">
       <table class="table table-striped table-borderless border align-middle">
@@ -186,7 +195,8 @@
     </div>
   </main>
 
-  <footer class="d-flex flex-wrap fixed-bottom bg-light justify-content-between align-items-center py-2 border-top shadow">
+  <!-- Cashdesk Operations -->
+  <footer class="d-flex flex-wrap fixed-bottom bg-light justify-content-between align-items-center py-2 border-top border-2 shadow">
     <div class="container">
       <div class="row gx-2 pb-2">
         <div class="col-8 cash-operations">
@@ -275,7 +285,6 @@
     </div>
   </footer>
 
-
   <!-- Modal Fast Products -->
   <livewire:cashbook.fast-products>
 
@@ -302,6 +311,8 @@
 
   <!-- Modal Deferred Checks -->
   <livewire:cashbook.deferred-checks>
+@endif
+
 </div>
 
 @section('scripts')

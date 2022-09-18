@@ -17,7 +17,7 @@ class VerifyCashdeskSession
     public function handle(Request $request, Closure $next)
     {
         if (!$request->session()->has('cashdeskWorkplace')) {
-            return redirect($request->path().'/verification');
+            return redirect(app()->getLocale().'/cashdesk/verification');
         }
 
         return $next($request);

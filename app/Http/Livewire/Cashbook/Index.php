@@ -40,7 +40,7 @@ class Index extends Component
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
 
-        if (is_null(session()->get('store'))) {
+        if (!session()->has('store')) {
             session()->put('store', Store::first());
         }
 
@@ -129,10 +129,10 @@ class Index extends Component
         return $data;
     }
 
-    public function setValidCount($product_id, $value)
+    public function setValidCount($productId, $value)
     {
         $cartProducts = session()->get('cartProducts');
-        $countInStores = json_decode($cartProducts[$product_id]->count_in_stores, true) ?? [];
+        $countInStores = json_decode($cartProducts[$productId]->count_in_stores, true) ?? [];
         $countInStore = $countInStores[$this->store->id] ?? 0;
 
         if ($value <= 0 || !is_numeric($value)) {
@@ -143,11 +143,11 @@ class Index extends Component
                 : $value;
         }
 
-        $cartProducts[$product_id]['countInCart'] = $validCount;
+        $cartProducts[$productId]['countInCart'] = $validCount;
         session()->put('cartProducts', $cartProducts);
     }
 
-    public function setValidDiscount($product_id, $value)
+    public function setValidDiscount($productId, $value)
     {
         $cartProducts = session()->get('cartProducts');
 
@@ -159,7 +159,7 @@ class Index extends Component
                 : $value;
         }
 
-        $cartProducts[$product_id]['discount'] = $validDiscount;
+        $cartProducts[$productId]['discount'] = $validDiscount;
         session()->put('cartProducts', $cartProducts);
     }
 
@@ -240,7 +240,7 @@ class Index extends Component
 
     public function deferCheck()
     {
-        if (is_null(session()->get('cartProducts'))) {
+        if (!session()->has('cartProducts')) {
             $this->dispatchBrowserEvent('show-toast', ['message' => 'No data']);
             return;
         }

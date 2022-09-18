@@ -27,7 +27,7 @@ class IncomingCash extends Component
     public function mount()
     {
         $this->company = auth()->user()->profile->company;
-        $this->cashbook = $this->company->cashbooks->first();
+        $this->cashbook = session()->get('cashbook');
     }
 
     public function credit()

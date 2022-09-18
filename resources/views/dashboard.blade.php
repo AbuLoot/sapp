@@ -35,20 +35,20 @@
         <a class="btn btn-lg btn-outline-light" href="/{{ app()->getLocale() }}/cashdesk">Перейти</a>
       </div>
     </div>
-  </div>-->
+  </div> -->
 
   <div class="row align-items-md-stretch">
     <div class="col-md-6 mb-3">
       <div class="h-100 p-5 bg-light border rounded-3">
         <h2 class="mb-3">Storage</h2>
-        <h5 class="mb-3">Умный Склад</h5>
+        <h4 class="mb-3">Умный склад</h4>
         <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/storage">Перейти</a>
       </div>
     </div>
     <div class="col-md-6 mb-3">
       <div class="h-100 p-5 bg-light border rounded-3">
         <h2 class="mb-3">Cashdesk</h2>
-        <h5 class="mb-3">Умная Касса</h5>
+        <h4 class="mb-3">Умная касса</h4>
         <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/cashdesk">Перейти</a>
       </div>
     </div>

@@ -12,22 +12,11 @@ use App\Models\Store;
 
 class StorageVerificationController extends Controller
 {
-    /**
-     * Display the login view.
-     *
-     * @return \Illuminate\View\View
-     */
     public function create()
     {
         return view('auth.verification');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function store(Request $request)
     {
         $workplaces = Workplace::where('user_id', auth()->user()->id)
@@ -40,27 +29,11 @@ class StorageVerificationController extends Controller
         ]);
 
         $workplace = $workplaces->where('code', $request->code)->first();
-        // $store = Store::find($workplace->workplace_id);
+        $store = Store::find($workplace->workplace_id);
 
+        $request->session()->put('storage', $store);
         $request->session()->put('storageWorkplace', $workplace->id);
 
-        return redirect('/'.app()->getLocale().'/storage');
-    }
-
-    /**
-     * Destroy an authenticated session.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Request $request)
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect()->back();
+        return redirect(app()->getLocale().'/storage');
     }
 }
