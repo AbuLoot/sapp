@@ -1,6 +1,6 @@
 <x-app-layout>
   <x-slot name="title">
-      Вход
+      Вход в систему
   </x-slot>
 
   <div class="col-lg-5 col-md-7 col-sm-9 mx-auto">

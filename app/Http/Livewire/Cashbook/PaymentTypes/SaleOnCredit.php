@@ -141,6 +141,7 @@ class SaleOnCredit extends Component
         $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
         $storeDocNo = $this->generateOutgoingStoreDocNo($store->id);
 
+        // Cashbook Docs
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $cashbook->id;
         $incomingOrder->company_id = $this->company->id;
@@ -157,7 +158,6 @@ class SaleOnCredit extends Component
         $incomingOrder->count = $this->sumOfCart['totalCount'];
         $incomingOrder->save();
 
-        // Cashbook
         $cashDoc = new CashDoc;
         $cashDoc->cashbook_id = $cashbook->id;
         $cashDoc->company_id = $this->company->id;
@@ -189,7 +189,6 @@ class SaleOnCredit extends Component
             $profile->save();
 
         } else {
-
             $user->profile->is_debtor = true;
             $user->profile->debt_sum = $user->profile->debt_sum + $this->sumOfCart['sumDiscounted'];
 
@@ -203,6 +202,7 @@ class SaleOnCredit extends Component
             $user->profile->save();
         }
 
+        // Storage Docs
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $store->id;
         $outgoingDoc->company_id = $this->company->id;
@@ -218,7 +218,6 @@ class SaleOnCredit extends Component
         $outgoingDoc->count = $outgoingTotalCount;
         $outgoingDoc->save();
 
-        // Storage
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $store->id;
         $storeDoc->company_id = $this->company->id;
@@ -226,6 +225,7 @@ class SaleOnCredit extends Component
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
+        // $storeDoc->contractor_type = '';
         $storeDoc->from_contractor = $clientId;
         $storeDoc->to_contractor = 'cashbook:'.$cashbook->id;
         $storeDoc->incoming_amount = 0;

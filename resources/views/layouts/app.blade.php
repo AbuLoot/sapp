@@ -24,7 +24,7 @@
 		<div class="container-xl">
 		  <a href="/dashboard" class="navbar-brand p-0">
 				<img src="/img/logo.svg" width="auto" height="40">
-				<span>{{ $title }}</span>
+				<!-- <span>{{ $title }}</span> -->
 		  </a>
 
 		  @auth
@@ -50,11 +50,11 @@
 		</div>
   </nav>
 
-  <!-- <div class="px-3 py-3 border-bottom mb-3">
+  <div class="px-3 py-3 border-bottom mb-3">
 		<div class="container d-flex flex-wrap justify-content-between align-items-center">
-		  <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">{{ $title }}</h4>
+		  <h2 class="col-3 col-lg-3 mb-md-2 mb-lg-0">{{ $title }}</h2>
 		</div>
-  </div> -->
+  </div>
 
   <main class="container my-5">
 		{{ $slot }}
@@ -69,11 +69,17 @@
 		  </a>
 
 		  <ul class="nav col-md-4 justify-content-end">
-				<li class="nav-item"><a href="/{{ app()->getLocale() }}/main" class="nav-link px-2 text-muted">Главная</a></li>
-				@unless(Auth::check())
-				<li class="nav-item"><a href="/{{ '$appSlug' }}/login" class="nav-link px-2 text-muted">Вход</a></li>
-				<li class="nav-item"><a href="/{{ '$appSlug' }}/register" class="nav-link px-2 text-muted">Регистрация</a></li>
-				@endunless
+				@if(Auth::check())
+				<li class="nav-item"><a href="/dashboard" class="nav-link px-2 text-muted">Главная</a></li>
+				<li class="nav-item">
+					<form method="POST" action="{{ route('logout') }}">
+	          @csrf
+						<a href="#" class="nav-link px-2 text-muted" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
+	        </form>
+				@else
+				<li class="nav-item"><a href="/login" class="nav-link px-2 text-muted">Вход</a></li>
+				<li class="nav-item"><a href="/register" class="nav-link px-2 text-muted">Регистрация</a></li>
+				@endif
 		  </ul>
 		</footer>
   </div>

@@ -2,8 +2,8 @@
   <header class="p-3 bg-brand bg-brand-border">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <a href="#" class="me-4">
-          <img src="/img/logo.svg" width="auto" height="40">
+        <a href="/{{ app()->getLocale() }}/cashdesk" class="navbar-brand me-4">
+          <img src="/img/logo.svg" width="auto" height="40"> <span class="text-white">{{ session()->get('cashbook')->title }}</span>
         </a>
 
         <button class="btn btn-warning rounded-circle me-auto" onclick="document.location.reload()"><i class="bi bi-arrow-clockwise"></i></button>

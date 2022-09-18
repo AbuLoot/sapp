@@ -69,16 +69,17 @@ use App\Http\Livewire\Cashbook\PaymentTypes\SaleOnCredit;
 use App\Http\Livewire\Cashbook\PaymentTypes\KaspiTransfer;
 use App\Http\Livewire\Cashbook\PaymentTypes\Success;
 
-use App\Http\Controllers\Auth\WorkplaceSessionController;
+use App\Http\Controllers\Auth\StorageVerificationController;
+use App\Http\Controllers\Auth\CashdeskVerificationController;
 
 // Sanapp Storage
 Route::redirect('/storage', '/'.app()->getLocale().'/storage');
 
-Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper', 'workplace']], function () {
+Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper', 'verify.storage']], function () {
 
     // Custom Auth Code
-    Route::get('verification', [WorkplaceSessionController::class, 'create'])->withoutMiddleware('workplace');
-    Route::post('verification', [WorkplaceSessionController::class, 'store'])->withoutMiddleware('workplace');
+    Route::get('verification', [StorageVerificationController::class, 'create'])->withoutMiddleware('verify.storage');
+    Route::post('verification', [StorageVerificationController::class, 'store'])->withoutMiddleware('verify.storage');
 
     // Livewire Routes
     Route::get('/', StoreIndex::class);
@@ -99,11 +100,11 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
 // Sanapp Cashdesk
 Route::redirect('/cashdesk', '/'.app()->getLocale().'/cashdesk');
 
-Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|cashier', 'workplace']], function () {
+Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|cashier', 'verify.cashdesk']], function () {
 
     // Custom Auth Code
-    Route::get('verification', [WorkplaceSessionController::class, 'create'])->withoutMiddleware('workplace');
-    Route::post('verification', [WorkplaceSessionController::class, 'store'])->withoutMiddleware('workplace');
+    Route::get('verification', [CashdeskVerificationController::class, 'create'])->withoutMiddleware('verify.cashdesk');
+    Route::post('verification', [CashdeskVerificationController::class, 'store'])->withoutMiddleware('verify.cashdesk');
 
     // Livewire Routes
     Route::get('/', CashbookIndex::class);

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class UserWorkplace
+class VerifyStorageSession
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class UserWorkplace
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->session()->has('userWorkplace')) {
+        if (!$request->session()->has('storageWorkplace')) {
             return redirect($request->path().'/verification');
         }
 

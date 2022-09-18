@@ -1,6 +1,6 @@
 <x-app-layout>
   <x-slot name="title">
-      Регистрация
+      Регистрация в системе
   </x-slot>
 
   <div class="row">
@@ -50,7 +50,7 @@
 
         <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Зарегистрироваться</button>
         <hr class="my-4">
-        <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+        <small class="text-muted">Нажимая Зарегистрироваться, вы соглашаетесь с условиями использования.</small>
       </form>
     </div>
   </div>

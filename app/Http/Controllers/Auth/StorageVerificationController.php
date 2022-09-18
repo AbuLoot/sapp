@@ -8,8 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Models\Workplace;
+use App\Models\Store;
 
-class WorkplaceSessionController extends Controller
+class StorageVerificationController extends Controller
 {
     /**
      * Display the login view.
@@ -29,15 +30,8 @@ class WorkplaceSessionController extends Controller
      */
     public function store(Request $request)
     {
-        $uri = explode('/', $request->path());
-        $apps = [
-            'storage' => 'Store',
-            'cashdesk' => 'Cashbook',
-        ];
-        $model = $apps[$uri[1]];
-        $namespace = "App\Models\\".$model;
-
-        $workplaces = Workplace::where('user_id', auth()->user()->id)->where('workplace_type', $namespace)->get();
+        $workplaces = Workplace::where('user_id', auth()->user()->id)
+                ->where('workplace_type', 'App\Models\Store')->get();
 
         $request->validate([
             'code' => [
@@ -46,10 +40,11 @@ class WorkplaceSessionController extends Controller
         ]);
 
         $workplace = $workplaces->where('code', $request->code)->first();
+        // $store = Store::find($workplace->workplace_id);
 
-        $request->session()->put('userWorkplace', $workplace->id);
+        $request->session()->put('storageWorkplace', $workplace->id);
 
-        return redirect('/'.app()->getLocale().'/'.$uri[1]);
+        return redirect('/'.app()->getLocale().'/storage');
     }
 
     /**

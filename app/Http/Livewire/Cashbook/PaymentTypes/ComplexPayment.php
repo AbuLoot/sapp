@@ -133,6 +133,7 @@ class ComplexPayment extends Component
         $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
         $storeDocNo = $this->generateOutgoingStoreDocNo($store->id);
 
+        // Cashbook
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $cashbook->id;
         $incomingOrder->company_id = $this->company->id;
@@ -149,7 +150,6 @@ class ComplexPayment extends Component
         $incomingOrder->count = $this->sumOfCart['totalCount'];
         $incomingOrder->save();
 
-        // Cashbook
         $cashDoc = new CashDoc;
         $cashDoc->cashbook_id = $cashbook->id;
         $cashDoc->company_id = $this->company->id;
@@ -164,6 +164,7 @@ class ComplexPayment extends Component
         $cashDoc->currency = $this->company->currency->code;
         $cashDoc->save();
 
+        // Storage
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $store->id;
         $outgoingDoc->company_id = $this->company->id;
@@ -179,7 +180,6 @@ class ComplexPayment extends Component
         $outgoingDoc->count = $outgoingTotalCount;
         $outgoingDoc->save();
 
-        // Storage
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $store->id;
         $storeDoc->company_id = $this->company->id;

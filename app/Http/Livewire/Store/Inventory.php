@@ -15,6 +15,8 @@ use App\Models\Product;
 
 class Inventory extends Component
 {
+    use WithPagination;
+
     protected $paginationTheme = 'bootstrap';
 
     public $lang;
