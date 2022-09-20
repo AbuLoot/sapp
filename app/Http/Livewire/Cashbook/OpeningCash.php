@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Cashbook;
 
+use Illuminate\Support\Facades\Cache;
+
 use Livewire\Component;
 
 use App\Models\DocType;
@@ -43,6 +45,7 @@ class OpeningCash extends Component
         $cashShift = new CashShiftJournal;
         $cashShift->cashbook_id = $this->cashbook->id;
         $cashShift->company_id = $this->company->id;
+        $cashShift->workplace_id = session()->get('cashdeskWorkplace'); // id
         $cashShift->from_user_id = auth()->user()->id;
         $cashShift->opening_cash_balance = $lastCloseCashShift->closing_cash_balance ?? null;
         $cashShift->sum = $lastCloseCashShift->sum ?? null;
@@ -51,7 +54,7 @@ class OpeningCash extends Component
         $cashShift->shift_time = date('h:i:s');
         $cashShift->save();
 
-        session()->put('openedCash', $this->cashbook->id);
+        Cache()->put('openedCash', $this->cashbook->id);
 
         return redirect(app()->getLocale().'/cashdesk');
     }

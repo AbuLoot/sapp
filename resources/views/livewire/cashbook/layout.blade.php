@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="DevPlay">
-  <title>Sanapp Cashbook</title>
+  <title>Sanapp Cashdesk</title>
 
   <!-- Favicons -->
   <link rel="apple-touch-icon" href="/img/icon.svg" sizes="180x180">

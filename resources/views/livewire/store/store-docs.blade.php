@@ -36,17 +36,31 @@
           </tr>
         </thead>
         <tbody>
+          <?php
+            $models = [
+              'App\Models\Company' => 'title',
+              'App\Models\User' => 'name',
+            ];
+          ?>
           @forelse($storeDocs as $index => $storeDoc)
             <tr>
               <td>{{ $storeDoc->doc_type->title }}</td>
               <td>{{ $storeDoc->store->id }}</td>
               <td>{{ $storeDoc->user->name }}</td>
-              <td>{{ $storeDoc->to_contractor }}</td>
+              <td>
+                @switch($storeDoc->contractor_type)
+                  @case('App\Models\Company')
+                    {{ $storeDoc->contractor->title }}
+                    @break
+                  @case('App\Models\User')
+                    {{ $storeDoc->contractor->name.' '.$storeDoc->contractor->lastname }}
+                    @break
+                @endswitch
+              </td>
               <td>{{ $storeDoc->incoming_amount }}</td>
               <td>{{ $storeDoc->outgoing_amount }}</td>
               <td>{{ $storeDoc->sum }}</td>
               <td>{{ $storeDoc->created_at }}</td>
-              <!-- data-bs-toggle="modal" data-bs-target="#docDetails" -->
               <td class="text-end"><button wire:click="docDetail({{ $storeDoc->id }})" class="btn btn-outline-primary btn-sm">Посмотреть</button></td>
             </tr>
           @empty
@@ -100,12 +114,8 @@
                       <td>{{ $docDetail->user->name }}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Компания</th>
-                      <td>{{ $docDetail->from_contractor }} / {{ $docDetail->to_contractor }}</td>
-                    </tr>
-                    <tr>
                       <th scope="row">Контрагент</th>
-                      <td>{{ $docDetail->to_contractor }}</td>
+                      <td>{{ $docDetail->contractor->name ?? $docDetail->contractor->title ?? 'No name' }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Сумма прихода</th>

@@ -81,10 +81,7 @@
               <td>{{ $product->purchase_price }}</td>
               <td>{{ $product->wholesale_price }}</td>
               <td>{{ $product->price }}</td>
-              <td class="text-nowrap text-end">
-                {{ $product->count }} <a href="#"><i class="bi bi-pencil-square text-primary"></i></a>
-              </td>
-              <!-- <td></td> -->
+              <td>{{ $product->count }}</td>
               <td class="text-end">{{ $product->company->title }}</td>
             </tr>
           @empty

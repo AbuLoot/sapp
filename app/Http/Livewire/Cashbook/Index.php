@@ -19,11 +19,11 @@ class Index extends Component
     public $store;
     public $storeId;
     public $search = '';
-    public $searchClient = '';
+    public $searchCustomer = '';
     public $cartProducts = [];
-    public $client;
+    public $customer;
     public $discounts = [];
-    public $totalDiscount = 0;
+    public $totalDiscount = null;
     public $totalDiscountView;
     public $priceMode = 'retail';
 
@@ -61,8 +61,8 @@ class Index extends Component
         // Setting Total Discount
         if ($key == 'totalDiscount') {
 
-            if ($value < 0 || !is_numeric($value)) {
-                $totalDiscount = 0;
+            if ($value <= 0 || !is_numeric($value) || empty($value)) {
+                $totalDiscount = null;
             } else {
                 $totalDiscount = (10 < $value)
                     ? 10
@@ -105,12 +105,11 @@ class Index extends Component
             $countProduct++;
             $totalCount += $cartProduct->countInCart;
 
-            $price = (session()->get('priceMode') == 'retail') ? $cartProduct->price : $cartProduct->wholesale_price ?? 0;
+            $price = session()->get('priceMode') == 'retail' ? $cartProduct->price : $cartProduct->wholesale_price ?? 0;
 
-            if ($cartProduct->discount != 0) {
+            if ($cartProduct->discount != null) {
                 $percent = $cartProduct->discount;
-            }
-            elseif(session()->get('totalDiscount') != 0) {
+            } elseif (session()->get('totalDiscount') != null) {
                 $percent = session()->get('totalDiscount');
             }
 
@@ -151,8 +150,8 @@ class Index extends Component
     {
         $cartProducts = session()->get('cartProducts');
 
-        if ($value < 0 || !is_numeric($value)) {
-            $validDiscount = 0;
+        if ($value <= 0 || !is_numeric($value) || empty($value)) {
+            $validDiscount = null;
         } else {
             $validDiscount = (10 < $value)
                 ? 10
@@ -197,28 +196,28 @@ class Index extends Component
 
         $cartProducts[$id] = $product;
         $cartProducts[$id]['countInCart'] = ($countInStore == 0) ? 0 : 1;
-        $cartProducts[$id]['discount'] = 0;
+        $cartProducts[$id]['discount'] = null;
         $cartProducts[$id]['input'] = false;
 
         session()->put('cartProducts', $cartProducts);
         $this->search = '';
     }
 
-    public function checkClient($id)
+    public function checkCustomer($id)
     {
-        $this->client = User::find($id);
+        $this->customer = User::find($id);
 
-        session()->put('client', $this->client);
-        session()->put('totalDiscount', $this->client->profile->discount ?? 0);
+        session()->put('customer', $this->customer);
+        session()->put('totalDiscount', $this->customer->profile->discount ?? 0);
 
-        $this->searchClient = '';
+        $this->searchCustomer = '';
     }
 
-    public function removeClient()
+    public function removeCustomer()
     {
-        session()->forget('client');
+        session()->forget('customer');
         session()->put('totalDiscount', 0);
-        $this->client = null;
+        $this->customer = null;
     }
 
     public function removeFromCart($id)
@@ -260,7 +259,7 @@ class Index extends Component
 
         Cache::put('deferredChecks', $deferredChecks);
 
-        $this->totalDiscount = 0;
+        $this->totalDiscount = null;
         session()->forget('cartProducts');
 
         $this->dispatchBrowserEvent('show-toast', ['reload' => true]);
@@ -310,24 +309,24 @@ class Index extends Component
     public function render()
     {
         $products = [];
-        $clients = [];
+        $customers = [];
 
         if (strlen($this->search) >= 2) {
             $products = Product::search($this->search)->get()->take(7);
         }
 
-        if (strlen($this->searchClient) >= 2) {
-            $clients = User::where('name', 'like', $this->searchClient.'%')
-                ->orWhere('lastname', 'like', $this->searchClient.'%')
-                ->orWhere('tel', 'like', $this->searchClient.'%')
+        if (strlen($this->searchCustomer) >= 2) {
+            $customers = User::where('name', 'like', $this->searchCustomer.'%')
+                ->orWhere('lastname', 'like', $this->searchCustomer.'%')
+                ->orWhere('tel', 'like', $this->searchCustomer.'%')
                 ->get()->take(7);
         }
 
         $this->priceMode = session()->get('priceMode');
         $this->cartProducts = session()->get('cartProducts') ?? [];
-        $this->totalDiscount = session()->get('totalDiscount') ?? 0;
+        $this->totalDiscount = session()->get('totalDiscount');
 
-        return view('livewire.cashbook.index', ['products' => $products, 'clients' => $clients])
+        return view('livewire.cashbook.index', ['products' => $products, 'customers' => $customers])
             ->layout('livewire.cashbook.layout');
     }
 }

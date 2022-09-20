@@ -17,12 +17,13 @@ class CreateOutgoingOrdersTable extends Migration
             $table->increments('id');
             $table->integer('cashbook_id');
             $table->integer('company_id');
+            $table->integer('workplace_id')->nullable();
             $table->integer('user_id');
-            $table->char('cashier_name');
             $table->string('doc_no');
             $table->integer('doc_type_id');
             $table->integer('inc_doc_id')->nullable();
-            $table->char('to_contractors')->nullable();
+            $table->char('contractor_type')->nullable();
+            $table->integer('to_contractor')->nullable();
             $table->integer('sum');
             $table->char('currency');
             $table->integer('count');

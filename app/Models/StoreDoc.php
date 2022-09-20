@@ -19,6 +19,11 @@ class StoreDoc extends Model
         return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
+    public function contractor()
+    {
+        return $this->morphTo();
+    }
+
     public function doc_type()
     {
         return $this->belongsTo('App\Models\DocType', 'doc_type_id');

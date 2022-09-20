@@ -76,6 +76,16 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Workplace');
     }
 
+    public function storeContracts()
+    {
+        return $this->morphMany(StoreDoc::class, 'contractor');
+    }
+
+    public function cashContracts()
+    {
+        return $this->morphMany(CashDoc::class, 'contractor');
+    }
+
     public function incomingDocs()
     {
         return $this->hasMany('App\Models\IncomingDoc');

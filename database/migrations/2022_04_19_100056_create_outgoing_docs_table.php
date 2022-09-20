@@ -17,13 +17,14 @@ class CreateOutgoingDocsTable extends Migration
             $table->increments('id');
             $table->integer('store_id');
             $table->integer('company_id');
+            $table->integer('workplace_id')->nullable();
             $table->integer('user_id');
-            $table->char('username');
             $table->string('doc_no');
             $table->integer('doc_type_id');
             $table->integer('inc_order_id')->nullable();
             $table->json('products_data');
-            $table->char('to_contractor')->nullable();
+            $table->char('contractor_type')->nullable();
+            $table->integer('to_contractor')->nullable();
             $table->integer('sum');
             $table->char('currency');
             $table->integer('count');

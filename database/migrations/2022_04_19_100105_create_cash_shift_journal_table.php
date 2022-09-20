@@ -17,6 +17,7 @@ class CreateCashShiftJournalTable extends Migration
             $table->increments('id');
             $table->integer('cashbook_id');
             $table->integer('company_id');
+            $table->integer('workplace_id');
             $table->integer('from_user_id')->nullable();
             $table->char('cashier_name')->nullable();
             $table->integer('to_user_id')->nullable();

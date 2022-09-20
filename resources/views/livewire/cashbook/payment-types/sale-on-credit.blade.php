@@ -36,32 +36,30 @@
             </div>
             <div class="col-lg-5 mb-3">
               <div class="d-grid" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#addClient"><i class="bi bi-person-plus-fill me-2"></i> Новый клиент</button>
+                <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#addCustomer"><i class="bi bi-person-plus-fill me-2"></i> Новый клиент</button>
                 <!--  wire:click="openModal"  -->
               </div>
             </div>
           </div>
 
-          @if($clients)
-            @forelse($clients as $client)
-              <div wire:click="makeDebtDocs({{ $client->id }})" class="d-flex position-relative border-bottom p-1 mb-3">
+            @forelse($customers as $customer)
+              <div wire:click="makeDebtDocs({{ $customer->id }})" class="d-flex position-relative border-bottom p-1 mb-3">
                 <div class="flex-shrink-0 display-6">
                   <i class="bi bi-person-circle"></i> 
                 </div>
                 <div class="ms-3">
-                  <h6 class="mt-1 mb-0">{{ $client->name.' '.$client->lastname }}</h6>
-                  <a href="#" class="stretched-link">{{ $client->tel }}</a>
+                  <h6 class="mt-1 mb-0">{{ $customer->name.' '.$customer->lastname }}</h6>
+                  <a href="#" class="stretched-link">{{ $customer->tel }}</a>
                 </div>
               </div>
             @empty
               <h6>No data</h6>
             @endforelse
-          @endif
 
         </form>
 
-        <!-- Modal Add Client -->
-        <livewire:cashbook.add-client>
+        <!-- Modal Add Customer -->
+        <livewire:cashbook.add-customer>
 
       </div>
     </div>

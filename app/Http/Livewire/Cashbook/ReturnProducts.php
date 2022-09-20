@@ -12,6 +12,7 @@ use App\Models\StoreDoc;
 use App\Models\OutgoingOrder;
 use App\Models\IncomingOrder;
 use App\Models\IncomingDoc;
+use App\Models\PaymentType;
 
 use App\Traits\GenerateDocNo;
 
@@ -125,11 +126,12 @@ class ReturnProducts extends Component
         $paymentType = PaymentType::find($this->incomingOrder->payment_type_id);
         $paymentDetail = json_decode($this->incomingOrder->payment_detail, true) ?? [];
 
-        $clientId = null;
+        $contractorType = null;
+        $contractorId = null;
 
         if (isset($paymentDetail['userId'])) {
             $user = User::find($paymentDetail['userId']);
-            $clientId = 'user:'.$user->id;
+            $customerId = $user->id;
         }
 
         $store = session()->get('store');
@@ -174,50 +176,52 @@ class ReturnProducts extends Component
         $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
         $storeDocNo = $this->generateOutgoingStoreDocNo($store->id);
 
+        // Cashbook
         $outgoingOrder = new OutgoingOrder;
         $outgoingOrder->cashbook_id = $cashbook->id;
         $outgoingOrder->company_id = $this->company->id;
         $outgoingOrder->user_id = auth()->user()->id;
-        $outgoingOrder->cashier_name = auth()->user()->name;
+        $outgoingOrder->workplace_id = $workplaceId;
         $outgoingOrder->doc_no = $cashDocNo;
         $outgoingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-2')->first()->id;
-        $outgoingOrder->to_contractors = $clientId;
+        $outgoingOrder->contractor_type = $contractorType;
+        $outgoingOrder->contractor_id = $contractorId;
         $outgoingOrder->sum = $outgoingTotalAmount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = 0;
         $outgoingOrder->save();
 
-        // Cashbook
         $cashDoc = new CashDoc;
         $cashDoc->cashbook_id = $cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->doc_id = $outgoingOrder->id;
         $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-2')->first()->id;
-        $cashDoc->from_contractor = $clientId;
-        $cashDoc->to_contractor = 'cashbook:'.$cashbook->id;
+        $cashDoc->contractor_type = $contractorType;
+        $cashDoc->contractor_id = $contractorId;
         $cashDoc->incoming_amount = 0;
         $cashDoc->outgoing_amount = $outgoingTotalAmount;
         $cashDoc->sum = $outgoingTotalAmount;
         $cashDoc->currency = $this->company->currency->code;
         $cashDoc->save();
 
+        // Storage
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $store->id;
         $incomingDoc->company_id = $this->company->id;
         $incomingDoc->user_id = auth()->user()->id;
-        $incomingDoc->username = auth()->user()->name;
+        $incomingDoc->workplace_id = $workplaceId;
         $incomingDoc->doc_no = $storeDocNo;
         $incomingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-1')->first()->id;
         $incomingDoc->out_order_id = $outgoingOrder->id;
         $incomingDoc->products_data = json_encode($productsData);
-        $incomingDoc->from_contractor = 'cashbook:'.$cashbook->id;
+        $incomingDoc->contractor_type = $contractorType;
+        $incomingDoc->contractor_id = $contractorId;
         $incomingDoc->sum = $outgoingTotalAmount;
         $incomingDoc->currency = $this->company->currency->code;
         $incomingDoc->count = $incomingTotalCount;
         $incomingDoc->save();
 
-        // Storage
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $store->id;
         $storeDoc->company_id = $this->company->id;
@@ -225,10 +229,11 @@ class ReturnProducts extends Component
         $storeDoc->doc_id = $incomingDoc->id;
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-1')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
-        $storeDoc->from_contractor = 'cashbook:'.$cashbook->id;
-        $storeDoc->to_contractor = 'store:'.$store->id;
+        $storeDoc->contractor_type = $contractorType;
+        $storeDoc->contractor_id = $contractorId;
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $outgoingTotalAmount;
+        $storeDoc->count = $incomingTotalCount;
         $storeDoc->sum = $outgoingTotalAmount;
         $storeDoc->save();
 

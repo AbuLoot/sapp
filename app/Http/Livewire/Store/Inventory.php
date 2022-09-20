@@ -262,13 +262,13 @@ class Inventory extends Component
         $storeDoc->doc_id = $revision->id;
         $storeDoc->doc_type_id = $docType->id;
         $storeDoc->products_data = json_encode($productsData);
-        $storeDoc->from_contractor = $this->company->title;
-        $storeDoc->to_contractor = '';
+        $storeDoc->contractor_type = 'Company';
+        $storeDoc->contractor_id = $this->company->id;
         $storeDoc->incoming_amount = $inventoryData['surplusTotalAmount'];
         $storeDoc->outgoing_amount = $inventoryData['shortageTotalAmount'];
         $storeDoc->count = $inventoryData['productsCount'];
         $storeDoc->sum = 0;
-        $storeDoc->comment = '';
+        // $storeDoc->comment = '';
         $storeDoc->save();
 
         session()->flash('message', 'Запись изменена');

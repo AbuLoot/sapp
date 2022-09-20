@@ -21,9 +21,10 @@ class CreateStoreDocsTable extends Migration
             $table->integer('doc_id');
             $table->integer('doc_type_id');
             $table->json('products_data');
-            $table->char('from_contractor')->nullable();
-            $table->char('to_contractor')->nullable();
-            $table->integer('incoming_amount');
+            $table->char('contractor_type')->nullable();
+            $table->integer('from_contractor')->nullable();
+            $table->integer('to_contractor')->nullable();
+            $table->integer('incoming_amount')->nullable();
             $table->integer('outgoing_amount')->nullable();
             $table->integer('count');
             $table->integer('sum');

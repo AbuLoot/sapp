@@ -6,7 +6,7 @@ use Livewire\Component;
 
 use App\Models\User;
 
-class AddClient extends Component
+class AddCustomer extends Component
 {
     public $name;
     public $lastname;
@@ -34,12 +34,12 @@ class AddClient extends Component
         $user->save();
 
         $this->dispatchBrowserEvent('show-toast', [
-            'message' => 'Запись добавлена', 'selector' => 'closeAddClient'
+            'message' => 'Запись добавлена', 'selector' => 'closeAddCustomer'
         ]);
     }
 
     public function render()
     {
-        return view('livewire.cashbook.add-client');
+        return view('livewire.cashbook.add-customer');
     }
 }

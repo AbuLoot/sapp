@@ -54,4 +54,14 @@ class Company extends Model
     {
         return $this->belongsTo('App\Models\Currency', 'currency_id');
     }
+
+    public function storeContracts()
+    {
+        return $this->morphMany(StoreDoc::class, 'contractor');
+    }
+
+    public function cashContracts()
+    {
+        return $this->morphMany(CashDoc::class, 'contractor');
+    }
 }

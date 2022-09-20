@@ -44,7 +44,7 @@ class StoreDocs extends Component
         $appends = [];
 
         if (strlen($this->search) >= 2) {
-            $query->where('to_contractor', 'like', '%'.$this->search.'%');
+            $query->where('contractor', 'like', '%'.$this->search.'%');
         }
 
         if ($this->startDate || $this->endDate) {

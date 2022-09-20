@@ -83,8 +83,11 @@ class SaleOnCredit extends Component
 
         $store = session()->get('store');
         $cashbook = session()->get('cashbook');
-        $clientId = 'user:'.$user->id;
+        $workplaceId = session()->get('cashdeskWorkplace');
         $cartProducts = session()->get('cartProducts') ?? [];
+
+        $contractorType = 'App\Models\User';
+        $contractorId = $user->id;
 
         foreach($cartProducts as $productId => $cartProduct) {
 
@@ -146,11 +149,12 @@ class SaleOnCredit extends Component
         $incomingOrder->cashbook_id = $cashbook->id;
         $incomingOrder->company_id = $this->company->id;
         $incomingOrder->user_id = auth()->user()->id;
-        $incomingOrder->cashier_name = auth()->user()->name;
+        $incomingOrder->workplace_id = $workplaceId;
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $incomingOrder->products_data = json_encode($productsData);
-        $incomingOrder->from_contractor = $clientId;
+        $incomingOrder->contractor_type = $contractorType;
+        $incomingOrder->contractor_id = $contractorId;
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = 0;
@@ -164,8 +168,8 @@ class SaleOnCredit extends Component
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->doc_id = $incomingOrder->id;
         $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
-        $cashDoc->from_contractor = $clientId;
-        $cashDoc->to_contractor = 'store:'.$store->id;
+        $cashDoc->contractor_type = $contractorType;
+        $cashDoc->contractor_id = $contractorId;
         $cashDoc->incoming_amount = 0;
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
@@ -207,12 +211,12 @@ class SaleOnCredit extends Component
         $outgoingDoc->store_id = $store->id;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
-        $outgoingDoc->username = auth()->user()->name;
         $outgoingDoc->doc_no = $storeDocNo;
         $outgoingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $outgoingDoc->inc_order_id = $incomingOrder->id;
         $outgoingDoc->products_data = json_encode($productsData);
-        $outgoingDoc->to_contractor = 'cashbook:'.$cashbook->id;
+        $outgoingDoc->contractor_type = $contractorType;
+        $outgoingDoc->contractor_id = $contractorId;
         $outgoingDoc->sum = 0;
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $outgoingTotalCount;
@@ -225,12 +229,12 @@ class SaleOnCredit extends Component
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
-        // $storeDoc->contractor_type = '';
-        $storeDoc->from_contractor = $clientId;
-        $storeDoc->to_contractor = 'cashbook:'.$cashbook->id;
+        $storeDoc->contractor_type = $contractorType;
+        $storeDoc->contractor_id = $contractorId;
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = 0;
-        $storeDoc->sum = $outgoingTotalCount;
+        $storeDoc->count = $outgoingTotalCount;
+        $storeDoc->sum = $incomingTotalAmount;
         $storeDoc->save();
 
         session()->put('docs', [
@@ -245,17 +249,17 @@ class SaleOnCredit extends Component
 
     public function render()
     {
-        $clients = [];
+        $customers = [];
 
         if (strlen($this->search) >= 2) {
-            $clients = User::where('name', 'like', $this->search.'%')
+            $customers = User::where('name', 'like', $this->search.'%')
                 ->orWhere('lastname', 'like', $this->search.'%')
                 ->orWhere('tel', 'like', $this->search.'%')
                 ->get()
                 ->take(7);
         }
 
-        return view('livewire.cashbook.payment-types.sale-on-credit', ['clients' => $clients])
+        return view('livewire.cashbook.payment-types.sale-on-credit', ['customers' => $customers])
             ->layout('livewire.cashbook.layout');
     }
 }

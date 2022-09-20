@@ -65,7 +65,7 @@
         </ul>
 
         <div class="dropdown d-flex text-end">
-          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-4 text-white"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end text-small shadow">

@@ -17,13 +17,14 @@ class CreateIncomingOrdersTable extends Migration
             $table->increments('id');
             $table->integer('cashbook_id');
             $table->integer('company_id');
+            $table->integer('workplace_id')->nullable();
             $table->integer('user_id');
-            $table->char('cashier_name');
             $table->string('doc_no');
             $table->integer('doc_type_id');
             $table->integer('out_doc_id')->nullable();
             $table->json('products_data')->nullable();
-            $table->char('from_contractor')->nullable();
+            $table->char('contractor_type')->nullable();
+            $table->integer('from_contractor')->nullable();
             $table->integer('payment_type_id')->nullable();
             $table->json('payment_detail')->nullable();
             $table->integer('sum');

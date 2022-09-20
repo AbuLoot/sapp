@@ -30,13 +30,13 @@ class ComplexPayment extends Component
     public $complexPayments = [];
     public $cashPayment;
     public $bankCard;
-    public $onKaspi;
+    public $kaspiTransfer;
 
     protected $rules = [
         'complexPayments' => 'array|max:2',
         'cashPayment' => 'integer|min:2',
         'bankCard' => 'integer|min:2',
-        'onKaspi' => 'integer|min:2'
+        'kaspiTransfer' => 'integer|min:2'
     ];
 
     public function mount()
@@ -45,7 +45,7 @@ class ComplexPayment extends Component
         $this->sumOfCart = Index::sumOfCart();
         $this->company = auth()->user()->profile->company;
         $this->paymentType = PaymentType::where('slug', 'complex-payment')->first();
-        $this->paymentTypes = PaymentType::whereIn('slug', ['cash-payment', 'bank-card', 'on-kaspi'])->get();
+        $this->paymentTypes = PaymentType::whereIn('slug', ['cash-payment', 'bank-card', 'kaspi-transfer'])->get();
     }
 
     public function updated($key, $value)
@@ -77,8 +77,16 @@ class ComplexPayment extends Component
 
         $store = session()->get('store');
         $cashbook = session()->get('cashbook');
-        $clientId = session()->get('client') ? 'user:'.session()->get('client')->id : null;
+        $workplaceId = session()->get('cashdeskWorkplace');
         $cartProducts = session()->get('cartProducts') ?? [];
+
+        $contractorType = null;
+        $contractorId = null;
+
+        if (session()->has('customer')) {
+            $contractorType = 'App\Models\User';
+            $contractorId = session()->get('customer')->id;
+        }
 
         foreach($cartProducts as $productId => $cartProduct) {
 
@@ -138,11 +146,12 @@ class ComplexPayment extends Component
         $incomingOrder->cashbook_id = $cashbook->id;
         $incomingOrder->company_id = $this->company->id;
         $incomingOrder->user_id = auth()->user()->id;
-        $incomingOrder->cashier_name = auth()->user()->name;
+        $incomingOrder->workplace_id = $workplaceId;
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $incomingOrder->products_data = json_encode($productsData);
-        $incomingOrder->from_contractor = $clientId;
+        $incomingOrder->contractor_type = $contractorType;
+        $incomingOrder->contractor_id = $contractorId;
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = $this->sumOfCart['sumDiscounted'];
@@ -156,8 +165,8 @@ class ComplexPayment extends Component
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->doc_id = $incomingOrder->id;
         $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
-        $cashDoc->from_contractor = $clientId;
-        $cashDoc->to_contractor = 'store:'.$store->id;
+        $cashDoc->contractor_type = $contractorType;
+        $cashDoc->contractor_id = $contractorId;
         $cashDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
@@ -169,12 +178,12 @@ class ComplexPayment extends Component
         $outgoingDoc->store_id = $store->id;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
-        $outgoingDoc->username = auth()->user()->name;
         $outgoingDoc->doc_no = $storeDocNo;
         $outgoingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $outgoingDoc->inc_order_id = $incomingOrder->id;
         $outgoingDoc->products_data = json_encode($productsData);
-        $outgoingDoc->to_contractor = 'cashbook:'.$cashbook->id;
+        $outgoingDoc->contractor_type = $contractorType;
+        $outgoingDoc->contractor_id = $contractorId;
         $outgoingDoc->sum = $this->sumOfCart['sumDiscounted'];
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $outgoingTotalCount;
@@ -187,11 +196,12 @@ class ComplexPayment extends Component
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
         $storeDoc->products_data = json_encode($productsData);
-        $storeDoc->from_contractor = $clientId;
-        $storeDoc->to_contractor = 'cashbook:'.$cashbook->id;
+        $storeDoc->contractor_type = $contractorType;
+        $storeDoc->contractor_id = $contractorId;
         $storeDoc->incoming_amount = $this->sumOfCart['sumDiscounted'];
         $storeDoc->outgoing_amount = 0;
-        $storeDoc->sum = $outgoingTotalCount;
+        $storeDoc->count = $outgoingTotalCount;
+        $storeDoc->sum = $incomingTotalAmount;
         $storeDoc->save();
 
         session()->put('docs', [
