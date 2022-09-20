@@ -51,10 +51,23 @@ class OpeningCash extends Component
         $cashShift->sum = $lastCloseCashShift->sum ?? null;
         $cashShift->currency = $this->company->currency->code;
         $cashShift->mode = 'open';
-        $cashShift->shift_time = date('h:i:s');
+        $cashShift->opening_time = date('h:i:s');
         $cashShift->save();
 
-        Cache()->put('openedCash', $this->cashbook->id);
+        // Cash Doc
+        $cashDoc = new CashDoc;
+        $cashDoc->cashbook_id = $this->cashbook->id;
+        $cashDoc->company_id = $this->company->id;
+        $cashDoc->user_id = auth()->user()->id;
+        $cashDoc->order_type = 'App\Models\CashShiftJournal';
+        $cashDoc->order_id = $cashShift->id;
+        $cashDoc->incoming_amount = 0;
+        $cashDoc->outgoing_amount = 0;
+        $cashDoc->sum = 0;
+        $cashDoc->currency = $this->company->currency->code;
+        $cashDoc->save();
+
+        Cache()->put('openedCash', $cashShift->id);
 
         return redirect(app()->getLocale().'/cashdesk');
     }

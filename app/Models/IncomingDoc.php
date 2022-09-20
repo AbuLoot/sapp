@@ -36,4 +36,9 @@ class IncomingDoc extends Model
     {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
+
+    public function storeDoc()
+    {
+        return $this->morphOne(StoreDoc::class, 'doc');
+    }
 }

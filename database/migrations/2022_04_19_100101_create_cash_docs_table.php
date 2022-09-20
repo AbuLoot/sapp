@@ -18,11 +18,11 @@ class CreateCashDocsTable extends Migration
             $table->integer('cashbook_id');
             $table->integer('company_id');
             $table->integer('user_id');
-            $table->integer('doc_id');
-            $table->integer('doc_type_id');
+            $table->char('order_type');
+            $table->integer('order_id');
+            $table->integer('doc_id')->nullable();
             $table->char('contractor_type')->nullable();
-            $table->integer('from_contractor')->nullable();
-            $table->integer('to_contractor')->nullable();
+            $table->integer('contractor_id')->nullable();
             $table->integer('incoming_amount')->nullable();
             $table->integer('outgoing_amount')->nullable();
             $table->integer('sum');

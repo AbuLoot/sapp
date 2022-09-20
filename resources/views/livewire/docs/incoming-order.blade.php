@@ -64,7 +64,7 @@
       </tbody>
     </table>
     <br><br>
-    <p>Принято от {{ $clientName }}</p>
+    <p>Принято от {{ $customerName }}</p>
     <p>Метод оплаты: {{ $paymentType }}</p>
     <p>Кассир: {{ $cashierName }}</p>
     <br>

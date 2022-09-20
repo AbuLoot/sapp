@@ -19,13 +19,14 @@ class CashDoc extends Model
         return $this->belongsTo('App\Models\Cashbook', 'cashbook_id');
     }
 
+    public function order()
+    {
+        return $this->morphTo();
+    }
+
     public function contractor()
     {
         return $this->morphTo();
     }
 
-    public function doc_type()
-    {
-        return $this->belongsTo('App\Models\DocType', 'doc_type_id');
-    }
 }

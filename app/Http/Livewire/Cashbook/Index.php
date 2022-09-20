@@ -310,6 +310,7 @@ class Index extends Component
     {
         $products = [];
         $customers = [];
+        $sumOfCart = $this->sumOfCart();
 
         if (strlen($this->search) >= 2) {
             $products = Product::search($this->search)->get()->take(7);
@@ -326,7 +327,7 @@ class Index extends Component
         $this->cartProducts = session()->get('cartProducts') ?? [];
         $this->totalDiscount = session()->get('totalDiscount');
 
-        return view('livewire.cashbook.index', ['products' => $products, 'customers' => $customers])
+        return view('livewire.cashbook.index', ['products' => $products, 'customers' => $customers, 'sumOfCart' => $sumOfCart])
             ->layout('livewire.cashbook.layout');
     }
 }

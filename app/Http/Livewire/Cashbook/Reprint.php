@@ -58,7 +58,7 @@ class Reprint extends Component
     {
         $incomingOrders = [];
 
-        if (strlen($this->search) >= 2) {
+        if ($this->search) {
             $incomingOrders = IncomingOrder::where('doc_no', 'like', '%'.$this->search.'%')->paginate(12);
         }
 

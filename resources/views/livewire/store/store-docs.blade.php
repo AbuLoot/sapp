@@ -36,15 +36,9 @@
           </tr>
         </thead>
         <tbody>
-          <?php
-            $models = [
-              'App\Models\Company' => 'title',
-              'App\Models\User' => 'name',
-            ];
-          ?>
           @forelse($storeDocs as $index => $storeDoc)
             <tr>
-              <td>{{ $storeDoc->doc_type->title }}</td>
+              <td>{{ $storeDoc->doc->doc_no }}</td>
               <td>{{ $storeDoc->store->id }}</td>
               <td>{{ $storeDoc->user->name }}</td>
               <td>
@@ -99,11 +93,11 @@
                   <tbody>
                     <tr>
                       <th scope="row">Тип документа</th>
-                      <td>{{ $docType->type }}</td>
+                      <td>{{ $docDetail->doc->docType->type }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Название документа</th>
-                      <td>{{ $docType->title }}</td>
+                      <td>{{ $docDetail->doc->docType->title }}</td>
                     </tr>
                     <tr>
                       <th scope="row">ID документа</th>

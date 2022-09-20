@@ -27,7 +27,8 @@ class CreateCashShiftJournalTable extends Migration
             $table->integer('sum')->nullable();
             $table->char('currency')->nullable();
             $table->enum('mode', ['open', 'close']);
-            $table->time('shift_time');
+            $table->datetime('opening_time');
+            $table->datetime('closing_time')->nullable();
             $table->timestamps();
         });
     }

@@ -263,7 +263,6 @@
                       <a wire:click="switchTotalDiscountView()" href="#">{{ $totalDiscount ?? 0 }}% <i class="bi bi-pencil-square"></i></a>
                     @endif
                   </td>
-                  <?php $sumOfCart = \App\Http\Livewire\Cashbook\Index::sumOfCart(); ?>
                   <td class="text-center text-bg-success" rowspan="2">
                     <h5>Сумма</h5>
                     <b>{{ $sumOfCart['sumDiscounted'] . $company->currency->symbol }}</b><br>

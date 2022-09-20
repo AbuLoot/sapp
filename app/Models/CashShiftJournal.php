@@ -10,4 +10,9 @@ class CashShiftJournal extends Model
     use HasFactory;
 
     protected $table = 'cash_shift_journal';
+
+    public function cashDoc()
+    {
+        return $this->morphOne(CashDoc::class, 'order');
+    }
 }

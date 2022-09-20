@@ -9,13 +9,13 @@ class DocType extends Model
 {
     use HasFactory;
 
-    public function store_docs()
+    public function IncomingDocs()
     {
-        return $this->hasMany('App\Models\StoreDoc');
+        return $this->hasMany('App\Models\IncomingDoc');
     }
 
-    public function cashbook_docs()
+    public function OutgoingDocs()
     {
-        return $this->hasMany('App\Models\CashbookDoc');
+        return $this->hasMany('App\Models\OutgoingDoc');
     }
 }

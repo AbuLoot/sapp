@@ -21,10 +21,9 @@ class CreateIncomingOrdersTable extends Migration
             $table->integer('user_id');
             $table->string('doc_no');
             $table->integer('doc_type_id');
-            $table->integer('out_doc_id')->nullable();
             $table->json('products_data')->nullable();
             $table->char('contractor_type')->nullable();
-            $table->integer('from_contractor')->nullable();
+            $table->integer('contractor_id')->nullable();
             $table->integer('payment_type_id')->nullable();
             $table->json('payment_detail')->nullable();
             $table->integer('sum');

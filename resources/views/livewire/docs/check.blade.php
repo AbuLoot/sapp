@@ -6,7 +6,7 @@
       <h5>Квитанция к приходному кассовому ордеру</h5>
       <p>№{{ $docNo }}</p>
     </div>
-    <p>Принято от {{ $clientName }}</p>
+    <p>Принято от {{ $customerName }}</p>
     <hr>
     <table>
       <tbody>

@@ -10,4 +10,9 @@ class OutgoingOrder extends Model
     use HasFactory;
 
     protected $table = 'outgoing_orders';
+
+    public function cashDoc()
+    {
+        return $this->morphOne(CashDoc::class, 'order');
+    }
 }

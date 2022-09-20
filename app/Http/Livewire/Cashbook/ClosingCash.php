@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Cashbook;
 
+use Illuminate\Support\Facades\Cache;
+
 use Livewire\Component;
 
 use App\Models\DocType;
@@ -10,7 +12,6 @@ use App\Models\CashShiftJournal;
 
 class ClosingCash extends Component
 {
-    public $lang;
     public $company;
     public $nominals = [];
     public $attr = [];
@@ -19,8 +20,8 @@ class ClosingCash extends Component
 
     public function mount()
     {
-        $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
+        $this->cashbook = session()->get('cashbook');
 
         $this->nominals = [
             // Coins
@@ -75,42 +76,38 @@ class ClosingCash extends Component
 
     public function closeTheCash()
     {
-        $cashbook = $this->company->cashbooks->first();
-        $docType = DocType::where('slug', 'forma-ko-5')->first();
+        $sum = 0;
 
-        $lastOpenCashShift = CashShiftJournal::where('cashbook_id', $cashbook->id)
-            ->whereNull('to_user_id')
-            ->whereNull('closing_cash_balance')
-            ->where('mode', 'open')
-            ->orderByDesc('id')
-            ->first();
-
-        $cashDocs = CashDoc::where('cashbook_id', $cashbook->id)
-            ->where('user_id', auth()->user()->id)
-            ->where('created_at', '<=', $lastOpenCashShift->created_at)
-            ->orderByDesc('id')
-            ->get();
-
-        // Opening Cash
-        $lastOpenCashShift = new CashShiftJournal;
-        $lastOpenCashShift->from_user_id = null;
-        $lastOpenCashShift->to_user_id = auth()->user->id;
-        // $cashShift->save();
+        foreach($this->nominals as $amount => $quantity) {
+            $sum += $amount * $quantity;
+        }
 
         // Close The Cash
-        $cashShift = new CashShiftJournal;
-        $cashShift->cashbook_id = $cashbook->id;
-        $cashShift->company_id = $cashbook->company_id;
-        $cashShift->from_user_id = auth()->user()->id;
-        $cashShift->to_user_id = null;
-        $cashShift->opening_cash_balance = null;
-        $cashShift->closing_cash_balance = null;
-        $cashShift->banknotes_and_coins = json_encode($this->nominals);
-        $cashShift->sum = null;
-        $cashShift->currency = $this->company->currency->code;
-        $cashShift->mode = 'close';
-        $cashShift->shift_time = null;
-        // $cashShift->save();
+        $lastOpenCashShift = CashShiftJournal::find(Cache::get('openedCash'));
+        $lastOpenCashShift->to_user_id = auth()->user()->id;
+        $lastOpenCashShift->closing_cash_balance = $sum;
+        $lastOpenCashShift->banknotes_and_coins = json_encode($this->nominals);
+        $lastOpenCashShift->sum = $sum;
+        $lastOpenCashShift->mode = 'close';
+        $lastOpenCashShift->closing_time = date('h:i:s');
+        $lastOpenCashShift->save();
+
+        // Cash Doc
+        $cashDoc = new CashDoc;
+        $cashDoc->cashbook_id = $this->cashbook->id;
+        $cashDoc->company_id = $this->company->id;
+        $cashDoc->user_id = auth()->user()->id;
+        $cashDoc->order_type = 'App\Models\CashShiftJournal';
+        $cashDoc->order_id = $lastOpenCashShift->id;
+        $cashDoc->incoming_amount = 0;
+        $cashDoc->outgoing_amount = 0;
+        $cashDoc->sum = 0;
+        $cashDoc->currency = $this->company->currency->code;
+        $cashDoc->save();
+
+        Cache::forget('openedCash');
+
+        return redirect('dashboard');
     }
 
     public function render()

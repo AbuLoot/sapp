@@ -8,6 +8,9 @@ use Livewire\WithPagination;
 use App\Models\StoreDoc;
 use App\Models\DocType;
 use App\Models\Product;
+use App\Models\Company;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 
 class StoreDocs extends Component
 {
@@ -18,7 +21,6 @@ class StoreDocs extends Component
     public $lang;
     public $search = '';
     public $docDetail;
-    public $docType;
     public $docProducts = [];
     public $startDate = [];
     public $endDate = [];
@@ -31,7 +33,6 @@ class StoreDocs extends Component
     public function docDetail($id)
     {
         $this->docDetail = StoreDoc::findOrFail($id);
-        $this->docType = DocType::where('id', $this->docDetail->doc_type_id)->first();
         $productsData = json_decode($this->docDetail->products_data, true);
         $productsKeys = collect($productsData)->keys();
         $this->docProducts = Product::whereIn('id', $productsKeys->all())->get();
@@ -44,7 +45,10 @@ class StoreDocs extends Component
         $appends = [];
 
         if (strlen($this->search) >= 2) {
-            $query->where('contractor', 'like', '%'.$this->search.'%');
+            $query->whereHasMorph('contractor', [Company::class, User::class], function (Builder $query, $type) {
+                $column = $type === Company::class ? 'title' : 'name';
+                $query->where($column, 'like', $this->search.'%');
+            });
         }
 
         if ($this->startDate || $this->endDate) {

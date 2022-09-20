@@ -24,7 +24,7 @@ class Store extends Model
         return $this->morphMany(Workplace::class, 'workplace');
     }
 
-    public function store_docs()
+    public function storeDocs()
     {
         return $this->hasMany('App\Models\StoreDoc');
     }

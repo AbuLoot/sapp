@@ -24,8 +24,8 @@ class Cashbook extends Model
         return $this->morphMany(Workplace::class, 'workplace');
     }
 
-    public function cashbook_docs()
+    public function cashDocs()
     {
-        return $this->hasMany('App\Models\CashbookDoc');
+        return $this->hasMany('App\Models\CashDoc');
     }
 }

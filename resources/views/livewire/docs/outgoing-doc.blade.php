@@ -38,7 +38,7 @@
         </tr>
         <tr>
           <td>{{ $companyName }}</td>
-          <td>{{ $clientName }}</td>
+          <td>{{ $customerName }}</td>
           <td></td>
           <td></td>
           <td></td>

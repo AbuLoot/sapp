@@ -70,7 +70,6 @@ class SaleOnCredit extends Component
         $user = User::findOrFail($id);
 
         $paymentDetail['typeId'] = $this->paymentType->id;
-        $paymentDetail['type'] = $this->paymentType->slug;
         $paymentDetail['userId'] = $user->id;
         $paymentDetail['debtSum'] = $this->sumOfCart['sumDiscounted'];
         $paymentDetail['incomingOrder'] = null;
@@ -144,7 +143,7 @@ class SaleOnCredit extends Component
         $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
         $storeDocNo = $this->generateOutgoingStoreDocNo($store->id);
 
-        // Cashbook Docs
+        // Cash Doc
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $cashbook->id;
         $incomingOrder->company_id = $this->company->id;
@@ -162,19 +161,20 @@ class SaleOnCredit extends Component
         $incomingOrder->count = $this->sumOfCart['totalCount'];
         $incomingOrder->save();
 
-        $cashDoc = new CashDoc;
-        $cashDoc->cashbook_id = $cashbook->id;
-        $cashDoc->company_id = $this->company->id;
-        $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_id = $incomingOrder->id;
-        $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
-        $cashDoc->contractor_type = $contractorType;
-        $cashDoc->contractor_id = $contractorId;
-        $cashDoc->incoming_amount = 0;
-        $cashDoc->outgoing_amount = 0;
-        $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
-        $cashDoc->currency = $this->company->currency->code;
-        $cashDoc->save();
+        // Store Doc
+        $outgoingDoc = new OutgoingDoc;
+        $outgoingDoc->store_id = $store->id;
+        $outgoingDoc->company_id = $this->company->id;
+        $outgoingDoc->user_id = auth()->user()->id;
+        $outgoingDoc->doc_no = $storeDocNo;
+        $outgoingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
+        $outgoingDoc->products_data = json_encode($productsData);
+        $outgoingDoc->contractor_type = $contractorType;
+        $outgoingDoc->contractor_id = $contractorId;
+        $outgoingDoc->sum = 0;
+        $outgoingDoc->currency = $this->company->currency->code;
+        $outgoingDoc->count = $outgoingTotalCount;
+        $outgoingDoc->save();
 
         if (empty($user->profile)) {
 
@@ -206,28 +206,30 @@ class SaleOnCredit extends Component
             $user->profile->save();
         }
 
-        // Storage Docs
-        $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $store->id;
-        $outgoingDoc->company_id = $this->company->id;
-        $outgoingDoc->user_id = auth()->user()->id;
-        $outgoingDoc->doc_no = $storeDocNo;
-        $outgoingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
-        $outgoingDoc->inc_order_id = $incomingOrder->id;
-        $outgoingDoc->products_data = json_encode($productsData);
-        $outgoingDoc->contractor_type = $contractorType;
-        $outgoingDoc->contractor_id = $contractorId;
-        $outgoingDoc->sum = 0;
-        $outgoingDoc->currency = $this->company->currency->code;
-        $outgoingDoc->count = $outgoingTotalCount;
-        $outgoingDoc->save();
+        // Cash Doc
+        $cashDoc = new CashDoc;
+        $cashDoc->cashbook_id = $cashbook->id;
+        $cashDoc->company_id = $this->company->id;
+        $cashDoc->user_id = auth()->user()->id;
+        $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
+        $cashDoc->order_id = $incomingOrder->id;
+        $cashDoc->doc_id = $outgoingDoc->id;
+        $cashDoc->contractor_type = $contractorType;
+        $cashDoc->contractor_id = $contractorId;
+        $cashDoc->incoming_amount = 0;
+        $cashDoc->outgoing_amount = 0;
+        $cashDoc->sum = $this->sumOfCart['sumDiscounted'];
+        $cashDoc->currency = $this->company->currency->code;
+        $cashDoc->save();
 
+        // Store Doc
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $store->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
-        $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
+        $storeDoc->doc_id = $outgoingDoc->id;
+        $storeDoc->order_id = $incomingOrder->id;
         $storeDoc->products_data = json_encode($productsData);
         $storeDoc->contractor_type = $contractorType;
         $storeDoc->contractor_id = $contractorId;
