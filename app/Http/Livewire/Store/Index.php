@@ -16,9 +16,9 @@ class Index extends Component
 
     public $lang;
     public $search = '';
-    public $type = 1;
-    public $category_id;
-    public $company_id;
+    public $type;
+    public $categoryId;
+    public $companyId;
     public $productsId = [];
     public $deleteMode = false;
 
@@ -26,6 +26,13 @@ class Index extends Component
     {
         $this->lang = app()->getLocale();
     }
+
+    public function resetFilter()
+    {
+        $this->type = null;
+        $this->categoryId = null;
+        $this->companyId = null;
+    }   
 
     public function activateDeleteMode()
     {
@@ -59,25 +66,31 @@ class Index extends Component
 
     public function render()
     {
-        $query = Product::where('type', $this->type)->orderBy('id', 'desc');
+        $query = Product::orderBy('id', 'desc');
         $appends = [];
 
         if (strlen($this->search) >= 2) {
             $query->where('title', 'like', '%'.$this->search.'%');
         }
 
-        if ($this->category_id) {
-            $query->where('category_id', $this->category_id);
-            $appends['category_id'] = $this->category_id;
+        if ($this->type) {
+            $query->where('type', $this->type);
+            $appends['type'] = $this->type;
         }
 
-        if ($this->company_id) {
-            $query->where('company_id', $this->company_id);
-            $appends['company_id'] = $this->company_id;
+        if ($this->categoryId) {
+            $query->where('category_id', $this->categoryId);
+            $appends['categoryId'] = $this->categoryId;
+        }
+
+        if ($this->companyId) {
+            $query->where('company_id', $this->companyId);
+            $appends['companyId'] = $this->companyId;
         }
 
         $products = $query->paginate(30);
         $products->appends($appends);
+
 
         return view('livewire.store.index', ['products' => $products])
             ->layout('livewire.store.layout');

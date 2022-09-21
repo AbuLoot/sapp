@@ -15,4 +15,9 @@ class OutgoingOrder extends Model
     {
         return $this->morphOne(CashDoc::class, 'order');
     }
+
+    public function docType()
+    {
+        return $this->belongsTo('App\Models\DocType', 'doc_type_id');
+    }
 }

@@ -44,8 +44,8 @@ class AddCompany extends Component
             'status' => 1,
         ]);
 
+        $this->dispatchBrowserEvent('show-toast', ['message' => 'Запись добавлена', 'selector' => 'addCompany']);
         $this->emitUp('newData');
-        // $this->dispatchBrowserEvent('close-modal', ['addCompany' => 'addCompany']);
     }
 
     public function render()

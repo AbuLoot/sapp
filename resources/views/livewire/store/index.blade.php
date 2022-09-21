@@ -86,7 +86,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="8">No docs</td>
+              <td colspan="8">No data</td>
             </tr>
           @endforelse
         </tbody>
@@ -118,8 +118,8 @@
             </div>
 
             <div class="mb-3">
-              <label for="category_id">Категории</label>
-              <select wire:model="category_id" class="form-control @error('category_id') is-invalid @enderror" id="category_id" >
+              <label for="categoryId">Категории</label>
+              <select wire:model="categoryId" class="form-control @error('categoryId') is-invalid @enderror" id="categoryId" >
                 <option value="">Выберите категорию...</option>
                 <?php $traverse = function ($nodes, $prefix = null) use (&$traverse) { ?>
                   <?php foreach ($nodes as $node) : ?>
@@ -130,28 +130,28 @@
                 <?php $categories = \App\Models\Category::orderBy('sort_id')->get()->toTree(); ?>
                 <?php $traverse($categories); ?>
               </select>
-              @error('category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+              @error('categoryId')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="mb-3">
               <?php $companies = \App\Models\Company::where('is_supplier', 1)->get(); ?>
-              <label for="company_id">Поставщик</label>
-              <select wire:model="company_id" class="form-control @error('company_id') is-invalid @enderror" id="company_id">
+              <label for="companyId">Поставщик</label>
+              <select wire:model="companyId" class="form-control @error('companyId') is-invalid @enderror" id="companyId">
                 <option value="">Выберите поставщика...</option>
                 @foreach($companies as $company)
                   <option value="{{ $company->id }}">{{ $company->title }}</option>
                 @endforeach
               </select>
-              @error('company_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+              @error('companyId')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
           </div>
           <div class="modal-footer">
             <div class="col d-grid" role="group" aria-label="Basic example">
-              <button type="reset" class="btn btn-dark">Сбросить</button>
+              <button wire:click="resetFilter" type="reset" class="btn btn-dark">Сбросить</button>
             </div>
             <div class="col d-grid" role="group" aria-label="Basic example">
-              <button wire:click="apply" type="button" class="btn btn-primary">Применить</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Применить</button>
             </div>
           </div>
         </div>

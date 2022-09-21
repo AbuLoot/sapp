@@ -19,7 +19,7 @@ class StoreDocs extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $lang;
-    public $search = '';
+    public $search;
     public $docDetail;
     public $docProducts = [];
     public $startDate = [];

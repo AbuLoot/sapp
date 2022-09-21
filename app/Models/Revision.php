@@ -15,4 +15,14 @@ class Revision extends Model
     {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
+
+    public function storeDoc()
+    {
+        return $this->morphOne(StoreDoc::class, 'doc');
+    }
+
+    public function docType()
+    {
+        return $this->belongsTo('App\Models\DocType', 'doc_type_id');
+    }
 }

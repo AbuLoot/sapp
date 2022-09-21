@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRevisionDraftsTable extends Migration
+class CreateProductsDraftsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRevisionDraftsTable extends Migration
      */
     public function up()
     {
-        Schema::create('revision_drafts', function (Blueprint $table) {
+        Schema::create('products_drafts', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
             $table->string('title')->nullable();
@@ -31,6 +31,6 @@ class CreateRevisionDraftsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('revision_drafts');
+        Schema::dropIfExists('products_drafts');
     }
 }

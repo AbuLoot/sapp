@@ -11,6 +11,7 @@ use App\Models\StoreDoc;
 use App\Models\IncomingDoc;
 use App\Models\DocType;
 use App\Models\Product;
+use App\Models\ProductDraft;
 
 use App\Traits\GenerateDocNo;
 
@@ -23,8 +24,9 @@ class Income extends Component
     public $lang;
     public $units;
     public $storeId;
-    public $search = '';
+    public $search;
     public $incomeProducts = [];
+    public $draftProducts = [];
     public $count = [];
 
     public function mount()
@@ -32,7 +34,7 @@ class Income extends Component
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
         $this->company = auth()->user()->profile->company;
-        $this->storeId = $this->company->first()->id;
+        $this->storeId = session()->get('storage')->id;
     }
 
     public function updated($key, $value)
@@ -65,8 +67,8 @@ class Income extends Component
             $this->resetErrorBag('storeId');
         }
 
-        $products_data = [];
-        $count_in_stores = [];
+        $productsData = [];
+        $countInStores = [];
         $incomeTotalCount = 0;
         $incomeTotalAmount = 0;
 
@@ -74,18 +76,17 @@ class Income extends Component
 
             $product = Product::findOrFail($productId);
 
-            $products_data[$productId]['incomingCount'] = $incomeProduct['incomingCount'];
-            $products_data[$productId]['unit'] = $product->unit;
-            $products_data[$productId]['title'] = $product->title;
-            $products_data[$productId]['barcodes'] = json_decode($product->barcodes, true);
+            $productsData[$productId]['count'] = $incomeProduct['incomingCount'];
+            $productsData[$productId]['unit'] = $product->unit;
+            $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
             $incomeTotalCount = $incomeTotalCount + $incomeProduct['incomingCount'];
             $incomeTotalAmount = $incomeTotalAmount + ($product->purchase_price * $incomeProduct['incomingCount']);
 
-            $count_in_stores = json_decode($product->count_in_stores, true) ?? [''];
-            $count_in_stores[$this->storeId] = $incomeProduct['incomingCount'];
+            $countInStores = json_decode($product->count_in_stores, true) ?? [''];
+            $countInStores[$this->storeId] = $incomeProduct['incomingCount'];
 
-            $product->count_in_stores = json_encode($count_in_stores);
+            $product->count_in_stores = json_encode($countInStores);
             $product->count += $incomeProduct['incomingCount'];
             $product->save();
         }
@@ -100,35 +101,33 @@ class Income extends Component
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $company->stores->first()->id;
         $incomingDoc->company_id = $company->id;
+        $incomingDoc->workplace_id = session()->get('storageWorkplace');
         $incomingDoc->user_id = auth()->user()->id;
-        $incomingDoc->username = auth()->user()->name;
         $incomingDoc->doc_no = $docNo;
         $incomingDoc->doc_type_id = $docType->id;
-        $incomingDoc->products_data = json_encode($products_data);
-        $incomingDoc->from_contractor = '';
+        $incomingDoc->products_data = json_encode($productsData);
         $incomingDoc->sum = $incomeTotalAmount;
         $incomingDoc->currency = $company->currency->code;
         $incomingDoc->count = $incomeTotalCount;
         // $incomingDoc->unit = $this->unit;
-        $incomingDoc->comment = '';
+        // $incomingDoc->comment = '';
         $incomingDoc->save();
 
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $company->stores->first()->id;
         $storeDoc->company_id = $company->id;
         $storeDoc->user_id = auth()->user()->id;
+        $storeDoc->doc_type = 'App\Models\IncomingDoc';
         $storeDoc->doc_id = $incomingDoc->id;
-        $storeDoc->doc_type_id = $docType->id;
-        $storeDoc->products_data = json_encode($products_data);
-        $storeDoc->from_contractor = '';
-        $storeDoc->to_contractor = $company->title;
+        $storeDoc->products_data = json_encode($productsData);
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $incomeTotalAmount;
         $storeDoc->sum = $incomeTotalAmount;
         // $storeDoc->unit = $this->unit;
-        $storeDoc->comment = '';
+        // $storeDoc->comment = '';
         $storeDoc->save();
 
+        session()->flash('message', 'Запись добавлена');
         session()->forget('incomeProducts');
         $this->incomeProducts = [];
     }
@@ -158,6 +157,49 @@ class Income extends Component
 
         unset($incomeProducts[$id]);
         session()->put('incomeProducts', $incomeProducts);
+    }
+
+    public function saveAsDraft()
+    {
+        if (empty($this->incomeProducts)) {
+            session()->flash('message', 'Записи не найдены');
+            return;
+        }
+
+        $coincidence = 0;
+
+        foreach($this->incomeProducts as $productId => $incomeProduct) {
+
+            if (array_key_exists($productId, $this->draftProducts)) {
+                $coincidence++;
+            }
+
+            $this->draftProducts[$productId]['title'] = $incomeProduct['title'];
+            $this->draftProducts[$productId]['barcodes'] = $incomeProduct['barcodes'];
+        }
+
+        if ($coincidence == count($this->incomeProducts)) {
+            session()->flash('message', 'Черновик существует');
+            return;
+        }
+
+        $draftsCount = ProductDraft::where('type', 'income')->count();
+
+        $draft = new ProductDraft;
+        $draft->user_id = auth()->user()->id;
+        $draft->type = 'income';
+        $draft->title = 'Income '.($draftsCount + 1);
+        $draft->products_data = json_encode($this->draftProducts);
+        $draft->count = count($this->draftProducts);
+        $draft->comment = null;
+        $draft->save();
+
+        session()->flash('message', 'Запись добавлена');
+    }
+
+    public function removeIncome()
+    {
+        session()->forget('incomeProducts');
     }
 
     public function render()

@@ -7,7 +7,7 @@
             <div class="display-1">
               <i class="bi bi-journal-bookmark-fill"></i>
             </div>
-            <h4 class="mb-3">Смена закрыто</h4>
+            <h4 class="mb-3">Смена закрыта</h4>
             <button wire:click="backToDashboard" type="button" class="btn btn-outline-dark btn-lg me-1 mb-2">Назад</button>
             <button wire:click="openTheCash" type="button" class="btn btn-success btn-lg me-1 mb-2">Открыть смену</button>
             <br>

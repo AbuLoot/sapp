@@ -41,4 +41,9 @@ class IncomingDoc extends Model
     {
         return $this->morphOne(StoreDoc::class, 'doc');
     }
+
+    public function docType()
+    {
+        return $this->belongsTo('App\Models\DocType', 'doc_type_id');
+    }
 }

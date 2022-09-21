@@ -101,14 +101,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Revision');
     }
 
-    public function revisionsDrafts()
+    public function productsDrafts()
     {
-        return $this->hasMany('App\Models\RevisionDraft');
+        return $this->hasMany('App\Models\ProductDraft');
     }
 
-    public function cashbookDocs()
+    public function cashDocs()
     {
-        return $this->hasOne('App\Models\CashbookDoc');
+        return $this->hasOne('App\Models\CashDoc');
     }
 
     public function incomingOrders()

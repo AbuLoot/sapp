@@ -18,7 +18,7 @@ class InventoryDetail extends Component
     public $lang;
     public $company;
     public $storeId;
-    public $search = '';
+    public $search;
     public $revision;
     public $revisionProducts = [];
 

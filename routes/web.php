@@ -49,6 +49,7 @@ use App\Http\Livewire\Store\Index as StoreIndex;
 use App\Http\Livewire\Store\AddProduct;
 use App\Http\Livewire\Store\EditProduct;
 use App\Http\Livewire\Store\Income;
+use App\Http\Livewire\Store\IncomeDraft;
 use App\Http\Livewire\Store\IncomingDocs;
 use App\Http\Livewire\Store\OutgoingDocs;
 use App\Http\Livewire\Store\Inventory;
@@ -86,6 +87,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
     Route::get('income', Income::class);
+    Route::get('income/drafts', IncomeDraft::class);
     Route::get('docs', IncomingDocs::class);
     Route::get('docs/outgoing', OutgoingDocs::class);
     Route::get('inventory', Inventory::class);

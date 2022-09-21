@@ -22,10 +22,12 @@
       </form>
 
       <ul class="nav col-lg-auto text-end me-lg-2 text-small">
-        <li><a href="#" class="nav-link text-primary"><i class="bi bi-journals"></i></a></li>
-        <li><a href="#" class="nav-link text-primary"><i class="bi bi-file-text-fill"></i></a></li>
-        <li><a href="#" class="nav-link text-primary"><i class="bi bi-file-earmark-plus-fill"></i></a></li>
-        <li><a href="#" class="nav-link text-primary"><i class="bi bi-file-earmark-text-fill"></i></a></li>
+        <li><a href="/{{ $lang }}/storage/income/drafts" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Черновики"><i class="bi bi-journals"></i></a></li>
+        <li><a href="#" wire:click="saveAsDraft" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Сохранить как черновик"><i class="bi bi-file-earmark-plus-fill"></i></a></li>
+        @if($incomeProducts)
+          <li><a href="#" wire:click="incomeListCount" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Провести документ"><i class="bi bi-file-earmark-ruled-fill"></i></a></li>
+          <li><a href="#" wire:click="removeIncome" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Очистить все"><i class="bi bi-file-x-fill"></i></a></li>
+        @endif
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">
@@ -48,13 +50,16 @@
       </div>
     @endif
 
-    <div class="text-end">
-      @foreach($company->stores as $index => $store)
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" wire:model="storeId" id="store{{ $store->id }}" value="{{ $store->id }}" @if($storeId == $store->id) checked @endif>
-          <label class="form-check-label" for="store{{ $store->id }}">{{ $store->title }}</label>
-        </div>
-      @endforeach
+    <div class="row justify-content-end mb-3">
+      <div class="col-3">
+        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
+          <option value="">Выберите склад...</option>
+          @foreach ($company->stores as $store)
+            <option value="{{ $store->id }}"> {{ $store->title }}</option>
+          @endforeach
+        </select>
+        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
     </div>
 
     <div class="table-responsive">
@@ -115,15 +120,6 @@
     </div>
 
     <div class="row">
-      <div class="col-auto">
-        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
-          <option value="">Выберите склад...</option>
-          @foreach ($company->stores as $store)
-            <option value="{{ $store->id }}"> {{ $store->title }}</option>
-          @endforeach
-        </select>
-        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
-      </div>
       <div class="col-auto">
         @if($incomeProducts)
           <a href="#" wire:click="makeDoc" class="btn btn-primary"><i class="bi bi-file-earmark-ruled-fill me-2"></i> Провести документ</a>

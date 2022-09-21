@@ -44,9 +44,8 @@ class AddCategory extends Component
             $category->appendToNode($parentNode)->save();
         }
 
+        $this->dispatchBrowserEvent('show-toast', ['message' => 'Запись добавлена', 'selector' => 'addCategory']);
         $this->emitUp('newData');
-        session()->flash('message', 'Запись добавлена');
-        // $this->dispatchBrowserEvent('hide-modal');
     }
 
     public function render()

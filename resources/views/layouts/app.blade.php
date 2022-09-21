@@ -24,7 +24,6 @@
 		<div class="container-xl">
 		  <a href="/dashboard" class="navbar-brand p-0">
 				<img src="/img/logo.svg" width="auto" height="40">
-				<!-- <span>{{ $title }}</span> -->
 		  </a>
 
 		  @auth
@@ -52,7 +51,7 @@
 
   <div class="px-3 py-3 border-bottom mb-3">
 		<div class="container d-flex flex-wrap justify-content-between align-items-center">
-		  <h2 class="col-3 col-lg-3 mb-md-2 mb-lg-0">{{ $title }}</h2>
+		  <h2>{{ $title }}</h2>
 		</div>
   </div>
 

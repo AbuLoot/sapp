@@ -1,6 +1,6 @@
 <div>
   <!-- Modal Add Company -->
-  <div class="modal fade" id="addCompany" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div wire:ignore.self class="modal fade" id="addCompany" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <form wire:submit.prevent="saveCompany">
@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" data-bs-dismiss="modal" class="btn btn-primary text-center"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
+            <button type="submit" class="btn btn-primary text-center"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
           </div>
         </form>
       </div>

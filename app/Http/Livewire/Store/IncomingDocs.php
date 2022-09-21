@@ -16,7 +16,7 @@ class IncomingDocs extends Component
 
     public $lang;
     public $company;
-    public $search = [];
+    public $search;
     public $docDetail;
     public $docProducts = [];
     public $startDate = [];
@@ -34,6 +34,7 @@ class IncomingDocs extends Component
         $products_data = json_decode($this->docDetail->products_data, true);
         $products_keys = collect($products_data)->keys();
         $this->docProducts = Product::whereIn('id', $products_keys->all())->get();
+
     }
 
     public function render()
@@ -41,7 +42,7 @@ class IncomingDocs extends Component
         $query = IncomingDoc::orderBy('id', 'desc');
         $appends = [];
 
-        if (is_numeric($this->search)) {
+        if (strlen($this->search) >= 2) {
             $query->where('doc_no', 'like', '%'.$this->search.'%');
         }
 

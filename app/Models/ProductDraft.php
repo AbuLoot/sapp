@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RevisionDraft extends Model
+class ProductDraft extends Model
 {
     use HasFactory;
 
-    protected $table = 'revision_drafts';
+    protected $table = 'products_drafts';
 
     public function user()
     {

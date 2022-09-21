@@ -7,16 +7,16 @@
   </div>
 
   <div class="container">
-    @if(session()->has('message'))
-      <div class="toast-container position-fixed bottom-0 end-0 p-4">
-        <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="d-flex">
-            <div class="toast-body text-white">{{ session('message') }}</div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
+
+    <!-- Toast notification -->
+    <div class="toast-container position-fixed end-0 p-4">
+      <div class="toast align-items-center text-bg-info border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body text-white" id="toastBody"></div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
       </div>
-    @endif
+    </div>
 
     <div class="row">
       <div class="col-lg-6">
@@ -63,8 +63,8 @@
 
               <div class="row">
                 <div class="col-6 mb-3">
-                  <label for="category_id">Категории</label>
-                  <select wire:model="product.category_id" class="form-control @error('product.category_id') is-invalid @enderror" id="category_id" >
+                  <label for="categoryId">Категории</label>
+                  <select wire:model="product.category_id" class="form-control @error('product.category_id') is-invalid @enderror" id="categoryId" >
                     <option value="">Выберите категорию...</option>
                     <?php $traverse = function ($nodes, $prefix = null) use (&$traverse) { ?>
                       <?php foreach ($nodes as $node) : ?>
@@ -107,9 +107,9 @@
 
                 @if($product->type == 1)
                   <div class="mb-3">
-                    <label for="id_code">Код товара</label>
-                    <input type="text" wire:model.defer="id_code" class="form-control @error('id_code') is-invalid @enderror" id="id_code">
-                    @error('id_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <label for="idCode">Код товара</label>
+                    <input type="text" wire:model.defer="idCode" class="form-control @error('idCode') is-invalid @enderror" id="idCode">
+                    @error('idCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
                   </div>
                   <div class="mb-3">
                     <label for="count">Количество</label>
@@ -117,7 +117,7 @@
                       @foreach($stores as $index => $store)
                         <div class="input-group mb-1">
                           <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
-                          <input type="number" wire:model.defer="countInStores.{{ $store->id }}" class="form-control @error('countInStores.'.$store->id) is-invalid @enderror" id="count">
+                          <input type="number" wire:model.defer="countInStores.{{ $store->id }}" class="form-control @error('countInStores.'.$store->id) is-invalid @enderror" id="count" disabled>
                           <select class="form-control @error('product.unit') is-invalid @enderror" wire:model="product.unit" id="unit">
                             <option value="">Ед. измерения</option>
                             @foreach($units as $unit)
@@ -131,24 +131,24 @@
                     </div>
                   </div>
                   <div class="col-lg-6 mb-3">
-                    <label for="purchase_price">Закупочная цена</label>
+                    <label for="purchasePrice">Закупочная цена</label>
                     <div class="input-group">
-                      <input type="text" wire:model="purchase_price" class="form-control" id="purchase_price">
+                      <input type="text" wire:model="purchasePrice" class="form-control" id="purchasePrice">
                       <div class="input-group-text">{{ $currency }}</div>
                     </div>
                   </div>
                   <div class="w-100"></div>
                   <div class="col-lg-6 mb-3">
-                    <label for="wholesale_price">Оптовая цена</label>
+                    <label for="wholesalePrice">Оптовая цена</label>
                     <div class="input-group">
-                      <input type="text" wire:model="wholesale_price" class="form-control" id="wholesale_price">
+                      <input type="text" wire:model="wholesalePrice" class="form-control" id="wholesalePrice">
                       <div class="input-group-text">{{ $currency }}</div>
                     </div>
                   </div>
                   <div class="col-lg-6 mb-3">
-                    <label for="wholesale_price_markup">Наценка</label>
+                    <label for="wholesalePriceMarkup">Наценка</label>
                     <div class="input-group">
-                      <input type="text" wire:model="wholesale_price_markup" class="form-control" id="wholesale_price_markup">
+                      <input type="text" wire:model="wholesalePriceMarkup" class="form-control" id="wholesalePriceMarkup" placeholder="0,0">
                       <div class="input-group-text">%</div>
                     </div>
                   </div>
@@ -162,9 +162,9 @@
                   </div>
                 </div>
                 <div class="col-lg-6 mb-3">
-                  <label for="price_markup">Наценка</label>
+                  <label for="priceMarkup">Наценка</label>
                   <div class="input-group">
-                    <input type="text" wire:model="price_markup" class="form-control @error('price_markup') is-invalid @enderror" id="price_markup">
+                    <input type="text" wire:model="priceMarkup" class="form-control @error('priceMarkup') is-invalid @enderror" id="priceMarkup" placeholder="0,0">
                     <div class="input-group-text">%</div>
                   </div>
                 </div>
@@ -203,3 +203,20 @@
   <livewire:store.add-category>
 
 </div>
+
+@section('scripts')
+  <script type="text/javascript">
+    window.addEventListener('show-toast', event => {
+      if (event.detail.selector) {
+        const btnCloseModal = document.getElementById(event.detail.selector)
+        btnCloseModal.click()
+      }
+
+      const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+      toast.show()
+
+      const toastBody = document.getElementById('toastBody')
+      toastBody.innerHTML = event.detail.message
+    })
+  </script>
+@endsection

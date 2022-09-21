@@ -25,11 +25,13 @@
         <thead>
           <tr>
             <th scope="col">Тип документа</th>
+            <th scope="col">Номер документа</th>
             <th scope="col">Склад</th>
             <th scope="col">Автор</th>
             <th scope="col">Контрагент</th>
             <th scope="col">Сумма прихода</th>
             <th scope="col">Сумма расхода</th>
+            <th scope="col">Итоговая сумма</th>
             <th scope="col">Количество позиции</th>
             <th scope="col">Дата и время</th>
             <th class="text-end" scope="col">Детали</th>
@@ -38,8 +40,9 @@
         <tbody>
           @forelse($storeDocs as $index => $storeDoc)
             <tr>
+              <td>{{ $storeDoc->doc->docType->title }}</td>
               <td>{{ $storeDoc->doc->doc_no }}</td>
-              <td>{{ $storeDoc->store->id }}</td>
+              <td>{{ $storeDoc->store->title }}</td>
               <td>{{ $storeDoc->user->name }}</td>
               <td>
                 @switch($storeDoc->contractor_type)
@@ -54,6 +57,7 @@
               <td>{{ $storeDoc->incoming_amount }}</td>
               <td>{{ $storeDoc->outgoing_amount }}</td>
               <td>{{ $storeDoc->sum }}</td>
+              <td>{{ $storeDoc->count }}</td>
               <td>{{ $storeDoc->created_at }}</td>
               <td class="text-end"><button wire:click="docDetail({{ $storeDoc->id }})" class="btn btn-outline-primary btn-sm">Посмотреть</button></td>
             </tr>
@@ -121,7 +125,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Количество</th>
-                      <td>{{ $docDetail->sum }}</td>
+                      <td>{{ $docDetail->count }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Дата и время</th>
@@ -151,7 +155,7 @@
                 <tbody>
                   @forelse($docProducts as $index => $product)
                     <tr>
-                      <td><a href="/{{ $lang }}/storage/edit-product/{{ $index }}">{{ $product->title }}</a></td>
+                      <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
                       <td>
                         <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
                         @foreach($barcodes as $barcode)

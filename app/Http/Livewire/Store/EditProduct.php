@@ -19,13 +19,13 @@ class EditProduct extends Component
     public $product;
     public $productBarcodes = [];
     public $companies;
-    public $barcodes = [''];
-    public $id_code;
+    public $barcodes = [];
+    public $idCode;
     public $countInStores = [];
-    public $purchase_price;
-    public $wholesale_price;
-    public $wholesale_price_markup;
-    public $price_markup;
+    public $purchasePrice;
+    public $wholesalePrice;
+    public $wholesalePriceMarkup;
+    public $priceMarkup;
 
     protected $listeners = ['newData' => '$refresh'];
 
@@ -35,8 +35,8 @@ class EditProduct extends Component
         'product.category_id' => 'required|numeric',
         'product.type' => 'required|numeric',
         'product.price' => 'required',
-        'product.count.*' => 'required|numeric',
         'product.unit' => 'required|numeric',
+        // 'product.count.*' => 'required|numeric',
         // 'productBarcodes.*' => 'required',
     ];
 
@@ -47,7 +47,7 @@ class EditProduct extends Component
         $this->product = Product::findOrFail($id);
         $this->productBarcodes = json_decode($this->product->barcodes) ?? [''];
         $this->barcodes = $this->productBarcodes;
-        $this->id_code = $this->product->id_code;
+        $this->idCode = $this->product->id_code;
 
         $this->countInStores = json_decode($this->product->count_in_stores, true) ?? [];
 
@@ -59,22 +59,22 @@ class EditProduct extends Component
             }
         }
 
-        $this->purchase_price = $this->product->purchase_price;
-        $this->wholesale_price = $this->product->wholesale_price;
+        $this->purchasePrice = $this->product->purchase_price;
+        $this->wholesalePrice = $this->product->wholesale_price;
         $this->price = $this->product->price;
         $this->companies = Company::where('is_supplier', 1)->get();
     }
 
     public function updated($key)
     {
-        if ($key == 'wholesale_price_markup' && $this->wholesale_price_markup >= 1) {
-            // $amount_price = $this->purchase_price * $this->wholesale_price_markup;
-            // $this->wholesale_price = number_format($amount_price, 0, '.', ' ');
-            $this->wholesale_price = $this->purchase_price * $this->wholesale_price_markup;
+        if ($key == 'wholesalePriceMarkup' && $this->wholesalePriceMarkup >= 1) {
+            // $amount_price = $this->purchasePrice * $this->wholesalePriceMarkup;
+            // $this->wholesalePrice = number_format($amount_price, 0, '.', ' ');
+            $this->wholesalePrice = $this->purchasePrice * $this->wholesalePriceMarkup;
         }
 
-        if ($key == 'price_markup' && $this->price_markup >= 1) {
-            $this->product->price = $this->purchase_price * $this->price_markup;
+        if ($key == 'priceMarkup' && $this->priceMarkup >= 1) {
+            $this->product->price = $this->purchasePrice * $this->priceMarkup;
         }
     }
 
@@ -130,12 +130,12 @@ class EditProduct extends Component
             'slug' => Str::slug($this->product->title),
             'title' => $this->product->title,
             'barcodes' => json_encode($this->productBarcodes),
-            'id_code' => $this->id_code ?? NULL,
-            'purchase_price' => $this->purchase_price ?? 0,
-            'wholesale_price' => $this->wholesale_price ?? 0,
+            'id_code' => $this->idCode ?? NULL,
+            'purchase_price' => $this->purchasePrice ?? 0,
+            'wholesale_price' => $this->wholesalePrice ?? 0,
             'price' => $this->product->price,
-            'count_in_stores' => json_encode($this->countInStores),
-            'count' => $amountCount,
+            // 'count_in_stores' => json_encode($this->countInStores),
+            // 'count' => $amountCount,
             'unit' => $this->product->unit,
             'type' => $this->product->type,
         ]);

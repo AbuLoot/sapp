@@ -9,7 +9,7 @@ use App\Models\Unit;
 use App\Models\Store;
 use App\Models\StoreDoc;
 use App\Models\Revision;
-use App\Models\RevisionDraft;
+use App\Models\ProductDraft;
 use App\Models\DocType;
 use App\Models\Product;
 
@@ -20,10 +20,10 @@ class Inventory extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $lang;
+    public $search;
     public $units;
     public $docNo;
     public $storeId;
-    public $search = '';
     public $revisionProducts = [];
     public $draftProducts = [];
     public $actualCount = [];
@@ -236,11 +236,15 @@ class Inventory extends Component
     {
         $docNo = $this->generateDocNo($this->storeId, $this->docNo);
 
+        // Inventory Doc
+        $docType = DocType::where('slug', 'forma-inv-10')->first();
+
         $revision = new Revision;
         $revision->store_id = $this->storeId;
         $revision->company_id = $this->company->id;
         $revision->user_id = auth()->user()->id;
         $revision->doc_no = $docNo;
+        $revision->doc_type_id = $docType->id;
         $revision->products_data = json_encode($productsData);
         $revision->surplus_count = $inventoryData['surplusTotalCount'];
         $revision->shortage_count = $inventoryData['shortageTotalCount'];
@@ -252,17 +256,14 @@ class Inventory extends Component
 
         session()->put('revisionProducts', $this->revisionProducts);
 
-        // Inventory Doc
-        $docType = DocType::where('slug', 'forma-inv-10')->first();
-
         $storeDoc = new StoreDoc;
         $storeDoc->store_id = $this->storeId;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
+        $storeDoc->doc_type = 'App\Models\Revision';
         $storeDoc->doc_id = $revision->id;
-        $storeDoc->doc_type_id = $docType->id;
         $storeDoc->products_data = json_encode($productsData);
-        $storeDoc->contractor_type = 'Company';
+        $storeDoc->contractor_type = 'App\Models\Company';
         $storeDoc->contractor_id = $this->company->id;
         $storeDoc->incoming_amount = $inventoryData['surplusTotalAmount'];
         $storeDoc->outgoing_amount = $inventoryData['shortageTotalAmount'];
@@ -323,9 +324,12 @@ class Inventory extends Component
             return;
         }
 
-        $draft = new RevisionDraft;
+        $draftsCount = ProductDraft::where('type', 'revision')->count();
+
+        $draft = new ProductDraft;
         $draft->user_id = auth()->user()->id;
-        $draft->title = 'Draft ' . ($draft->count() + 1);
+        $draft->type = 'revision';
+        $draft->title = 'Revision '.($draftCount + 1);
         $draft->products_data = json_encode($this->draftProducts);
         $draft->count = count($this->draftProducts);
         $draft->comment = null;

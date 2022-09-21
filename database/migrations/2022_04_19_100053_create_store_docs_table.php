@@ -20,7 +20,7 @@ class CreateStoreDocsTable extends Migration
             $table->integer('user_id');
             $table->char('doc_type');
             $table->integer('doc_id');
-            $table->integer('order_id');
+            $table->integer('order_id')->nullable();
             $table->json('products_data');
             $table->char('contractor_type')->nullable();
             $table->integer('contractor_id')->nullable();

@@ -37,9 +37,7 @@
           <th>Цена</th>
           <th class="text-end">Сумма</th>
         </tr>
-        <?php 
-          $totalAmount = 0;
-        ?>
+        <?php $totalAmount = 0; ?>
         @foreach($productsList as $key => $product)
           <tr>
             <td>{{ $key + 1 }}</td>
@@ -53,9 +51,7 @@
             <td>{{ $product['price'] }}</td>
             <td class="text-end">{{ $product['count'] * $product['price'] }}</td>
           </tr>
-          <?php
-            $totalAmount += $product['count'] * $product['price'];
-          ?>
+          <?php $totalAmount += $product['count'] * $product['price']; ?>
         @endforeach
         <tr>
           <th class="text-end" colspan="5">Итого</th>

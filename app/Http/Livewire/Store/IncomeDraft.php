@@ -9,7 +9,7 @@ use App\Models\Store;
 use App\Models\ProductDraft;
 use App\Models\Product;
 
-class InventoryDraft extends Component
+class IncomeDraft extends Component
 {
     use WithPagination;
 
@@ -18,7 +18,7 @@ class InventoryDraft extends Component
     public $lang;
     public $company;
     public $search;
-    public $revisionProducts = [];
+    public $incomeProducts = [];
 
     public function mount()
     {
@@ -33,12 +33,12 @@ class InventoryDraft extends Component
 
         foreach($productsData as $productId => $productData) {
             $product = Product::find($productId);
-            $revisionProducts[$productId] = $product;
+            $incomeProducts[$productId] = $product;
         }
 
-        session()->put('revisionProducts', $revisionProducts);
+        session()->put('incomeProducts', $incomeProducts);
 
-        return redirect('/'.$this->lang.'/storage/inventory');
+        return redirect('/'.$this->lang.'/storage/income');
     }
 
     public function removeFromDrafts($id)
@@ -51,11 +51,11 @@ class InventoryDraft extends Component
 
     public function render()
     {
-        $drafts = ($this->search)
-            ? ProductDraft::where('title', 'like', '%'.$this->search.'%')->where('type', 'revision')->orderByDesc('id')->paginate(30)
-            : ProductDraft::where('type', 'revision')->orderByDesc('id')->paginate(30);
+        $drafts = $this->search
+            ? ProductDraft::where('title', 'like', '%'.$this->search.'%')->where('type', 'income')->orderByDesc('id')->paginate(30)
+            : ProductDraft::where('type', 'income')->orderByDesc('id')->paginate(30);
 
-        return view('livewire.store.inventory-draft', ['drafts' => $drafts])
+        return view('livewire.store.income-draft', ['drafts' => $drafts])
             ->layout('livewire.store.layout');
     }
 }

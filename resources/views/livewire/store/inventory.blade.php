@@ -28,7 +28,6 @@
           <li><a href="#" wire:click="inventoryListCount" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Провести документ"><i class="bi bi-file-earmark-ruled-fill"></i></a></li>
           <li><a href="#" wire:click="removeRevision" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Очистить все"><i class="bi bi-file-x-fill"></i></a></li>
         @endif
-        <!-- <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="file-earmark"><i class="bi bi-file-earmark-text-fill"></i></a></li> -->
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">

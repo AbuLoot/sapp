@@ -24,7 +24,7 @@ class Writeoff extends Component
     public $units;
     public $company;
     public $storeId;
-    public $search = '';
+    public $search;
     public $writeoffProducts = [];
     public $writeoffCounts = [];
     public $comment;
@@ -112,16 +112,14 @@ class Writeoff extends Component
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $this->storeId;
         $outgoingDoc->company_id = $this->company->id;
+        $outgoingDoc->workplace_id = session()->get('storageWorkplace');
         $outgoingDoc->user_id = auth()->user()->id;
-        $outgoingDoc->username = auth()->user()->name;
         $outgoingDoc->doc_no = $docNo;
         $outgoingDoc->doc_type_id = $docType->id;
         $outgoingDoc->products_data = json_encode($productsData);
-        $outgoingDoc->to_contractor = '';
         $outgoingDoc->sum = $writeoffTotalAmount;
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $writeoffTotalCount;
-        // $outgoingDoc->unit = $this->unit;
         $outgoingDoc->comment = $this->comment;
         $outgoingDoc->save();
 
@@ -131,11 +129,9 @@ class Writeoff extends Component
         $storeDoc->store_id = $this->storeId;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
+        $storeDoc->doc_type = 'App\Models\OutgoingDoc';
         $storeDoc->doc_id = $outgoingDoc->id;
-        $storeDoc->doc_type_id = $docType->id;
         $storeDoc->products_data = json_encode($productsData);
-        $storeDoc->from_contractor = $this->company->title;
-        $storeDoc->to_contractor = '';
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $writeoffTotalAmount;
         $storeDoc->sum = $writeoffTotalAmount;

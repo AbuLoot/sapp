@@ -90,13 +90,12 @@
           <div class="tab-content pt-2" id="myTabContent">
             <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
               @if($docDetail)
-                <?php $docType = \App\Models\DocType::where('id', $docDetail->doc_type_id)->first(); ?>
                 <?php $products_data = json_decode($docDetail->products_data, true) ?? []; ?>
                 <table class="table">
                   <tbody>
                     <tr>
                       <th scope="row">Тип документа</th>
-                      <td>{{ $docType->title }}</td>
+                      <td>{{ $docDetail->docType->title }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Номер накладной</th>
@@ -126,7 +125,7 @@
 
               <table class="table table-sm table-striped">
                 <thead>
-                  <tr  class="align-items-start">
+                  <tr class="align-items-start">
                     <th scope="col">Наименование товара</th>
                     <th scope="col">Штрихкод</th>
                     <th scope="col">Категория</th>
@@ -150,13 +149,13 @@
                       <td>{{ $product->category->title }}</td>
                       <td>{{ $product->purchase_price }}</td>
                       <td>{{ $product->price }}</td>
-                      <td>{{ $products_data[$product->id]['incomingCount'] }}</td>
+                      <td>{{ $products_data[$product->id]['count'] }}</td>
                       <td>{{ $product->count }}</td>
                       <td>{{ $product->company->title }}</td>
                     </tr>
                   @empty
                     <tr>
-                      <td colspan="9">No products</td>
+                      <td colspan="9">No docs</td>
                     </tr>
                   @endforelse
                 </tbody>

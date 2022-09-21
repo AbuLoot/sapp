@@ -16,7 +16,7 @@ class OutgoingDocs extends Component
 
     public $lang;
     public $company;
-    public $search = [];
+    public $search;
     public $docDetail;
     public $docProducts = [];
     public $startDate = [];
@@ -41,7 +41,7 @@ class OutgoingDocs extends Component
         $query = OutgoingDoc::orderBy('id', 'desc');
         $appends = [];
 
-        if (is_numeric($this->search)) {
+        if (strlen($this->search) >= 2) {
             $query->where('doc_no', 'like', '%'.$this->search.'%');
         }
 
@@ -53,7 +53,7 @@ class OutgoingDocs extends Component
             $query->where('created_at', '>=', $startDate)
                 ->where('created_at', '<=', $endDate);
 
-            $appends['startDate'] = $startDate;            
+            $appends['startDate'] = $startDate;
             $appends['endDate'] = $endDate;
         }
 

@@ -18,7 +18,7 @@ class InventoryHistory extends Component
     public $lang;
     public $company;
     public $storeId;
-    public $search = '';
+    public $search;
     // public $revisions = [];
 
     public function mount()
