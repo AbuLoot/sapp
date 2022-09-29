@@ -3,7 +3,7 @@
   <header class="p-3 bg-brand bg-brand-border">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <a href="/{{ app()->getLocale() }}/cashdesk" class="navbar-brand me-4">
+        <a href="/{{ $lang }}/cashdesk" class="navbar-brand me-4">
           <img src="/img/logo.svg" width="auto" height="40"> <span class="text-white">{{ session()->get('cashbook')->title }}</span>
         </a>
 
@@ -36,7 +36,7 @@
     </div>
   </header>
 
-  @if(!Cache::has('openedCash'))
+  @if( ! Cache::has('openedCash'))
 
     <!-- Opening Cash -->
     <livewire:cashbook.opening-cash>
@@ -86,7 +86,7 @@
               <button class="btn btn-outline-secondary dropdown-toggle fs-5" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></button>
               <div class="dropdown-menu dropdown-menu-end p-3" style="max-width: 200px;">
                 <p>
-                  {{ $customer->name . ' ' . $customer->lastname }}<br>
+                  {{ $customer->name.' '.$customer->lastname }}<br>
                   Скидка: {{ $customer->profile->discount ?? 0 }}%
                 </p>
                 <div class="d-grid gap-2">
@@ -130,13 +130,9 @@
               <th>Наименование товара</th>
               <th>Штрихкод</th>
               <th>Категория</th>
-              @if($priceMode == 'retail')
-                <th>Цена продажи</th>
-              @else
-                <th>Цена оптовая</th>
-              @endif
-              <th>В&nbsp;базе</th>
-              <th>{{ $store->title }}</th>
+              <th>Цена {{ $priceMode == 'retail' ? 'продажи' : 'оптовая' }}</th>
+              <th class="text-center">В базе</th>
+              <th class="text-center">{{ $store->title }}</th>
               <th>Кол-во</th>
               <th>Скидка</th>
               <th>Поставщик</th>
@@ -145,26 +141,22 @@
           </thead>
           <tbody>
             @forelse($cartProducts as $index => $cartProduct)
+              <?php
+                $barcodes = json_decode($cartProduct->barcodes, true) ?? [];
+                $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
+                $countInStore = $countInStores[$store->id] ?? 0;
+              ?>
               <tr>
                 <td>{{ $cartProduct->title }}</td>
                 <td>
-                  <?php $barcodes = json_decode($cartProduct->barcodes, true) ?? []; ?>
                   @foreach($barcodes as $barcode)
                     {{ $barcode }}<br>
                   @endforeach
                 </td>
                 <td>{{ $cartProduct->category->title }}</td>
-                @if($priceMode == 'retail')
-                  <td>{{ $cartProduct->price }}</td>
-                @else
-                  <td>{{ $cartProduct->wholesale_price }}</td>
-                @endif
-                <?php
-                  $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-                  $countInStore = $countInStores[$store->id] ?? 0;
-                ?>
-                <td>{{ $cartProduct->count }}</td>
-                <td><div class="@if($countInStore == 0) text-danger @endif">{{ $countInStore }}</div></td>
+                <td>{{ $priceMode == 'retail' ? $cartProduct->price : $cartProduct->wholesale_price }}</td>
+                <td class="text-center">{{ $cartProduct->count }}</td>
+                <td class="text-center"><div class="@if($countInStore == 0) text-danger @endif">{{ $countInStore }}</div></td>
                 <td style="width:10%;">
                   <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
                   @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror

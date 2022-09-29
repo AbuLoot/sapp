@@ -178,14 +178,6 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <div class="col d-grid" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
-          </div>
-          <div class="col d-grid" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</button>
-          </div>
-        </div>
       </div>
     </div>
   </div>

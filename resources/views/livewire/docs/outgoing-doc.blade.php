@@ -69,37 +69,37 @@
           <td>6</td>
         </tr>
         <?php
-          $sumDiscounted = 0;
+          $sum = 0;
+          $n = 1;
         ?>
-        @foreach($productsList as $key => $product)
+        @foreach($productsData as $key => $product)
           <?php
             $unit = $units->where('id', $product['unit'])->first()->title ?? null;
-            $percentage = $product['price'] / 100;
-            $sumDiscounted += $product['count'] * ($product['price'] - $percentage * $product['discount']);
+            $sum += $product['price'] * $product['outgoingCount'];
           ?>
           <tr>
-            <td>{{ $key + 1 }}</td>
+            <td>{{ $n++ }}</td>
             <td>{{ $product['title'] }}</td>
             <td>
               @foreach($product['barcodes'] as $barcode)
                 {{ $barcode }}
               @endforeach
             </td>
-            <td>{{ $product['count'] . $unit }}</td>
-            <td>{{ $product['count'] . $unit }}</td>
-            <td>{{ $product['price'] - $percentage * $product['discount'] . $currency }}</td>
+            <td>{{ $product['outgoingCount'] . $unit }}</td>
+            <td>{{ $product['outgoingCount'] . $unit }}</td>
+            <td>{{ $product['price'] . $currency }}</td>
           </tr>
         @endforeach
         <tr>
           <th class="text-end" colspan="5">Итого</th>
-          <th>{{ $sumDiscounted . $currency }}</th>
+          <th>{{ $sum . $currency }}</th>
         </tr>
       </tbody>
     </table>
     <br>
 
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Всего отпущено количество запасов (прописью)___________ на сумму</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (прописью), в тенге___________________________</p>
+    <p>Всего отпущено количество запасов (прописью)___________ на сумму</p>
+    <p>(прописью), в тенге___________________________</p>
     <br>
 
     <table border="0">
@@ -126,6 +126,9 @@
     </table>
 
     <style type="text/css">
+      @page { 
+        size: landscape;
+      }
       body {
         max-width: 1127px;
         margin: 0 auto;

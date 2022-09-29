@@ -30,12 +30,7 @@ class CategoryController extends Controller
             Category::whereIn('id', $request->categories_id)->update(['status' => $request->action]);
         }
         elseif($request->action == 'destroy') {
-
-            foreach($request->categories_id as $category_id) {
-                $category = Category::find($category_id);
-                // $this->authorize('delete', $category);
-                $category->delete();
-            }
+            Category::whereIn('id', $request->categories_id)->delete();
         }
 
         return response()->json(['status' => true]);

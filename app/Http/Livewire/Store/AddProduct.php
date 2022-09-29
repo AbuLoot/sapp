@@ -44,7 +44,6 @@ class AddProduct extends Component
         'product.type' => 'required|numeric',
         'product.price' => 'required',
         // 'product.unit' => 'required|numeric',
-        // 'countInStores.*' => 'required|numeric',
         'docNo' => 'required',
         'productBarcodes.*' => 'required',
     ];
@@ -144,6 +143,7 @@ class AddProduct extends Component
 
             $docNo = $this->generateIncomingStoreDocNo($storeId);
 
+            $productData[$product->id]['purchase_price'] = $product->purchase_price;
             $productData[$product->id]['count'] = $countInStore;
             $productData[$product->id]['unit'] = $product->unit;
             $productData[$product->id]['barcodes'] = $product->barcodes;

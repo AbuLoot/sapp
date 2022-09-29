@@ -26,8 +26,13 @@ class Income extends Component
     public $storeId;
     public $search;
     public $incomeProducts = [];
+    public $incomeProductsCount = [];
     public $draftProducts = [];
-    public $count = [];
+
+    protected $rules = [
+        'storeId' => 'required|numeric',
+        'incomeProductsCount.*.*' => 'required|numeric',
+    ];
 
     public function mount()
     {
@@ -41,81 +46,76 @@ class Income extends Component
     {
         $parts = explode('.', $key);
 
-        if (count($parts) == 2 && $parts[0] == 'count') {
+        if (count($parts) == 3 && $parts[0] == 'incomeProductsCount') {
 
-            $incomeProducts = session()->get('incomeProducts');
+            $validValue = ($value <= 0 || !is_numeric($value)) ? null : $value;
 
-            if ($value == 0 || !is_numeric($value)) {
-                $this->addError($key, 'Неверные данные');
-                $incomeProducts[$parts[1]]['incomingCount'] = 0;
-                return;
-            } else {
-                $this->resetErrorBag($key);
-            }
-
-            $incomeProducts[$parts[1]]['incomingCount'] = $value;
-            session()->put('incomeProducts', $incomeProducts);
+            $this->incomeProductsCount[$parts[1]][$this->storeId] = $validValue;
         }
     }
 
     public function makeDoc()
     {
-        if (empty($this->storeId) || !is_numeric($this->storeId)) {
-            $this->addError('storeId', 'Выберите склад');
-            return;
-        } else {
-            $this->resetErrorBag('storeId');
+        $this->validate();
+
+        foreach($this->incomeProducts as $productId => $incomeProduct) {
+
+            // If incoming count empty, return wrong
+            if (empty($this->incomeProductsCount[$productId][$this->storeId])
+                    || $this->incomeProductsCount[$productId][$this->storeId] < 0) {
+                $this->addError('incomeProductsCount.'.$productId.'.'.$this->storeId, 'Wrong');
+                return;
+            }
         }
 
         $productsData = [];
         $countInStores = [];
         $incomeTotalCount = 0;
         $incomeTotalAmount = 0;
+        $workplaceId = session()->get('storageWorkplace');
 
         foreach($this->incomeProducts as $productId => $incomeProduct) {
 
+            $incomeCount = $this->incomeProductsCount[$productId][$this->storeId];
+
             $product = Product::findOrFail($productId);
 
-            $productsData[$productId]['count'] = $incomeProduct['incomingCount'];
+            $productsData[$productId]['purchase_price'] = $product->purchase_price;
+            $productsData[$productId]['count'] = $incomeCount;
             $productsData[$productId]['unit'] = $product->unit;
             $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
-            $incomeTotalCount = $incomeTotalCount + $incomeProduct['incomingCount'];
-            $incomeTotalAmount = $incomeTotalAmount + ($product->purchase_price * $incomeProduct['incomingCount']);
+            $incomeTotalCount = $incomeTotalCount + $incomeCount;
+            $incomeTotalAmount = $incomeTotalAmount + ($product->purchase_price * $incomeCount);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [''];
-            $countInStores[$this->storeId] = $incomeProduct['incomingCount'];
+            $countInStores[$this->storeId] = $incomeCount;
 
             $product->count_in_stores = json_encode($countInStores);
-            $product->count += $incomeProduct['incomingCount'];
+            $product->count += $incomeCount;
             $product->save();
         }
 
-        $company = auth()->user()->profile->company;
-
         // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
-
         $docNo = $this->generateIncomingStoreDocNo($this->storeId);
 
         $incomingDoc = new IncomingDoc;
-        $incomingDoc->store_id = $company->stores->first()->id;
-        $incomingDoc->company_id = $company->id;
-        $incomingDoc->workplace_id = session()->get('storageWorkplace');
+        $incomingDoc->store_id = $this->storeId;
+        $incomingDoc->company_id = $this->company->id;
+        $incomingDoc->workplace_id = $workplaceId;
         $incomingDoc->user_id = auth()->user()->id;
         $incomingDoc->doc_no = $docNo;
         $incomingDoc->doc_type_id = $docType->id;
         $incomingDoc->products_data = json_encode($productsData);
         $incomingDoc->sum = $incomeTotalAmount;
-        $incomingDoc->currency = $company->currency->code;
+        $incomingDoc->currency = $this->company->currency->code;
         $incomingDoc->count = $incomeTotalCount;
-        // $incomingDoc->unit = $this->unit;
-        // $incomingDoc->comment = '';
         $incomingDoc->save();
 
         $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $company->stores->first()->id;
-        $storeDoc->company_id = $company->id;
+        $storeDoc->store_id = $this->storeId;
+        $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_type = 'App\Models\IncomingDoc';
         $storeDoc->doc_id = $incomingDoc->id;
@@ -123,8 +123,6 @@ class Income extends Component
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $incomeTotalAmount;
         $storeDoc->sum = $incomeTotalAmount;
-        // $storeDoc->unit = $this->unit;
-        // $storeDoc->comment = '';
         $storeDoc->save();
 
         session()->flash('message', 'Запись добавлена');
@@ -141,7 +139,7 @@ class Income extends Component
         }
 
         $incomeProducts[$id] = $product;
-        $incomeProducts[$id]['incomingCount'] = 0;
+        $this->incomeProductsCount[$id][$this->storeId] = null;
 
         session()->put('incomeProducts', $incomeProducts);
         $this->search = '';
@@ -204,10 +202,10 @@ class Income extends Component
 
     public function render()
     {
+        $products = [];
+
         if (strlen($this->search) >= 2) {
             $products = Product::search($this->search)->orderBy('id', 'desc')->paginate(50);
-        } else {
-            $products = [];
         }
 
         $this->incomeProducts = session()->get('incomeProducts') ?? [];

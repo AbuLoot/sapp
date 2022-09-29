@@ -15,7 +15,7 @@ class Index extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $lang;
-    public $search = '';
+    public $search;
     public $type;
     public $categoryId;
     public $companyId;
@@ -32,7 +32,7 @@ class Index extends Component
         $this->type = null;
         $this->categoryId = null;
         $this->companyId = null;
-    }   
+    }
 
     public function activateDeleteMode()
     {

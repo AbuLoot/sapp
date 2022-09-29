@@ -58,10 +58,10 @@ use App\Http\Livewire\Store\InventoryHistory;
 use App\Http\Livewire\Store\InventoryDetail;
 use App\Http\Livewire\Store\Writeoff;
 use App\Http\Livewire\Store\StoreDocs;
+use App\Http\Livewire\Store\StoreDocsPrint;
 
 // Cashdesk
 use App\Http\Livewire\Cashbook\Index as CashbookIndex;
-use App\Http\Livewire\Cashbook\CashDocsPrint;
 use App\Http\Livewire\Cashbook\PaymentTypes\PaymentTypesIndex;
 use App\Http\Livewire\Cashbook\PaymentTypes\CashPayment;
 use App\Http\Livewire\Cashbook\PaymentTypes\BankCard;
@@ -69,6 +69,7 @@ use App\Http\Livewire\Cashbook\PaymentTypes\ComplexPayment;
 use App\Http\Livewire\Cashbook\PaymentTypes\SaleOnCredit;
 use App\Http\Livewire\Cashbook\PaymentTypes\KaspiTransfer;
 use App\Http\Livewire\Cashbook\PaymentTypes\Success;
+use App\Http\Livewire\Cashbook\CashDocsPrint;
 
 use App\Http\Controllers\Auth\StorageVerificationController;
 use App\Http\Controllers\Auth\CashdeskVerificationController;
@@ -84,6 +85,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
 
     // Livewire Routes
     Route::get('/', StoreIndex::class);
+    Route::get('docsprint/{type}/{id}', StoreDocsPrint::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
     Route::get('income', Income::class);
@@ -240,8 +242,8 @@ Route::get('/', [ShopController::class, 'index']);
 Route::get('i/contacts', [SiteController::class, 'contacts']);
 Route::get('i/{page}', [SiteController::class, 'page']);
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/systems', function () {
+    return view('systems');
+})->middleware(['auth'])->name('systems');
 
 require __DIR__.'/auth.php';

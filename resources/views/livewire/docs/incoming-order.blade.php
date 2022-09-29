@@ -38,7 +38,7 @@
           <th class="text-end">Сумма</th>
         </tr>
         <?php $totalAmount = 0; ?>
-        @foreach($productsList as $key => $product)
+        @foreach($productsData as $key => $product)
           <tr>
             <td>{{ $key + 1 }}</td>
             <td>{{ $product['title'] }}</td>
@@ -47,11 +47,11 @@
               {{ $barcode }}
             @endforeach
             </td>
-            <td>{{ $product['count'] }}</td>
+            <td>{{ $product['outgoingCount'] }}</td>
             <td>{{ $product['price'] }}</td>
-            <td class="text-end">{{ $product['count'] * $product['price'] }}</td>
+            <td class="text-end">{{ $product['outgoingCount'] * $product['price'] }}</td>
           </tr>
-          <?php $totalAmount += $product['count'] * $product['price']; ?>
+          <?php $totalAmount += $product['outgoingCount'] * $product['price']; ?>
         @endforeach
         <tr>
           <th class="text-end" colspan="5">Итого</th>
@@ -60,9 +60,9 @@
       </tbody>
     </table>
     <br><br>
-    <p>Принято от {{ $customerName }}</p>
-    <p>Метод оплаты: {{ $paymentType }}</p>
-    <p>Кассир: {{ $cashierName }}</p>
+    <p>Принято от {{ $customerName }}<br>
+    Метод оплаты: {{ $paymentType }}<br>
+    Кассир: {{ $cashierName }}</p>
     <br>
   </div>
 

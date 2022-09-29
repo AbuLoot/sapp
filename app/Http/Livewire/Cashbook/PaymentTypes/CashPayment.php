@@ -98,6 +98,7 @@ class CashPayment extends Component
                 session()->forget('totalDiscount');
             }
 
+            $productsData[$productId]['store'] = $store->id;
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
@@ -159,7 +160,7 @@ class CashPayment extends Component
         $cashDoc->cashbook_id = $cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
+        $cashDoc->order_type = 'App\Models\IncomingOrder';
         $cashDoc->order_id = $incomingOrder->id;
         $cashDoc->doc_id = $outgoingDoc->id;
         $cashDoc->contractor_type = $contractorType;
@@ -175,7 +176,7 @@ class CashPayment extends Component
         $storeDoc->store_id = $store->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
-        $storeDoc->doc_type_id = $docTypes->where('slug', 'forma-z-2')->first()->id;
+        $storeDoc->doc_type = 'App\Models\OutgoingDoc';
         $storeDoc->doc_id = $outgoingDoc->id;
         $storeDoc->order_id = $incomingOrder->id;
         $storeDoc->products_data = json_encode($productsData);

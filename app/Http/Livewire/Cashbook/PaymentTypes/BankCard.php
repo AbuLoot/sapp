@@ -88,6 +88,7 @@ class BankCard extends Component
                 session()->forget('totalDiscount');
             }
 
+            $productsData[$productId]['store'] = $store->id;
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
@@ -149,7 +150,7 @@ class BankCard extends Component
         $cashDoc->cashbook_id = $cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_type = 'App\Models\IncomingOrder';
+        $cashDoc->order_type = 'App\Models\IncomingOrder';
         $cashDoc->order_id = $incomingOrder->id;
         $cashDoc->doc_id = $outgoingDoc->id;
         $cashDoc->contractor_type = $contractorType;

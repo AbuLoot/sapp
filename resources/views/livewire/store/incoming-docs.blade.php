@@ -117,12 +117,15 @@
                       <th scope="row">Дата и время</th>
                       <td>{{ $docDetail->created_at }}</td>
                     </tr>
+                    <tr>
+                      <th scope="row">Комментарий</th>
+                      <td>{{ $docDetail->comment }}</td>
+                    </tr>
                   </tbody>
                 </table>
               @endif
             </div>
             <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-
               <table class="table table-sm table-striped">
                 <thead>
                   <tr class="align-items-start">
@@ -165,10 +168,10 @@
         </div>
         <div class="modal-footer">
           <div class="col d-grid" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+            <button type="button" class="btn btn-primary" disabled><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
           </div>
           <div class="col d-grid" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</button>
+            <a href="/{{ $lang }}/storage/docsprint/incoming-doc/{{ $docDetail->id ?? null }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a>
           </div>
         </div>
       </div>

@@ -25,7 +25,7 @@
         <li><a href="/{{ $lang }}/storage/income/drafts" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Черновики"><i class="bi bi-journals"></i></a></li>
         <li><a href="#" wire:click="saveAsDraft" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Сохранить как черновик"><i class="bi bi-file-earmark-plus-fill"></i></a></li>
         @if($incomeProducts)
-          <li><a href="#" wire:click="incomeListCount" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Провести документ"><i class="bi bi-file-earmark-ruled-fill"></i></a></li>
+          <li><a href="#" wire:click="makeDoc" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Провести документ"><i class="bi bi-file-earmark-ruled-fill"></i></a></li>
           <li><a href="#" wire:click="removeIncome" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Очистить все"><i class="bi bi-file-x-fill"></i></a></li>
         @endif
       </ul>
@@ -53,7 +53,6 @@
     <div class="row justify-content-end mb-3">
       <div class="col-3">
         <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
-          <option value="">Выберите склад...</option>
           @foreach ($company->stores as $store)
             <option value="{{ $store->id }}"> {{ $store->title }}</option>
           @endforeach
@@ -72,7 +71,7 @@
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
             <th scope="col">{{ $company->stores->where('id', $storeId)->first()->title }}</th>
-            <th scope="col">В&nbsp;базе</th>
+            <th scope="col">В базе</th>
             <th scope="col">Количество</th>
             <th scope="col">Поставщик</th>
             <th scope="col"></th>
@@ -80,10 +79,18 @@
         </thead>
         <tbody>
           @forelse($incomeProducts as $index => $incomeProduct)
+            <?php
+              $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?';
+              $barcodes = json_decode($incomeProduct->barcodes, true) ?? [''];
+              $countInStores = json_decode($incomeProduct->count_in_stores, true) ?? [];
+              $countInStore = isset($countInStores[$storeId]) ? $countInStores[$storeId] : 0;
+              $incomeCount = !empty($incomeProductsCount[$incomeProduct->id][$storeId])
+                  ? $incomeProductsCount[$incomeProduct->id][$storeId]
+                  : 0;
+            ?>
             <tr>
               <td><a href="/{{ $lang }}/storage/edit-product/{{ $incomeProduct->id }}">{{ $incomeProduct->title }}</a></td>
               <td>
-                <?php $barcodes = json_decode($incomeProduct->barcodes, true) ?? ['']; ?>
                 @foreach($barcodes as $barcode)
                   {{ $barcode }}<br>
                 @endforeach
@@ -91,22 +98,15 @@
               <td>{{ $incomeProduct->category->title }}</td>
               <td>{{ $incomeProduct->purchase_price }}</td>
               <td>{{ $incomeProduct->price }}</td>
-              <?php
-                $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?';
-
-                $countInStores = json_decode($incomeProduct->count_in_stores, true) ?? [];
-                $countInStore = (isset($countInStores[$storeId])) ? $countInStores[$storeId] : 0;
-              ?>
-              <td>{{ $countInStore + $incomeProduct->income_count . $unit }}</td>
-              <td>{{ $incomeProduct->count + $incomeProduct->income_count . $unit }}</td>
-              <td class="col-2">
+              <td>{{ $countInStore + $incomeCount . $unit }}</td>
+              <td>{{ $incomeProduct->count + $incomeCount . $unit }}</td>
+              <td class="col-2" style="width:12%">
                 <div class="input-group">
-                  <input type="number" wire:model="count.{{ $incomeProduct->id }}" class="form-control @error('count.'.$incomeProduct->id) is-invalid @enderror" required>
+                  <input type="number" wire:model="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" class="form-control @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId) is-invalid @enderror" required>
                   <span class="input-group-text px-1-">{{ $unit }}</span>
-                  @error('count.'.$incomeProduct->id)<div class="text-danger">{{ $message }}</div>@enderror
+                  @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
-              <!-- <td></td> -->  
               <td>{{ $incomeProduct->company->title }}</td>
               <td class="text-end"><a wire:click="removeFromIncome({{ $incomeProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>

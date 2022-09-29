@@ -35,7 +35,7 @@ class EditProduct extends Component
         'product.category_id' => 'required|numeric',
         'product.type' => 'required|numeric',
         'product.price' => 'required',
-        'product.unit' => 'required|numeric',
+        // 'product.unit' => 'required|numeric',
         // 'product.count.*' => 'required|numeric',
         // 'productBarcodes.*' => 'required',
     ];
@@ -140,7 +140,7 @@ class EditProduct extends Component
             'type' => $this->product->type,
         ]);
 
-        session()->flash('message', 'Запись изменена');
+        $this->dispatchBrowserEvent('show-toast', ['message' => 'Запись изменена']);
     }
 
     public function render()

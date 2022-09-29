@@ -42,7 +42,7 @@ class Inventory extends Component
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
         $this->company = auth()->user()->profile->company;
-        $this->storeId = $this->company->first()->id;
+        $this->storeId = session()->get('storage')->id;
     }
 
     public function updated($key, $value)
@@ -154,9 +154,9 @@ class Inventory extends Component
     {
         $this->validate();
 
-        // If revision count empty, return wrong
         foreach($this->revisionProducts as $productId => $revisionProduct) {
 
+            // If revision count empty, return wrong
             if (empty($this->actualCount[$productId][$this->storeId])
                     || $this->actualCount[$productId][$this->storeId] < 0) {
                 $this->addError('actualCount.'.$productId.'.'.$this->storeId, 'Wrong');

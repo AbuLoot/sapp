@@ -39,10 +39,10 @@
           <td>корреспондирующий счет</td>
         </tr>
         <tr>
-          <td><br></td>
-          <td><br></td>
-          <td><br></td>
-          <td><br></td>
+          <td></td>
+          <td></td>
+          <td>{{ $product['price'] }}</td>
+          <td></td>
         </tr>
       </tbody>
     </table>

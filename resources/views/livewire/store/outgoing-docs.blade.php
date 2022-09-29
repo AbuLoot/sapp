@@ -117,6 +117,10 @@
                       <th scope="row">Дата и время</th>
                       <td>{{ $docDetail->created_at }}</td>
                     </tr>
+                    <tr>
+                      <th scope="row">Комментарий</th>
+                      <td>{{ $docDetail->comment }}</td>
+                    </tr>
                   </tbody>
                 </table>
               @endif
@@ -133,7 +137,6 @@
                     <th scope="col">Цена продажи</th>
                     <th scope="col">Кол. расхода</th>
                     <th scope="col">Общее Кол.</th>
-                    <!-- <th scope="col">Ед. измерения</th> -->
                     <th scope="col">Поставщик</th>
                   </tr>
                 </thead>
@@ -166,10 +169,10 @@
         </div>
         <div class="modal-footer">
           <div class="col d-grid" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+            <button type="button" class="btn btn-primary" disabled><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
           </div>
           <div class="col d-grid" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</button>
+            <a href="/{{ $lang }}/storage/docsprint/outgoing-doc/{{ $docDetail->id ?? null }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a>
           </div>
         </div>
       </div>

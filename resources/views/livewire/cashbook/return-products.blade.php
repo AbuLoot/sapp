@@ -13,9 +13,9 @@
             @if($incomingOrders)
               <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
                 <ul class="list-unstyled mb-0">
-                  @forelse($incomingOrders as $incomingOrder)
+                  @forelse($incomingOrders as $incomingOrderObj)
                     <li>
-                      <a wire:click="check({{ $incomingOrder->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">№{{ $incomingOrder->doc_no }} - Сумма: {{ $incomingOrder->sum }}</a>
+                      <a wire:click="check({{ $incomingOrderObj->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">№{{ $incomingOrderObj->doc_no }} - Сумма: {{ $incomingOrderObj->sum }}</a>
                     </li>
                   @empty
                     <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled">No data</a></li>
@@ -26,42 +26,50 @@
           </form>
 
           @if($incomingOrder)
-            <h5>Чек №{{ $incomingOrder->doc_no }}</h5>
             <?php
+              $message = ['corrected' => 'Изменен'];
               $currency = $company->currency->symbol;
               $sumDiscounted = 0;
               $change = 0;
             ?>
+            <h5>Чек №{{ $incomingOrder->doc_no }} <span class="text-success">{{ $message[$incomingOrder->comment] }}</span></h5>
             <table class="table align-middle">
               <thead>
                 <tr>
                   <th>Наименование</th>
                   <th>Цена</th>
-                  <th>Кол.</th>
+                  <th>Кол-во<br> отпущенных</th>
+                  <th>Кол-во<br> возвратов</th>
+                  <th>Итоговое<br> кол-во</th>
                   <th>Скидка</th>
                   <th colspan="2">Итого</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($products as $product)
+                  <?php
+                    $percentage = $productsData[$product->id]['price'] / 100;
+                    $amount = $productsData[$product->id]['price'] - ($percentage * $productsData[$product->id]['discount'] ?? 0);
+                    $amountDiscounted = $productsDataCopy[$product->id]['outgoingCount'] * $amount;
+                    $sumDiscounted += $productsDataCopy[$product->id]['outgoingCount'] * $amount;
+                    $returnedCount = $productsData[$product->id]['returnedCount'] ?? 0;
+                  ?>
                   <tr>
                     <th scope="row">{{ $product->title }}</th>
-                    <td>{{ $productsData[$product->id]['price'] . $currency }}</td>
+                    <td>{{ $productsDataCopy[$product->id]['price'] . $currency }}</td>
+                    <td>{{ $productsDataCopy[$product->id]['outgoingCount'] }}</td>
+                    <td>{{ $returnedCount }}</td>
                     <td class="text-nowrap" style="width:10%;">
-                      <input type="number" wire:model="productsDataCopy.{{ $product->id }}.outgoingCount" class="form-control @error('productsDataCopy.'.$product->id.'.outgoingCount') is-invalid @enderror" required>
+                      <input type="number" wire:model="productsData.{{ $product->id }}.outgoingCount" class="form-control @error('productsData.'.$product->id.'.outgoingCount') is-invalid @enderror" required>
                     </td>
                     <td class="text-nowrap" style="width:10%;">
                       <input type="number" wire:model="productsData.{{ $product->id }}.discount" class="form-control @error('productsData.'.$product->id.'.discount') is-invalid @enderror" disabled required>
                     </td>
-                    <?php
-                      $percentage = $productsData[$product->id]['price'] / 100;
-                      $amount = $productsData[$product->id]['price'] - ($percentage * $productsData[$product->id]['discount'] ?? 0);
-                      $amountDiscounted = $productsDataCopy[$product->id]['outgoingCount'] * $amount;
-                      $sumDiscounted += $productsDataCopy[$product->id]['outgoingCount'] * $amount;
-                    ?>
                     <td>{{ $amountDiscounted . $currency }}</td>
                     <td class="text-end">
-                      @if(isset($returnedProducts[$product->id]))
+                      @if($productsDataCopy[$product->id]['outgoingCount'] == $returnedCount)
+                        <button class="btn btn-secondary" disabled>Возвращено</button>
+                      @elseif(isset($returnedProducts[$product->id]))
                         <?php $change += $amount * $returnedProducts[$product->id]['incomingCount']; ?>
                         <button wire:click="cancel({{ $product->id }})" class="btn btn-dark">Отмена</button>
                       @else

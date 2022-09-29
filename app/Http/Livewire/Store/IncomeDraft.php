@@ -24,6 +24,7 @@ class IncomeDraft extends Component
     {
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
+        $this->storeId = session()->get('storage')->id;
     }
 
     public function openTheDraft($id)

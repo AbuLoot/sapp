@@ -22,7 +22,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-brand bg-brand-border py-3" aria-label="Main navigation">
 		<div class="container-xl">
-		  <a href="/dashboard" class="navbar-brand p-0">
+		  <a href="/systems" class="navbar-brand p-0">
 				<img src="/img/logo.svg" width="auto" height="40">
 		  </a>
 
@@ -55,7 +55,7 @@
 		</div>
   </div>
 
-  <main class="container my-5">
+  <main class="container my-4">
 		{{ $slot }}
   </main>
 
@@ -69,7 +69,7 @@
 
 		  <ul class="nav col-md-4 justify-content-end">
 				@if(Auth::check())
-				<li class="nav-item"><a href="/dashboard" class="nav-link px-2 text-muted">Главная</a></li>
+				<li class="nav-item"><a href="/systems" class="nav-link px-2 text-muted">Главная</a></li>
 				<li class="nav-item">
 					<form method="POST" action="{{ route('logout') }}">
 	          @csrf

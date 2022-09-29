@@ -62,22 +62,19 @@ class CashDocsPrint extends Component
 
         $productsData = json_decode($incomingOrder->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
-        $productsList = [];
 
         foreach($products as $key => $product) {
-            $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
-            $productsList[$key]['price'] = $productsData[$product->id]['price'];
-            $productsList[$key]['discount'] = $productsData[$product->id]['discount'];
+            $productsData[$product->id]['title'] = $product->title;
+            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
         }
 
-        $uri = session()->get('incomingOrder') ? '/payment-type/success' : '';
+        $uri = session()->get('incomingOrderId') ? '/payment-type/success' : '';
 
         $this->data = [
             'companyName' => $this->company->title,
             'docNo' => $incomingOrder->doc_no,
             'customerName' => $customerName,
-            'productsList' => $productsList,
+            'productsData' => $productsData,
             'units' => $this->units,
             'paymentType' => $paymentType->title,
             'currency' => $this->company->currency->symbol,
@@ -103,24 +100,20 @@ class CashDocsPrint extends Component
 
         $productsData = json_decode($incomingOrder->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
-        $productsList = [];
 
         foreach($products as $key => $product) {
-            $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
-            $productsList[$key]['price'] = $productsData[$product->id]['price'];
-            $productsList[$key]['discount'] = $productsData[$product->id]['discount'];
-            $productsList[$key]['barcodes'] = $productsData[$product->id]['barcodes'];
+            $productsData[$product->id]['title'] = $product->title;
+            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
         }
 
-        $uri = session()->get('incomingOrder') ? '/payment-type/success' : '';
+        $uri = session()->get('incomingOrderId') ? '/payment-type/success' : '';
 
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
             'docNo' => $incomingOrder->doc_no,
             'createdAt' => $incomingOrder->created_at,
-            'productsList' => $productsList,
+            'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
@@ -144,14 +137,10 @@ class CashDocsPrint extends Component
 
         $productsData = json_decode($outgoingOrder->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
-        $productsList = [];
 
         foreach($products as $key => $product) {
-            $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
-            $productsList[$key]['price'] = $productsData[$product->id]['price'];
-            $productsList[$key]['discount'] = $productsData[$product->id]['discount'];
-            $productsList[$key]['barcodes'] = $productsData[$product->id]['barcodes'];
+            $productsData[$product->id]['title'] = $product->title;
+            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
         }
 
         $this->data = [
@@ -160,7 +149,7 @@ class CashDocsPrint extends Component
             'docNo' => $outgoingOrder->doc_no,
             'createdAt' => $outgoingOrder->created_at,
             'outgoingAmount' => $outgoingOrder->sum,
-            'productsList' => $productsList,
+            'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
@@ -174,41 +163,36 @@ class CashDocsPrint extends Component
     public function incomingDoc($id)
     {
         $incomingDoc = IncomingDoc::find($id);
-        $paymentType = PaymentType::find($incomingDoc->payment_type_id);
-        $paymentDetail = json_decode($incomingDoc->payment_detail, true);
-        $customerName = 'No name';
-
-        if (isset($paymentDetail['userId'])) {
-            $user = User::find($paymentDetail['userId']);
-            $customerName = $user->name.' '.$user->lastname;
-        }
+        $contractorName = 'No name';
 
         $productsData = json_decode($incomingDoc->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
-        $productsList = [];
 
         foreach($products as $key => $product) {
-            $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
-            $productsList[$key]['price'] = $productsData[$product->id]['price'];
-            $productsList[$key]['discount'] = $productsData[$product->id]['discount'];
-            $productsList[$key]['barcodes'] = $productsData[$product->id]['barcodes'];
+            $productsData[$product->id]['title'] = $product->title;
+            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
         }
 
-        $uri = session()->get('incomingDoc') ? '/payment-type/success' : '';
+        if ($incomingDoc->contractorType == 'App\Models\Company') {
+            $contractorName = $incomingDoc->contractor->titles;
+        } elseif ($incomingDoc->contractorType == 'App\Models\User') {
+            $contractorName = $incomingDoc->contractor->name.' '.$incomingDoc->contractor->lastname;
+        }
 
         $this->data = [
             'companyName' => $this->company->title,
+            'storeTitle' => $incomingDoc->storeDoc->store->title,
             'companyBin' => $this->company->bin,
             'docNo' => $incomingDoc->doc_no,
             'createdAt' => $incomingDoc->created_at,
-            'productsList' => $productsList,
+            'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
-            'customerName' => $customerName,
+            'contractorName' => $contractorName,
             'cashierName' => $incomingDoc->cashier_name,
-            'paymentType' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
+            // 'paymentType' => $paymentType->title,
+            // 'paymentDocNo' => $paymentType->title,
+            'prevPage' => '/'.$this->lang.'/cashdesk',
         ];
 
         $this->view = 'incoming-doc';
@@ -217,44 +201,41 @@ class CashDocsPrint extends Component
     public function outgoingDoc($id)
     {
         $outgoingDoc = OutgoingDoc::find($id);
-        $cashDoc = CashDoc::where('doc_id', $outgoingDoc->id)->first();
-        $incomingOrder = IncomingOrder::find($cashDoc->order_id);
-        $paymentType = PaymentType::find($incomingOrder->payment_type_id);
-        $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+
         $customerName = 'No name';
 
-        if (isset($paymentDetail['userId'])) {
-            $user = User::find($paymentDetail['userId']);
-            $customerName = $user->name.' '.$user->lastname;
+        if (!is_null($outgoingDoc->storeDoc->order_id)) {
+            $incomingOrder = IncomingOrder::find($outgoingDoc->storeDoc->order_id);
+            $paymentType = PaymentType::find($incomingOrder->payment_type_id);
+            $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+
+            if (isset($paymentDetail['userId'])) {
+                $user = User::find($paymentDetail['userId']);
+                $customerName = $user->name.' '.$user->lastname;
+            }
         }
 
         $productsData = json_decode($outgoingDoc->products_data, true) ?? [];
         $products = Product::whereIn('id', array_keys($productsData))->get();
-        $productsList = [];
 
         foreach($products as $key => $product) {
-            $productsList[$key]['title'] = $product->title;
-            $productsList[$key]['count'] = $productsData[$product->id]['outgoingCount'];
-            $productsList[$key]['unit'] = $product->unit;
-            $productsList[$key]['price'] = $productsData[$product->id]['price'];
-            $productsList[$key]['discount'] = $productsData[$product->id]['discount'];
-            $productsList[$key]['barcodes'] = $productsData[$product->id]['barcodes'];
+            $productsData[$product->id]['title'] = $product->title;
+            $productsData[$product->id]['unit'] = $product->unit;
+            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
         }
-
-        $uri = session()->get('incomingDoc') ? '/payment-type/success' : '';
 
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
             'docNo' => $outgoingDoc->doc_no,
             'createdAt' => $outgoingDoc->created_at,
-            'productsList' => $productsList,
+            'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
             'cashierName' => $outgoingDoc->cashier_name,
             // 'paymentType' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
+            'prevPage' => '/'.$this->lang.'/storage/docs/outgoing',
         ];
 
         $this->view = 'outgoing-doc';

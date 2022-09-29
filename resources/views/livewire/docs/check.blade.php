@@ -14,16 +14,16 @@
           $sumUndiscounted = 0;
           $sumDiscounted = 0;
         ?>
-        @foreach($productsList as $product)
+        @foreach($productsData as $product)
           <tr>
             <td>{{ $product['title'] }}</td>
-            <td class="text-end">{{ $product['count'] . ' x ' . $product['price'] }}</td>
-            <td class="text-end">={{ $product['count'] * $product['price'] }}</td>
+            <td class="text-end">{{ $product['outgoingCount'] . ' x ' . $product['price'] }}</td>
+            <td class="text-end">={{ $product['outgoingCount'] * $product['price'] }}</td>
           </tr>
           <?php
             $percentage = $product['price'] / 100;
-            $sumDiscounted += $product['count'] * ($product['price'] - $percentage * $product['discount']);
-            $sumUndiscounted += $product['count'] * $product['price'];
+            $sumDiscounted += $product['outgoingCount'] * ($product['price'] - $percentage * $product['discount']);
+            $sumUndiscounted += $product['outgoingCount'] * $product['price'];
           ?>
         @endforeach
       </tbody>
