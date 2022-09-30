@@ -80,11 +80,10 @@ class KaspiTransfer extends Component
             $price = (session()->get('priceMode') == 'retail') ? $product->price : $product->wholesale_price;
             $discount = 0;
 
-            if ($cartProduct->discount != 0) {
+            if ($cartProduct->discount) {
                 $discount = $cartProduct->discount;
-            } elseif(session()->get('totalDiscount') != 0) {
+            } elseif(session()->get('totalDiscount')) {
                 $discount = session()->get('totalDiscount');
-                session()->forget('totalDiscount');
             }
 
             $productsData[$productId]['store'] = $store->id;
@@ -175,8 +174,9 @@ class KaspiTransfer extends Component
         $storeDoc->sum = $incomingTotalAmount;
         $storeDoc->save();
 
-        session()->forget('client');
+        session()->forget('customer');
         session()->forget('cartProducts');
+        session()->forget('totalDiscount');
 
         session()->put('docs', [
             'incomingOrderDocNo' => $incomingOrder->doc_no,

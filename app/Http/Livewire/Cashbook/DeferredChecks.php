@@ -31,7 +31,7 @@ class DeferredChecks extends Component
 
     public function render()
     {
-        $this->deferredChecks = (Cache::has('deferredChecks'))
+        $this->deferredChecks = Cache::has('deferredChecks')
             ? Cache::get('deferredChecks')
             : [];
 

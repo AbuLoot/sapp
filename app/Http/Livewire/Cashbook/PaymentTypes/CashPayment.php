@@ -91,11 +91,10 @@ class CashPayment extends Component
             $price = (session()->get('priceMode') == 'retail') ? $product->price : $product->wholesale_price;
             $discount = 0;
 
-            if ($cartProduct->discount != 0) {
+            if ($cartProduct->discount) {
                 $discount = $cartProduct->discount;
-            } elseif(session()->get('totalDiscount') != 0) {
+            } elseif(session()->get('totalDiscount')) {
                 $discount = session()->get('totalDiscount');
-                session()->forget('totalDiscount');
             }
 
             $productsData[$productId]['store'] = $store->id;
@@ -195,6 +194,7 @@ class CashPayment extends Component
         ]);
         session()->forget('customer');
         session()->forget('cartProducts');
+        session()->forget('totalDiscount');
 
         return redirect($this->lang.'/cashdesk/payment-type/success');
     }

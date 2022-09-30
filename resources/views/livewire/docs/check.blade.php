@@ -17,8 +17,8 @@
         @foreach($productsData as $product)
           <tr>
             <td>{{ $product['title'] }}</td>
-            <td class="text-end">{{ $product['outgoingCount'] . ' x ' . $product['price'] }}</td>
-            <td class="text-end">={{ $product['outgoingCount'] * $product['price'] }}</td>
+            <td class="text-end">{{ $product['outgoingCount'] . ' x ' . $product['price'] . $currency }}</td>
+            <td class="text-end">={{ $product['outgoingCount'] * $product['price'] . $currency }}</td>
           </tr>
           <?php
             $percentage = $product['price'] / 100;
@@ -30,11 +30,11 @@
       <tfoot>
         <tr>
           <td colspan="2">Сумма без скидки</td>
-          <td colspan="2" class="text-end">{{ $sumUndiscounted }}</td>
+          <td colspan="2" class="text-end">{{ $sumUndiscounted . $currency }}</td>
         </tr>
         <tr>
           <td colspan="2">Итоговая сумма</td>
-          <td colspan="2" class="text-end"><b>{{ $sumDiscounted }}</b></td>
+          <td colspan="2" class="text-end"><b>{{ $sumDiscounted . $currency }}</b></td>
         </tr>
       </tfoot>
     </table>

@@ -107,9 +107,9 @@ class Index extends Component
 
             $price = session()->get('priceMode') == 'retail' ? $cartProduct->price : $cartProduct->wholesale_price ?? 0;
 
-            if ($cartProduct->discount != null) {
+            if ($cartProduct->discount) {
                 $percent = $cartProduct->discount;
-            } elseif (session()->get('totalDiscount') != null) {
+            } elseif (session()->get('totalDiscount')) {
                 $percent = session()->get('totalDiscount');
             }
 
@@ -137,9 +137,7 @@ class Index extends Component
         if ($value <= 0 || !is_numeric($value)) {
             $validCount = ($countInStore == 0) ? 0 : 1;
         } else {
-            $validCount = ($countInStore < $value)
-                ? $countInStore
-                : $value;
+            $validCount = ($countInStore < $value) ? $countInStore : $value;
         }
 
         $cartProducts[$productId]['countInCart'] = $validCount;
@@ -153,9 +151,7 @@ class Index extends Component
         if ($value <= 0 || !is_numeric($value) || empty($value)) {
             $validDiscount = null;
         } else {
-            $validDiscount = (10 < $value)
-                ? 10
-                : $value;
+            $validDiscount = (10 < $value) ? 10 : $value;
         }
 
         $cartProducts[$productId]['discount'] = $validDiscount;

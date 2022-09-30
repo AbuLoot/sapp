@@ -68,7 +68,7 @@ class CashDocsPrint extends Component
             $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
         }
 
-        $uri = session()->get('incomingOrderId') ? '/payment-type/success' : '';
+        $uri = session()->has('incomingOrderId') ? '/payment-type/success' : '';
 
         $this->data = [
             'companyName' => $this->company->title,
@@ -143,6 +143,8 @@ class CashDocsPrint extends Component
             $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
         }
 
+        $uri = session()->has('incomingOrderId') ? '/payment-type/success' : '';
+
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
@@ -154,7 +156,7 @@ class CashDocsPrint extends Component
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
             'cashierName' => $outgoingOrder->cashier_name,
-            'prevPage' => '/'.$this->lang.'/cashdesk',
+            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
         ];
 
         $this->view = 'outgoing-order';
@@ -179,6 +181,8 @@ class CashDocsPrint extends Component
             $contractorName = $incomingDoc->contractor->name.' '.$incomingDoc->contractor->lastname;
         }
 
+        $uri = session()->has('incomingOrderId') ? '/payment-type/success' : '';
+
         $this->data = [
             'companyName' => $this->company->title,
             'storeTitle' => $incomingDoc->storeDoc->store->title,
@@ -192,7 +196,7 @@ class CashDocsPrint extends Component
             'cashierName' => $incomingDoc->cashier_name,
             // 'paymentType' => $paymentType->title,
             // 'paymentDocNo' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/cashdesk',
+            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
         ];
 
         $this->view = 'incoming-doc';
@@ -235,7 +239,7 @@ class CashDocsPrint extends Component
             'customerName' => $customerName,
             'cashierName' => $outgoingDoc->cashier_name,
             // 'paymentType' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/storage/docs/outgoing',
+            'prevPage' => '/'.$this->lang.'/cashdesk',
         ];
 
         $this->view = 'outgoing-doc';

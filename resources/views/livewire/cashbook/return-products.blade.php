@@ -1,6 +1,6 @@
 <div>
   <div wire:ignore.self class="modal fade" id="returnProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Оформление возврата</h5>
@@ -32,13 +32,13 @@
               $sumDiscounted = 0;
               $change = 0;
             ?>
-            <h5>Чек №{{ $incomingOrder->doc_no }} <span class="text-success">{{ $message[$incomingOrder->comment] }}</span></h5>
+            <h5>Чек №{{ $incomingOrder->doc_no }} <span class="text-success">{{ $message[$incomingOrder->comment] ?? null }}</span></h5>
             <table class="table align-middle">
               <thead>
                 <tr>
                   <th>Наименование</th>
                   <th>Цена</th>
-                  <th>Кол-во<br> отпущенных</th>
+                  <th>Кол-во<br> проданных</th>
                   <th>Кол-во<br> возвратов</th>
                   <th>Итоговое<br> кол-во</th>
                   <th>Скидка</th>
@@ -50,30 +50,29 @@
                   <?php
                     $percentage = $productsData[$product->id]['price'] / 100;
                     $amount = $productsData[$product->id]['price'] - ($percentage * $productsData[$product->id]['discount'] ?? 0);
-                    $amountDiscounted = $productsDataCopy[$product->id]['outgoingCount'] * $amount;
-                    $sumDiscounted += $productsDataCopy[$product->id]['outgoingCount'] * $amount;
+                    $amountDiscounted = $productsData[$product->id]['outgoingCount'] * $amount;
+                    $sumDiscounted += $productsData[$product->id]['outgoingCount'] * $amount;
                     $returnedCount = $productsData[$product->id]['returnedCount'] ?? 0;
                   ?>
                   <tr>
                     <th scope="row">{{ $product->title }}</th>
-                    <td>{{ $productsDataCopy[$product->id]['price'] . $currency }}</td>
-                    <td>{{ $productsDataCopy[$product->id]['outgoingCount'] }}</td>
+                    <td>{{ $productsData[$product->id]['price'] . $currency }}</td>
+                    <td>{{ $productsData[$product->id]['outgoingCount'] }}</td>
                     <td>{{ $returnedCount }}</td>
                     <td class="text-nowrap" style="width:10%;">
-                      <input type="number" wire:model="productsData.{{ $product->id }}.outgoingCount" class="form-control @error('productsData.'.$product->id.'.outgoingCount') is-invalid @enderror" required>
+                      <input type="number" wire:model="productsData.{{ $product->id }}.returningCount" class="form-control @error('productsData.'.$product->id.'.returningCount') is-invalid @enderror" required>
                     </td>
                     <td class="text-nowrap" style="width:10%;">
                       <input type="number" wire:model="productsData.{{ $product->id }}.discount" class="form-control @error('productsData.'.$product->id.'.discount') is-invalid @enderror" disabled required>
                     </td>
                     <td>{{ $amountDiscounted . $currency }}</td>
                     <td class="text-end">
-                      @if($productsDataCopy[$product->id]['outgoingCount'] == $returnedCount)
-                        <button class="btn btn-secondary" disabled>Возвращено</button>
-                      @elseif(isset($returnedProducts[$product->id]))
+                      @if(isset($returnedProducts[$product->id]))
                         <?php $change += $amount * $returnedProducts[$product->id]['incomingCount']; ?>
                         <button wire:click="cancel({{ $product->id }})" class="btn btn-dark">Отмена</button>
                       @else
-                        <button wire:click="return({{ $product->id }})" class="btn btn-success">Возврат</button>
+                        <button wire:click="return({{ $product->id }})" class="btn btn-success"
+                            @if(empty($productsData[$product->id]['returningCount']) || $productsData[$product->id]['outgoingCount'] == $returnedCount) disabled @endif>Возврат</button>
                       @endif
                     </td>
                   </tr>
@@ -96,7 +95,7 @@
 
             <div class="text-end">
               <button wire:click="makeReturnDocs" type="button" class="btn btn-primary btn-lg text-end" @if($change == 0) disabled @endif><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
-              <button type="button" class="btn btn-dark btn-lg text-end"><i class="be bi-printer-fill me-2"></i> Печать</button>
+              <a href="/{{ app()->getLocale() }}/cashdesk/docsprint/incoming-check/{{ $incomingOrder->id }}" class="btn btn-dark btn-lg text-end"><i class="be bi-printer-fill me-2"></i> Печать</a>
             </div>
           @endif
         </div>

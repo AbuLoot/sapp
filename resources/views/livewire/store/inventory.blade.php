@@ -53,7 +53,6 @@
     <div class="row justify-content-end mb-3">
       <div class="col-3">
         <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
-          <option value="">Выберите склад...</option>
           @foreach ($company->stores as $store)
             <option value="{{ $store->id }}"> {{ $store->title }}</option>
           @endforeach

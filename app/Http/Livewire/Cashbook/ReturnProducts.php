@@ -26,7 +26,6 @@ class ReturnProducts extends Component
     public $incomingOrder = [];
     public $products = [];
     public $productsData = [];
-    public $productsDataCopy = [];
     public $returnedProducts = [];
 
     public function mount()
@@ -39,7 +38,7 @@ class ReturnProducts extends Component
         $parts = explode('.', $key);
 
         // Setting Correct Count
-        if (count($parts) == 3 && $parts[2] == 'outgoingCount') {
+        if (count($parts) == 3 && $parts[2] == 'returningCount') {
             unset($this->returnedProducts[$parts[1]]);
             $this->setValidCount($parts[1], $value);
         }
@@ -53,49 +52,45 @@ class ReturnProducts extends Component
 
     public function check($orderId)
     {
-        // $docNo = $this->generateIncomingStoreDocNo(session()->get('store')->id);
-        // $result = IncomingDoc::where('doc_no', $docNo)->first();
-
         $this->incomingOrder = IncomingOrder::find($orderId);
         $this->productsData = json_decode($this->incomingOrder->products_data, true);
-        $this->productsDataCopy = $this->productsData;
 
         $this->products = Product::whereIn('id', array_keys($this->productsData))->get();
         $this->search = '';
 
         foreach($this->products as $product) {
-            if (isset($this->productsData[$product->id]['returnedCount'])) {
-                $this->productsData[$product->id]['outgoingCount'] = $this->productsDataCopy[$product->id]['outgoingCount'] - $this->productsData[$product->id]['returnedCount'];
-            }
+            $this->productsData[$product->id]['returningCount'] = isset($this->productsData[$product->id]['returnedCount'])
+                ? $this->productsData[$product->id]['outgoingCount'] - $this->productsData[$product->id]['returnedCount']
+                : $this->productsData[$product->id]['outgoingCount'];
         }
     }
 
-    public function setValidCount($product_id, $value)
+    public function setValidCount($id, $value)
     {
-        $outgoingCount = $this->productsDataCopy[$product_id]['outgoingCount'];
+        $outgoingCount = $this->productsData[$id]['outgoingCount'];
+
+        if (isset($this->productsData[$id]['returnedCount'])) {
+            $outgoingCount = $this->productsData[$id]['returningCount'] = $this->productsData[$id]['outgoingCount'] - $this->productsData[$id]['returnedCount'];
+        }
 
         if ($value <= 0 || !is_numeric($value)) {
             $validCount = null;
         } else {
-            $validCount = $outgoingCount <= $value
-                ? $outgoingCount
-                : $value;
+            $validCount = $outgoingCount <= $value ? $outgoingCount : $value;
         }
 
-        $this->productsData[$product_id]['outgoingCount'] = $validCount;
+        $this->productsData[$id]['returningCount'] = $validCount;
     }
 
-    public function setValidDiscount($product_id, $value)
+    public function setValidDiscount($id, $value)
     {
         if ($value < 0 || !is_numeric($value)) {
             $validDiscount = null;
         } else {
-            $validDiscount = (10 < $value)
-                ? 10
-                : $value;
+            $validDiscount = (10 < $value) ? 10 : $value;
         }
 
-        $this->productsData[$product_id]['discount'] = $validDiscount;
+        $this->productsData[$id]['discount'] = $validDiscount;
     }
 
     public function switchCountView($id)
@@ -112,10 +107,9 @@ class ReturnProducts extends Component
     {
         $outgoingCount = $this->productsData[$id]['outgoingCount'];
 
-        $this->returnedProducts[$id]['incomingCount']
-            = $outgoingCount == $this->productsDataCopy[$id]['outgoingCount']
-                ? $outgoingCount
-                : $outgoingCount - $this->productsDataCopy[$id]['outgoingCount'];
+        $this->returnedProducts[$id]['incomingCount'] = ($outgoingCount >= $this->productsData[$id]['returningCount'])
+            ? $this->productsData[$id]['returningCount']
+            : $outgoingCount - $this->productsData[$id]['returnedCount'];
 
         $this->returnedProducts[$id]['discount'] = $this->productsData[$id]['discount'];
     }
@@ -135,6 +129,7 @@ class ReturnProducts extends Component
         $cashbook = session()->get('cashbook');
         $workplaceId = session()->get('cashdeskWorkplace');
 
+        $productsData = [];
         $contractorType = null;
         $contractorId = null;
 
@@ -152,28 +147,33 @@ class ReturnProducts extends Component
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
             $countInStore = $countInStores[$store->id] ?? 0;
-            $actualCount = $countInStores[$belongsToStoreId] + $returnedProduct['incomingCount'];
+            $stockCount = $countInStores[$belongsToStoreId] + $returnedProduct['incomingCount'];
 
             // Discount Calculation
             $percentage = $this->productsData[$product->id]['price'] / 100;
             $amount = $this->productsData[$product->id]['price'] - ($percentage * $returnedProduct['discount']);
             $amountDiscounted = $returnedProduct['incomingCount'] * $amount;
 
-            $incomingCount = isset($this->productsData[$productId]['incomingCount'])
-                ? $returnedProduct['incomingCount'] + $this->productsData[$productId]['incomingCount']
+            $incomingCount = isset($this->productsData[$productId]['returnedCount'])
+                ? $returnedProduct['incomingCount'] + $this->productsData[$productId]['returnedCount']
                 : $returnedProduct['incomingCount'];
 
             $this->productsData[$productId]['purchase_price'] = $amountDiscounted;
-            $this->productsData[$productId]['count'] = $incomingCount;
+            $this->productsData[$productId]['count'] = $returnedProduct['incomingCount'];
             $this->productsData[$productId]['unit'] = $product->unit;
             $this->productsData[$productId]['barcodes'] = $product->barcodes;
-            $this->productsData[$productId]['actualCount'] = $actualCount;
+            $this->productsData[$productId]['stockCount'] = $stockCount;
             $this->productsData[$productId]['returnedCount'] = $incomingCount;
+
+            unset($this->productsData[$productId]['returningCount']);
+
+            // For Incoming Document
+            $productsData[$productId] = $this->productsData[$productId];
 
             $outgoingTotalAmount = $outgoingTotalAmount + $amountDiscounted;
             $incomingTotalCount = $incomingTotalCount + $returnedProduct['incomingCount'];
 
-            $countInStores[$belongsToStoreId] = $actualCount;
+            $countInStores[$belongsToStoreId] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -238,7 +238,7 @@ class ReturnProducts extends Component
         $incomingDoc->user_id = auth()->user()->id;
         $incomingDoc->doc_no = $storeDocNo;
         $incomingDoc->doc_type_id = $docTypes->where('slug', 'forma-z-1')->first()->id;
-        $incomingDoc->products_data = json_encode($this->productsData);
+        $incomingDoc->products_data = json_encode($productsData);
         $incomingDoc->contractor_type = $contractorType;
         $incomingDoc->contractor_id = $contractorId;
         $incomingDoc->sum = $outgoingTotalAmount;
@@ -254,7 +254,7 @@ class ReturnProducts extends Component
         $storeDoc->doc_type = 'App\Models\IncomingDoc';
         $storeDoc->doc_id = $incomingDoc->id;
         $storeDoc->order_id = $this->incomingOrder->id;
-        $storeDoc->products_data = json_encode($this->productsData);
+        $storeDoc->products_data = json_encode($productsData);
         $storeDoc->contractor_type = $contractorType;
         $storeDoc->contractor_id = $contractorId;
         $storeDoc->incoming_amount = 0;

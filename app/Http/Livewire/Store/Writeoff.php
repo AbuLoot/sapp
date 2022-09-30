@@ -171,6 +171,11 @@ class Writeoff extends Component
         session()->put('writeoffProducts', $writeoffProducts);
     }
 
+    public function removeWriteoff()
+    {
+        session()->forget('writeoffProducts');
+    }
+
     public function render()
     {
         $products = [];

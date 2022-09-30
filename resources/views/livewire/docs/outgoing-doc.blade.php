@@ -69,13 +69,16 @@
           <td>6</td>
         </tr>
         <?php
-          $sum = 0;
+          $sumUndiscounted = 0;
+          $sumDiscounted = 0;
           $n = 1;
         ?>
         @foreach($productsData as $key => $product)
           <?php
             $unit = $units->where('id', $product['unit'])->first()->title ?? null;
-            $sum += $product['price'] * $product['outgoingCount'];
+            $percentage = $product['price'] / 100;
+            $sumDiscounted += $product['outgoingCount'] * ($product['price'] - $percentage * $product['discount']);
+            $sumUndiscounted += $product['outgoingCount'] * $product['price'];
           ?>
           <tr>
             <td>{{ $n++ }}</td>
@@ -92,7 +95,7 @@
         @endforeach
         <tr>
           <th class="text-end" colspan="5">Итого</th>
-          <th>{{ $sum . $currency }}</th>
+          <th>{{ $sumDiscounted . $currency }}</th>
         </tr>
       </tbody>
     </table>

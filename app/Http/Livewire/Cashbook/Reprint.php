@@ -59,7 +59,7 @@ class Reprint extends Component
         $incomingOrders = [];
 
         if ($this->search) {
-            $incomingOrders = IncomingOrder::where('doc_no', 'like', '%'.$this->search.'%')->paginate(12);
+            $incomingOrders = IncomingOrder::where('doc_no', 'like', '%'.$this->search.'%')->orderByDesc('id')->paginate(12);
         }
 
         return view('livewire.cashbook.reprint', ['incomingOrders' => $incomingOrders]);

@@ -21,6 +21,13 @@
         @endif
       </form>
 
+      <ul class="nav col-lg-auto text-end me-lg-2 text-small">
+        @if($writeoffProducts)
+          <li><a href="#" wire:click="makeDoc" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Провести документ"><i class="bi bi-file-earmark-ruled-fill"></i></a></li>
+          <li><a href="#" wire:click="removeWriteoff" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Очистить все"><i class="bi bi-file-x-fill"></i></a></li>
+        @endif
+      </ul>
+
     </div>
   </div>
 
@@ -41,7 +48,6 @@
     <div class="row justify-content-end mb-3">
       <div class="col-3">
         <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
-          <option value="">Выберите склад...</option>
           @foreach ($company->stores as $store)
             <option value="{{ $store->id }}"> {{ $store->title }}</option>
           @endforeach

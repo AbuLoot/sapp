@@ -14,9 +14,15 @@ class FastProducts extends Component
     public $fastMode;
     public $fastProducts = [];
 
+    protected $listeners = ['getFastProducts'];
+
     public function mount()
     {
         $this->company = auth()->user()->profile->company;
+    }
+
+    public function getFastProducts()
+    {
         $this->fastMode = Mode::where('slug', 'fast-products')->first();
         $this->fastProducts = $this->fastMode->products;
     }

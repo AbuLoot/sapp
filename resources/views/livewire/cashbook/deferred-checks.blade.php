@@ -9,7 +9,7 @@
         <div class="modal-body" style="min-height:270px;">
 
           <div class="row">
-            @forelse($deferredChecks as $index => $check)
+            @foreach($deferredChecks as $index => $check)
               <div class="col-3 mb-3">
                 <div class="position-relative">
                   <a wire:click="removeFromDeferred('{{ $index }}')" href="#" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark" style="z-index:1010;">
