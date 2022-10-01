@@ -35,7 +35,7 @@ class EditProduct extends Component
         'product.category_id' => 'required|numeric',
         'product.type' => 'required|numeric',
         'product.price' => 'required',
-        // 'product.unit' => 'required|numeric',
+        'product.unit' => 'numeric',
         // 'product.count.*' => 'required|numeric',
         // 'productBarcodes.*' => 'required',
     ];

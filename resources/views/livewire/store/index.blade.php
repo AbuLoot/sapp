@@ -8,7 +8,7 @@
       </form>
 
       <ul class="nav col-lg-auto text-end me-lg-2 text-small">
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="modal" data-bs-target="#filter" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i></a></li>
+        <li data-bs-toggle="modal" data-bs-target="#filter"><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i></a></li>
         <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать"><i class="bi bi-printer-fill"></i></a></li>
         <li>
           @if($deleteMode)
@@ -27,7 +27,7 @@
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">
-        <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить товар</a>
+        <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить продукт</a>
       </div>
     </div>
   </div>
@@ -46,12 +46,19 @@
       </div>
     @endif
 
+    <!-- Status Loading -->
+    <div class="text-center">
+      <div class="spinner-border" role="status" wire:loading wire:target="deleteProducts">
+        <span class="visually-hidden">Deleting data...</span>
+      </div>
+    </div>
+
     <div class="table-responsive">
       <table class="table table-sm table-striped">
         <thead>
           <tr>
             @if($deleteMode)
-              <th></th>
+              <th><input type="checkbox" wire:click="toggleCheckInputs" class="form-check-input checkbox-ids"></th>
             @endif
             <th >Наименование<br> товара</th>
             <th>Штрихкод</th>
@@ -68,7 +75,7 @@
           @forelse($products as $index => $product)
             <tr>
               @if($deleteMode)
-                <td><input type="checkbox" wire:model="productsId" value="{{ $product->id }}" class="form-check-input"></td>
+                <td><input type="checkbox" wire:model="productsId" value="{{ $product->id }}" class="form-check-input checkbox-ids"></td>
               @endif
               <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
               <td>
@@ -109,7 +116,7 @@
               <label for="type">Тип</label><br>
               <div class="form-check">
                 <input type="radio" wire:model="type" class="form-check-input" id="product" value="1">
-                <label class="form-check-label" for="product">Товар</label>
+                <label class="form-check-label" for="product">Продукт</label>
               </div>
               <div class="form-check">
                 <input type="radio" wire:model="type" class="form-check-input" id="service" value="2">
@@ -159,15 +166,3 @@
     </div>
   </div>
 </div>
-
-@section('scripts')
-  <script type="text/javascript">
-    function toggleCheckbox(source) {
-      var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-      for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-          checkboxes[i].checked = source.checked;
-      }
-    }
-  </script>
-@endsection

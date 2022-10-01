@@ -2,7 +2,11 @@
 
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
-      <h4 class="mb-md-2 mb-lg-0">Редактирование товара</h4>
+      <h4 class="mb-md-2 mb-lg-0">Редактирование продукта</h4>
+
+      <div class="text-end ms-md-auto ms-lg-0">
+        <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить продукт</a>
+      </div>
     </div>
   </div>
 
@@ -17,6 +21,17 @@
         </div>
       </div>
     </div>
+
+    @if(session()->has('message'))
+      <div class="toast-container position-fixed bottom-0 end-0 p-4">
+        <div class="toast align-items-center text-bg-info border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body text-white">{{ session('message') }}</div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+    @endif
 
     <div class="row">
       <div class="col-lg-6">
@@ -53,7 +68,7 @@
                 <label for="type">Тип</label><br>
                 <div class="form-check">
                   <input type="radio" wire:model="product.type" class="form-check-input" id="product" name="type" value="1">
-                  <label class="form-check-label" for="product">Товар</label>
+                  <label class="form-check-label" for="product">Продукт</label>
                 </div>
                 <div class="form-check">
                   <input type="radio" wire:model="product.type" class="form-check-input" id="service" name="type" value="2">
@@ -161,13 +176,15 @@
                     <div class="input-group-text">{{ $currency }}</div>
                   </div>
                 </div>
-                <div class="col-lg-6 mb-3">
-                  <label for="priceMarkup">Наценка</label>
-                  <div class="input-group">
-                    <input type="text" wire:model="priceMarkup" class="form-control @error('priceMarkup') is-invalid @enderror" id="priceMarkup" placeholder="0,0">
-                    <div class="input-group-text">%</div>
+                @if($product->type == 1)
+                  <div class="col-lg-6 mb-3">
+                    <label for="priceMarkup">Наценка</label>
+                    <div class="input-group">
+                      <input type="text" wire:model="priceMarkup" class="form-control @error('priceMarkup') is-invalid @enderror" id="priceMarkup" placeholder="0,0">
+                      <div class="input-group-text">%</div>
+                    </div>
                   </div>
-                </div>
+                @endif
                 <div class="w-100"></div>
                 <div class="col-lg-6 mb-3">
                   <div class="d-grid" role="group" aria-label="Basic example">

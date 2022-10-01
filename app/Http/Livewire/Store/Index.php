@@ -20,11 +20,14 @@ class Index extends Component
     public $categoryId;
     public $companyId;
     public $productsId = [];
+    public $chechAttr = [];
+    public $toggleMode = false;
     public $deleteMode = false;
 
     public function mount()
     {
         $this->lang = app()->getLocale();
+        $this->chechAttr = ['check' => 'checked'];
     }
 
     public function resetFilter()
@@ -37,7 +40,17 @@ class Index extends Component
     public function activateDeleteMode()
     {
         $this->deleteMode = true;
-    }   
+    }
+
+    public function toggleCheckInputs()
+    {
+        if (!$this->toggleMode AND $this->productsId) {
+            $this->productsId = [];
+            $this->toggleMode = false;
+        } else {
+            $this->toggleMode = true;
+        }
+    }
 
     public function deleteProducts()
     {
@@ -91,6 +104,10 @@ class Index extends Component
         $products = $query->paginate(30);
         $products->appends($appends);
 
+        if ($this->toggleMode) {
+            $this->productsId = $products->pluck('id')->toArray();
+            $this->toggleMode = false;
+        }
 
         return view('livewire.store.index', ['products' => $products])
             ->layout('livewire.store.layout');

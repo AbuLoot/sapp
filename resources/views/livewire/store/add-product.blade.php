@@ -1,7 +1,7 @@
 <div>
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
-      <h4 class="mb-md-2 mb-lg-0">Добавление товара</h4>
+      <h4 class="mb-md-2 mb-lg-0">Добавление продукта</h4>
     </div>
   </div>
 
@@ -59,7 +59,7 @@
                 <label for="type">Тип</label><br>
                 <div class="form-check">
                   <input type="radio" wire:model="product.type" class="form-check-input" id="product" name="type" value="1">
-                  <label class="form-check-label" for="product">Товар</label>
+                  <label class="form-check-label" for="product">Продукт</label>
                 </div>
                 <div class="form-check">
                   <input type="radio" wire:model="product.type" class="form-check-input" id="service" name="type" value="2">
@@ -183,11 +183,11 @@
                     <button type="submit" class="btn btn-primary"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
                   </div>
                 </div>
-                <div class="col-lg-6 mb-3">
+                <!-- <div class="col-lg-6 mb-3">
                   <div class="d-grid" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</button>
                   </div>
-                </div>
+                </div> -->
               </div>
             </form>
           </div>

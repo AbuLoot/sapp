@@ -157,7 +157,7 @@ class Inventory extends Component
         foreach($this->revisionProducts as $productId => $revisionProduct) {
 
             // If revision count empty, return wrong
-            if (empty($this->actualCount[$productId][$this->storeId])
+            if (is_null($this->actualCount[$productId][$this->storeId])
                     || $this->actualCount[$productId][$this->storeId] < 0) {
                 $this->addError('actualCount.'.$productId.'.'.$this->storeId, 'Wrong');
                 return;

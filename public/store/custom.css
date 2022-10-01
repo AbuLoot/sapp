@@ -9,3 +9,11 @@
   width: 18px;
   height: 18px;
 }
+.bg-indigo-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(79,70,229,var(--tw-bg-opacity));
+}
+.checkbox-ids {
+  width: 18px;
+  height: 18px;
+}
