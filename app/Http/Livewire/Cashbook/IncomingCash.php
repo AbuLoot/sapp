@@ -34,6 +34,8 @@ class IncomingCash extends Component
     {
         $this->validate();
 
+        $workplaceId = session()->get('cashdeskWorkplace');
+
         // Incoming Order
         $docType = DocType::where('slug', 'forma-ko-1')->first();
 
@@ -43,11 +45,12 @@ class IncomingCash extends Component
         $incomingOrder->cashbook_id = $this->cashbook->id;
         $incomingOrder->company_id = $this->company->id;
         $incomingOrder->user_id = auth()->user()->id;
-        $incomingOrder->cashier_name = auth()->user()->name;
+        $incomingOrder->workplace_id = $workplaceId;
         $incomingOrder->doc_no = $docNo;
         $incomingOrder->doc_type_id = $docType->id;
         $incomingOrder->products_data = null;
-        $incomingOrder->from_contractor = 'user:'.auth()->user()->id;
+        $incomingOrder->contractor_type = 'App\Models\User';
+        $incomingOrder->contractor_id = auth()->user()->id;
         $incomingOrder->payment_type_id = null;
         $incomingOrder->payment_detail = null;
         $incomingOrder->sum = $this->amount;
@@ -60,10 +63,11 @@ class IncomingCash extends Component
         $cashDoc->cashbook_id = $this->cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_id = $incomingOrder->id;
-        $cashDoc->doc_type_id = $docType->id;
-        $cashDoc->from_contractor = 'user:'.auth()->user()->id;
-        $cashDoc->to_contractor = 'cashbook:'.$this->cashbook->id;
+        $cashDoc->order_type = 'App\Models\IncomingOrder';
+        $cashDoc->order_id = $incomingOrder->id;
+        $cashDoc->doc_id = null;
+        $cashDoc->contractor_type = 'App\Models\User';
+        $cashDoc->contractor_id = auth()->user()->id;
         $cashDoc->incoming_amount = $this->amount;
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->amount;

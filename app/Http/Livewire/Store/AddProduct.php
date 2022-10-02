@@ -79,7 +79,7 @@ class AddProduct extends Component
         array_values($this->barcodes);
     }
 
-    public function generateBarcode($index)
+    public function generateOldBarcode($index)
     {
         $firstCode = '200'; // 200-299
 
@@ -99,6 +99,49 @@ class AddProduct extends Component
             $thirdCode + 1;
             $fourthCode = substr(sprintf("%'.02d", $fourthCode + 1), -2);
             $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
+        }
+
+        $this->productBarcodes[$index] = $barcode;
+
+        return $barcode;
+    }
+
+    public function generateBarcode($index)
+    {
+        $firstCode = '200'; // 200-299
+
+        $companyId = (is_numeric($this->product->company_id)) ? $this->product->company_id : '000000';
+        $secondCode = substr(sprintf("%'.06d", $companyId), -6);
+
+        $lastSeconds = substr(intval(microtime(true)), -2);
+        $thirdCode = $lastSeconds.$index;
+
+        $arrCode = str_split($firstCode.$secondCode.$thirdCode);
+
+        $number = 1;
+        $evenSum = 0;
+        $oddSum = 0;
+
+        foreach ($arrCode as $key => $value) {
+            if ($number % 2 == 0) {
+                $evenSum += $value;
+            } else {
+                $oddSum += $value;
+            }
+            $number++;
+        }
+
+        $evenSum = $evenSum * 3;
+        $bothSum = $evenSum + $oddSum;
+        $lastNum = substr($bothSum, -1);
+
+        $barcode = $firstCode.$secondCode.$thirdCode.$lastNum;
+        $sameProduct = Product::whereJsonContains('barcodes', $barcode)->first();
+
+        if (in_array($barcode, $this->productBarcodes) || $sameProduct) {
+            $firstCode += ($firstCode == '299') ? -98 : 1;
+            $thirdCode + 1;
+            $barcode = $firstCode.$secondCode.$thirdCode.$lastNum;
         }
 
         $this->productBarcodes[$index] = $barcode;
@@ -126,7 +169,7 @@ class AddProduct extends Component
             'wholesale_price' => $this->wholesalePrice ?? 0,
             'price' => $this->product->price,
             'count_in_stores' => json_encode($this->countInStores),
-            'count' => $totalCount,
+            'count' => $this->product->type == 1 ? $totalCount : null,
             'type' => $this->product->type,
             'unit' => $this->product->unit ?? 0,
             'image' => 'no-image-middle.png',

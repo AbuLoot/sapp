@@ -64,9 +64,7 @@ class Index extends Component
             if ($value <= 0 || !is_numeric($value) || empty($value)) {
                 $totalDiscount = null;
             } else {
-                $totalDiscount = (10 < $value)
-                    ? 10
-                    : $value;
+                $totalDiscount = (10 < $value) ? 10 : $value;
             }
 
             session()->put('totalDiscount', $totalDiscount);

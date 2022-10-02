@@ -34,6 +34,8 @@ class OutgoingCash extends Component
     {
         $this->validate();
 
+        $workplaceId = session()->get('cashdeskWorkplace');
+
         // Outgoing Order
         $docType = DocType::where('slug', 'forma-ko-2')->first();
 
@@ -43,10 +45,11 @@ class OutgoingCash extends Component
         $outgoingOrder->cashbook_id = $this->cashbook->id;
         $outgoingOrder->company_id = $this->company->id;
         $outgoingOrder->user_id = auth()->user()->id;
-        $outgoingOrder->cashier_name = auth()->user()->name;
+        $outgoingOrder->workplace_id = $workplaceId;
         $outgoingOrder->doc_no = $docNo;
         $outgoingOrder->doc_type_id = $docType->id;
-        $outgoingOrder->to_contractors = 'user:'.auth()->user()->id;
+        $outgoingOrder->contractor_type = 'App\Models\User';
+        $outgoingOrder->contractor_id = auth()->user()->id;
         $outgoingOrder->sum = $this->amount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = 0;
@@ -57,10 +60,11 @@ class OutgoingCash extends Component
         $cashDoc->cashbook_id = $this->cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_id = $outgoingOrder->id;
-        $cashDoc->doc_type_id = $docType->id;
-        $cashDoc->from_contractor = 'cashbook:'.$this->cashbook->id;
-        $cashDoc->to_contractor = 'user:'.auth()->user()->id;
+        $cashDoc->order_type = 'App\Models\OutgoingOrder';
+        $cashDoc->order_id = $outgoingOrder->id;
+        $cashDoc->doc_id = null;
+        $cashDoc->contractor_type = 'App\Models\User';
+        $cashDoc->contractor_id = auth()->user()->id;
         $cashDoc->incoming_amount = 0;
         $cashDoc->outgoing_amount = $this->amount;
         $cashDoc->sum = $this->amount;

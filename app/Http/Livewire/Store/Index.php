@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Store;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+use App\Models\Unit;
 use App\Models\Product;
 use App\Models\IncomingDoc;
 
@@ -16,18 +17,18 @@ class Index extends Component
 
     public $lang;
     public $search;
+    public $units;
     public $type;
     public $categoryId;
     public $companyId;
     public $productsId = [];
-    public $chechAttr = [];
     public $toggleMode = false;
     public $deleteMode = false;
 
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->chechAttr = ['check' => 'checked'];
+        $this->units = Unit::get();
     }
 
     public function resetFilter()

@@ -105,7 +105,8 @@ class ListOfDebtors extends Component
     public function makeRepaymentDocs($paymentDetail)
     {
         $store = session()->get('store');
-        $cashbook = $this->company->cashbooks->first();
+        $cashbook = session()->get('cashbook');
+        $workplaceId = session()->get('cashdeskWorkplace');
 
         // Incoming Order
         $docType = DocType::where('slug', 'forma-ko-1')->first();
@@ -116,11 +117,12 @@ class ListOfDebtors extends Component
         $incomingOrder->cashbook_id = $cashbook->id;
         $incomingOrder->company_id = $this->company->id;
         $incomingOrder->user_id = auth()->user()->id;
-        $incomingOrder->cashier_name = auth()->user()->name;
+        $incomingOrder->workplace_id = $workplaceId;
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docType->id;
         $incomingOrder->products_data = null;
-        $incomingOrder->from_contractor = 'user:'.$this->profile->user_id;
+        $incomingOrder->contractor_type = 'App\Models\User';
+        $incomingOrder->contractor_id = $paymentDetail['userId'];
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = $this->repaymentAmount;
@@ -133,10 +135,11 @@ class ListOfDebtors extends Component
         $cashDoc->cashbook_id = $cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
-        $cashDoc->doc_id = $incomingOrder->id;
-        $cashDoc->doc_type_id = $docType->id;
-        $cashDoc->from_contractor = 'user:'.$this->profile->user_id;
-        $cashDoc->to_contractor = 'store:'.$store->id;
+        $cashDoc->order_type = 'App\Models\IncomingOrder';
+        $cashDoc->order_id = $incomingOrder->id;
+        $cashDoc->doc_id = null;
+        $cashDoc->contractor_type = 'App\Models\User';
+        $cashDoc->contractor_id = $paymentDetail['userId'];
         $cashDoc->incoming_amount = $this->repaymentAmount;
         $cashDoc->outgoing_amount = 0;
         $cashDoc->sum = $this->repaymentAmount;

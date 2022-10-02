@@ -40,7 +40,7 @@
         <tbody>
           @forelse($storeDocs as $index => $storeDoc)
             <tr>
-              <td>{{ $storeDoc->doc->docType->title }}</td>
+              <td>{{ $storeDoc->doc->docType->title ?? null }}</td>
               <td>{{ $storeDoc->doc->doc_no }}</td>
               <td>{{ $storeDoc->store->title }}</td>
               <td>{{ $storeDoc->user->name }}</td>

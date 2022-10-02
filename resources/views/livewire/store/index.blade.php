@@ -67,12 +67,12 @@
             <th>Цена оптовая</th>
             <th>Цена продажи</th>
             <th>Кол.</th>
-            <!-- <th>Ед. измерения</th> -->
             <th class="text-end">Поставщик</th>
           </tr>
         </thead>
         <tbody>
           @forelse($products as $index => $product)
+            <?php $unit = $units->where('id', $product->unit)->first()->title ?? null; ?>
             <tr>
               @if($deleteMode)
                 <td><input type="checkbox" wire:model="productsId" value="{{ $product->id }}" class="form-check-input checkbox-ids"></td>
@@ -88,7 +88,7 @@
               <td>{{ $product->purchase_price }}</td>
               <td>{{ $product->wholesale_price }}</td>
               <td>{{ $product->price }}</td>
-              <td>{{ $product->count }}</td>
+              <td>{{ $product->count . $unit }}</td>
               <td class="text-end">{{ $product->company->title }}</td>
             </tr>
           @empty
