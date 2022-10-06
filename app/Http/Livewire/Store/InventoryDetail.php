@@ -3,7 +3,6 @@
 namespace App\Http\Livewire\Store;
 
 use Livewire\Component;
-use Livewire\WithPagination;
 
 use App\Models\Unit;
 use App\Models\Revision;
@@ -11,10 +10,6 @@ use App\Models\Product;
 
 class InventoryDetail extends Component
 {
-    use WithPagination;
-
-    protected $paginationTheme = 'bootstrap';
-
     public $lang;
     public $company;
     public $storeId;

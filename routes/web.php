@@ -59,6 +59,7 @@ use App\Http\Livewire\Store\InventoryDetail;
 use App\Http\Livewire\Store\Writeoff;
 use App\Http\Livewire\Store\StoreDocs;
 use App\Http\Livewire\Store\StoreDocsPrint;
+use App\Http\Livewire\Store\PriceTags;
 
 // Cashdesk
 use App\Http\Livewire\Cashbook\Index as CashbookIndex;
@@ -86,6 +87,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
     // Livewire Routes
     Route::get('/', StoreIndex::class);
     Route::get('docsprint/{type}/{id}', StoreDocsPrint::class);
+    Route::get('pricetag/{id}', PriceTags::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
     Route::get('income', Income::class);
@@ -242,8 +244,8 @@ Route::get('/', [ShopController::class, 'index']);
 Route::get('i/contacts', [SiteController::class, 'contacts']);
 Route::get('i/{page}', [SiteController::class, 'page']);
 
-Route::get('/systems', function () {
-    return view('systems');
-})->middleware(['auth'])->name('systems');
+Route::get('/apps', function () {
+    return view('apps');
+})->middleware(['auth'])->name('apps');
 
 require __DIR__.'/auth.php';

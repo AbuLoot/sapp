@@ -1,6 +1,6 @@
 <x-app-layout>
   <x-slot name="title">
-    Системы
+    Приложения
   </x-slot>
 
   <div class="row align-items-md-stretch">
