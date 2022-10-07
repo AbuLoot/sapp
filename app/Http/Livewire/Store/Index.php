@@ -23,6 +23,7 @@ class Index extends Component
     public $companyId;
     public $productsId = [];
     public $toggleMode = false;
+    public $printMode = false;
     public $deleteMode = false;
 
     public function mount()
@@ -38,8 +39,15 @@ class Index extends Component
         $this->companyId = null;
     }
 
+    public function activatePrintMode()
+    {
+        $this->deleteMode = false;
+        $this->printMode = true;
+    }
+
     public function activateDeleteMode()
     {
+        $this->printMode = false;
         $this->deleteMode = true;
     }
 
@@ -51,6 +59,23 @@ class Index extends Component
         } else {
             $this->toggleMode = true;
         }
+    }
+
+    public function printProducts()
+    {
+        if (count($this->productsId) >= 1) {
+
+            $products = Product::whereIn('id', $this->productsId)->get();
+
+            // $this->authorize('delete', $products->first());
+
+            foreach($products as $product) {
+
+            }
+
+        }
+
+        $this->printMode = false;
     }
 
     public function deleteProducts()

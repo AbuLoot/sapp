@@ -87,7 +87,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
     // Livewire Routes
     Route::get('/', StoreIndex::class);
     Route::get('docsprint/{type}/{id}', StoreDocsPrint::class);
-    Route::get('pricetag/{id}', PriceTags::class);
+    Route::get('pricetags/{ids}', PriceTags::class);
     Route::get('add-product', AddProduct::class);
     Route::get('edit-product/{id}', EditProduct::class);
     Route::get('income', Income::class);

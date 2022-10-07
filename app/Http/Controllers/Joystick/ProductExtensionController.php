@@ -29,12 +29,9 @@ class ProductExtensionController extends Controller
 
         $this->authorize('viewAny', Product::class);
 
-        if (auth()->user()->roles()->firstWhere('name', 'admin')) {
-            $products = Product::orderBy('updated_at','desc')->paginate(50);
-        }
-        else {
-            $products = Product::where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
-        }
+        $products = auth()->user()->roles()->firstWhere('name', 'admin')
+            ? Product::orderBy('updated_at','desc')->paginate(50)
+            : Product::where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
 
         $categories = Category::get()->toTree();
         $modes = Mode::all();

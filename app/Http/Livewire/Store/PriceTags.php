@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Store;
 
+use Illuminate\Http\Request;
 use Livewire\Component;
 
 use App\Models\Product;
@@ -10,7 +11,8 @@ use App\Models\Unit;
 class PriceTags extends Component
 {
     public $lang;
-    public $product;
+    public $search;
+    public $products;
     public $company;
     public $units;
     public $companyName = false;
@@ -21,10 +23,12 @@ class PriceTags extends Component
     public $count = 1;
     public $mmInPX = 3.78;
 
-    public function mount($id)
+    public function mount(Request $request, $ids)
     {
+        parse_str($ids, $arrIds);
+
         $this->lang = app()->getLocale();
-        $this->product = Product::find($id);
+        $this->products = Product::whereIn('id', $arrIds)->get();
         $this->company = auth()->user()->profile->company;
         $this->units = Unit::get();
     }
@@ -39,9 +43,21 @@ class PriceTags extends Component
         $this->count = $this->count ? $this->count : 1;
     }
 
+    public function addToPriceTag($id)
+    {
+        $this->products[] = Product::findOrFail($id);
+        $this->search = '';
+    }
+
     public function render()
     {
-        return view('livewire.store.price-tags')
+        $productsObj = [];
+
+        if (strlen($this->search) >= 2) {
+            $productsObj = Product::search($this->search)->get()->take(7);
+        }
+
+        return view('livewire.store.price-tags', ['productsObj' => $productsObj])
             ->layout('livewire.store.layout');
     }
 }

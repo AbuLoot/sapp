@@ -9,7 +9,24 @@
 
       <ul class="nav col-lg-auto text-end me-lg-2 text-small">
         <li data-bs-toggle="modal" data-bs-target="#filter"><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i></a></li>
-        <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать"><i class="bi bi-printer-fill"></i></a></li>
+        <li>
+          @if($printMode)
+            <a 
+              @if($productsId)
+                href="/{{ $lang }}/storage/pricetags/{{ http_build_query($productsId) }}"
+              @else
+                href="#" wire:click="printProducts()"
+              @endif
+              class="nav-link position-relative text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать">
+              <i class="bi bi-printer-fill"></i>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                {{ count($productsId) }} <span class="visually-hidden">unread messages</span>
+              </span>
+            </a>
+          @else
+            <a href="#" wire:click="activatePrintMode()" class="nav-link position-relative text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать"><i class="bi bi-printer-fill"></i></a>
+          @endif
+        </li>
         <li>
           @if($deleteMode)
             <a href="#" wire:click="deleteProducts()" class="nav-link position-relative text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей">
@@ -22,8 +39,6 @@
             <a href="#" wire:click="activateDeleteMode()" class="nav-link position-relative text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей"><i class="bi bi-x-square-fill"></i></a>
           @endif
         </li>
-        <!-- <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="plus"><i class="bi bi-plus-square-fill"></i></a></li> -->
-        <!-- <li><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="save"><i class="bi bi-save-fill"></i></a></li> -->
       </ul>
 
       <div class="text-end ms-md-auto ms-lg-0">
@@ -57,7 +72,7 @@
       <table class="table table-sm table-striped">
         <thead>
           <tr>
-            @if($deleteMode)
+            @if($deleteMode OR $printMode)
               <th><input type="checkbox" wire:click="toggleCheckInputs" class="form-check-input checkbox-ids"></th>
             @endif
             <th >Наименование<br> товара</th>
@@ -74,7 +89,7 @@
           @forelse($products as $index => $product)
             <?php $unit = $units->where('id', $product->unit)->first()->title ?? null; ?>
             <tr>
-              @if($deleteMode)
+              @if($deleteMode OR $printMode)
                 <td><input type="checkbox" wire:model="productsId" value="{{ $product->id }}" class="form-check-input checkbox-ids"></td>
               @endif
               <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
