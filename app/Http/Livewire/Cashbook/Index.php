@@ -107,7 +107,8 @@ class Index extends Component
 
             if ($cartProduct->discount) {
                 $percent = $cartProduct->discount;
-            } elseif (session()->get('totalDiscount')) {
+            }
+            elseif (session()->get('totalDiscount')) {
                 $percent = session()->get('totalDiscount');
             }
 

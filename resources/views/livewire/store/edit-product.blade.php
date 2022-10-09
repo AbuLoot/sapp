@@ -195,7 +195,7 @@
                 </div>
                 <div class="col-lg-6 mb-3">
                   <div class="d-grid" role="group" aria-label="Basic example">
-                    <a href="/{{ $lang }}/storage/pricetags/{{ $product->id }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a>
+                    <a href="/{{ $lang }}/storage/pricetags/{{ http_build_query([$product->id]) }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a>
                     <!-- <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#priceTags"><i class="be bi-printer-fill me-2"></i> Печать</button> -->
                   </div>
                 </div>

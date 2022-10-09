@@ -21,7 +21,7 @@
       </form>
 
       <div class="text-end ms-md-auto ms-lg-0">
-        <a href="{{ $_SERVER['HTTP_REFERER'] }}" class="btn btn-secondary"><i class="be bi-arrow-left-circle-fill me-2"></i> Назад</a>
+        <a href="/{{ $lang }}/storage" class="btn btn-secondary"><i class="be bi-arrow-left-circle-fill me-2"></i> Назад</a>
       </div>
     </div>
   </div>
@@ -82,7 +82,7 @@
                 @foreach($company->stores as $index => $store)
                   <?php $totalCountStores = 0; ?>
                   @foreach ($products as $index => $product)
-                    <?php $totalCountStores += $countStores[$product->id][$store->id]; ?>
+                    <?php $totalCountStores += isset($countStores[$product->id][$store->id]) ? $countStores[$product->id][$store->id] : 0; ?>
                   @endforeach
                   <option value="{{ $totalCountStores }}">{{ $store->title . ' - ' . $totalCountStores . 'шт' }}</option>
                 @endforeach
@@ -91,47 +91,46 @@
           </div>
           <div class="col">
             <div class="card overflow-auto px-1 py-1 mb-3">
+              <?php
+                $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+                $priceTagContent = '';
+                $companyNameEl = '';
+
+                if ($companyName) {
+                  $companyNameEl = '<h6>'.$company->title.'</h6>';
+                }
+
+                foreach ($products as $index => $product) {
+
+                  $barcodes = json_decode($product->barcodes, true) ?? [];
+                  $barcodeEl = '';
+                  $titleEl = '';
+                  $priceEl = '';
+
+                  if ($barcode) {
+                    $barcodeEl = '<div><img src="data:image/png;base64,'.base64_encode($generator->getBarcode(substr($barcodes[0], 0, -1), $generator::TYPE_EAN_13)).'"></div>';
+                    $barcodeEl .= '<div>'.$barcodes[0].'</div>';
+                  }
+
+                  if ($productName) {
+                    $titleEl = '<h5>'.$product->title.'</h5>';
+                  }
+
+                  if ($priceUnit) {
+                    $priceEl = '<h2>'.$product->price.'<span style="font-size: 0.7em;">'.$company->currency->symbol.'/'.$unitTitles[$product->id].'</span></h2>';
+                  }
+
+                  for ($i=0; $i < $count; $i++) {
+                    $priceTagContent .= '<div class="price-tag">';
+                      $priceTagContent .= $companyNameEl;
+                      $priceTagContent .= $titleEl;
+                      $priceTagContent .= $priceEl;
+                      $priceTagContent .= $barcodeEl;
+                    $priceTagContent .= '</div>';
+                  }
+                }
+              ?>
               <div class="doc" id="doc">
-                <?php
-                  $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-                  $priceTagContent = '';
-                  $companyNameEl = '';
-
-                  if ($companyName) {
-                    $companyNameEl = '<h6>'.$company->title.'</h6>';
-                  }
-
-                  foreach ($products as $index => $product) {
-
-                    $barcodes = json_decode($product->barcodes, true) ?? [];
-                    $barcodeEl = '';
-                    $titleEl = '';
-                    $priceEl = '';
-
-                    if ($barcode) {
-                      $barcodeEl = '<div><img src="data:image/png;base64,'.base64_encode($generator->getBarcode(substr($barcodes[0], 0, -1), $generator::TYPE_EAN_13)).'"></div>';
-                      $barcodeEl .= '<div>'.$barcodes[0].'</div>';
-                    }
-
-                    if ($productName) {
-                      $titleEl = '<h5>'.$product->title.'</h5>';
-                    }
-
-                    if ($priceUnit) {
-                      $priceEl = '<h2>'.$product->price.'<span style="font-size: 0.7em;">'.$company->currency->symbol.'/'.$unitTitles[$product->id].'</span></h2>';
-                    }
-
-                    for ($i=0; $i < $count; $i++) {
-                      $priceTagContent .= '<div class="price-tag">';
-                        $priceTagContent .= $companyNameEl;
-                        $priceTagContent .= $titleEl;
-                        $priceTagContent .= $priceEl;
-                        $priceTagContent .= $barcodeEl;
-                      $priceTagContent .= '</div>';
-                    }
-                  }
-                ?>
-
                 <!-- Display Price Tags -->
                 {!! $priceTagContent !!}
 
@@ -145,7 +144,7 @@
                     width: <?= $size * $mmInPX ?>px;
                     background-color: #fff;
                     text-align: center;
-                    margin: 0 auto;
+                    margin: 0 auto 2px auto;
                     padding: 5px 2px 2px;
                   }
                 </style>

@@ -77,7 +77,7 @@ class ComplexPayment extends Component
         $store = session()->get('store');
         $cashbook = session()->get('cashbook');
         $workplaceId = session()->get('cashdeskWorkplace');
-        $cartProducts = session()->get('cartProducts') ?? [];
+        $cartProducts = session()->get('cartProducts');
 
         $contractorType = null;
         $contractorId = null;
@@ -91,47 +91,47 @@ class ComplexPayment extends Component
 
             $product = Product::findOrFail($productId);
 
-            $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$store->id] ?? 0;
+            $outgoingCount = $cartProduct['countInCart'];
 
-            $outgoingCount = 0;
+            // If Order Not a Service
+            if ($product->type == 1) {
 
-            /**
-             * Prepare outgoing count & If outgoing count greater, assign $countInStore
-             */
-            if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
-                $outgoingCount = $cartProduct['countInCart'];
-            } elseif ($countInStore < $cartProduct['countInCart']) {
-                $outgoingCount = $countInStore;
+                $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
+                $countInStore = $countInStores[$store->id] ?? 0;
+
+                /**
+                 * Prepare outgoing count & If outgoing count greater, assign $countInStore
+                 */
+                if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
+                    $outgoingCount = $cartProduct['countInCart'];
+                } elseif ($countInStore < $cartProduct['countInCart']) {
+                    $outgoingCount = $countInStore;
+                }
+
+                $stockCount = $countInStore - $outgoingCount;
+                $countInStores[$store->id] = $stockCount;
+                $amountCount = collect($countInStores)->sum();
+
+                $product->count_in_stores = json_encode($countInStores);
+                $product->count = $amountCount;
+                $product->save();
             }
 
-            $stockCount = $countInStore - $outgoingCount;
-
-            $price = (session()->get('priceMode') == 'retail') ? $product->price : $product->wholesale_price;
-            $discount = 0;
+            $price = session()->get('priceMode') == 'retail' ? $product->price : $product->wholesale_price;
+            $discount = session()->get('totalDiscount');
 
             if ($cartProduct->discount) {
                 $discount = $cartProduct->discount;
-            } elseif(session()->get('totalDiscount')) {
-                $discount = session()->get('totalDiscount');
             }
 
             $productsData[$productId]['store'] = $store->id;
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
-            $productsData[$productId]['stockCount'] = $stockCount;
             $productsData[$productId]['barcodes'] = json_decode($product->barcodes, true);
 
             $incomingTotalAmount = $incomingTotalAmount + ($price * $outgoingCount);
             $outgoingTotalCount = $outgoingTotalCount + $outgoingCount;
-
-            $countInStores[$store->id] = $stockCount;
-            $amountCount = collect($countInStores)->sum();
-
-            $product->count_in_stores = json_encode($countInStores);
-            $product->count = $amountCount;
-            $product->save();
         }
 
         // Incoming Order & Outgoing Doc
@@ -211,9 +211,8 @@ class ComplexPayment extends Component
             'incomingOrderId' => $incomingOrder->id,
             'outgoingDocId' => $outgoingDoc->id,
         ]);
-        session()->forget('customer');
-        session()->forget('cartProducts');
-        session()->forget('totalDiscount');
+
+        session()->forget(['customer', 'cartProducts', 'totalDiscount']);
 
         return redirect($this->lang.'/cashdesk/payment-type/success');
     }

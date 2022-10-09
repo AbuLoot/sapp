@@ -48,7 +48,10 @@
 
         <!-- Search Products -->
         <form class="col-4 col-lg-4 me-4" style="position: relative;">
-          <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
+          <div class="input-group">
+            <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
+            <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+          </div>
           @if($products)
             <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
               <ul class="list-unstyled mb-0">
@@ -276,6 +279,17 @@
       </div>
     </footer>
 
+    <!-- Keyboard -->
+    <div wire:ignore class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasLabel">Offcanvas bottom</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body small">
+        ...
+      </div>
+    </div>
+
     <!-- Modal Fast Products -->
     <livewire:cashbook.fast-products>
 
@@ -324,5 +338,8 @@
       const toastBody = document.getElementById('toastBody')
       toastBody.innerHTML = event.detail.message
     })
+
+    // Offcanvas
+    const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
   </script>
 @endsection

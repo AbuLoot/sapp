@@ -329,7 +329,7 @@ class Inventory extends Component
         $draft = new ProductDraft;
         $draft->user_id = auth()->user()->id;
         $draft->type = 'revision';
-        $draft->title = 'Revision '.($draftCount + 1);
+        $draft->title = 'Revision '.($draftsCount + 1);
         $draft->products_data = json_encode($this->draftProducts);
         $draft->count = count($this->draftProducts);
         $draft->comment = null;

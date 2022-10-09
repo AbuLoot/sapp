@@ -4,7 +4,10 @@
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Главная</h4>
 
       <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-        <input wire:model="search" type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
+        <div class="input-group">
+          <input wire:model="search" type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
+          <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+        </div>
       </form>
 
       <ul class="nav col-lg-auto text-end me-lg-2 text-small">
@@ -117,6 +120,55 @@
 
     {{ $products->links() }}
 
+    <!-- Keyboard -->
+    <div wire:ignore class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <div class="offcanvas-body small">
+        <div class="container">
+          <div class="row gx-2 gy-2 h-100">
+            <div class="col-4 d-grid">
+              <input type="button" value="7" onclick="display(9)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="8" onclick="display(8)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="9" onclick="display(9)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="4" onclick="display(4)" class="btn btn-primary btn-lg fs-2">       
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="5" onclick="display(5)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="6" onclick="display(6)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="1" onclick="display(1)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="2" onclick="display(2)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="3" onclick="display(3)" class="btn btn-primary btn-lg fs-2">
+            </div>
+
+            <div class="col-4 d-grid">
+              <button type="button" value="clear" onclick="clearDisplay()" class="btn btn-primary btn-lg fs-2"><i class="bi bi-backspace"></i></button>
+            </div>
+            <div class="col-4 d-grid">
+              <input type="button" value="0" onclick="display(0)" class="btn btn-primary btn-lg fs-2">
+            </div>
+            <div class="col-4 d-grid">
+              <button type="submit" class="btn btn-primary btn-lg fs-2"><i class="bi bi-arrow-return-left"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal -->
     <div wire:ignore.self class="modal fade" id="filter" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -181,3 +233,9 @@
     </div>
   </div>
 </div>
+
+@section('scripts')
+  <script type="text/javascript">
+    const bsOffcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+  </script>
+@endsection

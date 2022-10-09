@@ -21,7 +21,7 @@
 
         <div class="row gx-2 gy-2 h-100">
           <div class="col-4 d-grid">
-            <input type="button" value="7" onclick="display(7)" class="btn btn-primary btn-lg fs-2">
+            <input type="button" value="7" onclick="display(9)" class="btn btn-primary btn-lg fs-2">
           </div>
           <div class="col-4 d-grid">
             <input type="button" value="8" onclick="display(8)" class="btn btn-primary btn-lg fs-2">
@@ -65,12 +65,14 @@
   <script>
     // Displaying values
     function display(val) {
-      document.getElementById("code").value += val;
+      let inputCode = document.getElementById("code");
+      inputCode.value += val;
     }
 
     // Clearing the display
     function clearDisplay() {
-      document.getElementById("code").value = ""
+      let inputCode = document.getElementById("code");
+      inputCode.value = inputCode.value.substr(0, inputCode.value.length - 1);
     }
   </script>
 

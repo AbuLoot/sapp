@@ -51,7 +51,7 @@
         <tbody>
           @forelse($incomingDocs as $index => $incomingDoc)
             <tr>
-              <td><a href="/{{ $lang }}/storage/edit-incomingDoc/{{ $incomingDoc->id }}">{{ $incomingDoc->doc_no }}</a></td>
+              <td>{{ $incomingDoc->doc_no }}</td>
               <td>{{ $incomingDoc->sum }}</td>
               <td>{{ $incomingDoc->count }}</td>
               <td>{{ $incomingDoc->user->name }}</td>
