@@ -25,7 +25,10 @@
   background-color: #adb5bd;
 }
 
-.bg-brand-border {
+.bg-brand-border-top {
+  border-top: 5px solid #463bab;
+}
+.bg-brand-border-bottom {
   border-bottom: 5px solid #463bab;
 }
 .cash-operations .btn {
@@ -33,4 +36,8 @@
   line-height: 1.4;
   padding: 0.375rem 0.375rem;
   /*border-bottom: 3px solid #464e54;*/
+}
+
+.offcanvas.offcanvas-bottom {
+  height: 37vh;
 }

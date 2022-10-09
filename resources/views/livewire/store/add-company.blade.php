@@ -24,9 +24,9 @@
               <input type="text" wire:model.defer="company.legal_address" class="form-control @error('company.legal_address') is-invalid @enderror" id="address">
               @error('company.legal_address')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary text-center"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary text-center"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
+            </div>
           </div>
         </form>
       </div>

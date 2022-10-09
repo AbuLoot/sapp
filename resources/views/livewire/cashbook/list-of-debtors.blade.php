@@ -1,7 +1,7 @@
 <div>
 
   <div wire:ignore.self class="modal fade" id="listOfDebtors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Список должников</h5>
@@ -66,7 +66,7 @@
 
   <!-- Modal Repayment Of Dept -->
   <div wire:ignore.self class="modal fade" id="repaymentOfDebt" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content  bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Погашение долга</h5>

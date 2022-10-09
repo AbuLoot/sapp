@@ -26,9 +26,9 @@
                 <?php $traverse($categories); ?>
               </select>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary text-center"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary text-center"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
+            </div>
           </div>
         </form>
       </div>

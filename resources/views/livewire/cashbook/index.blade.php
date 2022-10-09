@@ -1,6 +1,6 @@
 <div>
 
-  <header class="p-3 bg-brand bg-brand-border">
+  <header class="p-3 bg-brand bg-brand-border-bottom">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/{{ $lang }}/cashdesk" class="navbar-brand me-4">
@@ -43,13 +43,14 @@
 
   @else
 
+    <!-- Cash Interface -->
     <div class="px-3 py-3 border-bottom-mb-3">
       <div class="container d-flex flex-wrap">
 
         <!-- Search Products -->
         <form class="col-4 col-lg-4 me-4" style="position: relative;">
           <div class="input-group">
-            <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
+            <input wire:model="search" type="search" class="form-control form-control-lg" id="search" onclick="setFocus('search')" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
             <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
           </div>
           @if($products)
@@ -70,7 +71,7 @@
         <!-- Search Customers -->
         <form class="col-3 col-lg-3 me-4" style="position: relative;">
           <div class="input-group">
-            <input wire:model="searchCustomer" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
+            <input wire:model="searchCustomer" type="search" class="form-control form-control-lg" id="searchCustomer" onclick="setFocus('searchCustomer')" placeholder="Поиск клиентов..." aria-label="Search">
             @if($customers)
               <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute; top: 50px;">
                 <ul class="list-unstyled mb-0">
@@ -125,7 +126,7 @@
     </div>
 
     <!-- Cart Of Products -->
-    <main class="container" style="margin-bottom: 170px;">
+    <main class="container" style="margin-bottom: 250px;">
       <div class="table-responsive">
         <table class="table table-striped table-borderless border align-middle">
           <thead>
@@ -161,13 +162,13 @@
                 <td class="text-center">{{ $cartProduct->count }}</td>
                 <td class="text-center"><div class="@if($countInStore == 0) text-danger @endif">{{ $countInStore }}</div></td>
                 <td style="width:10%;">
-                  <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
+                  <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" id="cartProducts.{{ $cartProduct->id }}.countInCart" onclick="setFocus('cartProducts.{{ $cartProduct->id }}.countInCart')" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
                   @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
                 </td>
                 <td class="text-nowrap" style="width:12%;">
                   @if($cartProduct->input)
                     <div class="input-group input-group-sm">
-                      <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
+                      <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" id="cartProducts.{{ $cartProduct->id }}.discount" onclick="setFocus('cartProducts.{{ $cartProduct->id }}.discount')" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
                       <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
                     </div>
                   @else
@@ -280,13 +281,14 @@
     </footer>
 
     <!-- Keyboard -->
-    <div wire:ignore class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasLabel">Offcanvas bottom</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div wire:ignore.self class="offcanvas offcanvas-bottom shadow bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="z-index: 1065;">
+      <div class="position-relative">
+        <div class="position-absolute" style="top: -30px !important; right: 15px !important;">
+          <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
       </div>
       <div class="offcanvas-body small">
-        ...
+        <livewire:keyboard>
       </div>
     </div>
 
@@ -322,6 +324,7 @@
 
 @section('scripts')
   <script type="text/javascript">
+    // Toast Script
     window.addEventListener('show-toast', event => {
       if (event.detail.reload) {
         document.location.reload()
@@ -341,5 +344,28 @@
 
     // Offcanvas
     const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+
+    let inputElId;
+
+    // Setting Input Focus
+    function setFocus(elId) {
+      inputElId = elId;
+      document.getElementById(elId).focus();
+    }
+
+    // Displaying values
+    function display(val) {
+      let input = document.getElementById(inputElId);
+
+      input.value += val;
+      @this.set(inputElId, input.value);
+    }
+
+    // Clearing the display
+    function clearDisplay() {
+      let inputSearch = document.getElementById(inputElId);
+      inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
+      @this.set(inputElId, inputSearch.value);
+    }
   </script>
 @endsection

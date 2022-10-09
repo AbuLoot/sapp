@@ -1,6 +1,6 @@
 <div>
   <div wire:ignore.self class="modal fade" id="returnProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Оформление возврата</h5>
@@ -94,8 +94,8 @@
             </div>
 
             <div class="text-end">
-              <button wire:click="makeReturnDocs" type="button" class="btn btn-primary btn-lg text-end" @if($change == 0) disabled @endif><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
-              <a href="/{{ app()->getLocale() }}/cashdesk/docsprint/incoming-check/{{ $incomingOrder->id }}" class="btn btn-dark btn-lg text-end"><i class="be bi-printer-fill me-2"></i> Печать</a>
+              <button wire:click="makeReturnDocs" type="button" class="btn btn-primary btn-lg" @if($change == 0) disabled @endif><i class="bi bi-file-earmark-ruled-fill me-2"></i> Оформить</button>
+              <a href="/{{ app()->getLocale() }}/cashdesk/docsprint/incoming-check/{{ $incomingOrder->id }}" class="btn btn-dark btn-lg"><i class="be bi-printer-fill me-2"></i> Печать</a>
             </div>
           @endif
         </div>

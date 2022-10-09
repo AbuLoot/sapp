@@ -4,10 +4,6 @@
 
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Ревизия {{ $revision->doc_no }}</h4>
 
-      <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-        <input wire:model="search" type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
-      </form>
-
       <div class="text-end ms-md-auto ms-lg-0">
         <a href="/{{ $lang }}/storage/inventory-history" class="btn btn-primary"><i class="bi bi-clock-history me-2"></i> История ревизий</a>
       </div>
@@ -76,6 +72,18 @@
           @endforelse
         </tbody>
       </table>
+    </div>
+
+    <!-- Keyboard -->
+    <div wire:ignore.self class="offcanvas offcanvas-bottom shadow bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="z-index: 1065;">
+      <div class="position-relative">
+        <div class="position-absolute" style="top: -30px !important; right: 15px !important;">
+          <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="offcanvas-body small">
+        <livewire:keyboard>
+      </div>
     </div>
 
   </div>

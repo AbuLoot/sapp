@@ -1,6 +1,6 @@
 <div>
   <div wire:ignore.self class="modal fade" id="outgoingCash" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Оформить расход</h5>

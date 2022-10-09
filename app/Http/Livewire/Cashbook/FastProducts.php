@@ -9,7 +9,7 @@ use App\Models\Product;
 
 class FastProducts extends Component
 {
-    public $search = '';
+    public $search;
     public $company;
     public $fastMode;
     public $fastProducts = [];

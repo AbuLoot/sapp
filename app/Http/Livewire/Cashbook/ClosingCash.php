@@ -107,7 +107,7 @@ class ClosingCash extends Component
 
         Cache::forget('openedCash');
 
-        return redirect('dashboard');
+        return redirect('apps');
     }
 
     public function render()

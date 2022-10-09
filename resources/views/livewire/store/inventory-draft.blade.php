@@ -4,10 +4,6 @@
 
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Черновик ревизии</h4>
 
-      <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-        <input wire:model="search" type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
-      </form>
-
     </div>
   </div>
 

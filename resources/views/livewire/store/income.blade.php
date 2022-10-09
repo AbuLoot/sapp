@@ -5,7 +5,10 @@
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Новый приход</h4>
 
       <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto" style="position: relative;">
-        <input wire:model="search" type="search" list="datalistOptions" class="form-control" placeholder="Поиск..." aria-label="Search">
+        <div class="input-group">
+          <input wire:model="search" type="search" class="form-control" id="search" onclick="setFocus('search')" placeholder="Поиск..." aria-label="Search">
+          <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+        </div>
         @if($products)
           <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
             <ul class="list-unstyled mb-0">
@@ -37,7 +40,7 @@
   </div>
 
   <!-- Content -->
-  <div class="container">
+  <div class="container" style="margin-bottom: 250px;">
 
     @if(session()->has('message'))
       <div class="toast-container position-fixed bottom-0 end-0 p-4">
@@ -102,7 +105,7 @@
               <td>{{ $incomeProduct->count + $incomeCount . $unit }}</td>
               <td class="col-2" style="width:12%">
                 <div class="input-group">
-                  <input type="number" wire:model="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" class="form-control @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId) is-invalid @enderror" required>
+                  <input type="number" wire:model="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" id="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" onclick="setFocus('incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}')" class="form-control @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId) is-invalid @enderror" required>
                   <span class="input-group-text px-1-">{{ $unit }}</span>
                   @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
@@ -126,5 +129,48 @@
         @endif
       </div>
     </div>
+
+    <!-- Keyboard -->
+    <div wire:ignore.self class="offcanvas offcanvas-bottom shadow bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="z-index: 1065;">
+      <div class="position-relative">
+        <div class="position-absolute" style="top: -30px !important; right: 15px !important;">
+          <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="offcanvas-body small">
+        <livewire:keyboard>
+      </div>
+    </div>
+
   </div>
 </div>
+
+@section('scripts')
+<script type="text/javascript">
+  // Offcanvas
+  const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+
+  let inputElId;
+
+  // Setting Input Focus
+  function setFocus(elId) {
+    inputElId = elId;
+    document.getElementById(elId).focus();
+  }
+
+  // Displaying values
+  function display(val) {
+    let input = document.getElementById(inputElId);
+
+    input.value += val;
+    @this.set(inputElId, input.value);
+  }
+
+  // Clearing the display
+  function clearDisplay() {
+    let inputSearch = document.getElementById(inputElId);
+    inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
+    @this.set(inputElId, inputSearch.value);
+  }
+</script>
+@endsection

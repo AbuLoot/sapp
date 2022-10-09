@@ -11,6 +11,11 @@ class IncomingOrder extends Model
 
     protected $table = 'incoming_orders';
 
+    public function contractor()
+    {
+        return $this->morphTo();
+    }
+
     public function cashDoc()
     {
         return $this->morphOne(CashDoc::class, 'order');

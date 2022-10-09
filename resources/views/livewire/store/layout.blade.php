@@ -22,7 +22,6 @@
   <meta name="theme-color" content="#7952b3">
 
   <!-- Custom styles for this template -->
-  <link href="/store/offcanvas.css" rel="stylesheet">
   <link href="/store/custom.css" rel="stylesheet">
   <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.css">
 
@@ -96,8 +95,6 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
   </script>
-  <!-- <script src="/store/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
-  <script src="/store/offcanvas.js"></script>
 
   @livewireScripts
 

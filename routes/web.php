@@ -35,6 +35,7 @@ use App\Http\Controllers\InputController;
 use App\Http\Controllers\PageController as SiteController;
 
 // Sanapp Admin Controllers
+use App\Http\Controllers\Joystick\CashDocController;
 use App\Http\Controllers\Joystick\OfficeController;
 use App\Http\Controllers\Joystick\StoreController;
 use App\Http\Controllers\Joystick\CashbookController;
@@ -137,6 +138,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
     Route::resources([
 
         // Sanapp routes
+        'cashdocs' => CashDocController::class,
         'office' => OfficeController::class,
         'stores' => StoreController::class,
         'cashbooks' => CashbookController::class,

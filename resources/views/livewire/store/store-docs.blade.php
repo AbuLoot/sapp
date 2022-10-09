@@ -4,7 +4,10 @@
       <h4 class="col-3 col-lg-3 mb-md-2 mb-lg-0">Карточка учета</h4>
 
       <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-        <input wire:model="search" type="search" class="form-control" placeholder="Поиск по контрагенту" aria-label="Search">
+        <div class="input-group">
+          <input wire:model="search" type="search" class="form-control" id="search" onclick="setFocus('search')" placeholder="Поиск по контрагенту..." aria-label="Search">
+          <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+        </div>
       </form>
 
       <form class="col-5 col-lg-auto mb-2 mb-lg-0 ms-lg-auto">
@@ -19,7 +22,7 @@
   </div>
 
   <!-- Content -->
-  <div class="container">
+  <div class="container" style="margin-bottom: 250px;">
     <div class="table-responsive">
       <table class="table table-sm table-striped align-middle">
         <thead>
@@ -71,11 +74,24 @@
     </div>
 
     {{ $storeDocs->links() }}
+
+    <!-- Keyboard -->
+    <div wire:ignore.self class="offcanvas offcanvas-bottom shadow bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="z-index: 1065;">
+      <div class="position-relative">
+        <div class="position-absolute" style="top: -30px !important; right: 15px !important;">
+          <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="offcanvas-body small">
+        <livewire:keyboard>
+      </div>
+    </div>
+
   </div>
 
   <!-- Modal -->
   <div class="modal fade" id="docDetails" tabindex="-1" aria-labelledby="docDetail" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="docDetail">Детали документа</h5>
@@ -189,3 +205,33 @@
     })
   </script>
 </div>
+
+@section('scripts')
+<script type="text/javascript">
+  // Offcanvas
+  const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+
+  let inputElId;
+
+  // Setting Input Focus
+  function setFocus(elId) {
+    inputElId = elId;
+    document.getElementById(elId).focus();
+  }
+
+  // Displaying values
+  function display(val) {
+    let input = document.getElementById(inputElId);
+
+    input.value += val;
+    @this.set(inputElId, input.value);
+  }
+
+  // Clearing the display
+  function clearDisplay() {
+    let inputSearch = document.getElementById(inputElId);
+    inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
+    @this.set(inputElId, inputSearch.value);
+  }
+</script>
+@endsection
