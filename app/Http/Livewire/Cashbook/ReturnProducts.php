@@ -27,6 +27,7 @@ class ReturnProducts extends Component
     public $products = [];
     public $productsData = [];
     public $returnedProducts = [];
+    public $keyboard = false;
 
     public function mount()
     {
@@ -48,6 +49,13 @@ class ReturnProducts extends Component
         //     unset($this->returnedProducts[$parts[1]]);
         //     $this->setValidDiscount($parts[1], $value);
         // }
+    }
+
+    public function getFastProducts($keyboard)
+    {
+        $state = $keyboard ? false : true;
+        $this->emitUp('keyboard', $state);
+        $this->keyboard = true;
     }
 
     public function check($orderId)

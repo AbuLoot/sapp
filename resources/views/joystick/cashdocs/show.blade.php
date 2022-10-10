@@ -9,7 +9,7 @@
   </p>
 
   <div class="table-responsive">
-    <table class="table table-striped table-condensed">
+    <table class="table table-striped">
       <tbody>
         <tr>
           <th scope="row">Тип документа</th>
@@ -54,40 +54,50 @@
       </tbody>
     </table>
 
-    <table class="table table-striped table-condensed">
-      <thead>
-        <tr  class="align-items-start">
-          <th scope="col">Наименование товара</th>
-          <th scope="col">Штрихкод</th>
-          <th scope="col">Категория</th>
-          <th scope="col">Цена закупки</th>
-          <th scope="col">Цена продажи</th>
-          <th scope="col">Общее Кол.</th>
-          <th scope="col">Поставщик</th>
-        </tr>
-      </thead>
-      <tbody>
-        @forelse($docProducts as $index => $product)
-          <tr>
-            <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
-            <td>
-              <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
-              @foreach($barcodes as $barcode)
-                {{ $barcode }}<br>
-              @endforeach
-            </td>
-            <td>{{ $product->category->title }}</td>
-            <td>{{ $product->purchase_price }}</td>
-            <td>{{ $product->price }}</td>
-            <td>{{ $product->count }}</td>
-            <td>{{ $product->company->title }}</td>
+    <?php 
+
+    if ($cashdoc->order_type == 'App\Models\IncomingOrder' AND $cashdoc->doc_id) :
+      $concomitantDoc = App\Models\OutgoingDoc::find($cashdoc->doc_id);
+      $productsData = json_decode($concomitantDoc->products_data, true);
+      $productsKeys = collect($productsData)->keys();
+      $docProducts = App\Models\Product::whereIn('id', $productsKeys->all())->get();
+    ?>
+      <table class="table table-striped">
+        <thead>
+          <tr  class="align-items-start">
+            <th scope="col">Наименование товара</th>
+            <th scope="col">Штрихкод</th>
+            <th scope="col">Категория</th>
+            <th scope="col">Цена закупки</th>
+            <th scope="col">Цена продажи</th>
+            <th scope="col">Общее Кол.</th>
+            <th scope="col">Поставщик</th>
           </tr>
-        @empty
-          <tr>
-            <td colspan="9">No products</td>
-          </tr>
-        @endforelse
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @forelse($docProducts as $index => $product)
+            <tr>
+              <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+              <td>
+                <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
+                @foreach($barcodes as $barcode)
+                  {{ $barcode }}<br>
+                @endforeach
+              </td>
+              <td>{{ $product->category->title }}</td>
+              <td>{{ $product->purchase_price }}</td>
+              <td>{{ $product->price }}</td>
+              <td>{{ $product->count }}</td>
+              <td>{{ $product->company->title }}</td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="9">No products</td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+
+    <?php endif; ?>
   </div>
 @endsection

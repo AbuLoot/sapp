@@ -9,20 +9,26 @@ use App\Models\Product;
 
 class FastProducts extends Component
 {
-    public $search;
+    public $search2;
     public $company;
     public $fastMode;
     public $fastProducts = [];
+    public $keyboard = false;
 
-    protected $listeners = ['getFastProducts'];
+    protected $listeners = [
+        'getFastProducts',
+    ];
 
     public function mount()
     {
         $this->company = auth()->user()->profile->company;
     }
 
-    public function getFastProducts()
+    public function getFastProducts($keyboard)
     {
+        $state = $keyboard ? false : true;
+        $this->emitUp('keyboard', $state);
+        $this->keyboard = true;
         $this->fastMode = Mode::where('slug', 'fast-products')->first();
         $this->fastProducts = $this->fastMode->products;
     }
@@ -34,7 +40,7 @@ class FastProducts extends Component
 
         $this->fastMode = Mode::where('slug', 'fast-products')->first();
         $this->fastProducts = $this->fastMode->products;
-        $this->search = '';
+        $this->search2 = '';
     }
 
     public function addToCart($id)
@@ -46,8 +52,8 @@ class FastProducts extends Component
     {
         $products = [];
 
-        if (strlen($this->search) >= 2) {
-            $products = Product::search($this->search)->get()->take(7);
+        if (strlen($this->search2) >= 2) {
+            $products = Product::search($this->search2)->get()->take(7);
         }
 
         return view('livewire.cashbook.fast-products', ['products' => $products]);

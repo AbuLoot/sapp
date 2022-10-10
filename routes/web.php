@@ -25,15 +25,6 @@ use App\Http\Controllers\Joystick\RoleController;
 use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
 
-// Site Controllers
-use App\Http\Controllers\InputController;
-// use App\Http\Controllers\ShopController;
-// use App\Http\Controllers\ProfileController;
-// use App\Http\Controllers\CartController;
-// use App\Http\Controllers\FavouriteController;
-// use App\Http\Controllers\PostController as NewsController;
-use App\Http\Controllers\PageController as SiteController;
-
 // Sanapp Admin Controllers
 use App\Http\Controllers\Joystick\CashDocController;
 use App\Http\Controllers\Joystick\OfficeController;
@@ -44,6 +35,23 @@ use App\Http\Controllers\Joystick\BankAccountController;
 use App\Http\Controllers\Joystick\PaymentTypeController;
 use App\Http\Controllers\Joystick\DocTypeController;
 use App\Http\Controllers\Joystick\DiscountController;
+
+// Sanapp Report Controllers
+use App\Http\Controllers\Joystick\FinancialReportController;
+use App\Http\Controllers\Joystick\CustomersReportController;
+use App\Http\Controllers\Joystick\ContractorsReportController;
+use App\Http\Controllers\Joystick\WorkersReportController;
+use App\Http\Controllers\Joystick\StoresReportController;
+use App\Http\Controllers\Joystick\CashReconcilationController;
+
+// Site Controllers
+use App\Http\Controllers\InputController;
+// use App\Http\Controllers\ShopController;
+// use App\Http\Controllers\ProfileController;
+// use App\Http\Controllers\CartController;
+// use App\Http\Controllers\FavouriteController;
+// use App\Http\Controllers\PostController as NewsController;
+use App\Http\Controllers\PageController as SiteController;
 
 // Store
 use App\Http\Livewire\Store\Index as StoreIndex;
@@ -148,6 +156,14 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
         'doc_types' => DocTypeController::class,
         'units' => UnitController::class,
         'discounts' => DiscountController::class,
+
+        // Reports
+        'financial-report' => FinancialReportController::class,
+        'customers-report' => CustomersReportController::class,
+        'contractors-report' => ContractorsReportController::class,
+        'workers-report' => WorkersReportController::class,
+        'stores-report' => StoresReportController::class,
+        'cash-reconciliation' => CashReconcilationController::class,
 
         // Joystick routes
         'pages' => PageController::class,

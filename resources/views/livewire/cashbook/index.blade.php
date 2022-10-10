@@ -10,7 +10,7 @@
         <button class="btn btn-warning rounded-circle me-auto" onclick="document.location.reload()"><i class="bi bi-arrow-clockwise"></i></button>
 
         <div class="text-end me-4">
-          <button type="button" wire:click="$emit('getFastProducts')" class="btn btn-outline-light btn-lg me-2" data-bs-toggle="modal" data-bs-target="#fastProducts"><i class="bi bi-cart-check-fill"></i> Быстрые товары</button>
+          <button type="button" wire:click="$emit('getFastProducts', {{ $keyboard }})" class="btn btn-outline-light btn-lg me-2" data-bs-toggle="modal" data-bs-target="#fastProducts"><i class="bi bi-cart-check-fill"></i> Быстрые товары</button>
           <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#addCustomer"><i class="bi bi-person-plus-fill"></i> Добавить клиента</button>
         </div>
 
@@ -50,7 +50,7 @@
         <!-- Search Products -->
         <form class="col-4 col-lg-4 me-4" style="position: relative;">
           <div class="input-group">
-            <input wire:model="search" type="search" class="form-control form-control-lg" id="search" onclick="setFocus('search')" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
+            <input wire:model="search" id="search" onclick="setFocus('search')" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
             <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
           </div>
           @if($products)
@@ -280,18 +280,6 @@
       </div>
     </footer>
 
-    <!-- Keyboard -->
-    <div wire:ignore.self class="offcanvas offcanvas-bottom shadow bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="z-index: 1065;">
-      <div class="position-relative">
-        <div class="position-absolute" style="top: -30px !important; right: 15px !important;">
-          <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-      </div>
-      <div class="offcanvas-body small">
-        <livewire:keyboard>
-      </div>
-    </div>
-
     <!-- Modal Fast Products -->
     <livewire:cashbook.fast-products>
 
@@ -318,34 +306,22 @@
 
     <!-- Modal Deferred Checks -->
     <livewire:cashbook.deferred-checks>
+
+    <!-- Keyboard -->
+    @if($keyboard)
+      <livewire:keyboard>
+    @endif
+
   @endif
 
 </div>
 
 @section('scripts')
   <script type="text/javascript">
-    // Toast Script
-    window.addEventListener('show-toast', event => {
-      if (event.detail.reload) {
-        document.location.reload()
-      }
-
-      if (event.detail.selector) {
-        const btnCloseModal = document.getElementById(event.detail.selector)
-        btnCloseModal.click()
-      }
-
-      const toast = new bootstrap.Toast(document.getElementById('liveToast'))
-      toast.show()
-
-      const toastBody = document.getElementById('toastBody')
-      toastBody.innerHTML = event.detail.message
-    })
-
-    // Offcanvas
+    // Offcanvas 1
     const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
-    let inputElId;
+    let inputElId = 'search';
 
     // Setting Input Focus
     function setFocus(elId) {

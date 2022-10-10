@@ -9,7 +9,10 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="amount" class="form-label">Сумма к внесению</label>
-            <input wire:model="amount" type="number" class="form-control form-control-lg @error('amount') is-invalid @enderror" id="amount">
+            <div class="input-group">
+              <input wire:model="amount" id="amount" onclick="setFocus('amount')" type="number" class="form-control form-control-lg @error('amount') is-invalid @enderror" id="amount">
+              <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+            </div>
             @error('amount')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">

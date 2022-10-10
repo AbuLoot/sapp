@@ -9,7 +9,10 @@
         <div class="modal-body" style="min-height:270px;">
 
           <form class="mb-3" style="position: relative;">
-            <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Поиск чеков..." aria-label="Search" minlength="2" required>
+            <div class="input-group">
+              <input wire:model="search" type="search" class="form-control form-control-lg" id="search" onclick="setFocus('search')" placeholder="Поиск чеков штрихкоду..." aria-label="Search">
+              <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+            </div>
             @if($incomingOrders)
               <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
                 <ul class="list-unstyled mb-0">

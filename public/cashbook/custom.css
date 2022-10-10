@@ -41,3 +41,6 @@
 .offcanvas.offcanvas-bottom {
   height: 37vh;
 }
+.modal.show .modal-dialog {
+  margin-bottom: 200px;
+}

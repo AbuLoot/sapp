@@ -121,16 +121,7 @@
     {{ $products->links() }}
 
     <!-- Keyboard -->
-    <div wire:ignore.self class="offcanvas offcanvas-bottom shadow bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="z-index: 1065;">
-      <div class="position-relative">
-        <div class="position-absolute" style="top: -30px !important; right: 15px !important;">
-          <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-      </div>
-      <div class="offcanvas-body small">
-        <livewire:keyboard>
-      </div>
-    </div>
+    <livewire:keyboard>
 
     <!-- Modal -->
     <div wire:ignore.self class="modal fade" id="filter" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
@@ -202,7 +193,7 @@
   // Offcanvas
   const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
-  let inputElId;
+  let inputElId = 'search';
 
   // Setting Input Focus
   function setFocus(elId) {

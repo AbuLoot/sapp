@@ -72,6 +72,16 @@
             <li @if(Request::is($lang.'/admin/discounts*')) class="active" @endif><a href="/{{ $lang }}/admin/discounts"><i class="material-icons md-20">sell</i> Скидки</a></li>
           </ul>
 
+          <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarReports" aria-expanded="true" aria-controls="sidebarReports">Отчеты <span class="caret"></span></div>
+          <ul class="nav nav-sidebar collapse in" id="sidebarReports">
+            <li @if(Request::is($lang.'/admin/financial-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/financial-report"><i class="material-icons md-20">analytics</i> Финансовый отчет</a></li>
+            <li @if(Request::is($lang.'/admin/customers-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/customers-report"><i class="material-icons md-20">groups</i> Отчет по клиентам</a></li>
+            <li @if(Request::is($lang.'/admin/contractors-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/contractors-report"><i class="material-icons md-20">pie_chart</i> Отчет по поставщикам</a></li>
+            <li @if(Request::is($lang.'/admin/workers-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/workers-report"><i class="material-icons md-20">engineering</i> Отчет по сотрудникам</a></li>
+            <li @if(Request::is($lang.'/admin/stores-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/stores-statements"><i class="material-icons md-20">warehouse</i> Отчет по складам</a></li>
+            <li @if(Request::is($lang.'/admin/cash-reconciliation*')) class="active" @endif><a href="#/{{ $lang }}/admin/cash-reconciliation"><i class="material-icons md-20">money</i> Сверка кассы</a></li>
+          </ul>
+
           <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarContent" aria-expanded="true" aria-controls="sidebarContent">Контент <span class="caret"></span></div>
           <ul class="nav nav-sidebar collapse in" id="sidebarContent">
             @can('viewAny', App\Models\Page::class)<li @if(Request::is($lang.'/admin/pages*')) class="active" @endif><a href="/{{ $lang }}/admin/pages"><i class="material-icons md-20">content_copy</i> Страницы</a></li>@endcan
