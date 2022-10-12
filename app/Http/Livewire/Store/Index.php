@@ -61,23 +61,6 @@ class Index extends Component
         }
     }
 
-    public function printProducts()
-    {
-        if (count($this->productsId) >= 1) {
-
-            $products = Product::whereIn('id', $this->productsId)->get();
-
-            // $this->authorize('delete', $products->first());
-
-            foreach($products as $product) {
-
-            }
-
-        }
-
-        $this->printMode = false;
-    }
-
     public function deleteProducts()
     {
         if (count($this->productsId) >= 1) {
@@ -105,30 +88,20 @@ class Index extends Component
 
     public function render()
     {
-        $query = Product::orderBy('id', 'desc');
-        $appends = [];
-
-        if (strlen($this->search) >= 2) {
-            $query->where('title', 'like', '%'.$this->search.'%');
-        }
-
-        if ($this->type) {
-            $query->where('type', $this->type);
-            $appends['type'] = $this->type;
-        }
-
-        if ($this->categoryId) {
-            $query->where('category_id', $this->categoryId);
-            $appends['categoryId'] = $this->categoryId;
-        }
-
-        if ($this->companyId) {
-            $query->where('company_id', $this->companyId);
-            $appends['companyId'] = $this->companyId;
-        }
-
-        $products = $query->paginate(30);
-        $products->appends($appends);
+        $products = Product::orderBy('id', 'desc')
+            ->when(strlen($this->search) >= 2, function($query) {
+                $query->where('title', 'like', '%'.$this->search.'%');
+            })
+            ->when($this->type, function($query) {
+                $query->where('type', $this->type);
+            })
+            ->when($this->categoryId, function($query) {
+                $query->where('category_id', $this->categoryId);
+            })
+            ->when($this->companyId, function($query) {
+                $query->where('company_id', $this->companyId);
+            })
+            ->paginate(30);
 
         if ($this->toggleMode) {
             $this->productsId = $products->pluck('id')->toArray();

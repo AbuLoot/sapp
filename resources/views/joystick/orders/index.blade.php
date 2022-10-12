@@ -4,7 +4,7 @@
 
   <h2 class="page-header">Заказы</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
   <div class="table-responsive">
     <table class="table table-striped table-condensed">
       <thead>

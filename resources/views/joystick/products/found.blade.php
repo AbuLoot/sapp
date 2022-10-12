@@ -5,7 +5,7 @@
 
   <h3>Поиск по запросу <b>"{{ $text }}"</b></h3>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <div class="row">
     <div class="col-md-5">

@@ -24,10 +24,10 @@ class CreateStoreDocsTable extends Migration
             $table->json('products_data');
             $table->char('contractor_type')->nullable();
             $table->integer('contractor_id')->nullable();
-            $table->integer('incoming_amount')->nullable();
-            $table->integer('outgoing_amount')->nullable();
-            $table->integer('count');
-            $table->integer('sum');
+            $table->integer('incoming_amount')->default(0);
+            $table->integer('outgoing_amount')->default(0);
+            $table->integer('count')->default(0);
+            $table->integer('sum')->default(0);
             $table->string('comment')->nullable();
             $table->timestamps();
         });

@@ -3,7 +3,7 @@
 @section('content')
   <h2 class="page-header">Разделы</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
   <p class="text-right">
     <a href="/{{ $lang }}/admin/sections/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>
   </p>

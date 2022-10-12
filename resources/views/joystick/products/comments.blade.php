@@ -3,7 +3,7 @@
 @section('content')
   <h2 class="page-header">Редактирование</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <div class="row">
     <div class="col-md-6">

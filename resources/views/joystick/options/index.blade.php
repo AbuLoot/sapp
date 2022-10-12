@@ -4,7 +4,7 @@
 
   <h2 class="page-header">Опции</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <p class="text-right">
     <a href="/{{ $lang }}/admin/options/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>

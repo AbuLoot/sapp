@@ -20,7 +20,7 @@ class CreateBankAccountsTable extends Migration
             $table->char('slug');
             $table->char('account_number');
             $table->char('biс');
-            $table->integer('balance');
+            $table->integer('balance')->default(0);
             $table->char('currency');
             $table->string('comment')->nullable();
             $table->timestamps();

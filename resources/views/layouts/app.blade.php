@@ -69,15 +69,16 @@
 
 		  <ul class="nav col-md-4 justify-content-end">
 				@if(Auth::check())
-				<li class="nav-item"><a href="/apps" class="nav-link px-2 text-muted">Главная</a></li>
-				<li class="nav-item">
-					<form method="POST" action="{{ route('logout') }}">
-	          @csrf
-						<a href="#" class="nav-link px-2 text-muted" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
-	        </form>
+					<li class="nav-item"><a href="/apps" class="nav-link px-2 text-muted">Главная</a></li>
+					<li class="nav-item">
+						<form method="POST" action="{{ route('logout') }}">
+		          @csrf
+							<a href="#" class="nav-link px-2 text-muted" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
+		        </form>
+		      </li>
 				@else
-				<li class="nav-item"><a href="/login" class="nav-link px-2 text-muted">Вход</a></li>
-				<li class="nav-item"><a href="/register" class="nav-link px-2 text-muted">Регистрация</a></li>
+					<li class="nav-item"><a href="/login" class="nav-link px-2 text-muted">Вход</a></li>
+					<li class="nav-item"><a href="/register" class="nav-link px-2 text-muted">Регистрация</a></li>
 				@endif
 		  </ul>
 		</footer>

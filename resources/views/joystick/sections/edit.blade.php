@@ -7,7 +7,7 @@
 @section('content')
   <h2 class="page-header">Редактирование</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
   <p class="text-right">
     <a href="/{{ $lang }}/admin/sections" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>

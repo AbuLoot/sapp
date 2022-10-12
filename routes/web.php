@@ -19,30 +19,30 @@ use App\Http\Controllers\Joystick\CompanyController;
 use App\Http\Controllers\Joystick\ProjectController;
 use App\Http\Controllers\Joystick\RegionController;
 use App\Http\Controllers\Joystick\CurrencyController;
-use App\Http\Controllers\Joystick\UnitController;
 use App\Http\Controllers\Joystick\UserController;
 use App\Http\Controllers\Joystick\RoleController;
 use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
 
 // Sanapp Admin Controllers
-use App\Http\Controllers\Joystick\CashDocController;
-use App\Http\Controllers\Joystick\OfficeController;
-use App\Http\Controllers\Joystick\StoreController;
-use App\Http\Controllers\Joystick\CashbookController;
-use App\Http\Controllers\Joystick\WorkplaceController;
-use App\Http\Controllers\Joystick\BankAccountController;
-use App\Http\Controllers\Joystick\PaymentTypeController;
-use App\Http\Controllers\Joystick\DocTypeController;
-use App\Http\Controllers\Joystick\DiscountController;
+use App\Http\Controllers\POS\CashDocController;
+use App\Http\Controllers\POS\OfficeController;
+use App\Http\Controllers\POS\StoreController;
+use App\Http\Controllers\POS\CashbookController;
+use App\Http\Controllers\POS\WorkplaceController;
+use App\Http\Controllers\POS\BankAccountController;
+use App\Http\Controllers\POS\PaymentTypeController;
+use App\Http\Controllers\POS\DocTypeController;
+use App\Http\Controllers\POS\DiscountController;
+use App\Http\Controllers\POS\UnitController;
 
 // Sanapp Report Controllers
-use App\Http\Controllers\Joystick\FinancialReportController;
-use App\Http\Controllers\Joystick\CustomersReportController;
-use App\Http\Controllers\Joystick\ContractorsReportController;
-use App\Http\Controllers\Joystick\WorkersReportController;
-use App\Http\Controllers\Joystick\StoresReportController;
-use App\Http\Controllers\Joystick\CashReconcilationController;
+use App\Http\Controllers\POS\FinancialReportController;
+use App\Http\Controllers\POS\CustomersReportController;
+use App\Http\Controllers\POS\ContractorsReportController;
+use App\Http\Controllers\POS\WorkersReportController;
+use App\Http\Controllers\POS\StoresReportController;
+use App\Http\Controllers\POS\CashReconcilationController;
 
 // Site Controllers
 use App\Http\Controllers\InputController;
@@ -53,7 +53,7 @@ use App\Http\Controllers\InputController;
 // use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
-// Store
+// Storage
 use App\Http\Livewire\Store\Index as StoreIndex;
 use App\Http\Livewire\Store\AddProduct;
 use App\Http\Livewire\Store\EditProduct;
@@ -134,18 +134,14 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
 });
 
 
-// Sanapp Joystick Administration
-Route::redirect('/admin', '/'.app()->getLocale().'/admin');
+// Sanapp POS Administration
+Route::redirect('/pos', '/'.app()->getLocale().'/pos');
 
-Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
+Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
 
-    Route::get('/', [AdminController::class, 'index']);
-    Route::get('filemanager', [AdminController::class, 'filemanager']);
-    Route::get('frame-filemanager', [AdminController::class, 'frameFilemanager']);
+    Route::get('/', [OfficeController::class, 'index']);
 
     Route::resources([
-
-        // Sanapp routes
         'cashdocs' => CashDocController::class,
         'office' => OfficeController::class,
         'stores' => StoreController::class,
@@ -158,14 +154,26 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
         'discounts' => DiscountController::class,
 
         // Reports
-        'financial-report' => FinancialReportController::class,
-        'customers-report' => CustomersReportController::class,
-        'contractors-report' => ContractorsReportController::class,
-        'workers-report' => WorkersReportController::class,
-        'stores-report' => StoresReportController::class,
+        'report-financial' => FinancialReportController::class,
+        'report-customers' => CustomersReportController::class,
+        'report-contractors' => ContractorsReportController::class,
+        'report-workers' => WorkersReportController::class,
+        'report-stores' => StoresReportController::class,
         'cash-reconciliation' => CashReconcilationController::class,
+    ]);
+});
 
-        // Joystick routes
+
+// Joystick Administration
+Route::redirect('/admin', '/'.app()->getLocale().'/admin');
+
+Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
+
+    Route::get('/', [AdminController::class, 'index']);
+    Route::get('filemanager', [AdminController::class, 'filemanager']);
+    Route::get('frame-filemanager', [AdminController::class, 'frameFilemanager']);
+
+    Route::resources([
         'pages' => PageController::class,
         'posts' => PostController::class,
         'sections' => SectionController::class,
@@ -220,6 +228,7 @@ Route::post('send-app', [InputController::class, 'sendApp']);
 
 // Shop
 Route::get('/', [ShopController::class, 'index']);
+
 
 // Route::get('b/{project}/{id}', [ShopController::class, 'projectProducts']);
 // Route::get('b/{project}/{subproject}/{id}', [ShopController::class, 'subProjectProducts']);

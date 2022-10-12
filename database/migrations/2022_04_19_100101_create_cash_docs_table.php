@@ -23,9 +23,9 @@ class CreateCashDocsTable extends Migration
             $table->integer('doc_id')->nullable();
             $table->char('contractor_type')->nullable();
             $table->integer('contractor_id')->nullable();
-            $table->integer('incoming_amount')->nullable();
-            $table->integer('outgoing_amount')->nullable();
-            $table->integer('sum');
+            $table->integer('incoming_amount')->default(0);
+            $table->integer('outgoing_amount')->default(0);
+            $table->integer('sum')->default(0);
             $table->char('currency');
             $table->string('comment')->nullable();
             $table->timestamps();

@@ -3,7 +3,7 @@
 @section('content')
   <h2 class="page-header">Добавление</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
   <p class="text-right">
     <a href="/{{ $lang }}/admin/currencies" class="btn btn-primary"><i class="material-icons">arrow_back</i></a>
   </p>

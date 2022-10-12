@@ -24,9 +24,9 @@ class CreateOutgoingDocsTable extends Migration
             $table->json('products_data');
             $table->char('contractor_type')->nullable();
             $table->integer('contractor_id')->nullable();
-            $table->integer('sum');
+            $table->integer('sum')->default(0);
             $table->char('currency');
-            $table->integer('count');
+            $table->integer('count')->default(0);
             $table->char('unit');
             $table->string('comment')->nullable();
             $table->timestamps();

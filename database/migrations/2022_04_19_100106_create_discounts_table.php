@@ -19,7 +19,7 @@ class CreateDiscountsTable extends Migration
             $table->integer('category_id');
             $table->date('start_date');
             $table->date('end_date');
-            $table->integer('sum');
+            $table->integer('sum')->default(0);
             $table->timestamps();
         });
     }

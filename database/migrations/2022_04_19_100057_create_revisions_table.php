@@ -20,10 +20,10 @@ class CreateRevisionsTable extends Migration
             $table->integer('user_id');
             $table->integer('doc_no');
             $table->json('products_data');
-            $table->integer('surplus_count');
-            $table->integer('shortage_count');
-            $table->integer('surplus_sum');
-            $table->integer('shortage_sum');
+            $table->integer('surplus_count')->default(0);
+            $table->integer('shortage_count')->default(0);
+            $table->integer('surplus_sum')->default(0);
+            $table->integer('shortage_sum')->default(0);
             $table->char('currency');
             $table->string('comment')->nullable();
             $table->timestamps();

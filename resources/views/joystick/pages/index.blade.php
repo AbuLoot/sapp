@@ -7,7 +7,7 @@
     <a href="/{{ $lang }}/admin/pages/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>
   </p>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <div class="table-responsive">
     <table class="table table-striped table-condensed">

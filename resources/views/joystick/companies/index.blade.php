@@ -4,7 +4,7 @@
 
   <h2 class="page-header">Компании</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <div class="text-right">
     <div class="btn-group">

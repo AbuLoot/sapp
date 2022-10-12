@@ -21,10 +21,10 @@ class CreateCashShiftJournalTable extends Migration
             $table->integer('from_user_id')->nullable();
             $table->char('cashier_name')->nullable();
             $table->integer('to_user_id')->nullable();
-            $table->integer('opening_cash_balance')->nullable();
-            $table->integer('closing_cash_balance')->nullable();
+            $table->integer('opening_cash_balance')->default(0);
+            $table->integer('closing_cash_balance')->default(0);
             $table->json('banknotes_and_coins')->nullable();
-            $table->integer('sum')->nullable();
+            $table->integer('sum')->default(0);
             $table->char('currency')->nullable();
             $table->enum('mode', ['open', 'close']);
             $table->datetime('opening_time');

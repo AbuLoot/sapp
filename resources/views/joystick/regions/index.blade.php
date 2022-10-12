@@ -4,7 +4,7 @@
 
   <h2 class="page-header">Регионы</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <p class="text-right">
     <a href="/{{ $lang }}/admin/regions/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>

@@ -39,15 +39,16 @@
   </div>
 
   <script>
+    let inputCode = document.getElementById('code');
+    inputCode.focus();
+
     // Displaying values
     function display(val) {
-      let inputCode = document.getElementById("code");
       inputCode.value += val;
     }
 
     // Clearing the display
     function clearDisplay() {
-      let inputCode = document.getElementById("code");
       inputCode.value = inputCode.value.substr(0, inputCode.value.length - 1);
     }
   </script>

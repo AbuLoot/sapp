@@ -20,9 +20,9 @@
     </div>
     <div class="col-md-6 mb-3">
       <div class="h-100 p-5 bg-light border rounded-3">
-        <h2 class="mb-3">Adminstration</h2>
+        <h2 class="mb-3">POS System</h2>
         <h4 class="mb-3">Панель управления</h4>
-        <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/admin">Перейти</a>
+        <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/pos">Перейти</a>
       </div>
     </div>
   </div>

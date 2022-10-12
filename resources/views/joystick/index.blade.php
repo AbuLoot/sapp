@@ -2,7 +2,7 @@
 
 @section('content')
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <br>
   <h1 class="text-center">Salam alaikum<br> {{ Auth::user()->name }}!</h1>

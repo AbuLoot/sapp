@@ -32,6 +32,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/pos"><i class="material-icons">point_of_sale</i> <b>Sanapp POS</b></a>
           <a class="navbar-brand text-uppercase" href="/{{ $lang }}/admin"><i class="material-icons text-primary">sports_esports</i> <b>Joystick</b></a>
         </div>
 
@@ -59,29 +60,6 @@
       <div class="row">
         <div class="col-xs-7 col-sm-3 col-md-2 sidebar">
 
-          <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarAccount" aria-expanded="true" aria-controls="sidebarAccount">Учет <span class="caret"></span></div>
-          <ul class="nav nav-sidebar collapse in" id="sidebarAccount">
-            <li @if(Request::is($lang.'/admin/cashdocs*')) class="active" @endif><a href="/{{ $lang }}/admin/cashdocs"><i class="material-icons md-20">auto_stories</i> Кассовая книга</a></li>
-            <!-- <li @if(Request::is($lang.'/admin/office*')) class="active" @endif><a href="/{{ $lang }}/admin/office"><i class="material-icons md-20">apartment</i> Офис</a></li> -->
-            <li @if(Request::is($lang.'/admin/stores*')) class="active" @endif><a href="/{{ $lang }}/admin/stores"><i class="material-icons md-20">warehouse</i> Склады</a></li>
-            <li @if(Request::is($lang.'/admin/cashbooks*')) class="active" @endif><a href="/{{ $lang }}/admin/cashbooks"><i class="material-icons md-20">account_balance</i> Кассы</a></li>
-            <li @if(Request::is($lang.'/admin/workplaces*')) class="active" @endif><a href="/{{ $lang }}/admin/workplaces"><i class="material-icons md-20">workspaces</i> Рабочие места</a></li>
-            <li @if(Request::is($lang.'/admin/bank_accounts*')) class="active" @endif><a href="/{{ $lang }}/admin/bank_accounts"><i class="material-icons md-20">account_balance_wallet</i> Счета</a></li>
-            <li @if(Request::is($lang.'/admin/payment_types*')) class="active" @endif><a href="/{{ $lang }}/admin/payment_types"><i class="material-icons md-20">payments</i> Виды оплаты</a></li>
-            <li @if(Request::is($lang.'/admin/doc_types*')) class="active" @endif><a href="/{{ $lang }}/admin/doc_types"><i class="material-icons md-20">description</i> Виды документов</a></li>
-            <li @if(Request::is($lang.'/admin/discounts*')) class="active" @endif><a href="/{{ $lang }}/admin/discounts"><i class="material-icons md-20">sell</i> Скидки</a></li>
-          </ul>
-
-          <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarReports" aria-expanded="true" aria-controls="sidebarReports">Отчеты <span class="caret"></span></div>
-          <ul class="nav nav-sidebar collapse in" id="sidebarReports">
-            <li @if(Request::is($lang.'/admin/financial-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/financial-report"><i class="material-icons md-20">analytics</i> Финансовый отчет</a></li>
-            <li @if(Request::is($lang.'/admin/customers-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/customers-report"><i class="material-icons md-20">groups</i> Отчет по клиентам</a></li>
-            <li @if(Request::is($lang.'/admin/contractors-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/contractors-report"><i class="material-icons md-20">pie_chart</i> Отчет по поставщикам</a></li>
-            <li @if(Request::is($lang.'/admin/workers-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/workers-report"><i class="material-icons md-20">engineering</i> Отчет по сотрудникам</a></li>
-            <li @if(Request::is($lang.'/admin/stores-report*')) class="active" @endif><a href="#/{{ $lang }}/admin/stores-statements"><i class="material-icons md-20">warehouse</i> Отчет по складам</a></li>
-            <li @if(Request::is($lang.'/admin/cash-reconciliation*')) class="active" @endif><a href="#/{{ $lang }}/admin/cash-reconciliation"><i class="material-icons md-20">money</i> Сверка кассы</a></li>
-          </ul>
-
           <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarContent" aria-expanded="true" aria-controls="sidebarContent">Контент <span class="caret"></span></div>
           <ul class="nav nav-sidebar collapse in" id="sidebarContent">
             @can('viewAny', App\Models\Page::class)<li @if(Request::is($lang.'/admin/pages*')) class="active" @endif><a href="/{{ $lang }}/admin/pages"><i class="material-icons md-20">content_copy</i> Страницы</a></li>@endcan
@@ -105,7 +83,6 @@
             @can('viewAny', App\Models\Language::class)<li @if(Request::is($lang.'/admin/languages*')) class="active" @endif><a href="/{{ $lang }}/admin/languages"><i class="material-icons md-20">language</i> Языки</a></li>@endcan
             @can('viewAny', App\Models\User::class)<li @if(Request::is($lang.'/admin/users*')) class="active" @endif><a href="/{{ $lang }}/admin/users"><i class="material-icons md-20">people_outline</i> Пользователи</a></li>@endcan
             @can('viewAny', App\Models\Currency::class)<li @if(Request::is($lang.'/admin/currencies*')) class="active" @endif><a href="/{{ $lang }}/admin/currencies"><i class="material-icons md-20">attach_money</i> Валюты</a></li>@endcan
-            <li @if(Request::is($lang.'/admin/units*')) class="active" @endif><a href="/{{ $lang }}/admin/units"><i class="material-icons md-20">balance</i> Единицы измерения</a></li>
             @can('viewAny', App\Models\Role::class)<li @if(Request::is($lang.'/admin/roles*')) class="active" @endif><a href="/{{ $lang }}/admin/roles"><i class="material-icons md-20">accessibility</i> Роли</a></li>@endcan
             @can('viewAny', App\Models\Permission::class)<li @if(Request::is($lang.'/admin/permissions*')) class="active" @endif><a href="/{{ $lang }}/admin/permissions"><i class="material-icons md-20">lock_open</i> Права доступа</a></li>@endcan
           </ul>

@@ -20,10 +20,10 @@ class CreateWriteoffsTable extends Migration
             $table->integer('product_id');
             $table->char('title');
             $table->integer('category_id');
-            $table->integer('purchase_price');
-            $table->integer('selling_price');
+            $table->integer('purchase_price')->default(0);
+            $table->integer('selling_price')->default(0);
             $table->char('currency');
-            $table->integer('count_writtenoff');
+            $table->integer('count_writtenoff')->default(0);
             $table->string('comment')->nullable();
             $table->timestamps();
         });

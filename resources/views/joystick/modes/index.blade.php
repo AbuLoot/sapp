@@ -4,7 +4,7 @@
 
   <h2 class="page-header">Режимы</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
   <p class="text-right">
     <a href="/{{ $lang }}/admin/modes/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>
   </p>

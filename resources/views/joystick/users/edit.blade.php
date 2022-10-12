@@ -3,7 +3,7 @@
 @section('content')
   <h2 class="page-header">Редактирование</h2>
 
-  @include('joystick.partials.alerts')
+  @include('components.alerts')
 
   <p class="text-right">
     <a href="/{{ $lang }}/admin/users/password/{{ $user->id }}/edit" class="btn btn-default">Изменить пароль</a>
