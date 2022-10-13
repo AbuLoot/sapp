@@ -19,8 +19,8 @@ class IncomingDocs extends Component
     public $search;
     public $docDetail;
     public $docProducts = [];
-    public $startDate = [];
-    public $endDate = [];
+    public $startDate;
+    public $endDate;
 
     public function mount()
     {
@@ -47,8 +47,8 @@ class IncomingDocs extends Component
 
         if ($this->startDate || $this->endDate) {
 
-            $startDate = $this->startDate ?? '2020-01-01';
-            $endDate = $this->endDate ?? '3030-12-31';
+            $startDate = $this->startDate ?? '2022-01-01';
+            $endDate = $this->endDate ?? now();
 
             $query->where('created_at', '>=', $startDate)
                 ->where('created_at', '<=', $endDate);

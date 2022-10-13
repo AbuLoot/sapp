@@ -25,8 +25,8 @@ use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
 
 // Sanapp Admin Controllers
-use App\Http\Controllers\POS\CashDocController;
 use App\Http\Controllers\POS\OfficeController;
+use App\Http\Controllers\POS\CashDocController;
 use App\Http\Controllers\POS\StoreController;
 use App\Http\Controllers\POS\CashbookController;
 use App\Http\Controllers\POS\WorkplaceController;
@@ -37,12 +37,12 @@ use App\Http\Controllers\POS\DiscountController;
 use App\Http\Controllers\POS\UnitController;
 
 // Sanapp Report Controllers
-use App\Http\Controllers\POS\FinancialReportController;
-use App\Http\Controllers\POS\CustomersReportController;
-use App\Http\Controllers\POS\ContractorsReportController;
-use App\Http\Controllers\POS\WorkersReportController;
-use App\Http\Controllers\POS\StoresReportController;
-use App\Http\Controllers\POS\CashReconcilationController;
+use App\Http\Controllers\POS\Reports\FinancialReportController;
+use App\Http\Controllers\POS\Reports\CustomersReportController;
+use App\Http\Controllers\POS\Reports\ContractorsReportController;
+use App\Http\Controllers\POS\Reports\WorkersReportController;
+use App\Http\Controllers\POS\Reports\StoresReportController;
+use App\Http\Controllers\POS\Reports\CashReconciliationController;
 
 // Site Controllers
 use App\Http\Controllers\InputController;
@@ -143,7 +143,6 @@ Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|m
 
     Route::resources([
         'cashdocs' => CashDocController::class,
-        'office' => OfficeController::class,
         'stores' => StoreController::class,
         'cashbooks' => CashbookController::class,
         'workplaces' => WorkplaceController::class,
@@ -152,15 +151,15 @@ Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|m
         'doc_types' => DocTypeController::class,
         'units' => UnitController::class,
         'discounts' => DiscountController::class,
-
-        // Reports
-        'report-financial' => FinancialReportController::class,
-        'report-customers' => CustomersReportController::class,
-        'report-contractors' => ContractorsReportController::class,
-        'report-workers' => WorkersReportController::class,
-        'report-stores' => StoresReportController::class,
-        'cash-reconciliation' => CashReconcilationController::class,
     ]);
+
+    // Reports
+    Route::get('report-financial', [FinancialReportController::class, 'index']);
+    Route::get('report-customers', [CustomersReportController::class, 'index']);
+    Route::get('report-contractors', [ContractorsReportController::class, 'index']);
+    Route::get('report-workers', [WorkersReportController::class, 'index']);
+    Route::get('report-stores', [StoresReportController::class, 'index']);
+    Route::get('cash-reconciliation', [CashReconciliationController::class, 'index']);
 });
 
 

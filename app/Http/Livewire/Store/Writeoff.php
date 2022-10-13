@@ -117,6 +117,7 @@ class Writeoff extends Component
         $outgoingDoc->doc_no = $docNo;
         $outgoingDoc->doc_type_id = $docType->id;
         $outgoingDoc->products_data = json_encode($productsData);
+        $outgoingDoc->operation_code = 'writeoff-products';
         $outgoingDoc->sum = $writeoffTotalAmount;
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $writeoffTotalCount;

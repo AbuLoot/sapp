@@ -119,6 +119,7 @@ class BankCard extends Component
         $incomingOrder->products_data = json_encode($productsData);
         $incomingOrder->contractor_type = $contractorType;
         $incomingOrder->contractor_id = $contractorId;
+        $incomingOrder->operation_code = 'payment-products';
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = $this->sumOfCart['sumDiscounted'];
@@ -136,6 +137,7 @@ class BankCard extends Component
         $outgoingDoc->products_data = json_encode($productsData);
         $outgoingDoc->contractor_type = $contractorType;
         $outgoingDoc->contractor_id = $contractorId;
+        $outgoingDoc->operation_code = 'payment-products';
         $outgoingDoc->sum = $this->sumOfCart['sumDiscounted'];
         $outgoingDoc->currency = $this->company->currency->code;
         $outgoingDoc->count = $outgoingTotalCount;

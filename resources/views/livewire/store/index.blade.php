@@ -13,31 +13,29 @@
       <ul class="nav col-lg-auto text-end me-lg-2 text-small">
         <li data-bs-toggle="modal" data-bs-target="#filter"><a href="#" class="nav-link text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i></a></li>
         <li>
-          @if($printMode)
-            <a 
-              @if($productsId)
-                href="/{{ $lang }}/storage/pricetags/{{ http_build_query($productsId) }}"
-              @else
-                href="#" wire:click="printProducts()"
-              @endif
-              class="nav-link position-relative text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать">
+          @if($printMode AND $productsId)
+            <a href="/{{ $lang }}/storage/pricetags/{{ http_build_query($productsId) }}" class="nav-link position-relative text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать">
               <i class="bi bi-printer-fill"></i>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
                 {{ count($productsId) }} <span class="visually-hidden">unread messages</span>
               </span>
             </a>
+          @elseif($printMode AND !$productsId)
+            <a href="#" wire:click="deactivateMode()" class="nav-link position-relative text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Отмена"><i class="bi bi-printer-fill"></i></a>
           @else
             <a href="#" wire:click="activatePrintMode()" class="nav-link position-relative text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать"><i class="bi bi-printer-fill"></i></a>
           @endif
         </li>
         <li>
-          @if($deleteMode)
+          @if($deleteMode AND $productsId)
             <a href="#" wire:click="deleteProducts()" class="nav-link position-relative text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей">
               <i class="bi bi-x-square-fill"></i>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{ count($productsId) }} <span class="visually-hidden">unread messages</span>
               </span>
             </a>
+          @elseif($deleteMode AND !$productsId)
+            <a href="#" wire:click="deactivateMode()" class="nav-link position-relative text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Отмена"><i class="bi bi-x-square-fill"></i></a>
           @else
             <a href="#" wire:click="activateDeleteMode()" class="nav-link position-relative text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей"><i class="bi bi-x-square-fill"></i></a>
           @endif
@@ -51,7 +49,7 @@
   </div>
 
   <!-- Content -->
-  <div class="container" style="margin-bottom: 250px;">
+  <div class="container">
 
     @if(session()->has('message'))
       <div class="toast-container position-fixed bottom-0 end-0 p-4">

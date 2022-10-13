@@ -50,6 +50,7 @@ class OutgoingCash extends Component
         $outgoingOrder->doc_type_id = $docType->id;
         $outgoingOrder->contractor_type = 'App\Models\User';
         $outgoingOrder->contractor_id = auth()->user()->id;
+        $outgoingOrder->operation_code = 'outgoing-cash';
         $outgoingOrder->sum = $this->amount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = 0;

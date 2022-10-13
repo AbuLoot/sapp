@@ -40,7 +40,7 @@
   </div>
 
   <!-- Content -->
-  <div class="container" style="margin-bottom: 250px;">
+  <div class="container">
 
     @if(session()->has('message'))
       <div class="toast-container position-fixed bottom-0 end-0 p-4">

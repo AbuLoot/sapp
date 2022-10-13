@@ -205,6 +205,7 @@ class ReturnProducts extends Component
         $outgoingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-2')->first()->id;
         $outgoingOrder->contractor_type = $contractorType;
         $outgoingOrder->contractor_id = $contractorId;
+        $outgoingOrder->operation_code = 'returned-products';
         $outgoingOrder->sum = $outgoingTotalAmount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = $incomingTotalCount;
@@ -234,6 +235,7 @@ class ReturnProducts extends Component
         $this->incomingOrder->products_data = json_encode($this->productsData);
         $this->incomingOrder->contractor_type = $contractorType;
         $this->incomingOrder->contractor_id = $contractorId;
+        $this->incomingOrder->operation_code = 'returned-products';
         $this->incomingOrder->payment_detail = json_encode($paymentDetail);
         $this->incomingOrder->comment = 'corrected';
         $this->incomingOrder->save();
@@ -249,6 +251,7 @@ class ReturnProducts extends Component
         $incomingDoc->products_data = json_encode($productsData);
         $incomingDoc->contractor_type = $contractorType;
         $incomingDoc->contractor_id = $contractorId;
+        $incomingDoc->operation_code = 'returned-products';
         $incomingDoc->sum = $outgoingTotalAmount;
         $incomingDoc->currency = $this->company->currency->code;
         $incomingDoc->count = $incomingTotalCount;

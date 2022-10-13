@@ -108,6 +108,7 @@ class Income extends Component
         $incomingDoc->doc_no = $docNo;
         $incomingDoc->doc_type_id = $docType->id;
         $incomingDoc->products_data = json_encode($productsData);
+        $incomingDoc->operation_code = 'incoming-products';
         $incomingDoc->sum = $incomeTotalAmount;
         $incomingDoc->currency = $this->company->currency->code;
         $incomingDoc->count = $incomeTotalCount;

@@ -31,6 +31,7 @@ class AddCustomer extends Component
         $user->email = $this->email ?? null;
         $user->password = '';
         $user->address = $this->address;
+        $user->is_customer = 1;
         $user->save();
 
         $this->dispatchBrowserEvent('show-toast', [

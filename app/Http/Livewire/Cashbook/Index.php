@@ -208,6 +208,11 @@ class Index extends Component
     {
         $this->customer = User::find($id);
 
+        if (! $this->customer->is_customer) {
+            $this->customer->is_customer = 1;
+            $this->customer->save();
+        }
+
         session()->put('customer', $this->customer);
         session()->put('totalDiscount', $this->customer->profile->discount ?? 0);
 

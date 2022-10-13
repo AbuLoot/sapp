@@ -22,6 +22,10 @@ $orders = DB::table('orders')
 					->selectRaw('price * ? as price_with_tax', [1.0825])
 					->get();
 
+$incomes = Income::where('amount', '<', function ($query) {
+					    $query->selectRaw('avg(i.amount)')->from('incomes as i');
+					})->get();
+
 $orders = DB::table('orders')
 						->whereRaw('price > IF(state = "TX", ?, 100)', [200])
 						->get();
@@ -37,7 +41,7 @@ $users = DB::table('users')
 		        })->get();
 
 $role = $request->input('role');
- 
+
 $users = DB::table('users')
             ->when($role, function ($query, $role) {
                 $query->where('role_id', $role);

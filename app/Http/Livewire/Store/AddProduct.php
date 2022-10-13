@@ -203,6 +203,7 @@ class AddProduct extends Component
                 $incomingDoc->products_data = json_encode($productData);
                 $incomingDoc->contractor_type = 'App\Models\Company';
                 $incomingDoc->contractor_id = $this->product->company_id;
+                $incomingDoc->operation_code = 'incoming-products';
                 $incomingDoc->sum = $countInStore * $product->purchase_price;
                 $incomingDoc->currency = $this->company->currency->code;
                 $incomingDoc->count = $countInStore;

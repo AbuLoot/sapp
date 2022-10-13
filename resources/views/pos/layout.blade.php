@@ -32,8 +32,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/pos"><i class="material-icons text-primary">point_of_sale</i> <b>Sanapp POS</b></a>
-          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/admin"><i class="material-icons">sports_esports</i> <b>Joystick</b></a>
+          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/pos"><i class="material-icons text-primary">point_of_sale</i> <b>Sanapp POS</b>&nbsp;</a>
+          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/admin"> <i class="material-icons">sports_esports</i> <b>Joystick</b></a>
         </div>
 
         <div class="navbar-collapse collapse">
@@ -76,12 +76,12 @@
 
           <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarReports" aria-expanded="true" aria-controls="sidebarReports">Отчеты <span class="caret"></span></div>
           <ul class="nav nav-sidebar collapse in" id="sidebarReports">
-            <li @if(Request::is($lang.'/pos/report-financial*')) class="active" @endif><a href="#/{{ $lang }}/pos/report-financial"><i class="material-icons md-20">analytics</i> Финансовый отчет</a></li>
-            <li @if(Request::is($lang.'/pos/report-customers*')) class="active" @endif><a href="#/{{ $lang }}/pos/report-customers"><i class="material-icons md-20">groups</i> Отчет по клиентам</a></li>
-            <li @if(Request::is($lang.'/pos/report-contractors*')) class="active" @endif><a href="#/{{ $lang }}/pos/report-contractors"><i class="material-icons md-20">pie_chart</i> Отчет по поставщикам</a></li>
-            <li @if(Request::is($lang.'/pos/report-workers*')) class="active" @endif><a href="#/{{ $lang }}/pos/report-workers"><i class="material-icons md-20">engineering</i> Отчет по сотрудникам</a></li>
-            <li @if(Request::is($lang.'/pos/report-stores*')) class="active" @endif><a href="#/{{ $lang }}/pos/stores-statements"><i class="material-icons md-20">warehouse</i> Отчет по складам</a></li>
-            <li @if(Request::is($lang.'/pos/cash-reconciliation*')) class="active" @endif><a href="#/{{ $lang }}/pos/cash-reconciliation"><i class="material-icons md-20">money</i> Сверка кассы</a></li>
+            <li @if(Request::is($lang.'/pos/report-financial*')) class="active" @endif><a href="/{{ $lang }}/pos/report-financial"><i class="material-icons md-20">analytics</i> Финансовый отчет</a></li>
+            <li @if(Request::is($lang.'/pos/report-customers*')) class="active" @endif><a href="/{{ $lang }}/pos/report-customers"><i class="material-icons md-20">groups</i> Отчет по клиентам</a></li>
+            <li @if(Request::is($lang.'/pos/report-contractors*')) class="active" @endif><a href="/{{ $lang }}/pos/report-contractors"><i class="material-icons md-20">pie_chart</i> Отчет по поставщикам</a></li>
+            <li @if(Request::is($lang.'/pos/report-workers*')) class="active" @endif><a href="/{{ $lang }}/pos/report-workers"><i class="material-icons md-20">engineering</i> Отчет по сотрудникам</a></li>
+            <li @if(Request::is($lang.'/pos/report-stores*')) class="active" @endif><a href="/{{ $lang }}/pos/report-stores"><i class="material-icons md-20">warehouse</i> Отчет по складам</a></li>
+            <li @if(Request::is($lang.'/pos/cash-reconciliation*')) class="active" @endif><a href="/{{ $lang }}/pos/cash-reconciliation"><i class="material-icons md-20">money</i> Сверка кассы</a></li>
           </ul>
 
           <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarResources" aria-expanded="true" aria-controls="sidebarResources">Ресурсы <span class="caret"></span></div>

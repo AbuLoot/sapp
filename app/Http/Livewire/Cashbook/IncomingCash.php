@@ -51,6 +51,7 @@ class IncomingCash extends Component
         $incomingOrder->products_data = null;
         $incomingOrder->contractor_type = 'App\Models\User';
         $incomingOrder->contractor_id = auth()->user()->id;
+        $incomingOrder->operation_code = 'incoming-cash';
         $incomingOrder->payment_type_id = null;
         $incomingOrder->payment_detail = null;
         $incomingOrder->sum = $this->amount;

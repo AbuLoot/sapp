@@ -23,6 +23,7 @@ class CreateOutgoingOrdersTable extends Migration
             $table->integer('doc_type_id');
             $table->char('contractor_type')->nullable();
             $table->integer('contractor_id')->nullable();
+            $table->char('operation_code')->nullable();
             $table->integer('sum')->default(0);
             $table->char('currency');
             $table->integer('count')->default(0);

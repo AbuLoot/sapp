@@ -123,6 +123,7 @@ class ListOfDebtors extends Component
         $incomingOrder->products_data = null;
         $incomingOrder->contractor_type = 'App\Models\User';
         $incomingOrder->contractor_id = $paymentDetail['userId'];
+        $incomingOrder->operation_code = 'repayment-debt';
         $incomingOrder->payment_type_id = $paymentDetail['typeId'];
         $incomingOrder->payment_detail = json_encode($paymentDetail);
         $incomingOrder->sum = $this->repaymentAmount;

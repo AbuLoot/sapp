@@ -13,16 +13,16 @@
       <form class="col-5 col-lg-auto mb-2 mb-lg-0 ms-lg-auto">
         <div class="input-group">
           <span class="input-group-text">От</span>
-          <input type="date" wire:model="startDate" class="form-control" placeholder="От..." data-date-format="yyyy/mm/dd">
+          <input type="date" wire:model="startDate" class="form-control" value="{{ $startDate }}" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd">
           <span class="input-group-text">До</span>
-          <input type="date" wire:model="endDate" class="form-control" placeholder="До..." data-date-format="yyyy/mm/dd">
+          <input type="date" wire:model="endDate" class="form-control" value="{{ $endDate }}" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd">
         </div>
       </form>
     </div>
   </div>
 
   <!-- Content -->
-  <div class="container" style="margin-bottom: 250px;">
+  <div class="container">
     <div class="row align-items-center">
       <div class="col-6">
         <ul class="nav nav-pills gap-2 small mb-3">

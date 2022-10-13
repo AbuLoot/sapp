@@ -51,6 +51,12 @@ class Index extends Component
         $this->deleteMode = true;
     }
 
+    public function deactivateMode()
+    {
+        $this->printMode = false;
+        $this->deleteMode = false;
+    }
+
     public function toggleCheckInputs()
     {
         if (!$this->toggleMode AND $this->productsId) {

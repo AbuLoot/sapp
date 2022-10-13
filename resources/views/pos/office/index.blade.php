@@ -2,103 +2,130 @@
 
 @section('content')
 
-  <h2 class="page-header">Компании</h2>
+  <h2 class="page-header">Статистика по базе</h2>
 
   @include('components.alerts')
 
-  <div class="text-right">
-    <div class="btn-group">
-      <button type="button" id="submit" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Функции <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-right" id="actions">
-        @foreach(trans('statuses.data') as $num => $status)
-          <li><a data-action="{{ $num }}" href="#">Статус {{ $status['title'] }}</a></li>
-        @endforeach
-      </ul>
-    </div>
-    <a href="/{{ $lang }}/pos/companies/create" class="btn btn-success"><i class="material-icons md-18">add</i></a>
-  </div><br>
+  <?php 
+    $company = auth()->user()->profile->company;
+    $currency = $company->currency->symbol;
 
-  <div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-        <tr class="active">
-          <td>№</td>
-          <td>Картинка</td>
-          <td>Название</td>
-          <td>Номер</td>
-          <td>Поставщик</td>
-          <td>Заказчик</td>
-          <td>Статус</td>
-          <td class="text-right">Функции</td>
-        </tr>
-      </thead>
-      <tbody>
-        <?php $i = 1; ?>
-        @foreach ($companies as $company)
-          <tr>
-            <td>{{ $i++ }}</td>
-            <td><img src="/img/companies/{{ $company->image }}" class="img-responsive" style="width:80px;"></td>
-            <td>{{ $company->title }}</td>
-            <td>{{ $company->sort_id }}</td>
-            <td class="text-info">{{ trans('statuses.data.'.$company->is_supplier.'.title') }}</td>
-            <td class="text-info">{{ trans('statuses.data.'.$company->is_customer.'.title') }}</td>
-            <td class="text-info">{{ trans('statuses.data.'.$company->status.'.title') }}</td>
-            <td class="text-right">
-              <a class="btn btn-link btn-xs" href="{{ route('companies.edit', [$lang, $company->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>
-              <form method="POST" action="{{ route('companies.destroy', [$lang, $company->id]) }}" accept-charset="UTF-8" class="btn-delete">
-                <input name="_method" type="hidden" value="DELETE">
-                <input name="_token" type="hidden" value="{{ csrf_token() }}">
-                <button type="submit" class="btn btn-link btn-xs" onclick="return confirm('Удалить запись?')"><i class="material-icons md-18">clear</i></button>
-              </form>
-            </td>
-          </tr>
-        @endforeach
-      </tbody>
-    </table>
+    // Dates
+    $yesterday = now()->subDay(1);
+    $today = now()->format('Y-m-d');
+    $previousWeek = now()->startOfWeek()->subWeek(1);
+    $startWeek = now()->startOfWeek();
+    $previousMonth = now()->subMonth()->format('Y-m').'-01';
+    $startMonth = now()->format('Y-m').'-01';
+    $previousYear = now()->subYear()->format('Y').'-01-01';
+    $startYear = now()->format('Y').'-01-01';
+
+    // Revenues info
+    $revenueForYesterday = number_format($incomes->where('created_at', '>', $yesterday)->where('created_at', '<', $today)->sum('sum'), 0, '.', ' ');
+    $revenueForWeek      = number_format($incomes->where('created_at', '>', $startWeek)->where('created_at', '<=', $today)->sum('sum'), 0, '.', ' ');
+    $revenueForMonth     = number_format($incomes->where('created_at', '>', $startMonth)->where('created_at', '<=', $today)->sum('sum'), 0, '.', ' ');
+    $revenueForPrevMonth = number_format($incomes->where('created_at', '>', $previousMonth)->where('created_at', '<', $startMonth)->sum('sum'), 0, '.', ' ');
+    $revenueForYear      = number_format($incomes->where('created_at', '>', $startYear)->where('created_at', '<=', $today)->sum('sum'), 0, '.', ' ');
+    $revenueForPrevYear  = number_format($incomes->where('created_at', '>', $previousYear)->where('created_at', '<', $startYear)->sum('sum'), 0, '.', ' ');
+
+    // Products info
+    $countProducts = $products->count();
+    $sumPurchasePrice = number_format($products->sum('purchase_price'), 0, '.', ' ');
+    $sumWholesalePrice = number_format($products->sum('wholesale_price'), 0, '.', ' ');
+    $sumPrice = number_format($products->sum('price'), 0, '.', ' ');
+  ?>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="well">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Время</th>
+              <th class="text-right">Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Выручка за вчера</th>
+              <td class="text-right">{{ $revenueForYesterday . $currency }}</td>
+            </tr>
+            <tr>
+              <th>Выручка за неделю</th>
+              <td class="text-right">{{ $revenueForWeek . $currency }}</td>
+            </tr>
+            <tr>
+              <th>Выручка за месяц</th>
+              <td class="text-right">{{ $revenueForMonth . $currency }}</td>
+            </tr>
+            <tr>
+              <th>Выручка за прошлый месяц</th>
+              <td class="text-right">{{ $revenueForPrevMonth . $currency }}</td>
+            </tr>
+            <tr>
+              <th>Выручка за год</th>
+              <td class="text-right">{{ $revenueForYear . $currency }}</td>
+            </tr>
+            <tr>
+              <th>Выручка за прошлый год</th>
+              <td class="text-right">{{ $revenueForPrevYear . $currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="well">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="text-center">Кол-во</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Пользователей</th>
+              <td class="text-center">{{ $countUsers }}</td>
+            </tr>
+            <tr>
+              <th>Складов</th>
+              <td class="text-center">{{ $countStores }}</td>
+            </tr>
+            <tr>
+              <th>Продуктов</th>
+              <td class="text-center">{{ $countProducts }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div> 
+    </div>
+    <div class="col-md-5">
+      <div class="well">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Склад</th>
+              <th class="text-right">Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Сумма продуктов по розничной цене</th>
+              <td class="text-right">{{ $sumPrice . $currency }}</td>
+            </tr>
+            <tr>
+              <th>Сумма продуктов по оптовой цене</th>
+              <td class="text-right">{{ $sumWholesalePrice . $currency }}</td>
+            </tr>
+            <tr>
+              <th>Сумма продуктов по закупочной цене</th>
+              <td class="text-right">{{ $sumPurchasePrice . $currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div> 
+    </div>
   </div>
 
-  {{ $companies->links() }}
-
-@endsection
-
-@section('scripts')
-  <script>
-    // Submit button click
-    $("#actions > li > a").click(function() {
-
-      var action = $(this).data("action");
-      var companiesId = new Array();
-
-      $('input[name="companies_id[]"]:checked').each(function() {
-        companiesId.push($(this).val());
-      });
-
-      if (companiesId.length > 0) {
-        $.ajax({
-          type: "get",
-          url: '/{{ $lang }}/pos/companies-actions',
-          dataType: "json",
-          data: {
-            "action": action,
-            "companies_id": companiesId
-          },
-          success: function(data) {
-            console.log(data);
-            location.reload();
-          }
-        });
-      }
-    });
-
-    // Toggle checkbox
-    function toggleCheckbox(source) {
-      var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-      for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-          checkboxes[i].checked = source.checked;
-      }
-    }
-  </script>
 @endsection

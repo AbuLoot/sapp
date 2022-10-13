@@ -32,7 +32,7 @@
   <!-- Keyboard -->
   <livewire:keyboard>
 
-  <div class="container" style="margin-bottom: 250px;">
+  <div class="container">
     <div class="row">
       <div class="offset-lg-2 col-lg-8">
         <div class="row">
