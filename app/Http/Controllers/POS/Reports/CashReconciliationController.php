@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Models\CashDoc;
+use App\Models\CashShiftJournal;
 use App\Models\IncomingOrder;
-use App\Models\OutgoingOrder;
 
 class CashReconciliationController extends Controller
 {
@@ -16,23 +17,41 @@ class CashReconciliationController extends Controller
         $startDate = $request->start_date ?? '2022-01-01';
         $endDate = $request->end_date ?? now()->format('Y-m-d');
 
-        $previousYear = now()->subYear()->format('Y').'-01-01';
+        $cashierId = $request->cashier_id ?? null;
+        $cashShiftJournal = [];
+        $incomes = [];
 
         $cashiers = User::query()
             ->where('is_worker', true)
-            ->join('incoming_orders', function ($join) use ($startDate, $endDate) {
-                $join->on('users.id', '=', 'incoming_orders.contractor_id')
-                    ->where('incoming_orders.contractor_type', '=', 'App\Models\User')
-                    ->where('incoming_orders.created_at', '>', $startDate)
-                    ->where('incoming_orders.created_at', '<=', $endDate);
+            ->join('role_user', function ($join) {
+                $join->on('users.id', '=', 'role_user.user_id')
+                    ->whereIn('role_user.role_id', [1, 4]);
             })
-            ->select('users.*', 'incoming_orders.sum')
             ->get();
+
+        if ($cashierId) {
+
+            $cashierObj = User::find($cashierId);
+
+            $cashShiftJournal = CashShiftJournal::query()
+                ->where('from_user_id', $cashierId)
+                ->orWhere('to_user_id', $cashierId)
+                ->orderBy('id', 'desc')
+                ->get();
+
+            $incomes = IncomingOrder::query()
+                ->where('user_id', $cashierId)
+                ->where('operation_code', 'payment-products')
+                ->get();
+        }
 
         return view('pos.reports.cash-reconciliation', [
             'startDate' => $startDate,
             'endDate'   => $endDate,
-            'countUsers'    => User::count(),
+            'cashiers'  => $cashiers,
+            'cashierObj'  => $cashierObj,
+            'cashShiftJournal' => $cashShiftJournal,
+            'incomes' => $incomes,
         ]);
     }
 }

@@ -84,7 +84,7 @@ class ClosingCash extends Component
 
         // Close The Cash
         $lastOpenCashShift = CashShiftJournal::find(Cache::get('openedCash'));
-        $lastOpenCashShift->to_user_id = auth()->user()->id;
+        $lastOpenCashShift->from_user_id = auth()->user()->id;
         $lastOpenCashShift->closing_cash_balance = $sum;
         $lastOpenCashShift->banknotes_and_coins = json_encode($this->nominals);
         $lastOpenCashShift->sum = $sum;

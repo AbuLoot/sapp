@@ -61,14 +61,16 @@ class UserController extends Controller
         $user->address = $request->address;
         $user->balance = $request->balance;
         $user->is_customer = ($request->is_customer == 'on') ? 1 : 0;
-        $user->is_worker = ($request->is_worker == 'on') ? 1 : 0;
+        $user->is_worker = ($request->is_worker == 'on' OR $request->role_id) ? 1 : 0;
         $user->status = ($request->status == 'on') ? 1 : 0;
 
-        if (!$request->role_id) {
+        if (is_null($request->role_id)) {
             $user->roles()->detach();
+            $user->is_worker = 0;
         } else {
             $user->roles()->sync($request->role_id);
         }
+
         $user->save();
 
         if (!$user->profile) {

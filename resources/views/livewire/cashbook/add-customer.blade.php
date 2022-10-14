@@ -11,7 +11,7 @@
             <div class="col-6">
               <div class="mb-3">
                 <label for="name" class="form-label">Имя</label>
-                <input wire:model="name" type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name" name="name">
+                <input wire:model="name" onclick="setFocus(this)" type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name" name="name">
                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
               </div>
             </div>

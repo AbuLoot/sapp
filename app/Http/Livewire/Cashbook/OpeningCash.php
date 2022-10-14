@@ -35,7 +35,7 @@ class OpeningCash extends Component
 
         $lastCloseCashShift = CashShiftJournal::where('cashbook_id', $this->cashbook->id)
             ->where('company_id', $this->company->id)
-            ->whereNull('from_user_id')
+            ->whereNull('to_user_id')
             ->whereNull('opening_cash_balance')
             ->where('mode', 'close')
             ->orderByDesc('id')
@@ -46,7 +46,8 @@ class OpeningCash extends Component
         $cashShift->cashbook_id = $this->cashbook->id;
         $cashShift->company_id = $this->company->id;
         $cashShift->workplace_id = session()->get('cashdeskWorkplace'); // id
-        $cashShift->from_user_id = auth()->user()->id;
+        $cashShift->from_user_id = $lastCloseCashShift->from_user_id ?? null;
+        $cashShift->to_user_id = auth()->user()->id;
         $cashShift->opening_cash_balance = $lastCloseCashShift->closing_cash_balance ?? null;
         $cashShift->sum = $lastCloseCashShift->sum ?? null;
         $cashShift->currency = $this->company->currency->code;

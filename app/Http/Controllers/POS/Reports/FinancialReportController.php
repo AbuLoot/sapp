@@ -28,8 +28,6 @@ class FinancialReportController extends Controller
             'sale-on-credit',
         ];
 
-        $previousYear = now()->subYear()->format('Y').'-01-01';
-
         $incomes = IncomingOrder::query()
             ->where('created_at', '>', $startDate)
             ->where('created_at', '<=', $endDate)
@@ -45,8 +43,6 @@ class FinancialReportController extends Controller
             'outflow'   => $outflow,
             'startDate' => $startDate,
             'endDate'   => $endDate,
-            'countUsers'    => User::count(),
-            'products' => Product::get(),
         ]);
     }
 }

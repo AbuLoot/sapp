@@ -6,29 +6,29 @@
 
   @include('components.alerts')
 
-  <div class="row">
-    <form action="/{{ $lang }}/pos/report-contractors" method="get">
-      {!! csrf_field() !!}
+  <form action="/{{ $lang }}/pos/report-contractors" method="get">
+    {!! csrf_field() !!}
+    <div class="row">
       <div class="col-md-3">
-        <div class="input-group">
+        <div class="form-group input-group">
           <span class="input-group-addon" id="basic-addon1">От</span>
           <input type="date" name="start_date" class="form-control" value="{{ $startDate }}" data-date-format="yyyy-mm-dd">
         </div>
       </div>
       <div class="col-md-3">
-        <div class="input-group">
+        <div class="form-group input-group">
           <span class="input-group-addon" id="basic-addon1">До</span>
           <input type="date" name="end_date" class="form-control" value="{{ $endDate }}" data-date-format="yyyy-mm-dd">
         </div>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-3">
         <div class="form-group">
           <button type="reset" class="btn btn-default">Сбросить</button>
           <button type="submit" class="btn btn-primary">Поиск</button>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 
   <?php 
     $company = auth()->user()->profile->company;

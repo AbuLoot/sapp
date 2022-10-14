@@ -26,25 +26,29 @@
             <a href="#" wire:click="activatePrintMode()" class="nav-link position-relative text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Печать"><i class="bi bi-printer-fill"></i></a>
           @endif
         </li>
-        <li>
-          @if($deleteMode AND $productsId)
-            <a href="#" wire:click="deleteProducts()" class="nav-link position-relative text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей">
-              <i class="bi bi-x-square-fill"></i>
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{ count($productsId) }} <span class="visually-hidden">unread messages</span>
-              </span>
-            </a>
-          @elseif($deleteMode AND !$productsId)
-            <a href="#" wire:click="deactivateMode()" class="nav-link position-relative text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Отмена"><i class="bi bi-x-square-fill"></i></a>
-          @else
-            <a href="#" wire:click="activateDeleteMode()" class="nav-link position-relative text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей"><i class="bi bi-x-square-fill"></i></a>
-          @endif
-        </li>
+        @can('delete-products', Auth::user())
+          <li>
+            @if($deleteMode AND $productsId)
+              <a href="#" wire:click="deleteProducts()" class="nav-link position-relative text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей">
+                <i class="bi bi-x-square-fill"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {{ count($productsId) }} <span class="visually-hidden">unread messages</span>
+                </span>
+              </a>
+            @elseif($deleteMode AND !$productsId)
+              <a href="#" wire:click="deactivateMode()" class="nav-link position-relative text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Отмена"><i class="bi bi-x-square-fill"></i></a>
+            @else
+              <a href="#" wire:click="activateDeleteMode()" class="nav-link position-relative text-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Удаление записей"><i class="bi bi-x-square-fill"></i></a>
+            @endif
+          </li>
+        @endcan
       </ul>
 
-      <div class="text-end ms-md-auto ms-lg-0">
-        <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить продукт</a>
-      </div>
+      @can('add-product', Auth::user())
+        <div class="text-end ms-md-auto ms-lg-0">
+          <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить продукт</a>
+        </div>
+      @endcan
     </div>
   </div>
 
@@ -93,7 +97,13 @@
               @if($deleteMode OR $printMode)
                 <td><input type="checkbox" wire:model="productsId" value="{{ $product->id }}" class="form-check-input checkbox-ids"></td>
               @endif
-              <td><a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+              <td>
+                @can('edit-product', Auth::user())
+                  <a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+                @else
+                  {{ $product->title }}
+                @endcan
+              </td>
               <td>
                 <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
                 @foreach($barcodes as $barcode)

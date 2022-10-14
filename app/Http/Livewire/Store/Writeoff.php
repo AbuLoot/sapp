@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Store;
 
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -36,6 +37,10 @@ class Writeoff extends Component
 
     public function mount()
     {
+        if (! Gate::allows('writeoff', auth()->user())) {
+            abort(403);
+        }
+
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
         $this->company = auth()->user()->profile->company;

@@ -33,9 +33,11 @@
         @endif
       </ul>
 
-      <div class="text-end ms-md-auto ms-lg-0">
-        <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить товар</a>
-      </div>
+      @can('add-product', Auth::user())
+        <div class="text-end ms-md-auto ms-lg-0">
+          <a href="/{{ $lang }}/storage/add-product" class="btn btn-primary"><i class="bi bi-plus-circle-fill me-2"></i> Добавить продукт</a>
+        </div>
+      @endcan
     </div>
   </div>
 

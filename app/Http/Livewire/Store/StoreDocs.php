@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Store;
 
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -27,6 +28,10 @@ class StoreDocs extends Component
 
     public function mount()
     {
+        if (! Gate::allows('storedocs', auth()->user())) {
+            abort(403);
+        }
+
         $this->lang = app()->getLocale();
     }
 

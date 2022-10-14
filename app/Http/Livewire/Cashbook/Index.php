@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cashbook;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 
 use Livewire\Component;
 
@@ -33,6 +34,7 @@ class Index extends Component
         'addToCart',
         'returnDeferredCheck',
         'keyboard',
+        'update-index' => '$refresh'
     ];
 
     protected $rules = [
@@ -177,6 +179,10 @@ class Index extends Component
 
     public function switchPriceMode()
     {
+        if (! Gate::allows('switch-price-mode', auth()->user())) {
+            abort(403);
+        }
+
         if (session()->get('priceMode') == 'retail') {
             session()->put('priceMode', 'wholesale');
         } else {

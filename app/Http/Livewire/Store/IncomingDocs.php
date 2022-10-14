@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Store;
 
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -24,6 +25,10 @@ class IncomingDocs extends Component
 
     public function mount()
     {
+        if (! Gate::allows('docs', auth()->user())) {
+            abort(403);
+        }
+
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
     }

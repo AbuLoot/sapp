@@ -10,7 +10,7 @@
 
           <form class="mb-3" style="position: relative;">
             <div class="input-group">
-              <input wire:model="search" id="search" onclick="setFocus('search')" type="search" class="form-control form-control-lg" placeholder="Поиск по названию..." aria-label="Search">
+              <input wire:model="search" id="search" onclick="setFocus(this)" type="search" class="form-control form-control-lg" placeholder="Поиск по названию..." aria-label="Search">
               <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
             </div>
             @if($products)
@@ -51,39 +51,36 @@
     </div>
   </div>
 
-  @if($keyboard)
-    <livewire:keyboard>
-  @endif
 </div>
 
 @if($keyboard)
   @section('scripts')
     <script type="text/javascript">
       // Offcanvas 2
-      const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+      // const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
-      let inputElId = 'search';
+      // let inputElId = 'search';
 
-      // Setting Input Focus
-      function setFocus(elId) {
-        inputElId = elId;
-        document.getElementById(elId).focus();
-      }
+      // // Setting Input Focus
+      // function setFocus(elId) {
+      //   inputElId = elId;
+      //   document.getElementById(elId).focus();
+      // }
 
-      // Displaying values
-      function display(val) {
-        let input = document.getElementById(inputElId);
+      // // Displaying values
+      // function display(val) {
+      //   let input = document.getElementById(inputElId);
 
-        input.value += val;
-        @this.set(inputElId, input.value);
-      }
+      //   input.value += val;
+      //   @this.set(inputElId, input.value);
+      // }
 
-      // Clearing the display
-      function clearDisplay() {
-        let inputSearch = document.getElementById(inputElId);
-        inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
-        @this.set(inputElId, inputSearch.value);
-      }
+      // // Clearing the display
+      // function clearDisplay() {
+      //   let inputSearch = document.getElementById(inputElId);
+      //   inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
+      //   @this.set(inputElId, inputSearch.value);
+      // }
     </script>
   @endsection
 @endif

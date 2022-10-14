@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Store;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -42,6 +43,10 @@ class EditProduct extends Component
 
     public function mount($id)
     {
+        if (! Gate::allows('edit-product', auth()->user())) {
+            abort(403);
+        }
+
         $this->company = auth()->user()->profile->company;
         $this->stores = $this->company->stores;
         $this->product = Product::findOrFail($id);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Store;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -50,6 +51,10 @@ class AddProduct extends Component
 
     public function mount()
     {
+        if (! Gate::allows('add-product', auth()->user())) {
+            abort(403);
+        }
+
         $this->company = auth()->user()->profile->company;
         $this->store = session()->get('storage');
         $this->companies = Company::where('is_supplier', 1)->get();

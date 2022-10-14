@@ -45,21 +45,31 @@
           <li class="nav-item">
             <a class="nav-link px-3 @if(Request::is($lang.'/storage')) active @endif" aria-current="page" href="/{{ $lang }}/storage">Главная</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/storage/docs*')) active @endif" href="/{{ $lang }}/storage/docs">Накладные</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/storage/inventory')) active @endif" href="/{{ $lang }}/storage/inventory">Ревизия</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/storage/income')) active @endif" href="/{{ $lang }}/storage/income">Новый приход</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/storage/writeoff')) active @endif" href="/{{ $lang }}/storage/writeoff">Списание</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3 @if(Request::is($lang.'/storage/storedocs')) active @endif" href="/{{ $lang }}/storage/storedocs">Карточка учета</a>
-          </li>
+          @can('docs', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3 @if(Request::is($lang.'/storage/docs*')) active @endif" href="/{{ $lang }}/storage/docs">Накладные</a>
+            </li>
+          @endcan
+          @can('inventory', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3 @if(Request::is($lang.'/storage/inventory')) active @endif" href="/{{ $lang }}/storage/inventory">Ревизия</a>
+            </li>
+          @endcan
+          @can('income', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3 @if(Request::is($lang.'/storage/income')) active @endif" href="/{{ $lang }}/storage/income">Новый приход</a>
+            </li>
+          @endcan
+          @can('writeoff', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3 @if(Request::is($lang.'/storage/writeoff')) active @endif" href="/{{ $lang }}/storage/writeoff">Списание</a>
+            </li>
+          @endcan
+          @can('storedocs', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3 @if(Request::is($lang.'/storage/storedocs')) active @endif" href="/{{ $lang }}/storage/storedocs">Карточка учета</a>
+            </li>
+          @endcan
         </ul>
 
         <div class="dropdown d-flex text-end">

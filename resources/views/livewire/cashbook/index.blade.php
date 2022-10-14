@@ -50,7 +50,7 @@
         <!-- Search Products -->
         <form class="col-4 col-lg-4 me-4" style="position: relative;">
           <div class="input-group">
-            <input wire:model="search" id="search" onclick="setFocus('search')" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
+            <input wire:model="search" id="search" onclick="setFocus(this)" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
             <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
           </div>
           @if($products)
@@ -138,7 +138,9 @@
               <th class="text-center">В базе</th>
               <th class="text-center">{{ $store->title }}</th>
               <th>Кол-во</th>
-              <th>Скидка</th>
+              @can('set-discount', Auth::user())
+                <th>Скидка</th>
+              @endcan
               <th>Поставщик</th>
               <th><button wire:click="clearCart" type="button" class="btn btn-link p-0">Очистить</button></th>
             </tr>
@@ -165,19 +167,21 @@
                   <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" id="cartProducts.{{ $cartProduct->id }}.countInCart" onclick="setFocus('cartProducts.{{ $cartProduct->id }}.countInCart')" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
                   @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
                 </td>
-                <td class="text-nowrap" style="width:12%;">
-                  @if($cartProduct->input)
-                    <div class="input-group input-group-sm">
-                      <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" id="cartProducts.{{ $cartProduct->id }}.discount" onclick="setFocus('cartProducts.{{ $cartProduct->id }}.discount')" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
-                      <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
-                    </div>
-                  @else
-                    <div class="input-group input-group-sm">
-                      <span class="input-group-text">{{ $cartProduct['discount'] ?? 0 }}%</span>
-                      <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-primary" type="button"><i class="bi bi-pencil-square"></i></button>
-                    </div>
-                  @endif
-                </td>
+                @can('set-discount', Auth::user())
+                  <td class="text-nowrap" style="width:12%;">
+                    @if($cartProduct->input)
+                      <div class="input-group input-group-sm">
+                        <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" id="cartProducts.{{ $cartProduct->id }}.discount" onclick="setFocus('cartProducts.{{ $cartProduct->id }}.discount')" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
+                        <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
+                      </div>
+                    @else
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text">{{ $cartProduct['discount'] ?? 0 }}%</span>
+                        <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-primary" type="button"><i class="bi bi-pencil-square"></i></button>
+                      </div>
+                    @endif
+                  </td>
+                @endcan
                 <td>{{ $cartProduct->company->title }}</td>
                 <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
               </tr>
@@ -199,46 +203,46 @@
             <div class="row gx-lg-2 gx-sm-1 gy-sm-1">
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
-                  <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#returnProducts">Оформить<br> возврат</button>
+                  <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#returnProducts">Оформить<br> возврат</button>
                 </div>
               </div>
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
-                  <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#incomingCash">Внести</button>
+                  <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#incomingCash">Внести</button>
                 </div>
               </div>
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
                   @if($priceMode == 'retail')
-                    <button class="btn btn-secondary" wire:click="switchPriceMode" type="button">Оптовые<br> цены</button>
+                    <button class="btn btn-dark" wire:click="switchPriceMode" type="button">Оптовые<br> цены</button>
                   @else
-                    <button class="btn btn-secondary" wire:click="switchPriceMode" type="button">Розничные<br> цены</button>
+                    <button class="btn btn-dark" @can('switch-price-mode', Auth::user()) wire:click="switchPriceMode" @endcan type="button">Розничные<br> цены</button>
                   @endif
                 </div>
               </div>
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
-                  <button wire:click="deferCheck" class="btn btn-secondary" type="button">Отложить<br> данный чек</button>
+                  <button wire:click="deferCheck" class="btn btn-dark" type="button">Отложить<br> данный чек</button>
                 </div>
               </div>
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
-                  <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#outgoingCash">Расход</button>
+                  <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#outgoingCash">Расход</button>
                 </div>
               </div>
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
-                  <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#listOfDebtors">Список<br> должников</button>
+                  <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#listOfDebtors">Список<br> должников</button>
                 </div>
               </div>
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
-                  <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#reprint">Повторная<br> печать</button>
+                  <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#reprint">Повторная<br> печать</button>
                 </div>
               </div>
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
-                  <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#defferedChecks">Отложенные<br> чеки</button>
+                  <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#defferedChecks">Отложенные<br> чеки</button>
                 </div>
               </div>
             </div>
@@ -256,7 +260,11 @@
                         <button wire:click="switchTotalDiscountView()" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
                       </div>
                     @else
-                      <a wire:click="switchTotalDiscountView()" href="#">{{ $totalDiscount ?? 0 }}% <i class="bi bi-pencil-square"></i></a>
+                      @can('set-discount', Auth::user())
+                        <a wire:click="switchTotalDiscountView()" href="#">{{ $totalDiscount ?? 0 }}% <i class="bi bi-pencil-square"></i></a>
+                      @else
+                        <a href="#">{{ $totalDiscount ?? 0 }}% <i class="bi bi-pencil-square"></i></a>
+                      @endcan
                     @endif
                   </td>
                   <td class="text-center text-bg-success" rowspan="2">
@@ -284,22 +292,32 @@
     <livewire:cashbook.fast-products>
 
     <!-- Modal Closing Cash -->
-    <livewire:cashbook.closing-cash>
+    @can('closing-cash', Auth::user())
+      <livewire:cashbook.closing-cash>
+    @endcan
 
     <!-- Modal Add Customer -->
     <livewire:cashbook.add-customer>
 
     <!-- Modal Return Products -->
-    <livewire:cashbook.return-products>
+    @can('return-products', Auth::user())
+      <livewire:cashbook.return-products>
+    @endcan
 
     <!-- Modal List Of Debtors -->
-    <livewire:cashbook.list-of-debtors>
+    @can('list-of-debtors', Auth::user())
+      <livewire:cashbook.list-of-debtors>
+    @endcan
 
     <!-- Modal Incoming Cash -->
-    <livewire:cashbook.incoming-cash>
+    @can('incoming-cash', Auth::user())
+      <livewire:cashbook.incoming-cash>
+    @endcan
 
     <!-- Modal Outgoing Cash -->
-    <livewire:cashbook.outgoing-cash>
+    @can('outgoing-cash', Auth::user())
+      <livewire:cashbook.outgoing-cash>
+    @endcan
 
     <!-- Modal Reprint -->
     <livewire:cashbook.reprint>
@@ -308,9 +326,7 @@
     <livewire:cashbook.deferred-checks>
 
     <!-- Keyboard -->
-    @if($keyboard)
-      <livewire:keyboard>
-    @endif
+    <livewire:keyboard>
 
   @endif
 
@@ -326,22 +342,29 @@
     // Setting Input Focus
     function setFocus(elId) {
       inputElId = elId;
+      inputElId.focus();
+      console.log(elId);
+      return; 
       document.getElementById(elId).focus();
     }
 
     // Displaying values
     function display(val) {
-      let input = document.getElementById(inputElId);
+      // let input = document.getElementById(inputElId);
+      let input = inputElId;
 
       input.value += val;
-      @this.set(inputElId, input.value);
+
+      // @this.set('search', input.value);
+      Livewire.emit('getSign', input.value);
     }
 
     // Clearing the display
     function clearDisplay() {
-      let inputSearch = document.getElementById(inputElId);
-      inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
-      @this.set(inputElId, inputSearch.value);
+      // let inputEl = document.getElementById(inputElId);
+      let inputEl = inputElId;
+      inputEl.value = inputEl.value.substr(0, inputEl.value.length - 1);
+      @this.set('search', inputEl.value);
     }
   </script>
 @endsection

@@ -19,6 +19,11 @@
         </div>
         <div class="row gx-2 gy-2">
           @foreach($paymentTypes as $paymentType)
+            @if($paymentType->slug == 'sale-on-credit')
+              @cannot('sale-on-credit', Auth::user())
+                @continue
+              @endcannot
+            @endif
             <div class="col-lg-6 d-grid">
               <a href="/{{ $lang }}/cashdesk/payment-type/{{ $paymentType->slug }}" class="btn btn-primary btn-lg text-start"><i class="{{ $paymentType->image }} me-2"></i> <span>{{ $paymentType->title }}</span></a>
               <!-- <button wire:click="paymentType('{{ $paymentType->slug }}')" type="button" class="btn btn-primary btn-lg text-start"><i class="{{ $paymentType->image }} me-2"></i> <span>{{ $paymentType->title }}</span></button> -->

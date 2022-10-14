@@ -47,7 +47,7 @@
             </div>
             <div class="form-group">
               <label for="role_id">Роли:</label>
-              <select class="form-control" name="role_id[]" id="role_id">
+              <select class="form-control" name="role_id" id="role_id">
                 <option value=""></option>
                 @foreach($roles as $role)
                   @if ($user->roles->contains($role->id)))
