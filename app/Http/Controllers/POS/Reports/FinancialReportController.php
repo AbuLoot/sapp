@@ -17,17 +17,6 @@ class FinancialReportController extends Controller
         $startDate = $request->start_date ?? '2022-01-01';
         $endDate = $request->end_date ?? now()->format('Y-m-d');
 
-        $operations = [
-            'incoming-products',
-            'writeoff-products',
-            'incoming-cash',
-            'outgoing-cash',
-            'returned-products',
-            'repayment-debt',
-            'payment-products',
-            'sale-on-credit',
-        ];
-
         $incomes = IncomingOrder::query()
             ->where('created_at', '>', $startDate)
             ->where('created_at', '<=', $endDate)

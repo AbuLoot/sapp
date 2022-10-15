@@ -17,7 +17,7 @@ class FastProducts extends Component
 
     protected $listeners = [
         'getFastProducts',
-        'getSign',
+        'fastProductsInput',
     ];
 
     public function mount()
@@ -25,18 +25,16 @@ class FastProducts extends Component
         $this->company = auth()->user()->profile->company;
     }
 
-    public function getSign($value)
+    public function getFastProducts()
     {
-        $this->search = $value;
-    }
-
-    public function getFastProducts($keyboard)
-    {
-        $state = $keyboard ? false : true;
-        $this->emitUp('keyboard', $state);
-        $this->keyboard = true;
         $this->fastMode = Mode::where('slug', 'fast-products')->first();
         $this->fastProducts = $this->fastMode->products;
+    }
+
+    public function fastProductsInput($value)
+    {
+        $property = $value[1];
+        $this->$property = $value[0];
     }
 
     public function toggleFastMode($id)

@@ -89,7 +89,7 @@
         <tbody>
           @forelse($revisionProducts as $index => $revisionProduct)
             <tr>
-              <td><a href="/{{ $lang }}/storage/edit-product/{{ $revisionProduct->id }}">{{ $revisionProduct->title }}</a></td>
+              <td>{{ $revisionProduct->title }}</td>
               <td>
                 <?php $barcodes = json_decode($revisionProduct->barcodes, true) ?? ['']; ?>
                 @foreach($barcodes as $barcode)

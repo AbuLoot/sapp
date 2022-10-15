@@ -18,6 +18,20 @@ class OfficeController extends Controller
 {
     public function index()
     {
+        $operations = [
+            // Storage operations
+            'incoming-products',
+            'writeoff-products',
+
+            // Cashdesk operations
+            'incoming-cash',
+            'outgoing-cash',
+            'returned-products',
+            'repayment-debt',
+            'payment-products',
+            'sale-on-credit',
+        ];
+
         $previousYear = now()->subYear()->format('Y').'-01-01';
 
         $incomes = IncomingOrder::query()

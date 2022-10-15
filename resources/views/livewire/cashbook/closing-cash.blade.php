@@ -34,7 +34,7 @@
               <form wire:submit.prevent="setNumber">
                 <div class="row mt-2 gx-2">
                   <div class="col-6 col-lg-4 offset-lg-2 mb-3">
-                    <input wire:model="number" type="number" name="number" class="form-control form-control-lg @error('error') is-invalid @enderror" placeholder="Количество номиналов">
+                    <input wire:model="number" onclick="setFocus(this, 'closingCashInput-number')" type="number" class="form-control form-control-lg @error('error') is-invalid @enderror" placeholder="Количество номиналов">
                   </div>
                   <div class="col-6 col-lg-4 mb-3">
                     <div class="d-grid" role="group" aria-label="Basic example">

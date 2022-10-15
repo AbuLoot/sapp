@@ -17,6 +17,7 @@ class CashReconciliationController extends Controller
         $startDate = $request->start_date ?? '2022-01-01';
         $endDate = $request->end_date ?? now()->format('Y-m-d');
 
+        $cashierObj = [];
         $cashierId = $request->cashier_id ?? null;
         $cashShiftJournal = [];
         $incomes = [];

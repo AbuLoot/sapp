@@ -1,6 +1,6 @@
 <div>
 
-  <main class="container my-4">
+  <main class="container my-4 mb-25">
     <div class="row">
       <div class="col-lg-5">
 
@@ -21,7 +21,10 @@
               <label class="form-label">Наличными</label>
             </div>
             <div class="col-sm-7">
-              <input wire:model.debounce.400ms="cash" type="number" class="form-control form-control-lg" id="title" minlength="2" placeholder="Введите сумму">
+              <div class="input-group">
+                <input wire:model.debounce.400ms="cash" onclick="setFocus(this)" type="number" class="form-control form-control-lg" minlength="2" placeholder="Введите сумму">
+                <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+              </div>
             </div>
           </div>
           <div class="mb-3 row align-items-center">
@@ -48,4 +51,48 @@
     </div>
   </main>
 
+  <!-- Keyboard -->
+  <livewire:keyboard>
+
 </div>
+
+@section('scripts')
+  <script type="text/javascript">
+    // Offcanvas
+    const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+
+    // Offcanvas - Changing Placement
+    function changePLacement(val) {
+
+      let placement = 'offcanvas-bottom';
+      let element = document.getElementById("offcanvas");
+
+      if (val == 'offcanvas-bottom') {
+        placement = 'offcanvas-top';
+      } else {
+        placement = 'offcanvas-bottom';
+      }
+
+      element.classList.add(val);
+      element.classList.remove(placement);
+    }
+
+    // Keyboard Input
+    let activeEl;
+
+    function setFocus(el) {
+      activeEl = el;
+      activeEl.focus();
+    }
+
+    function display(val) {
+      activeEl.value += val;
+      @this.set('cash', activeEl.value);
+    }
+
+    function clearDisplay() {
+      activeEl.value = activeEl.value.substr(0, activeEl.value.length - 1);
+      @this.set('cash', activeEl.value);
+    }
+  </script>
+@endsection

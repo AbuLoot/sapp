@@ -10,7 +10,7 @@
         <button class="btn btn-warning rounded-circle me-auto" onclick="document.location.reload()"><i class="bi bi-arrow-clockwise"></i></button>
 
         <div class="text-end me-4">
-          <button type="button" wire:click="$emit('getFastProducts', {{ $keyboard }})" class="btn btn-outline-light btn-lg me-2" data-bs-toggle="modal" data-bs-target="#fastProducts"><i class="bi bi-cart-check-fill"></i> Быстрые товары</button>
+          <button type="button" wire:click="$emit('getFastProducts')" class="btn btn-outline-light btn-lg me-2" data-bs-toggle="modal" data-bs-target="#fastProducts"><i class="bi bi-cart-check-fill"></i> Быстрые товары</button>
           <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#addCustomer"><i class="bi bi-person-plus-fill"></i> Добавить клиента</button>
         </div>
 
@@ -36,7 +36,7 @@
     </div>
   </header>
 
-  @if( ! Cache::has('openedCash'))
+  @if(! Cache::has('openedCash'))
 
     <!-- Opening Cash -->
     <livewire:cashbook.opening-cash>
@@ -50,7 +50,7 @@
         <!-- Search Products -->
         <form class="col-4 col-lg-4 me-4" style="position: relative;">
           <div class="input-group">
-            <input wire:model="search" id="search" onclick="setFocus(this)" type="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
+            <input wire:model="search" onclick="setFocus(this, 'indexInput-search')" type="search" id="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
             <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
           </div>
           @if($products)
@@ -71,21 +71,7 @@
         <!-- Search Customers -->
         <form class="col-3 col-lg-3 me-4" style="position: relative;">
           <div class="input-group">
-            <input wire:model="searchCustomer" type="search" class="form-control form-control-lg" id="searchCustomer" onclick="setFocus('searchCustomer')" placeholder="Поиск клиентов..." aria-label="Search">
-            @if($customers)
-              <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute; top: 50px;">
-                <ul class="list-unstyled mb-0">
-                  @forelse($customers as $customerObj)
-                    <li>
-                      <a wire:click="checkCustomer({{ $customerObj->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $customerObj->name.' '.$customerObj->lastname.' '.$customerObj->tel }}</a>
-                    </li>
-                  @empty
-                    <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled-">No data</a></li>
-                  @endforelse
-                </ul>
-              </div>
-            @endif
-
+            <input wire:model="searchCustomer" id="searchCustomer" onclick="setFocus(this, 'indexInput-searchCustomer')" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
             @if($customer)
               <button class="btn btn-outline-secondary dropdown-toggle fs-5" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></button>
               <div class="dropdown-menu dropdown-menu-end p-3" style="max-width: 200px;">
@@ -99,6 +85,19 @@
               </div>
             @endif
           </div>
+          @if($customers)
+            <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute; top: 50px;">
+              <ul class="list-unstyled mb-0">
+                @forelse($customers as $customerObj)
+                  <li>
+                    <a wire:click="checkCustomer({{ $customerObj->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $customerObj->name.' '.$customerObj->lastname.' '.$customerObj->tel }}</a>
+                  </li>
+                @empty
+                  <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled-">No data</a></li>
+                @endforelse
+              </ul>
+            </div>
+          @endif
         </form>
 
         <!-- Storages List -->
@@ -126,7 +125,7 @@
     </div>
 
     <!-- Cart Of Products -->
-    <main class="container" style="margin-bottom: 250px;">
+    <main class="container" style="margin-bottom: 425px;">
       <div class="table-responsive">
         <table class="table table-striped table-borderless border align-middle">
           <thead>
@@ -164,14 +163,14 @@
                 <td class="text-center">{{ $cartProduct->count }}</td>
                 <td class="text-center"><div class="@if($countInStore == 0) text-danger @endif">{{ $countInStore }}</div></td>
                 <td style="width:10%;">
-                  <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" id="cartProducts.{{ $cartProduct->id }}.countInCart" onclick="setFocus('cartProducts.{{ $cartProduct->id }}.countInCart')" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
+                  <input wire:model="cartProducts.{{ $cartProduct->id.'.countInCart' }}" onclick="setFocus(this, 'indexInput-cartProducts.{{ $cartProduct->id }}.countInCart')" type="number" class="form-control @error('cartProducts.'.$cartProduct->id.'.countInCart') is-invalid @enderror" required>
                   @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
                 </td>
                 @can('set-discount', Auth::user())
                   <td class="text-nowrap" style="width:12%;">
                     @if($cartProduct->input)
                       <div class="input-group input-group-sm">
-                        <input type="number" wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" id="cartProducts.{{ $cartProduct->id }}.discount" onclick="setFocus('cartProducts.{{ $cartProduct->id }}.discount')" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
+                        <input wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" onclick="setFocus(this, 'indexInput-cartProducts.{{ $cartProduct->id }}.discount')" type="number" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
                         <button wire:click="switchDiscountView({{ $cartProduct->id }})" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
                       </div>
                     @else
@@ -256,7 +255,7 @@
                   <td>
                     @if($totalDiscountView)
                       <div class="input-group input-group-sm" style="width:90px;">
-                        <input type="number" wire:model="totalDiscount" class="form-control" required>
+                        <input wire:model="totalDiscount" onclick="setFocus(this, 'indexInput-totalDiscount')" type="number" class="form-control" required>
                         <button wire:click="switchTotalDiscountView()" class="btn btn-success" type="button"><i class="bi bi-check"></i></button>
                       </div>
                     @else
@@ -334,37 +333,53 @@
 
 @section('scripts')
   <script type="text/javascript">
-    // Offcanvas 1
+    // Offcanvas
     const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
-    let inputElId = 'search';
+    // Offcanvas - Changing Placement
+    function changePLacement(val) {
 
-    // Setting Input Focus
-    function setFocus(elId) {
-      inputElId = elId;
-      inputElId.focus();
-      console.log(elId);
-      return; 
-      document.getElementById(elId).focus();
+      let placement = 'offcanvas-bottom';
+      let element = document.getElementById("offcanvas");
+
+      if (val == 'offcanvas-bottom') {
+        placement = 'offcanvas-top';
+      } else {
+        placement = 'offcanvas-bottom';
+      }
+
+      element.classList.add(val);
+      element.classList.remove(placement);
     }
 
-    // Displaying values
+    // Keyboard Input
+    let input = ['indexInput'];
+    let activeEl;
+
+    function setFocus(el, attrNames) {
+      input = attrNames.split('-');
+      activeEl = el;
+      activeEl.focus();
+    }
+
     function display(val) {
-      // let input = document.getElementById(inputElId);
-      let input = inputElId;
-
-      input.value += val;
-
-      // @this.set('search', input.value);
-      Livewire.emit('getSign', input.value);
+      if (input[0] == 'indexInput') {
+        activeEl.value += val;
+        @this.set(input[1], activeEl.value);
+      } else {
+        activeEl.value += val;
+        Livewire.emit(input[0], [activeEl.value, input[1]]);
+      }
     }
 
-    // Clearing the display
     function clearDisplay() {
-      // let inputEl = document.getElementById(inputElId);
-      let inputEl = inputElId;
-      inputEl.value = inputEl.value.substr(0, inputEl.value.length - 1);
-      @this.set('search', inputEl.value);
+      activeEl.value = activeEl.value.substr(0, activeEl.value.length - 1);
+
+      if (input[0] == 'indexInput') {
+        @this.set(input[1], activeEl.value);
+      } else {
+        Livewire.emit(input[0], [activeEl.value, input[1]]);
+      }
     }
   </script>
 @endsection

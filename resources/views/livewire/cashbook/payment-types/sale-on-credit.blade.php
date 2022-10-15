@@ -11,7 +11,7 @@
     </div>
   @endif
 
-  <main class="container my-4">
+  <main class="container my-4 mb-25">
     <div class="row">
       <div class="col-lg-5">
 
@@ -32,7 +32,10 @@
 
           <div class="row">
             <div class="col-lg-7 mb-3">
-              <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
+              <div class="input-group">
+                <input wire:model="search" onclick="setFocus(this, 'saleOnCreditInput-search')" type="search" class="form-control form-control-lg" placeholder="Поиск клиентов..." aria-label="Search">
+                <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+              </div>
             </div>
             <div class="col-lg-5 mb-3">
               <div class="d-grid" role="group" aria-label="Basic example">
@@ -65,10 +68,14 @@
     </div>
   </main>
 
+  <!-- Keyboard -->
+  <livewire:keyboard>
+
 </div>
 
 @section('scripts')
   <script type="text/javascript">
+    // Toast Notifications
     window.addEventListener('show-toast', event => {
       if (event.detail.reload) {
         document.location.reload()
@@ -85,5 +92,76 @@
       const toastBody = document.getElementById('toastBody')
       toastBody.innerHTML = event.detail.message
     })
+  </script>
+
+  <script type="text/javascript">
+    // Offcanvas
+    const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+
+    // Offcanvas - Changing Placement
+    function changePLacement(val) {
+
+      let placement = 'offcanvas-bottom';
+      let element = document.getElementById("offcanvas");
+
+      if (val == 'offcanvas-bottom') {
+        placement = 'offcanvas-top';
+      } else {
+        placement = 'offcanvas-bottom';
+      }
+
+      element.classList.add(val);
+      element.classList.remove(placement);
+    }
+
+    // Keyboard Input
+    let input = ['saleOnCreditInput'];
+    let activeEl;
+
+    function setFocus(el, attrNames) {
+      input = attrNames.split('-');
+      activeEl = el;
+      activeEl.focus();
+    }
+
+    function display(val) {
+      if (input[0] == 'saleOnCreditInput') {
+        activeEl.value += val;
+        @this.set(input[1], activeEl.value);
+      } else {
+        activeEl.value += val;
+        Livewire.emit(input[0], [activeEl.value, input[1]]);
+      }
+    }
+
+    function clearDisplay() {
+      activeEl.value = activeEl.value.substr(0, activeEl.value.length - 1);
+
+      if (input[0] == 'saleOnCreditInput') {
+        @this.set(input[1], activeEl.value);
+      } else {
+        Livewire.emit(input[0], [activeEl.value, input[1]]);
+      }
+    }
+
+    // Keyboard Input
+    // let activeEl;
+    // let model;
+
+    // function setFocus(el, modelName) {
+    //   model = modelName;
+    //   activeEl = el;
+    //   activeEl.focus();
+    // }
+
+    // function display(val) {
+    //   activeEl.value += val;
+    //   @this.set(model, activeEl.value);
+    // }
+
+    // function clearDisplay() {
+    //   activeEl.value = activeEl.value.substr(0, activeEl.value.length - 1);
+    //   @this.set(model, activeEl.value);
+    // }
   </script>
 @endsection

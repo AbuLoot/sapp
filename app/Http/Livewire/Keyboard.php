@@ -6,8 +6,8 @@ use Livewire\Component;
 
 class Keyboard extends Component
 {
+    public $keyboardLang = 'ru';
     public $signs;
-    public $lang = 'ru';
     // public $inactive = 'en';
 
     public function mount()
@@ -20,7 +20,7 @@ class Keyboard extends Component
             ],  
             'en' => [
                 ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', '+'],
-                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '(', ')'],
+                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '"', '|'],
                 ['translate', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '/', 'space'],
             ],
         ];
@@ -28,8 +28,7 @@ class Keyboard extends Component
 
     public function switchLangs()
     {
-        $this->lang = $this->lang == 'ru' ? 'en' : 'ru';
-        // $this->inactive = $this->lang == 'en' ? 'ru' : 'en';
+        $this->keyboardLang = $this->keyboardLang == 'ru' ? 'en' : 'ru';
     }
 
     public function render()

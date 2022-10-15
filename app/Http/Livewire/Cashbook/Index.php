@@ -27,13 +27,11 @@ class Index extends Component
     public $totalDiscount = null;
     public $totalDiscountView;
     public $priceMode = 'retail';
-    public $keyboard = true;
     public $amount;
 
     protected $listeners = [
         'addToCart',
         'returnDeferredCheck',
-        'keyboard',
         'update-index' => '$refresh'
     ];
 
@@ -316,11 +314,6 @@ class Index extends Component
         $this->dispatchBrowserEvent('show-toast', [
             'message' => 'Операция выполнена', 'selector' => 'closeDefferedChecks'
         ]);
-    }
-
-    public function keyboard($keyboard)
-    {
-        $this->keyboard = $keyboard;
     }
 
     public function render()

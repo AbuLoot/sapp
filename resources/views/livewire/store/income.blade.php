@@ -94,7 +94,7 @@
                   : 0;
             ?>
             <tr>
-              <td><a href="/{{ $lang }}/storage/edit-product/{{ $incomeProduct->id }}">{{ $incomeProduct->title }}</a></td>
+              <td>{{ $incomeProduct->title }}</td>
               <td>
                 @foreach($barcodes as $barcode)
                   {{ $barcode }}<br>

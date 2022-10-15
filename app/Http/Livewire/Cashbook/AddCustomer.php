@@ -14,11 +14,21 @@ class AddCustomer extends Component
     public $email;
     public $address;
 
+    protected $listeners = [
+        'addCustomerInput',
+    ];
+
     protected $rules = [
         'name' => 'required|min:2',
         'lastname' => 'required|min:2',
         'tel' => 'required|min:11',
     ];
+
+    public function addCustomerInput($value)
+    {
+        $property = $value[1];
+        $this->$property = $value[0];
+    }
 
     public function save()
     {

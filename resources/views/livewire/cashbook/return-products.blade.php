@@ -1,6 +1,6 @@
 <div>
   <div wire:ignore.self class="modal fade" id="returnProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered mt-20 modal-xl modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Оформление возврата</h5>

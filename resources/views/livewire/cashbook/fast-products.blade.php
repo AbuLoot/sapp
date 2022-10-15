@@ -10,7 +10,7 @@
 
           <form class="mb-3" style="position: relative;">
             <div class="input-group">
-              <input wire:model="search" id="search" onclick="setFocus(this)" type="search" class="form-control form-control-lg" placeholder="Поиск по названию..." aria-label="Search">
+              <input wire:model="search" onclick="setFocus(this, 'fastProductsInput-search')" type="search" class="form-control form-control-lg" placeholder="Поиск по названию..." aria-label="Search">
               <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
             </div>
             @if($products)

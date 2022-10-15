@@ -99,13 +99,13 @@
               @endif
               <td>
                 @can('edit-product', Auth::user())
-                  <a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a></td>
+                  <a href="/{{ $lang }}/storage/edit-product/{{ $product->id }}">{{ $product->title }}</a>
                 @else
                   {{ $product->title }}
                 @endcan
               </td>
               <td>
-                <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
+                <?php $barcodes = json_decode($product->barcodes, true) ?? []; ?>
                 @foreach($barcodes as $barcode)
                   {{ $barcode }}<br>
                 @endforeach

@@ -18,6 +18,10 @@ class ClosingCash extends Component
     public $key;
     public $number;
 
+    protected $listeners = [
+        'closingCashInput',
+    ];
+
     public function mount()
     {
         $this->company = auth()->user()->profile->company;
@@ -72,6 +76,12 @@ class ClosingCash extends Component
 
         $this->number = null;
         $this->key = null;
+    }
+
+    public function closingCashInput($value)
+    {
+        $property = $value[1];
+        $this->$property = $value[0];
     }
 
     public function closeTheCash()

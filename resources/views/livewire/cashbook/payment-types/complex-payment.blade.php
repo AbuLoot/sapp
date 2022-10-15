@@ -1,6 +1,6 @@
 <div>
 
-  <main class="container my-4">
+  <main class="container my-4 mb-25">
     <div class="row">
       <div class="col-lg-5">
 
@@ -24,7 +24,10 @@
                 <label class="form-check-label" for="payment-{{ $paymentType->slug }}">{{ $paymentType->title }}</label>
               </div>
               <div class="col-sm-7">
-                <input type="number" wire:model="{{ $paymentTypeSlug }}" class="form-control form-control-lg" id="title" name="title" minlength="2" @if(!in_array($paymentTypeSlug, $complexPayments)) disabled @endif placeholder="Введите сумму">
+                <div class="input-group">
+                  <input wire:model="{{ $paymentTypeSlug }}" onclick="setFocus(this, '{{ $paymentTypeSlug }}')" type="number" class="form-control form-control-lg" minlength="2" @if(!in_array($paymentTypeSlug, $complexPayments)) disabled @endif placeholder="Введите сумму">
+                  <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+                </div>
               </div>
             </div>
           @endforeach
@@ -40,4 +43,50 @@
     </div>
   </main>
 
+  <!-- Keyboard -->
+  <livewire:keyboard>
+
 </div>
+
+@section('scripts')
+  <script type="text/javascript">
+    // Offcanvas
+    const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+
+    // Offcanvas - Changing Placement
+    function changePLacement(val) {
+
+      let placement = 'offcanvas-bottom';
+      let element = document.getElementById("offcanvas");
+
+      if (val == 'offcanvas-bottom') {
+        placement = 'offcanvas-top';
+      } else {
+        placement = 'offcanvas-bottom';
+      }
+
+      element.classList.add(val);
+      element.classList.remove(placement);
+    }
+
+    // Keyboard Input
+    let activeEl;
+    let model;
+
+    function setFocus(el, modelName) {
+      model = modelName;
+      activeEl = el;
+      activeEl.focus();
+    }
+
+    function display(val) {
+      activeEl.value += val;
+      @this.set(model, activeEl.value);
+    }
+
+    function clearDisplay() {
+      activeEl.value = activeEl.value.substr(0, activeEl.value.length - 1);
+      @this.set(model, activeEl.value);
+    }
+  </script>
+@endsection
