@@ -19,7 +19,7 @@ class CreateStoresTable extends Migration
             $table->integer('region_id');
             $table->char('title');
             $table->char('slug');
-            $table->integer('ip_address');
+            $table->char('ip_address');
             $table->char('address')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();

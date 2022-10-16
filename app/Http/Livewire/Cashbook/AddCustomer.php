@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cashbook;
 use Livewire\Component;
 
 use App\Models\User;
+use App\Models\Profile;
 
 class AddCustomer extends Component
 {
@@ -44,6 +45,11 @@ class AddCustomer extends Component
         $user->is_customer = 1;
         $user->save();
 
+        $profile = new Profile;
+        $profile->user_id = $user->id;
+        $profile->region_id = 1;
+        $profile->save();
+ 
         $this->dispatchBrowserEvent('show-toast', [
             'message' => 'Запись добавлена', 'selector' => 'closeAddCustomer'
         ]);

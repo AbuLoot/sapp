@@ -120,58 +120,54 @@
                       @error('productBarcodes.{{ $index }}')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                   @endforeach
-                  <?php // $generator = new Picqer\Barcode\BarcodeGeneratorHTML(); ?>
-                  <?php // echo $generator->getBarcode(substr($barcode, 0, -1), $generator::TYPE_EAN_13); ?>
                 </div>
 
-                @if($product->type == 1)
-                @endif
-                  <div class="mb-3">
-                    <label for="idCode">Код продукта</label>
-                    <input type="text" wire:model.defer="idCode" class="form-control @error('idCode') is-invalid @enderror" id="idCode">
-                    @error('idCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="mb-3">
+                  <label for="idCode">Код продукта</label>
+                  <input type="text" wire:model.defer="idCode" class="form-control @error('idCode') is-invalid @enderror" id="idCode">
+                  @error('idCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="mb-3">
+                  <label for="count">Количество</label>
+                  <div style="max-height: 210px; overflow-y: auto;" class="py-1">
+                    <?php $countInStores = json_decode($product->count_in_stores, true); ?>
+                    @foreach($stores as $index => $store)
+                      <div class="input-group mb-1">
+                        <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
+                        <input type="number" value="{{ $countInStores[$store->id] }}" class="form-control" id="count" disabled>
+                        <select class="form-control @error('product.unit') is-invalid @enderror" wire:model="product.unit" id="unit">
+                          <option value="">Ед. измерения</option>
+                          @foreach($units as $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->title }}</option>
+                          @endforeach
+                        </select>
+                        @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                      </div>
+                    @endforeach
                   </div>
-                  <div class="mb-3">
-                    <label for="count">Количество</label>
-                    <div style="max-height: 210px; overflow-y: auto;" class="py-1">
-                      @foreach($stores as $index => $store)
-                        <div class="input-group mb-1">
-                          <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
-                          <input type="number" wire:model.defer="countInStores.{{ $store->id }}" class="form-control @error('countInStores.'.$store->id) is-invalid @enderror" id="count" disabled>
-                          <select class="form-control @error('product.unit') is-invalid @enderror" wire:model="product.unit" id="unit">
-                            <option value="">Ед. измерения</option>
-                            @foreach($units as $unit)
-                              <option value="{{ $unit->id }}">{{ $unit->title }}</option>
-                            @endforeach
-                          </select>
-                          @error('countInStores.'.$store->id)<div class="invalid-feedback">{{ $message }}</div>@enderror
-                          @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                      @endforeach
-                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <label for="purchasePrice">Закупочная цена</label>
+                  <div class="input-group">
+                    <input type="text" wire:model="purchasePrice" class="form-control" id="purchasePrice">
+                    <div class="input-group-text">{{ $currency }}</div>
                   </div>
-                  <div class="col-lg-6 mb-3">
-                    <label for="purchasePrice">Закупочная цена</label>
-                    <div class="input-group">
-                      <input type="text" wire:model="purchasePrice" class="form-control" id="purchasePrice">
-                      <div class="input-group-text">{{ $currency }}</div>
-                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-lg-6 mb-3">
+                  <label for="wholesalePrice">Оптовая цена</label>
+                  <div class="input-group">
+                    <input type="text" wire:model="wholesalePrice" class="form-control" id="wholesalePrice">
+                    <div class="input-group-text">{{ $currency }}</div>
                   </div>
-                  <div class="w-100"></div>
-                  <div class="col-lg-6 mb-3">
-                    <label for="wholesalePrice">Оптовая цена</label>
-                    <div class="input-group">
-                      <input type="text" wire:model="wholesalePrice" class="form-control" id="wholesalePrice">
-                      <div class="input-group-text">{{ $currency }}</div>
-                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <label for="wholesalePriceMarkup">Наценка</label>
+                  <div class="input-group">
+                    <input type="text" wire:model="wholesalePriceMarkup" class="form-control" id="wholesalePriceMarkup" placeholder="0.0">
+                    <div class="input-group-text">%</div>
                   </div>
-                  <div class="col-lg-6 mb-3">
-                    <label for="wholesalePriceMarkup">Наценка</label>
-                    <div class="input-group">
-                      <input type="text" wire:model="wholesalePriceMarkup" class="form-control" id="wholesalePriceMarkup" placeholder="0,0">
-                      <div class="input-group-text">%</div>
-                    </div>
-                  </div>
+                </div>
 
                 <div class="col-lg-6 mb-3">
                   <label for="price">Розничная цена</label>
@@ -183,7 +179,7 @@
                 <div class="col-lg-6 mb-3">
                   <label for="priceMarkup">Наценка</label>
                   <div class="input-group">
-                    <input type="text" wire:model="priceMarkup" class="form-control @error('priceMarkup') is-invalid @enderror" id="priceMarkup" placeholder="0,0">
+                    <input type="text" wire:model="priceMarkup" class="form-control @error('priceMarkup') is-invalid @enderror" id="priceMarkup" placeholder="0.0">
                     <div class="input-group-text">%</div>
                   </div>
                 </div>

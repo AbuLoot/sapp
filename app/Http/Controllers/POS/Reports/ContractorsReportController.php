@@ -12,7 +12,7 @@ class ContractorsReportController extends Controller
     public function index(Request $request)
     {
         $startDate = $request->start_date ?? '2022-01-01';
-        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $endDate = $request->end_date ?? now();
 
         $suppliers = Company::query()
             ->where('is_supplier', 1)

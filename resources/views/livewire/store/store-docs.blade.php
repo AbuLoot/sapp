@@ -66,7 +66,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="9">No docs</td>
+              <td colspan="11">No docs</td>
             </tr>
           @endforelse
         </tbody>
@@ -113,6 +113,14 @@
                     <tr>
                       <th scope="row">ID документа</th>
                       <td>{{ $docDetail->doc_id }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Тип операции</th>
+                      @if($docDetail->doc->docType->slug == 'forma-inv-10')
+                        <td>Инвентаризация продуктов</td>
+                      @else
+                        <td>{{ $operationCodes[$docDetail->doc->operation_code] }}</td>
+                      @endif
                     </tr>
                     <tr>
                       <th scope="row">Автор</th>
@@ -177,7 +185,7 @@
                     </tr>
                   @empty
                     <tr>
-                      <td colspan="9">No products</td>
+                      <td colspan="7">No products</td>
                     </tr>
                   @endforelse
                 </tbody>
@@ -202,6 +210,19 @@
   // Offcanvas
   const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
+  // Offcanvas - Changing Placement
+  function changePLacement(val) {
+
+    let placement = 'offcanvas-bottom';
+    let element = document.getElementById("offcanvas");
+
+    placement = (val == 'offcanvas-bottom') ? 'offcanvas-top' : 'offcanvas-bottom';
+
+    element.classList.add(val);
+    element.classList.remove(placement);
+  }
+
+  // Keyboard Input
   let inputElId;
 
   // Setting Input Focus

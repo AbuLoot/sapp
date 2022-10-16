@@ -33,7 +33,7 @@
             </div>
             <div class="form-group">
               <label for="email">Email:</label>
-              <input type="email" class="form-control" name="email" id="email" minlength="8" maxlength="60" value="{{ $user->email }}" required>
+              <input type="email" class="form-control" name="email" id="email" minlength="8" maxlength="60" value="{{ $user->email }}">
             </div>
             <div class="form-group">
               <label>Адрес</label>

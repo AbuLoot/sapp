@@ -103,8 +103,9 @@
               <td>{{ $writeoffProduct->count - $writeoffCountProduct . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
-                  <input type="number" wire:model="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}" id="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}" onclick="setFocus('writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}')" class="form-control @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeId) is-invalid @enderror" required>
+                  <input wire:model="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}" type="number" id="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}" onclick="setFocus('writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}')" class="form-control @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeId) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
+                  @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
               <td>{{ $writeoffProduct->company->title }}</td>
@@ -145,6 +146,19 @@
   // Offcanvas
   const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
+  // Offcanvas - Changing Placement
+  function changePLacement(val) {
+
+    let placement = 'offcanvas-bottom';
+    let element = document.getElementById("offcanvas");
+
+    placement = (val == 'offcanvas-bottom') ? 'offcanvas-top' : 'offcanvas-bottom';
+
+    element.classList.add(val);
+    element.classList.remove(placement);
+  }
+
+  // Keyboard Input
   let inputElId;
 
   // Setting Input Focus

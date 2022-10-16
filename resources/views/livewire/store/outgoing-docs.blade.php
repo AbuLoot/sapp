@@ -193,6 +193,19 @@
   // Offcanvas
   const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
+  // Offcanvas - Changing Placement
+  function changePLacement(val) {
+
+    let placement = 'offcanvas-bottom';
+    let element = document.getElementById("offcanvas");
+
+    placement = (val == 'offcanvas-bottom') ? 'offcanvas-top' : 'offcanvas-bottom';
+
+    element.classList.add(val);
+    element.classList.remove(placement);
+  }
+
+  // Keyboard Input
   let inputElId;
 
   // Setting Input Focus

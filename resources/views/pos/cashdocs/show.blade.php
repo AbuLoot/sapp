@@ -8,6 +8,22 @@
     <a href="/{{ $lang }}/pos/cashdocs" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
 
+  <?php 
+    $operationCodes = [
+      // Storage operations
+      'incoming-products' => 'Приход продуктов',
+      'writeoff-products' => 'Списание продуктов',
+
+      // Cashdesk operations
+      'incoming-cash' => 'Приход в кассу',
+      'outgoing-cash' => 'Расход из кассы',
+      'returned-products' => 'Возврат продуктов',
+      'repayment-debt' => 'Погашение долгов',
+      'payment-products' => 'Оплата продуктов',
+      'sale-on-credit' => 'Продажа в долг',
+    ];
+  ?>
+
   <div class="table-responsive">
     <table class="table table-striped">
       <tbody>
@@ -22,6 +38,10 @@
         <tr>
           <th scope="row">ID документа</th>
           <td>{{ $cashdoc->doc_id }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Тип операции</th>
+          <td>{{ $operationCodes[$cashdoc->order->operation_code] }}</td>
         </tr>
         <tr>
           <th scope="row">Автор</th>

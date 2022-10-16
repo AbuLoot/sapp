@@ -6,7 +6,7 @@
         <form wire:submit.prevent="saveCompany">
           <div class="modal-header">
             <h5 class="modal-title" id="modalLabel">Добавить поставщика</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" id="closeAddCompany" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">

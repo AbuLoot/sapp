@@ -16,8 +16,8 @@ class AddCompany extends Component
 
     protected $rules = [
         'company.title' => 'required|min:2',
-        'company.phones' => '',
-        'company.legalAddress' => ''
+        'company.phones' => 'required|min:9',
+        'company.legal_address' => 'required|min:2'
     ];
 
     public function mount()
@@ -37,15 +37,18 @@ class AddCompany extends Component
             'slug' => Str::slug($data['title']),
             'title' => $data['title'],
             'phones' => $data['phones'] ?? null,
-            'legal_address' => $data['legalAddress'] ?? null,
+            'legal_address' => $data['legal_address'] ?? null,
             'image' => 'no-image-mini.png',
             'is_supplier' => ($this->isSupplier) ? 1 : 0,
             'is_customer' => ($this->isCustomer) ? 1 : 0,
             'status' => 1,
         ]);
 
-        $this->dispatchBrowserEvent('show-toast', ['message' => 'Запись добавлена', 'selector' => 'addCompany']);
+        $this->company = null;
         $this->emitUp('newData');
+        $this->dispatchBrowserEvent('show-toast', [
+            'message' => 'Запись добавлена', 'selector' => 'closeAddCompany'
+        ]);
     }
 
     public function render()

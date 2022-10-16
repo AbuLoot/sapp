@@ -107,7 +107,7 @@
               <td>{{ $incomeProduct->count + $incomeCount . $unit }}</td>
               <td class="col-2" style="width:12%">
                 <div class="input-group">
-                  <input type="number" wire:model="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" id="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" onclick="setFocus('incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}')" class="form-control @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId) is-invalid @enderror" required>
+                  <input wire:model="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" type="number" id="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" onclick="setFocus('incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}')" class="form-control @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId) is-invalid @enderror" required>
                   <span class="input-group-text px-1-">{{ $unit }}</span>
                   @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
@@ -143,6 +143,19 @@
   // Offcanvas
   const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
+  // Offcanvas - Changing Placement
+  function changePLacement(val) {
+
+    let placement = 'offcanvas-bottom';
+    let element = document.getElementById("offcanvas");
+
+    placement = (val == 'offcanvas-bottom') ? 'offcanvas-top' : 'offcanvas-bottom';
+
+    element.classList.add(val);
+    element.classList.remove(placement);
+  }
+
+  // Keyboard Input
   let inputElId;
 
   // Setting Input Focus

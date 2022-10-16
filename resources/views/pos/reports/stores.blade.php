@@ -8,7 +8,7 @@
 
   <?php 
     $company = auth()->user()->profile->company;
-    $currency = $company->currency->symbol;
+    $currency = $company->currency->symbol ?? null;
   ?>
 
   <h4>Продуктов с нулевым остатком: {{ $products->count() }}</h4>

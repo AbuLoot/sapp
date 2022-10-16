@@ -18,18 +18,18 @@ class OfficeController extends Controller
 {
     public function index()
     {
-        $operations = [
+        $operationCodes = [
             // Storage operations
-            'incoming-products',
-            'writeoff-products',
+            'incoming-products' => 'Приход продуктов',
+            'writeoff-products' => 'Списание продуктов',
 
             // Cashdesk operations
-            'incoming-cash',
-            'outgoing-cash',
-            'returned-products',
-            'repayment-debt',
-            'payment-products',
-            'sale-on-credit',
+            'incoming-cash' => 'Приход в кассу',
+            'outgoing-cash' => 'Расход из кассы',
+            'returned-products' => 'Возврат продуктов',
+            'repayment-debt' => 'Погашение долгов',
+            'payment-products' => 'Оплата продуктов',
+            'sale-on-credit' => 'Продажа в долг',
         ];
 
         $previousYear = now()->subYear()->format('Y').'-01-01';

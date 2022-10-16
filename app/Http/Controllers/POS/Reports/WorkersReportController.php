@@ -12,14 +12,14 @@ class WorkersReportController extends Controller
     public function index(Request $request)
     {
         $startDate = $request->start_date ?? '2022-01-01';
-        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $endDate = $request->end_date ?? now();
 
         $workers = User::query()
             ->where('is_worker', true)
             ->join('incoming_orders', function ($join) use ($startDate, $endDate) {
                 $join->on('users.id', '=', 'incoming_orders.user_id')
                     ->where('incoming_orders.created_at', '>', $startDate)
-                    ->where('incoming_orders.created_at', '<=', $endDate);
+                    ->where('incoming_orders.created_at', '<=', $endDate.' 23:59:59');
             })
             ->select('users.*', 'incoming_orders.sum')
             ->get();
@@ -27,7 +27,7 @@ class WorkersReportController extends Controller
         return view('pos.reports.workers', [
             'startDate' => $startDate,
             'endDate'   => $endDate,
-            'workers'    => $workers
+            'workers'   => $workers
         ]);
     }
 }

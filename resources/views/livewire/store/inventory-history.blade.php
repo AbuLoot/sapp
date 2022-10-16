@@ -52,8 +52,8 @@
               <?php $productsData = json_decode($revision->products_data, true) ?? []; ?>
               <td>{{ count($productsData) }}</td>
               <td>{{ $revision->user->name }}</td>
-              <td>{{ $revision->surplus_count }}</td>
               <td>{{ $revision->shortage_count }}</td>
+              <td>{{ $revision->surplus_count }}</td>
               <td>{{ $revision->shortage_sum }}</td>
               <td>{{ $revision->surplus_sum }}</td>
               <td>{{ $revision->created_at }}</td>

@@ -8,10 +8,10 @@
 
   <?php 
     $company = auth()->user()->profile->company;
-    $currency = $company->currency->symbol;
+    $currency = $company->currency->symbol ?? null;
 
     // Dates
-    $yesterday = now()->subDay(1);
+    $yesterday = now()->subDay(1)->format('Y-m-d');
     $today = now()->format('Y-m-d');
     $previousWeek = now()->startOfWeek()->subWeek(1);
     $startWeek = now()->startOfWeek();
@@ -21,6 +21,7 @@
     $startYear = now()->format('Y').'-01-01';
 
     // Revenues info
+    $revenueForToday     = number_format($incomes->where('created_at', '>', $yesterday.' 23:59:59')->where('created_at', '<=', now())->sum('sum'), 0, '.', ' ');
     $revenueForYesterday = number_format($incomes->where('created_at', '>', $yesterday)->where('created_at', '<', $today)->sum('sum'), 0, '.', ' ');
     $revenueForWeek      = number_format($incomes->where('created_at', '>', $startWeek)->where('created_at', '<=', $today)->sum('sum'), 0, '.', ' ');
     $revenueForMonth     = number_format($incomes->where('created_at', '>', $startMonth)->where('created_at', '<=', $today)->sum('sum'), 0, '.', ' ');
@@ -46,6 +47,10 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <th>Выручка за сегодня</th>
+              <td class="text-right">{{ $revenueForToday . $currency }}</td>
+            </tr>
             <tr>
               <th>Выручка за вчера</th>
               <td class="text-right">{{ $revenueForYesterday . $currency }}</td>

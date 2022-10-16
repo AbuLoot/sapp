@@ -72,9 +72,15 @@ class EditProduct extends Component
 
     public function updated($key)
     {
+        if (! is_numeric($this->wholesalePriceMarkup)) {
+            $this->wholesalePriceMarkup = null;
+        }
+
+        if (! is_numeric($this->priceMarkup)) {
+            $this->priceMarkup = null;
+        }
+
         if ($key == 'wholesalePriceMarkup' && $this->wholesalePriceMarkup >= 1) {
-            // $amount_price = $this->purchasePrice * $this->wholesalePriceMarkup;
-            // $this->wholesalePrice = number_format($amount_price, 0, '.', ' ');
             $this->wholesalePrice = $this->purchasePrice * $this->wholesalePriceMarkup;
         }
 
@@ -92,6 +98,7 @@ class EditProduct extends Component
     {
         unset($this->barcodes[$index]);
         array_values($this->barcodes);
+        $this->productBarcodes = $this->barcodes;
     }
 
     public function generateOldBarcode($index)

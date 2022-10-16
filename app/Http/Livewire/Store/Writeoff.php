@@ -141,7 +141,7 @@ class Writeoff extends Component
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $writeoffTotalAmount;
         $storeDoc->sum = $writeoffTotalAmount;
-        // $storeDoc->unit = $this->unit;
+        $storeDoc->count = $writeoffTotalCount;
         $storeDoc->comment = $this->comment;
         $storeDoc->save();
 

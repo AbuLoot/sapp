@@ -15,7 +15,7 @@ class FinancialReportController extends Controller
     public function index(Request $request)
     {
         $startDate = $request->start_date ?? '2022-01-01';
-        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $endDate = $request->end_date ?? now();
 
         $incomes = IncomingOrder::query()
             ->where('created_at', '>', $startDate)

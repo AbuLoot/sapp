@@ -28,7 +28,7 @@
 
   <?php 
     $company = auth()->user()->profile->company;
-    $currency = $company->currency->symbol;
+    $currency = $company->currency->symbol ?? null;
   ?>
 
   <div class="row">

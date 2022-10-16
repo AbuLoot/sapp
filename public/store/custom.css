@@ -20,6 +20,7 @@ body {
   width: 18px;
   height: 18px;
 }
+.offcanvas.offcanvas-top,
 .offcanvas.offcanvas-bottom {
   height: 37vh;
 }

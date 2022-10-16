@@ -56,7 +56,7 @@ class OutgoingDocs extends Component
             $endDate = $this->endDate ?? now();
 
             $query->where('created_at', '>=', $startDate)
-                ->where('created_at', '<=', $endDate);
+                ->where('created_at', '<=', $endDate.' 23:59:59');
 
             $appends['startDate'] = $startDate;
             $appends['endDate'] = $endDate;

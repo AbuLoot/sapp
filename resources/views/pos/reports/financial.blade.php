@@ -8,18 +8,7 @@
 
   <?php 
     $company = auth()->user()->profile->company;
-    $currency = $company->currency->symbol;
-
-    $operations = [
-        'incoming-products',
-        'writeoff-products',
-        'incoming-cash',
-        'outgoing-cash',
-        'returned-products',
-        'repayment-debt',
-        'payment-products',
-        'sale-on-credit',
-    ];
+    $currency = $company->currency->symbol ?? null;
 
     // Cash Operations Info
     $sumOfPayments = number_format($incomes->where('operation_code', 'payment-products')->sum('sum'), 0, '.', ' ');

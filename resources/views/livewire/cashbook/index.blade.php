@@ -344,15 +344,8 @@
 
       placement = (val == 'offcanvas-bottom') ? 'offcanvas-top' : 'offcanvas-bottom';
 
-      // if (val == 'offcanvas-bottom') {
-      //   placement = 'offcanvas-top';
-      // } else {
-      //   placement = 'offcanvas-bottom';
-      // }
-
       element.classList.add(val);
       element.classList.remove(placement);
-      Livewire.emit('modalPlacement', val);
     }
 
     // Keyboard Input
@@ -373,11 +366,6 @@
       } else {
         activeEl.value += val;
         Livewire.emit(input[0], [activeEl.value, input[1]]);
-        /*if (input[0] == 'returnProductsInput' && input[1] == 'search') {
-          Livewire.emit(input[0], [activeEl.value, input[1]]);
-        } else {
-          @this.set(input[1], activeEl.value);
-        }*/
       }
     }
 

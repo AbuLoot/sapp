@@ -32,9 +32,9 @@
 
   <?php 
     $company = auth()->user()->profile->company;
-    $currency = $company->currency->symbol;
+    $currency = $company->currency->symbol ?? null;
 
-    $groupedworkers = $workers->groupBy('id');
+    $groupedWorkers = $workers->groupBy('id');
   ?>
 
   <h4>Статистика от {{ $startDate }} до {{ $endDate }}</h4>
@@ -53,7 +53,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($groupedworkers as $key => $worker)
+            @foreach($groupedWorkers as $key => $worker)
               <?php $user = $worker->first(); ?>
               <tr>
                 <th>{{ $key }}</th>

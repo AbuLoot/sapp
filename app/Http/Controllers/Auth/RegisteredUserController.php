@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $userGuard = User::where('id', 1)->orWhere('email', 'admin@sanapp.kz')->first();
-        $values = explode('/', $userGuard->profile->about);
+        // $values = explode('/', $userGuard->profile->about);
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'tel' => ['required', 'string', 'max:15', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'code' => ['required', Rule::in($values)],
+            // 'code' => ['required', Rule::in($values)],
         ]);
 
         $user = User::create([

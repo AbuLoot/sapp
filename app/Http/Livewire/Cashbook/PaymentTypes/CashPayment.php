@@ -74,29 +74,23 @@ class CashPayment extends Component
 
             $outgoingCount = $cartProduct['countInCart'];
 
-            // If Order Not a Service
-            if ($product->type == 1) {
+            $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
+            $countInStore = $countInStores[$store->id] ?? 0;
 
-                $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-                $countInStore = $countInStores[$store->id] ?? 0;
-
-                /**
-                 * Prepare outgoing count & If outgoing count greater, assign $countInStore
-                 */
-                if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
-                    $outgoingCount = $cartProduct['countInCart'];
-                } elseif ($countInStore < $cartProduct['countInCart']) {
-                    $outgoingCount = $countInStore;
-                }
-
-                $stockCount = $countInStore - $outgoingCount;
-                $countInStores[$store->id] = $stockCount;
-                $amountCount = collect($countInStores)->sum();
-
-                $product->count_in_stores = json_encode($countInStores);
-                $product->count = $amountCount;
-                $product->save();
+            // Prepare outgoing count & If outgoing count greater, assign $countInStore
+            if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
+                $outgoingCount = $cartProduct['countInCart'];
+            } elseif ($countInStore < $cartProduct['countInCart']) {
+                $outgoingCount = $countInStore;
             }
+
+            $stockCount = $countInStore - $outgoingCount;
+            $countInStores[$store->id] = $stockCount;
+            $amountCount = collect($countInStores)->sum();
+
+            $product->count_in_stores = json_encode($countInStores);
+            $product->count = $amountCount;
+            $product->save();
 
             $price = session()->get('priceMode') == 'retail' ? $product->price : $product->wholesale_price;
             $discount = session()->get('totalDiscount');

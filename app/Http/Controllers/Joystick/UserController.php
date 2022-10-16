@@ -48,7 +48,6 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|max:60',
-            'email' => 'required',
         ]);
 
         $user = User::findOrFail($id);

@@ -36,7 +36,9 @@ class AddProduct extends Component
     public $productBarcodes = [];
     public $countInStores = [];
 
-    protected $listeners = ['newData' => '$refresh'];
+    protected $listeners = [
+        'newData' => '$refresh',
+    ];
 
     protected $rules = [
         'product.title' => 'required|min:2',
@@ -47,6 +49,8 @@ class AddProduct extends Component
         'product.unit' => '',
         'docNo' => 'required',
         'productBarcodes.*' => 'required',
+        'wholesalePriceMarkup' => 'numeric',
+        'priceMarkup' => 'numeric',
     ];
 
     public function mount()
@@ -64,6 +68,14 @@ class AddProduct extends Component
 
     public function updated($key)
     {
+        if (! is_numeric($this->wholesalePriceMarkup)) {
+            $this->wholesalePriceMarkup = null;
+        }
+
+        if (! is_numeric($this->priceMarkup)) {
+            $this->priceMarkup = null;
+        }
+
         if ($key == 'wholesalePriceMarkup' && $this->wholesalePriceMarkup >= 1) {
             $this->wholesalePrice = $this->purchasePrice * $this->wholesalePriceMarkup;
         }

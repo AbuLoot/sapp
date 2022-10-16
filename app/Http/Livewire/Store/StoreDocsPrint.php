@@ -57,7 +57,7 @@ class StoreDocsPrint extends Component
         foreach($products as $key => $product) {
             $productsData[$product->id]['title'] = $product->title;
             $productsData[$product->id]['unit'] = $product->unit;
-            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
+            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes, true) ?? [];
         }
 
         if ($incomingDoc->contractorType == 'App\Models\Company') {
@@ -108,7 +108,7 @@ class StoreDocsPrint extends Component
         foreach($products as $key => $product) {
             $productsData[$product->id]['title'] = $product->title;
             $productsData[$product->id]['unit'] = $product->unit;
-            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes);
+            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes, true) ?? [];
         }
 
         $this->data = [

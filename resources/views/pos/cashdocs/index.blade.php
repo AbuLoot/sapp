@@ -6,6 +6,14 @@
 
   @include('components.alerts')
 
+  <?php 
+
+    $cashModes = [
+      'open' => 'Открытие кассы',
+      'close' => 'Закрытие кассы'
+    ];
+
+  ?>
   <div class="table-responsive">
     <div class="table-responsive">
       <table class="table table-striped table-condensed">
@@ -27,7 +35,11 @@
         <tbody>
           @forelse($cashdocs as $index => $cashdoc)
             <tr>
-              <td>{{ $cashdoc->order->docType->title ?? null }}</td>
+              @if(isset($cashdoc->order->mode))
+                <td>{{ $cashModes[$cashdoc->order->mode] }}</td>
+              @else
+                <td>{{ $cashdoc->order->docType->title ?? null }}</td>
+              @endif
               <td>{{ $cashdoc->order->doc_no }}</td>
               <td>{{ $cashdoc->cashbook->title }}</td>
               <td>{{ $cashdoc->user->name }}</td>
@@ -46,6 +58,10 @@
               <td>{{ $cashdoc->sum }}</td>
               <td>{{ $cashdoc->count }}</td>
               <td>{{ $cashdoc->created_at }}</td>
+              @if(isset($cashdoc->order->mode))
+                <td></td>
+                @continue
+              @endif
               <td class="text-right">
                 <a class="btn btn-link btn-xs" href="{{ route('cashdocs.show', [$lang, $cashdoc->id]) }}" title="Редактировать"><i class="material-icons md-18">file_open</i></a>
               </td>

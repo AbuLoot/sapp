@@ -98,15 +98,30 @@
     {{ $slot }}
   </main>
 
+  @livewireScripts
+
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
 
   <script type="text/javascript">
+    // Tooltip
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-  </script>
 
-  @livewireScripts
+    // Toast Script
+    window.addEventListener('show-toast', event => {
+      if (event.detail.selector) {
+        const btnCloseModal = document.getElementById(event.detail.selector)
+        btnCloseModal.click()
+      }
+
+      const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+      toast.show()
+
+      const toastBody = document.getElementById('toastBody')
+      toastBody.innerHTML = event.detail.message
+    })
+  </script>
 
   @yield('scripts')
 </body>
