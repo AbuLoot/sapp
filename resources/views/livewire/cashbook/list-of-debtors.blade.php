@@ -1,6 +1,6 @@
 <div>
 
-  <div wire:ignore.self class="modal fade" id="listOfDebtors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div wire:ignore class="modal fade" id="listOfDebtors" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content bg-light">
         <div class="modal-header">
@@ -65,9 +65,9 @@
   @endif
 
   <!-- Modal Repayment Of Dept -->
-  <div wire:ignore.self class="modal fade" id="repaymentOfDebt" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-      <div class="modal-content  bg-light">
+  <div wire:ignore class="modal fade" id="repaymentOfDebt" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable cashOperation">
+      <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Погашение долга</h5>
           <button type="button" id="closeRepaymentOfDebt" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -76,12 +76,13 @@
           <form wire:submit.prevent="repay">
             <label for="title" class="form-label">Сумма погашение долга</label>
             <div class="input-group mb-3">
-              <select wire:model="paymentTypeId" class="form-select w-50">
+              <select wire:model="paymentTypeId" class="form-select w-25">
                 @foreach($paymentTypes as $paymentType)
                   <option value="{{ $paymentType->id }}">{{ $paymentType->title }}</option>
                 @endforeach
               </select>
-              <input wire:model="repaymentAmount" type="number" class="form-control form-control-lg w-50 @error('message') is-invalid @enderror" required>
+              <input wire:model="repaymentAmount" onclick="setFocus(this, 'listOfDebtorsInput-repaymentAmount')" type="number" class="form-control form-control-lg w-50 @error('message') is-invalid @enderror" required>
+              <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-success btn-lg">Погасить</button>

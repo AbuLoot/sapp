@@ -1,6 +1,6 @@
 <div>
   <div wire:ignore.self class="modal fade" id="reprint" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable cashOperation">
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Журнал чеков</h5>
@@ -8,7 +8,10 @@
         </div>
         <div class="modal-body">
           <form class="mb-3">
-            <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Поиск чеков..." aria-label="Search" minlength="2" required>
+            <div class="input-group">
+              <input wire:model="search" onclick="setFocus(this, 'reprintInput-search')" type="search" class="form-control form-control-lg" placeholder="Поиск чеков..." aria-label="Search" minlength="2" required>
+              <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
+            </div>
           </form>
 
           <div class="row">

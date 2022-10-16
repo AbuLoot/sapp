@@ -1,6 +1,6 @@
 <div>
   <div wire:ignore.self class="modal fade" id="returnProducts" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered mt-20 modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable {{ $modalClass }}">
       <div class="modal-content bg-light">
         <div class="modal-header">
           <h5 class="modal-title" id="modalLabel">Оформление возврата</h5>
@@ -10,7 +10,7 @@
 
           <form class="mb-3" style="position: relative;">
             <div class="input-group">
-              <input wire:model="search" type="search" class="form-control form-control-lg" id="search" onclick="setFocus('search')" placeholder="Поиск чеков штрихкоду..." aria-label="Search">
+              <input wire:model="search" onclick="setFocus(this, 'returnProductsInput-search')" type="search" class="form-control form-control-lg" placeholder="Поиск чеков штрихкоду..." aria-label="Search">
               <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
             </div>
             @if($incomingOrders)
@@ -63,10 +63,10 @@
                     <td>{{ $productsData[$product->id]['outgoingCount'] }}</td>
                     <td>{{ $returnedCount }}</td>
                     <td class="text-nowrap" style="width:10%;">
-                      <input type="number" wire:model="productsData.{{ $product->id }}.returningCount" class="form-control @error('productsData.'.$product->id.'.returningCount') is-invalid @enderror" required>
+                      <input wire:model="productsData.{{ $product->id }}.returningCount" onclick="setFocus(this, 'returnProductsInput-productsData.{{ $product->id }}.returningCount')" type="number" class="form-control @error('productsData.'.$product->id.'.returningCount') is-invalid @enderror" required>
                     </td>
                     <td class="text-nowrap" style="width:10%;">
-                      <input type="number" wire:model="productsData.{{ $product->id }}.discount" class="form-control @error('productsData.'.$product->id.'.discount') is-invalid @enderror" disabled required>
+                      <input wire:model="productsData.{{ $product->id }}.discount" onclick="setFocus(this, 'returnProductsInput-productsData.{{ $product->id }}.discount')" type="number" class="form-control @error('productsData.'.$product->id.'.discount') is-invalid @enderror" disabled required>
                     </td>
                     <td>{{ $amountDiscounted . $currency }}</td>
                     <td class="text-end">

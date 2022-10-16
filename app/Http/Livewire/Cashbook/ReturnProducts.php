@@ -27,7 +27,12 @@ class ReturnProducts extends Component
     public $products = [];
     public $productsData = [];
     public $returnedProducts = [];
-    public $keyboard = false;
+    public $modalClass;
+
+    protected $listeners = [
+        'returnProductsInput',
+        'modalPLacement',
+    ];
 
     public function mount()
     {
@@ -51,11 +56,22 @@ class ReturnProducts extends Component
         // }
     }
 
-    public function getFastProducts($keyboard)
+    public function returnProductsInput($value)
     {
-        $state = $keyboard ? false : true;
-        $this->emitUp('keyboard', $state);
-        $this->keyboard = true;
+        if ($value[1] != 'search') {
+            $array = explode('.', $value[1]);
+            $productsData = $array[0];
+            $this->$productsData[$array[1]][$array[2]] = $value[0] ?? null;
+            return;
+        }
+
+        $property = $value[1];
+        $this->$property = $value[0];
+    }
+
+    public function modalPLacement($value)
+    {
+        $this->modalClass = $value;
     }
 
     public function check($orderId)

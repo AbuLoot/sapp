@@ -31,12 +31,15 @@ class ListOfDebtors extends Component
     public $paymentTypes = [];
     public $paymentTypeId;
 
+    protected $listeners = [
+        'refresh' => '$refresh',
+        'listOfDebtorsInput'
+    ];
+
     protected $rules = [
         'profile' => 'required|numeric|min:2',
         'repaymentAmount' => 'required|numeric',
     ];
-
-    protected $listeners = ['refresh' => '$refresh'];
 
     public function mount()
     {
@@ -44,6 +47,12 @@ class ListOfDebtors extends Component
         $this->company = auth()->user()->profile->company;
         $this->paymentTypes = PaymentType::where('slug', '!=', 'sale-on-credit')->get();
         $this->paymentTypeId = $this->paymentTypes->where('slug', 'bank-card')->pluck('id')->first();
+    }
+
+    public function listOfDebtorsInput($value)
+    {
+        $property = $value[1];
+        $this->$property = $value[0];
     }
 
     public function repayFor($debtor_id)

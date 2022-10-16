@@ -112,8 +112,9 @@
                 </div>
 
                 @if($product->type == 1)
+                @endif
                   <div class="mb-3">
-                    <label for="idCode">Код товара</label>
+                    <label for="idCode">Код продукта</label>
                     <input type="text" wire:model.defer="idCode" class="form-control @error('idCode') is-invalid @enderror" id="idCode">
                     @error('idCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
                   </div>
@@ -158,7 +159,6 @@
                       <div class="input-group-text">%</div>
                     </div>
                   </div>
-                @endif
 
                 <div class="col-lg-6 mb-3">
                   <label for="price">Розничная цена</label>
@@ -167,16 +167,13 @@
                     <div class="input-group-text">{{ $currency }}</div>
                   </div>
                 </div>
-
-                @if($product->type == 1)
-                  <div class="col-lg-6 mb-3">
-                    <label for="priceMarkup">Наценка</label>
-                    <div class="input-group">
-                      <input type="text" wire:model="priceMarkup" class="form-control @error('priceMarkup') is-invalid @enderror" id="priceMarkup" placeholder="0,0">
-                      <div class="input-group-text">%</div>
-                    </div>
+                <div class="col-lg-6 mb-3">
+                  <label for="priceMarkup">Наценка</label>
+                  <div class="input-group">
+                    <input type="text" wire:model="priceMarkup" class="form-control @error('priceMarkup') is-invalid @enderror" id="priceMarkup" placeholder="0,0">
+                    <div class="input-group-text">%</div>
                   </div>
-                @endif
+                </div>
                 <div class="w-100"></div>
                 <div class="col-lg-6 mb-3">
                   <div class="d-grid" role="group" aria-label="Basic example">

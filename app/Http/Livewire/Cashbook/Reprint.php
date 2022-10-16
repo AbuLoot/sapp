@@ -15,10 +15,20 @@ class Reprint extends Component
     public $company;
     // public $incomingOrders;
 
+    protected $listeners = [
+        'reprintInput',
+    ];
+
     public function mount()
     {
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
+    }
+
+    public function reprintInput($value)
+    {
+        $property = $value[1];
+        $this->$property = $value[0];
     }
 
     public function getCheck($id)

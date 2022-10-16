@@ -28,11 +28,11 @@ class Index extends Component
     public $totalDiscountView;
     public $priceMode = 'retail';
     public $amount;
+    public $modalClass;
 
     protected $listeners = [
         'addToCart',
         'returnDeferredCheck',
-        'update-index' => '$refresh'
     ];
 
     protected $rules = [

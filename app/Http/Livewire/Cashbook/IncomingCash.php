@@ -19,6 +19,10 @@ class IncomingCash extends Component
     public $company;
     public $cashbook;
 
+    protected $listeners = [
+        'incomingCashInput',
+    ];
+
     protected $rules = [
         'amount' => 'required|numeric|min:2',
         'comment' => 'required|max:2000',
@@ -28,6 +32,12 @@ class IncomingCash extends Component
     {
         $this->company = auth()->user()->profile->company;
         $this->cashbook = session()->get('cashbook');
+    }
+
+    public function incomingCashInput($value)
+    {
+        $property = $value[1];
+        $this->$property = $value[0];
     }
 
     public function credit()

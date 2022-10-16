@@ -48,6 +48,9 @@
   display: flex;
   align-items: end;
 }
+.mt-26 {
+  margin-top: 260px !important;
+}
 .mb-25 {
   margin-bottom: 250px !important;
 }
