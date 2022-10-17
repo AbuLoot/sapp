@@ -19,8 +19,8 @@
           <td>Дата составления</td>
         </tr>
         <tr>
-          <td>№{{ $docNo }}</td>
-          <td>{{ $createdAt }}</td>
+          <td>№{{ $outgoingDoc->doc_no }}</td>
+          <td>{{ $outgoingDoc->created_at }}</td>
         </tr>
       </tbody>
     </table>
@@ -76,9 +76,12 @@
         @foreach($productsData as $key => $product)
           <?php
             $unit = $units->where('id', $product['unit'])->first()->title ?? null;
-            $percentage = $product['price'] / 100;
-            $sumDiscounted += $product['outgoingCount'] * ($product['price'] - $percentage * $product['discount']);
-            $sumUndiscounted += $product['outgoingCount'] * $product['price'];
+
+            if ($outgoingDoc->operation_code != 'sale-on-credit') {
+              $percentage = $product['price'] / 100;
+              $sumDiscounted += $product['outgoingCount'] * ($product['price'] - $percentage * $product['discount']);
+              $sumUndiscounted += $product['outgoingCount'] * $product['price'];
+            }
           ?>
           <tr>
             <td>{{ $n++ }}</td>
@@ -101,6 +104,7 @@
     </table>
     <br>
 
+    <p>Тип операции: {{ __('operation-codes.'.$outgoingDoc->operation_code) }}</p>
     <p>Всего отпущено количество запасов (прописью)___________ на сумму</p>
     <p>(прописью), в тенге___________________________</p>
     <br>

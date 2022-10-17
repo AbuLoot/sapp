@@ -10,7 +10,7 @@
 
           <form class="mb-3" style="position: relative;">
             <div class="input-group">
-              <input wire:model="search" onclick="setFocus(this, 'returnProductsInput-search')" type="search" class="form-control form-control-lg" placeholder="Поиск чеков штрихкоду..." aria-label="Search">
+              <input wire:model="search" onclick="setFocus(this, 'returnProductsInput-search')" type="search" class="form-control form-control-lg" placeholder="Поиск чеков..." aria-label="Search">
               <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
             </div>
             @if($incomingOrders)
@@ -35,7 +35,7 @@
               $sumDiscounted = 0;
               $change = 0;
             ?>
-            <h5>Чек №{{ $incomingOrder->doc_no }} <span class="text-success">{{ $message[$incomingOrder->comment] ?? null }}</span></h5>
+            <h5>Чек №{{ $incomingOrder->doc_no }} <span class="text-success">{{ $message[$incomingOrder->comment] ?? null }}</span> | Тип операции: {{ __('operation-codes.'.$incomingOrder->operation_code) }}</h5>
             <table class="table align-middle">
               <thead>
                 <tr>
@@ -94,6 +94,9 @@
             <div class="d-flex">
               <h5>Общая сумма</h5>
               <h5 class="ms-auto">{{ $incomingOrder->sum . $currency }}</h5>
+            </div>
+            <div class="d-flex">
+              <p><b>Комментарии:</b> {{ $incomingOrder->comment }}</p>
             </div>
 
             <div class="text-end">

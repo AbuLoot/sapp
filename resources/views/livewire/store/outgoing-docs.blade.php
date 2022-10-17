@@ -86,17 +86,17 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Инфо о накладной</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Список продуктов</button>
-            </li>
-          </ul>
-          <div class="tab-content pt-2" id="myTabContent">
-            <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-              @if($docDetail)
+          @if($docDetail)
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Инфо о накладной</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Список продуктов</button>
+              </li>
+            </ul>
+            <div class="tab-content pt-2" id="myTabContent">
+              <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                 <?php $docType = \App\Models\DocType::where('id', $docDetail->doc_type_id)->first(); ?>
                 <?php $products_data = json_decode($docDetail->products_data, true) ?? []; ?>
                 <table class="table">
@@ -108,6 +108,10 @@
                     <tr>
                       <th scope="row">Номер накладной</th>
                       <td>{{ $docDetail->doc_no }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Тип операции</th>
+                      <td>{{ __('operation-codes.'.$docDetail->operation_code) }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Сумма</th>
@@ -131,57 +135,61 @@
                     </tr>
                   </tbody>
                 </table>
-              @endif
-            </div>
-            <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+              </div>
 
-              <table class="table table-sm table-striped">
-                <thead>
-                  <tr  class="align-items-start">
-                    <th scope="col">Наименование товара</th>
-                    <th scope="col">Штрихкод</th>
-                    <th scope="col">Категория</th>
-                    <th scope="col">Цена закупки</th>
-                    <th scope="col">Цена продажи</th>
-                    <th scope="col">Кол. расхода</th>
-                    <th scope="col">Общее Кол.</th>
-                    <th scope="col">Поставщик</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @forelse($docProducts as $index => $product)
-                    <tr>
-                      <td>{{ $product->title }}</td>
-                      <td>
-                        <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
-                        @foreach($barcodes as $barcode)
-                          {{ $barcode }}<br>
-                        @endforeach
-                      </td>
-                      <td>{{ $product->category->title }}</td>
-                      <td>{{ $product->purchase_price }}</td>
-                      <td>{{ $product->price }}</td>
-                      <td>{{ $products_data[$product->id]['outgoingCount'] }}</td>
-                      <td>{{ $product->count }}</td>
-                      <td>{{ $product->company->title }}</td>
+              <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr  class="align-items-start">
+                      <th scope="col">Наименование товара</th>
+                      <th scope="col">Штрихкод</th>
+                      <th scope="col">Категория</th>
+                      <th scope="col">Цена закупки</th>
+                      <th scope="col">Цена продажи</th>
+                      <th scope="col">Кол. расхода</th>
+                      <th scope="col">Общее Кол.</th>
+                      <th scope="col">Поставщик</th>
                     </tr>
-                  @empty
-                    <tr>
-                      <td colspan="9">No products</td>
-                    </tr>
-                  @endforelse
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    @forelse($docProducts as $index => $product)
+                      <tr>
+                        <td>{{ $product->title }}</td>
+                        <td>
+                          <?php $barcodes = json_decode($product->barcodes, true) ?? ['']; ?>
+                          @foreach($barcodes as $barcode)
+                            {{ $barcode }}<br>
+                          @endforeach
+                        </td>
+                        <td>{{ $product->category->title }}</td>
+                        <td>{{ $product->purchase_price }}</td>
+                        <td>{{ $product->price }}</td>
+                        <td>{{ $products_data[$product->id]['outgoingCount'] }}</td>
+                        <td>{{ $product->count }}</td>
+                        <td>{{ $product->company->title }}</td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="9">No products</td>
+                      </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col d-grid" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-primary" disabled><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+            <div class="row">
+              <div class="col d-grid" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-primary" disabled><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+              </div>
+              <div class="col d-grid" role="group" aria-label="Basic example">
+                @if($docDetail->operation_code == 'writeoff-products')
+                  <!-- <a href="/{{ $lang }}/storage/docsprint/writeoff-doc/{{ $docDetail->id }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a> -->
+                @else
+                  <a href="/{{ $lang }}/storage/docsprint/outgoing-doc/{{ $docDetail->id }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a>
+                @endif
+              </div>
             </div>
-            <div class="col d-grid" role="group" aria-label="Basic example">
-              <a href="/{{ $lang }}/storage/docsprint/outgoing-doc/{{ $docDetail->id ?? null }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a>
-            </div>
-          </div>
+          @endif
         </div>
       </div>
     </div>

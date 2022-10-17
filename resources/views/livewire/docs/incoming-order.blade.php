@@ -18,8 +18,8 @@
           <td>Дата составления</td>
         </tr>
         <tr>
-          <td>№{{ $docNo }}</td>
-          <td>{{ $createdAt }}</td>
+          <td>№{{ $incomingOrder->doc_no }}</td>
+          <td>{{ $incomingOrder->created_at }}</td>
         </tr>
       </tbody>
     </table>
@@ -38,30 +38,45 @@
           <th class="text-end">Сумма</th>
         </tr>
         <?php $totalAmount = 0; ?>
-        @foreach($productsData as $key => $product)
+        @if(in_array($incomingOrder->operation_code, ['incoming-cash', 'repayment-debt']))
           <tr>
-            <td>{{ $key + 1 }}</td>
-            <td>{{ $product['title'] }}</td>
-            <td>
-            @foreach($product['barcodes'] as $barcode)
-              {{ $barcode }}
-            @endforeach
-            </td>
-            <td>{{ $product['outgoingCount'] }}</td>
-            <td>{{ $product['price'] }}</td>
-            <td class="text-end">{{ $product['outgoingCount'] * $product['price'] }}</td>
+            <td>1</td>
+            <td>{{ __('operation-codes.'.$incomingOrder->operation_code) }}</td>
+            <td></td>
+            <td></td>
+            <td class="text-end">0 . $currency</td>
+            <td class="text-end">{{ $incomingOrder->sum . $currency }}</td>
           </tr>
-          <?php $totalAmount += $product['outgoingCount'] * $product['price']; ?>
-        @endforeach
+          <?php $totalAmount = $incomingOrder->sum; ?>
+        @else
+          @foreach($productsData as $key => $product)
+            <tr>
+              <td>{{ $key + 1 }}</td>
+              <td>{{ $product['title'] }}</td>
+              <td>
+              @foreach($product['barcodes'] as $barcode)
+                {{ $barcode }}
+              @endforeach
+              </td>
+              <td>{{ $product['outgoingCount'] }}</td>
+              <td>{{ $product['price'] . $currency }}</td>
+              <td class="text-end">{{ $product['outgoingCount'] * $product['price'] . $currency }}</td>
+            </tr>
+            <?php $totalAmount += $product['outgoingCount'] * $product['price']; ?>
+          @endforeach
+        @endif
         <tr>
           <th class="text-end" colspan="5">Итого</th>
-          <th class="text-end">{{ $totalAmount }}</th>
+          <th class="text-end">{{ $totalAmount . $currency }}</th>
         </tr>
       </tbody>
     </table>
     <br><br>
-    <p>Принято от {{ $customerName }}<br>
-    Метод оплаты: {{ $paymentType }}<br>
+    <p>
+    Тип операции: {{ __('operation-codes.'.$incomingOrder->operation_code) }}<br>
+    Основание: {{ $incomingOrder->comment }}<br>
+    Принято от {{ $customerName }}<br>
+    Метод оплаты: {{ $paymentTypeTitle }}<br>
     Кассир: {{ $cashierName }}</p>
     <br>
   </div>

@@ -90,13 +90,16 @@ class Index extends Component
         }
 
         $this->deleteMode = false;
+        $this->productsId = [];
     }   
 
     public function render()
     {
         $products = Product::orderBy('id', 'desc')
             ->when(strlen($this->search) >= 2, function($query) {
-                $query->where('title', 'like', '%'.$this->search.'%');
+                $query->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('barcodes', 'like', '%'.$this->search.'%')
+                    ->orWhere('id_code', 'like', '%'.$this->search.'%');
             })
             ->when($this->type, function($query) {
                 $query->where('type', $this->type);

@@ -323,7 +323,12 @@ class Index extends Component
         $sumOfCart = $this->sumOfCart();
 
         if (strlen($this->search) >= 2) {
-            $products = Product::search($this->search)->get()->take(7);
+            $products = Product::orderBy('id', 'desc')
+                ->where('title', 'like', '%'.$this->search.'%')
+                ->orWhere('barcodes', 'like', '%'.$this->search.'%')
+                ->orWhere('id_code', 'like', '%'.$this->search.'%')
+                ->get()
+                ->take(7);
         }
 
         if (strlen($this->searchCustomer) >= 2) {

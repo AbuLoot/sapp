@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 use App\Models\DocType;
+use App\Models\IncomingOrder;
+use App\Models\OutgoingOrder;
 use App\Models\CashDoc;
 use App\Models\CashShiftJournal;
 
@@ -93,14 +95,34 @@ class ClosingCash extends Component
         }
 
         // Close The Cash
-        $lastOpenCashShift = CashShiftJournal::find(Cache::get('openedCash'));
-        $lastOpenCashShift->from_user_id = auth()->user()->id;
-        $lastOpenCashShift->closing_cash_balance = $sum;
-        $lastOpenCashShift->banknotes_and_coins = json_encode($this->nominals);
-        $lastOpenCashShift->sum = $sum;
-        $lastOpenCashShift->mode = 'close';
-        $lastOpenCashShift->closing_time = date('h:i:s');
-        $lastOpenCashShift->save();
+        $openedCashShift = CashShiftJournal::find(Cache::get('openedCash'));
+
+        $incomes = IncomingOrder::query()
+            ->where('created_at', '>', $openedCashShift->created_at)
+            ->where('created_at', '<=', now())
+            ->get();
+
+        $outflow = OutgoingOrder::query()
+            ->where('created_at', '>', $openedCashShift->created_at)
+            ->where('created_at', '<=', now())
+            ->get();
+
+        $incomingAmount = $incomes->sum('sum');
+        $outgoingAmount = $outflow->sum('sum');
+
+        $openedCashShift->from_user_id = auth()->user()->id;
+        $openedCashShift->closing_cash_balance = $sum;
+        $openedCashShift->banknotes_and_coins = json_encode($this->nominals);
+        $openedCashShift->incoming_amount = $incomingAmount;
+        $openedCashShift->outgoing_amount = $outgoingAmount;
+        $openedCashShift->sum = $sum;
+        $openedCashShift->mode = 'close';
+        $openedCashShift->closing_time = now()->format('h:i:s');
+        $openedCashShift->save();
+
+        $estimatedSum = ($incomingAmount >= $outgoingAmount)
+            ? $incomingAmount - $outgoingAmount
+            : $outgoingAmount - $incomingAmount;
 
         // Cash Doc
         $cashDoc = new CashDoc;
@@ -108,10 +130,10 @@ class ClosingCash extends Component
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->order_type = 'App\Models\CashShiftJournal';
-        $cashDoc->order_id = $lastOpenCashShift->id;
-        $cashDoc->incoming_amount = 0;
-        $cashDoc->outgoing_amount = 0;
-        $cashDoc->sum = 0;
+        $cashDoc->order_id = $openedCashShift->id;
+        $cashDoc->incoming_amount = $incomingAmount;
+        $cashDoc->outgoing_amount = $outgoingAmount;
+        $cashDoc->sum = $estimatedSum;
         $cashDoc->currency = $this->company->currency->code;
         $cashDoc->save();
 

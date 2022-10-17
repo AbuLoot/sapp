@@ -19,12 +19,12 @@ class FinancialReportController extends Controller
 
         $incomes = IncomingOrder::query()
             ->where('created_at', '>', $startDate)
-            ->where('created_at', '<=', $endDate)
+            ->where('created_at', '<=', $endDate.' 23:59:59')
             ->get();
 
         $outflow = OutgoingOrder::query()
             ->where('created_at', '>', $startDate)
-            ->where('created_at', '<=', $endDate)
+            ->where('created_at', '<=', $endDate.' 23:59:59')
             ->get();
 
         return view('pos.reports.financial', [

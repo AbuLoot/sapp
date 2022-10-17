@@ -24,6 +24,8 @@ class CreateCashShiftJournalTable extends Migration
             $table->integer('opening_cash_balance')->default(0);
             $table->integer('closing_cash_balance')->default(0);
             $table->json('banknotes_and_coins')->nullable();
+            $table->integer('incoming_amount')->default(0);
+            $table->integer('outgoing_amount')->default(0);
             $table->integer('sum')->default(0);
             $table->char('currency')->nullable();
             $table->enum('mode', ['open', 'close']);

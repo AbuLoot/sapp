@@ -184,6 +184,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
         'orders' => OrderController::class,
         'options' => OptionController::class,
         'modes' => ModeController::class,
+
         'companies' => CompanyController::class,
         'currencies' => CurrencyController::class,
         'regions' => RegionController::class,

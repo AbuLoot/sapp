@@ -70,16 +70,12 @@ class StoreDocsPrint extends Component
             'companyName' => $this->company->title,
             'storeTitle' => $incomingDoc->storeDoc->store->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $incomingDoc->doc_no,
-            'createdAt' => $incomingDoc->created_at,
+            'incomingDoc' => $incomingDoc,
             'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'contractorName' => $contractorName,
-            'cashierName' => $incomingDoc->cashier_name,
-            // 'paymentType' => $paymentType->title,
-            // 'paymentDocNo' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/storage/docs',
+            'prevPage' => url()->previous(),
         ];
 
         $this->view = 'incoming-doc';
@@ -88,18 +84,16 @@ class StoreDocsPrint extends Component
     public function outgoingDoc($id)
     {
         $outgoingDoc = OutgoingDoc::find($id);
-
         $customerName = 'No name';
 
         if (!is_null($outgoingDoc->storeDoc->order_id)) {
+
             $incomingOrder = IncomingOrder::find($outgoingDoc->storeDoc->order_id);
             $paymentType = PaymentType::find($incomingOrder->payment_type_id);
             $paymentDetail = json_decode($incomingOrder->payment_detail, true);
 
-            if (isset($paymentDetail['userId'])) {
-                $user = User::find($paymentDetail['userId']);
-                $customerName = $user->name.' '.$user->lastname;
-            }
+            $user = User::find($incomingOrder->contractor_id);
+            $customerName = $user->name.' '.$user->lastname;
         }
 
         $productsData = json_decode($outgoingDoc->products_data, true) ?? [];
@@ -114,15 +108,12 @@ class StoreDocsPrint extends Component
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $outgoingDoc->doc_no,
-            'createdAt' => $outgoingDoc->created_at,
+            'outgoingDoc' => $outgoingDoc,
             'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
-            'cashierName' => $outgoingDoc->cashier_name,
-            // 'paymentType' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/storage/docs/outgoing',
+            'prevPage' => url()->previous(),
         ];
 
         $this->view = 'outgoing-doc';
@@ -133,14 +124,12 @@ class StoreDocsPrint extends Component
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $outgoingDoc->doc_no,
-            'createdAt' => $outgoingDoc->created_at,
+            'incomingDoc' => $incomingDoc,
+            'outgoingDoc' => $outgoingDoc,
             'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
-            'cashierName' => $outgoingDoc->cashier_name,
-            // 'paymentType' => $paymentType->title,
             'prevPage' => '/'.$this->lang.'/storage/storedocs',
         ];
 
@@ -152,14 +141,11 @@ class StoreDocsPrint extends Component
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $outgoingDoc->doc_no,
-            'createdAt' => $outgoingDoc->created_at,
+            'outgoingDoc' => $outgoingDoc,
             'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
-            'cashierName' => $outgoingDoc->cashier_name,
-            // 'paymentType' => $paymentType->title,
             'prevPage' => '/'.$this->lang.'/storage/storedocs',
         ];
 

@@ -25,7 +25,6 @@ class StoreDocs extends Component
     public $docProducts = [];
     public $startDate;
     public $endDate;
-    public $operationCodes = [];
 
     public function mount()
     {
@@ -34,20 +33,6 @@ class StoreDocs extends Component
         }
 
         $this->lang = app()->getLocale();
-
-        $this->operationCodes = [
-            // Storage operations
-            'incoming-products' => 'Приход продуктов',
-            'writeoff-products' => 'Списание продуктов',
-
-            // Cashdesk operations
-            'incoming-cash' => 'Приход в кассу',
-            'outgoing-cash' => 'Расход из кассы',
-            'returned-products' => 'Возврат продуктов',
-            'repayment-debt' => 'Погашение долгов',
-            'payment-products' => 'Оплата продуктов',
-            'sale-on-credit' => 'Продажа в долг',
-        ];
     }
 
     public function docDetail($id)

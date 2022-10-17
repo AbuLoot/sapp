@@ -63,7 +63,7 @@
                 @continue
               @endif
               <td class="text-right">
-                <a class="btn btn-link btn-xs" href="{{ route('cashdocs.show', [$lang, $cashdoc->id]) }}" title="Редактировать"><i class="material-icons md-18">file_open</i></a>
+                <a class="btn btn-link btn-xs" href="{{ route('cashdocs.show', [$lang, $cashdoc->id]) }}" title="Просмотр"><i class="material-icons md-18">file_open</i></a>
               </td>
             </tr>
           @empty

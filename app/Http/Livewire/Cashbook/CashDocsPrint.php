@@ -51,12 +51,19 @@ class CashDocsPrint extends Component
     public function incomingCheck($id)
     {
         $incomingOrder = IncomingOrder::find($id);
-        $paymentType = PaymentType::find($incomingOrder->payment_type_id);
-        $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+        $cashier = User::find($incomingOrder->user_id);
         $customerName = 'No name';
+        $paymentTypeTitle = null;
 
-        if (isset($paymentDetail['userId'])) {
-            $user = User::find($paymentDetail['userId']);
+        if (!is_null($incomingOrder->payment_type_id)) {
+
+            $paymentType = PaymentType::find($incomingOrder->payment_type_id);
+            $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+        }
+
+
+        if (!is_null($incomingOrder->contractor_type)) {
+            $user = User::find($incomingOrder->contractor_id);
             $customerName = $user->name.' '.$user->lastname;
         }
 
@@ -68,19 +75,17 @@ class CashDocsPrint extends Component
             $productsData[$product->id]['barcodes'] = json_decode($product->barcodes, true) ?? [];
         }
 
-        $uri = session()->has('incomingOrderId') ? '/payment-type/success' : '';
-
         $this->data = [
             'companyName' => $this->company->title,
-            'docNo' => $incomingOrder->doc_no,
+            'incomingOrder' => $incomingOrder,
+            'customer' => $user ?? null,
             'customerName' => $customerName,
             'productsData' => $productsData,
             'units' => $this->units,
-            'paymentType' => $paymentType->title,
+            'paymentTypeTitle' => $paymentTypeTitle,
             'currency' => $this->company->currency->symbol,
-            'createdAt' => $incomingOrder->created_at,
-            'cashierName' => $incomingOrder->cashier_name,
-            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
+            'cashierName' => $cashier->name.' '.$cashier->lastname,
+            'prevPage' => url()->previous(),
         ];
 
         $this->view = 'check';
@@ -89,12 +94,19 @@ class CashDocsPrint extends Component
     public function incomingOrder($id)
     {
         $incomingOrder = IncomingOrder::find($id);
-        $paymentType = PaymentType::find($incomingOrder->payment_type_id);
-        $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+        $cashier = User::find($incomingOrder->user_id);
         $customerName = 'No name';
+        $paymentTypeTitle = null;
 
-        if (isset($paymentDetail['userId'])) {
-            $user = User::find($paymentDetail['userId']);
+        if (!is_null($incomingOrder->payment_type_id)) {
+
+            $paymentType = PaymentType::find($incomingOrder->payment_type_id);
+            $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+        }
+
+
+        if (!is_null($incomingOrder->contractor_type)) {
+            $user = User::find($incomingOrder->contractor_id);
             $customerName = $user->name.' '.$user->lastname;
         }
 
@@ -111,15 +123,15 @@ class CashDocsPrint extends Component
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $incomingOrder->doc_no,
-            'createdAt' => $incomingOrder->created_at,
+            'incomingOrder' => $incomingOrder,
             'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
+            'customer' => $user ?? null,
             'customerName' => $customerName,
-            'cashierName' => $incomingOrder->cashier_name,
-            'paymentType' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
+            'cashierName' => $cashier->name.' '.$cashier->lastname,
+            'paymentTypeTitle' => $paymentTypeTitle,
+            'prevPage' => url()->previous(),
         ];
 
         $this->view = 'incoming-order';
@@ -128,35 +140,23 @@ class CashDocsPrint extends Component
     public function outgoingOrder($id)
     {
         $outgoingOrder = OutgoingOrder::find($id);
+        $cashier = User::find($outgoingOrder->user_id);
         $customerName = 'No name';
 
-        if (!is_null($outgoingOrder->clientId)) {
-            $user = User::find($paymentDetail['userId']);
+        if (!is_null($outgoingOrder->contractor_type)) {
+            $user = User::find($outgoingOrder->contractor_id);
             $customerName = $user->name.' '.$user->lastname;
         }
-
-        $productsData = json_decode($outgoingOrder->products_data, true) ?? [];
-        $products = Product::whereIn('id', array_keys($productsData))->get();
-
-        foreach($products as $key => $product) {
-            $productsData[$product->id]['title'] = $product->title;
-            $productsData[$product->id]['barcodes'] = json_decode($product->barcodes, true) ?? [];
-        }
-
-        $uri = session()->has('incomingOrderId') ? '/payment-type/success' : '';
 
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $outgoingOrder->doc_no,
-            'createdAt' => $outgoingOrder->created_at,
-            'outgoingAmount' => $outgoingOrder->sum,
-            'productsData' => $productsData,
+            'outgoingOrder' => $outgoingOrder,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
-            'cashierName' => $outgoingOrder->cashier_name,
-            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
+            'cashierName' => $cashier->name.' '.$cashier->lastname,
+            'prevPage' => url()->previous(),
         ];
 
         $this->view = 'outgoing-order';
@@ -181,22 +181,16 @@ class CashDocsPrint extends Component
             $contractorName = $incomingDoc->contractor->name.' '.$incomingDoc->contractor->lastname;
         }
 
-        $uri = session()->has('incomingOrderId') ? '/payment-type/success' : '';
-
         $this->data = [
             'companyName' => $this->company->title,
             'storeTitle' => $incomingDoc->storeDoc->store->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $incomingDoc->doc_no,
-            'createdAt' => $incomingDoc->created_at,
+            'incomingDoc' => $incomingDoc,
             'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'contractorName' => $contractorName,
-            'cashierName' => $incomingDoc->cashier_name,
-            // 'paymentType' => $paymentType->title,
-            // 'paymentDocNo' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/cashdesk'.$uri,
+            'prevPage' => url()->previous(),
         ];
 
         $this->view = 'incoming-doc';
@@ -212,11 +206,11 @@ class CashDocsPrint extends Component
             $incomingOrder = IncomingOrder::find($outgoingDoc->storeDoc->order_id);
             $paymentType = PaymentType::find($incomingOrder->payment_type_id);
             $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+        }
 
-            if (isset($paymentDetail['userId'])) {
-                $user = User::find($paymentDetail['userId']);
-                $customerName = $user->name.' '.$user->lastname;
-            }
+        if (!is_null($incomingOrder->contractor_type)) {
+            $user = User::find($incomingOrder->contractor_id);
+            $customerName = $user->name.' '.$user->lastname;
         }
 
         $productsData = json_decode($outgoingDoc->products_data, true) ?? [];
@@ -231,15 +225,12 @@ class CashDocsPrint extends Component
         $this->data = [
             'companyName' => $this->company->title,
             'companyBin' => $this->company->bin,
-            'docNo' => $outgoingDoc->doc_no,
-            'createdAt' => $outgoingDoc->created_at,
+            'outgoingDoc' => $outgoingDoc,
             'productsData' => $productsData,
             'units' => $this->units,
             'currency' => $this->company->currency->symbol,
             'customerName' => $customerName,
-            'cashierName' => $outgoingDoc->cashier_name,
-            // 'paymentType' => $paymentType->title,
-            'prevPage' => '/'.$this->lang.'/cashdesk',
+            'prevPage' => url()->previous(),
         ];
 
         $this->view = 'outgoing-doc';

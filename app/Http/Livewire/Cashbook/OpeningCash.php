@@ -26,14 +26,14 @@ class OpeningCash extends Component
         session()->forget('cashbook');
         session()->forget('cashdeskWorkplace');
 
-        return redirect('dashboard');
+        return redirect('apps');
     }
 
     public function openTheCash()
     {
         $docType = DocType::where('slug', 'forma-ko-5')->first();
 
-        $lastCloseCashShift = CashShiftJournal::where('cashbook_id', $this->cashbook->id)
+        $lastClosedCashShift = CashShiftJournal::where('cashbook_id', $this->cashbook->id)
             ->where('company_id', $this->company->id)
             ->whereNull('to_user_id')
             ->whereNull('opening_cash_balance')
@@ -46,13 +46,13 @@ class OpeningCash extends Component
         $cashShift->cashbook_id = $this->cashbook->id;
         $cashShift->company_id = $this->company->id;
         $cashShift->workplace_id = session()->get('cashdeskWorkplace'); // id
-        $cashShift->from_user_id = $lastCloseCashShift->from_user_id ?? null;
+        $cashShift->from_user_id = $lastClosedCashShift->from_user_id ?? null;
         $cashShift->to_user_id = auth()->user()->id;
-        $cashShift->opening_cash_balance = $lastCloseCashShift->closing_cash_balance ?? null;
-        $cashShift->sum = $lastCloseCashShift->sum ?? null;
+        $cashShift->opening_cash_balance = $lastClosedCashShift->closing_cash_balance ?? 0;
+        $cashShift->sum = $lastClosedCashShift->sum ?? 0;
         $cashShift->currency = $this->company->currency->code;
         $cashShift->mode = 'open';
-        $cashShift->opening_time = date('h:i:s');
+        $cashShift->opening_time = now()->format('h:i:s');
         $cashShift->save();
 
         // Cash Doc

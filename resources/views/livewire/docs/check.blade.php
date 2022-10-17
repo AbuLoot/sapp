@@ -4,7 +4,7 @@
     <div class="text-center">
       <p>Организация (индивидуальный предприниматель) {{ $companyName }}</p>
       <h5>Квитанция к приходному кассовому ордеру</h5>
-      <p>№{{ $docNo }}</p>
+      <p>№{{ $incomingOrder->doc_no }}</p>
     </div>
     <p>Принято от {{ $customerName }}</p>
     <hr>
@@ -14,18 +14,29 @@
           $sumUndiscounted = 0;
           $sumDiscounted = 0;
         ?>
-        @foreach($productsData as $product)
+        @if(in_array($incomingOrder->operation_code, ['incoming-cash', 'repayment-debt']))
           <tr>
-            <td>{{ $product['title'] }}</td>
-            <td class="text-end">{{ $product['outgoingCount'] . ' x ' . $product['price'] . $currency }}</td>
-            <td class="text-end">={{ $product['outgoingCount'] * $product['price'] . $currency }}</td>
+            <th>{{ __('operation-codes.'.$incomingOrder->operation_code) }}</th>
+            <td></td>
+            <td class="text-end">{{ $incomingOrder->sum . $currency }}</td>
           </tr>
-          <?php
-            $percentage = $product['price'] / 100;
-            $sumDiscounted += $product['outgoingCount'] * ($product['price'] - $percentage * $product['discount']);
-            $sumUndiscounted += $product['outgoingCount'] * $product['price'];
-          ?>
-        @endforeach
+          <?php $sumDiscounted = $incomingOrder->sum; ?>
+        @else
+          @foreach($productsData as $product)
+            <tr>
+              <td>{{ $product['title'] }}</td>
+              <td class="text-end">{{ $product['outgoingCount'] . ' x ' . $product['price'] . $currency }}</td>
+              <td class="text-end">={{ $product['outgoingCount'] * $product['price'] . $currency }}</td>
+            </tr>
+            <?php
+              if ($incomingOrder->operation_code != 'sale-on-credit') {
+                $percentage = $product['price'] / 100;
+                $sumDiscounted += $product['outgoingCount'] * ($product['price'] - $percentage * $product['discount']);
+                $sumUndiscounted += $product['outgoingCount'] * $product['price'];
+              }
+            ?>
+          @endforeach
+        @endif
       </tbody>
       <tfoot>
         <tr>
@@ -40,8 +51,9 @@
     </table>
 
     <hr>
-    <p>Метод оплаты: {{ $paymentType }}<br>
-    Дата: {{ $createdAt }}<br>
+    <p>Основание: {{ __('operation-codes.'.$incomingOrder->operation_code) }}</p>
+    <p>Метод оплаты: {{ $paymentTypeTitle }}<br>
+    Дата: {{ $incomingOrder->created_at }}<br>
     Кассир: {{ $cashierName }}</p>
     <style type="text/css">
       body {

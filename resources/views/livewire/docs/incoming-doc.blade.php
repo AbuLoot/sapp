@@ -28,8 +28,8 @@
           <td>Номер платежного документа</td>
         </tr>
         <tr>
-          <td>№{{ $docNo }}</td>
-          <td>{{ $createdAt }}</td>
+          <td>№{{ $incomingDoc->doc_no }}</td>
+          <td>{{ $incomingDoc->created_at }}</td>
           <td></td>
           <td>{{ $contractorName }}</td>
           <td></td>

@@ -4,25 +4,22 @@
 
   <h2 class="page-header">{{ $cashdoc->order->docType->title.' - '.$cashdoc->order->doc_no }} </h2>
 
-  <p class="text-right">
-    <a href="/{{ $lang }}/pos/cashdocs" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
-  </p>
-
-  <?php 
-    $operationCodes = [
-      // Storage operations
-      'incoming-products' => 'Приход продуктов',
-      'writeoff-products' => 'Списание продуктов',
-
-      // Cashdesk operations
-      'incoming-cash' => 'Приход в кассу',
-      'outgoing-cash' => 'Расход из кассы',
-      'returned-products' => 'Возврат продуктов',
-      'repayment-debt' => 'Погашение долгов',
-      'payment-products' => 'Оплата продуктов',
-      'sale-on-credit' => 'Продажа в долг',
-    ];
-  ?>
+  <div class="row">
+    <div class="col-md-6">
+    @switch($cashdoc->order_type)
+      @case('App\Models\IncomingOrder')
+        <a href="/{{ $lang }}/cashdesk/docsprint/incoming-order/{{ $cashdoc->order_id }}" class="btn btn-primary"><i class="material-icons md-18">print</i> Печать документа</a>
+        @break
+      @case('App\Models\OutgoingOrder')
+        <a href="/{{ $lang }}/cashdesk/docsprint/outgoing-order/{{ $cashdoc->order_id }}" class="btn btn-primary"><i class="material-icons md-18">print</i> Печать документа</a>
+        @break
+    @endswitch
+    </div>
+    <div class="col-md-6 text-right">
+      <a href="/{{ $lang }}/pos/cashdocs" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
+    </div>
+  </div>
+  <br>
 
   <div class="table-responsive">
     <table class="table table-striped">
@@ -41,7 +38,7 @@
         </tr>
         <tr>
           <th scope="row">Тип операции</th>
-          <td>{{ $operationCodes[$cashdoc->order->operation_code] }}</td>
+          <td>{{ __('operation-codes.'.$cashdoc->order->operation_code) }}</td>
         </tr>
         <tr>
           <th scope="row">Автор</th>

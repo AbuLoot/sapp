@@ -31,20 +31,29 @@
               <div class="col d-grid"><input type="button" value=")" onclick="display(')')" class="btn btn-outline-light btn-lg"></div>
               <div class="col d-grid"><button type="button" onclick="clearDisplay()" class="btn btn-outline-light btn-lg"><i class="bi bi-backspace"></i></button></div>
             </div>
-            @foreach($signs[$keyboardLang] as $keyLine => $lines)
+            @foreach($signs[$keyboardLang][$letterCase] as $keyLine => $lines)
               <div class="row mb-1 gx-2">
                 @foreach($lines as $keySign => $sign)
-                  @if($sign == 'translate')
-                    <div class="col d-grid"><button type="button" wire:click="switchLangs" class="btn btn-outline-light btn-lg"><i class="bi bi-translate"></i></button></div>
-                    @continue
-                  @endif
+                  @switch($sign)
+                    @case($sign == 'uc')
+                      <div class="col d-grid"><button type="button" wire:click="upperCase" class="btn btn-outline-light btn-lg"><i class="bi bi-arrow-up"></i></button></div>
+                      @break
 
-                  @if($sign == 'space')
-                    <div class="col-2 d-grid"><input type="button" value=" " onclick="display(' ')" class="btn btn-outline-light btn-lg"></div>
-                    @continue
-                  @endif
+                    @case($sign == 'lc')
+                      <div class="col d-grid"><button type="button" wire:click="lowerCase" class="btn btn-outline-light btn-lg"><i class="bi bi-arrow-down"></i></button></div>
+                      @break
 
-                  <div class="col d-grid"><input type="button" value="{{ $sign }}" onclick="display('{{ $sign }}')" class="btn btn-outline-light btn-lg"></div>
+                    @case($sign == 'translate')
+                      <div class="col d-grid"><button type="button" wire:click="switchLangs" class="btn btn-outline-light btn-lg"><i class="bi bi-translate"></i></button></div>
+                      @break
+
+                    @case($sign == 'space')
+                      <div class="col-2 d-grid"><input type="button" value=" " onclick="display(' ')" class="btn btn-outline-light btn-lg"></div>
+                      @break
+
+                    @default
+                      <div class="col d-grid"><input type="button" value="{{ $sign }}" onclick="display('{{ $sign }}')" class="btn btn-outline-light btn-lg"></div>
+                  @endswitch
                 @endforeach
               </div>
             @endforeach

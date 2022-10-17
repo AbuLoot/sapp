@@ -20,7 +20,7 @@ class ContractorsReportController extends Controller
                 $join->on('companies.id', '=', 'incoming_docs.contractor_id')
                     ->where('incoming_docs.contractor_type', '=', 'App\Models\Company')
                     ->where('incoming_docs.created_at', '>', $startDate)
-                    ->where('incoming_docs.created_at', '<=', $endDate);
+                    ->where('incoming_docs.created_at', '<=', $endDate.' 23:59:59');
             })
             ->select('companies.*', 'incoming_docs.sum', 'incoming_docs.count')
             ->get();

@@ -9,7 +9,7 @@
             </div>
             <h4 class="mb-3">Смена закрыта</h4>
             <button wire:click="backToDashboard" type="button" class="btn btn-outline-dark btn-lg me-1 mb-2">Назад</button>
-            <button wire:click="openTheCash" type="button" class="btn btn-success btn-lg me-1 mb-2">Открыть смену</button>
+            <button wire:click="openTheCash" type="button" class="btn btn-success btn-lg me-1 mb-2" @cannot('opening-cash', Auth::user()) disabled @endcannot>Открыть смену</button>
             <br>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
 @section('scripts')
   <script type="text/javascript">
-    const myModal = new bootstrap.Modal(document.getElementById('openCashModal'), {});
+    const myModal = new bootstrap.Modal(document.getElementById('openCashModal'));
     myModal.show()
   </script>
 @endsection

@@ -60,8 +60,10 @@ class ReturnProducts extends Component
     {
         if ($value[1] != 'search') {
             $array = explode('.', $value[1]);
-            $productsData = $array[0];
-            $this->$productsData[$array[1]][$array[2]] = $value[0] ?? null;
+            // $productsData = $array[0];
+            // $this->$productsData[$array[1]][$array[2]] = $value[0] ?? null;
+            unset($this->returnedProducts[$array[1]]);
+            $this->setValidCount($array[1], $value[0]);
             return;
         }
 
@@ -133,7 +135,7 @@ class ReturnProducts extends Component
 
         $this->returnedProducts[$id]['incomingCount'] = ($outgoingCount >= $this->productsData[$id]['returningCount'])
             ? $this->productsData[$id]['returningCount']
-            : $outgoingCount - $this->productsData[$id]['returnedCount'];
+            : $outgoingCount - $this->productsData[$id]['returnedCount'] ?? 0;
 
         $this->returnedProducts[$id]['discount'] = $this->productsData[$id]['discount'];
     }
@@ -225,7 +227,7 @@ class ReturnProducts extends Component
         $outgoingOrder->sum = $outgoingTotalAmount;
         $outgoingOrder->currency = $this->company->currency->code;
         $outgoingOrder->count = $incomingTotalCount;
-        $outgoingOrder->comment = 'Corrected Incoming Order №'.$this->incomingOrder->doc_no.', Returned products.';
+        $outgoingOrder->comment = 'Возврат продуктов. Приходной Ордер №'.$this->incomingOrder->doc_no.' был изменен.';
         $outgoingOrder->save();
 
         $cashDoc = new CashDoc;
@@ -240,7 +242,7 @@ class ReturnProducts extends Component
         $cashDoc->outgoing_amount = $outgoingTotalAmount;
         $cashDoc->sum = $outgoingTotalAmount;
         $cashDoc->currency = $this->company->currency->code;
-        $cashDoc->comment = 'Corrected Incoming Order №'.$this->incomingOrder->doc_no.', Returned products.';
+        $cashDoc->comment = 'Возврат продуктов. Приходной Ордер №'.$this->incomingOrder->doc_no.' был изменен.';
         $cashDoc->save();
 
         $paymentDetail = json_decode($this->incomingOrder->payment_detail, true) ?? [];
@@ -251,9 +253,8 @@ class ReturnProducts extends Component
         $this->incomingOrder->products_data = json_encode($this->productsData);
         $this->incomingOrder->contractor_type = $contractorType;
         $this->incomingOrder->contractor_id = $contractorId;
-        $this->incomingOrder->operation_code = 'returned-products';
         $this->incomingOrder->payment_detail = json_encode($paymentDetail);
-        $this->incomingOrder->comment = 'corrected';
+        $this->incomingOrder->comment = 'Возврат продуктов. Приходной Ордер №'.$this->incomingOrder->doc_no.' был изменен.';
         $this->incomingOrder->save();
 
         // Store Docs
@@ -299,6 +300,7 @@ class ReturnProducts extends Component
 
         if ($this->search) {
             $incomingOrders = IncomingOrder::where('doc_no', 'like', '%'.$this->search.'%')
+                ->whereIn('operation_code', ['payment-products', 'returned-products']) // , 'sale-on-credit'
                 ->orderByDesc('id')
                 ->paginate(12);
         }

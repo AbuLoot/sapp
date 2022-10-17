@@ -90,6 +90,7 @@ class Writeoff extends Component
 
             $stockCount = $countInStore - $writeoffCount;
 
+            $productsData[$productId]['price'] = $product->purchase_price;
             $productsData[$productId]['outgoingCount'] = $writeoffCount;
             $productsData[$productId]['count'] = $stockCount;
             $productsData[$productId]['unit'] = $product->unit;

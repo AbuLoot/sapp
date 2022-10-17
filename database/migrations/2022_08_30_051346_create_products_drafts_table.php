@@ -16,6 +16,7 @@ class CreateProductsDraftsTable extends Migration
         Schema::create('products_drafts', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
+            $table->char('type');
             $table->string('title')->nullable();
             $table->json('products_data');
             $table->integer('count');

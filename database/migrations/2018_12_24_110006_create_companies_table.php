@@ -17,7 +17,7 @@ class CreateCompaniesTable extends Migration
             $table->increments('id');
             $table->integer('sort_id');
             $table->integer('region_id');
-            $table->integer('currency_id');
+            $table->integer('currency_id')->nullable();
             $table->char('title');
             $table->char('slug');
             $table->integer('bin')->nullable();
