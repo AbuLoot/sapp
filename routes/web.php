@@ -85,8 +85,7 @@ use App\Http\Controllers\Auth\StorageVerificationController;
 use App\Http\Controllers\Auth\CashdeskVerificationController;
 
 // Sanapp Storage
-Route::redirect('/storage', '/'.app()->getLocale().'/storage');
-
+Route::redirect('storage', '/'.app()->getLocale().'/storage');
 Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper', 'verify.storage']], function () {
 
     // Custom Auth Code
@@ -113,8 +112,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
 
 
 // Sanapp Cashdesk
-Route::redirect('/cashdesk', '/'.app()->getLocale().'/cashdesk');
-
+Route::redirect('cashdesk', '/'.app()->getLocale().'/cashdesk');
 Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|cashier', 'verify.cashdesk']], function () {
 
     // Custom Auth Code
@@ -135,8 +133,7 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
 
 
 // Sanapp POS Administration
-Route::redirect('/pos', '/'.app()->getLocale().'/pos');
-
+Route::redirect('pos', '/'.app()->getLocale().'/pos');
 Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
 
     Route::get('/', [OfficeController::class, 'index']);
@@ -164,8 +161,7 @@ Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|m
 
 
 // Joystick Administration
-Route::redirect('/admin', '/'.app()->getLocale().'/admin');
-
+Route::redirect('admin', '/'.app()->getLocale().'/admin');
 Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
 
     Route::get('/', [AdminController::class, 'index']);
@@ -271,7 +267,8 @@ Route::get('/', [ShopController::class, 'index']);
 Route::get('i/contacts', [SiteController::class, 'contacts']);
 Route::get('i/{page}', [SiteController::class, 'page']);
 
-Route::get('/apps', function () {
+Route::redirect('apps', '/'.app()->getLocale().'/apps');
+Route::get('{lang}/apps', function () {
     return view('apps');
 })->middleware(['auth'])->name('apps');
 

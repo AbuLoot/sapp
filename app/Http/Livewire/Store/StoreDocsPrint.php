@@ -87,11 +87,12 @@ class StoreDocsPrint extends Component
         $customerName = 'No name';
 
         if (!is_null($outgoingDoc->storeDoc->order_id)) {
-
             $incomingOrder = IncomingOrder::find($outgoingDoc->storeDoc->order_id);
             $paymentType = PaymentType::find($incomingOrder->payment_type_id);
             $paymentDetail = json_decode($incomingOrder->payment_detail, true);
+        }
 
+        if (!is_null($incomingOrder->contractor_type)) {
             $user = User::find($incomingOrder->contractor_id);
             $customerName = $user->name.' '.$user->lastname;
         }

@@ -44,7 +44,7 @@
             <td>{{ __('operation-codes.'.$incomingOrder->operation_code) }}</td>
             <td></td>
             <td></td>
-            <td class="text-end">0 . $currency</td>
+            <td class="text-end">0{{ $currency }}</td>
             <td class="text-end">{{ $incomingOrder->sum . $currency }}</td>
           </tr>
           <?php $totalAmount = $incomingOrder->sum; ?>

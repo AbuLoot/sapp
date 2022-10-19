@@ -18,7 +18,8 @@ class CreateRevisionsTable extends Migration
             $table->integer('store_id');
             $table->integer('company_id');
             $table->integer('user_id');
-            $table->integer('doc_no');
+            $table->string('doc_no');
+            $table->integer('doc_type_id');
             $table->json('products_data');
             $table->integer('surplus_count')->default(0);
             $table->integer('shortage_count')->default(0);

@@ -53,7 +53,8 @@ class ComplexPayment extends Component
         $sum = 0;
 
         foreach($this->complexPayments as $payment) {
-            $sum += $this->{"$payment"};
+            $paymentAmount = $this->{"$payment"};
+            $sum += ($paymentAmount) ? $paymentAmount : 0;
         }
 
         $this->payButton = ($sum == $this->sumOfCart['sumDiscounted']) ? true : false;

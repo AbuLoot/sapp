@@ -113,28 +113,26 @@
                   @foreach($barcodes as $index => $barcode)
                     <div class="mb-3">
                       <div class="input-group">
-                        <input type="number" wire:model.defer="productBarcodes.{{ $index }}" class="form-control @error('productBarcodes.{{ $index }}') is-invalid @enderror">
+                        <input type="number" wire:model.defer="productBarcodes.{{ $index }}" class="form-control @error('productBarcodes.'.$index) is-invalid @enderror">
                         <button type="button" wire:click.prevent="deleteBarcodeField({{ $index }})" class="btn btn-dark"><i class="bi bi-x-lg"></i></button>
                       </div>  
                       <div class="form-text"><button type="button" wire:click="generateBarcode({{ $index }})" class="btn btn-link p-0"><i class="bi bi-upc"></i> Сгенерировать штрихкод</button></div>
-                      @error('productBarcodes.{{ $index }}')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                      @error('productBarcodes.'.$index)<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                   @endforeach
                 </div>
 
                 <div class="mb-3">
                   <label for="idCode">Код продукта</label>
-                  <input type="text" wire:model.defer="idCode" class="form-control @error('idCode') is-invalid @enderror" id="idCode">
-                  @error('idCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                  <input type="text" wire:model.defer="idCode" class="form-control" id="idCode">
                 </div>
                 <div class="mb-3">
                   <label for="count">Количество</label>
                   <div style="max-height: 210px; overflow-y: auto;" class="py-1">
-                    <?php $countInStores = json_decode($product->count_in_stores, true); ?>
                     @foreach($stores as $index => $store)
                       <div class="input-group mb-1">
                         <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
-                        <input type="number" value="{{ $countInStores[$store->id] }}" class="form-control" id="count" disabled>
+                        <input type="number" value="{{ $countInStores[$store->id] }}" class="form-control" disabled>
                         <select class="form-control @error('product.unit') is-invalid @enderror" wire:model="product.unit" id="unit">
                           <option value="">Ед. измерения</option>
                           @foreach($units as $unit)
@@ -149,7 +147,7 @@
                 <div class="col-lg-6 mb-3">
                   <label for="purchasePrice">Закупочная цена</label>
                   <div class="input-group">
-                    <input type="text" wire:model="purchasePrice" class="form-control" id="purchasePrice">
+                    <input type="text" wire:model="product.purchase_price" class="form-control" id="purchasePrice">
                     <div class="input-group-text">{{ $currency }}</div>
                   </div>
                 </div>

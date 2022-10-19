@@ -108,4 +108,31 @@ trait GenerateDocNo {
 
         return $docNo;
     }
+
+    /*public function generateOldBarcode($index)
+    {
+        $firstCode = '200'; // 200-299
+
+        $companyId = (is_numeric($this->product->company_id)) ? $this->product->company_id : '0000';
+        $secondCode = substr(sprintf("%'.04d", $companyId), -4);
+
+        $lastSeconds = substr(intval(microtime(true)), -3);
+        $thirdCode = $lastSeconds.$index;
+
+        $fourthCode = substr(sprintf("%'.02d", $index + 1), -2);
+
+        $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
+        $sameProduct = Product::whereJsonContains('barcodes', $barcode)->first();
+
+        if (in_array($barcode, $this->productBarcodes) || $sameProduct) {
+            $firstCode += ($firstCode == '299') ? -98 : 1;
+            $thirdCode + 1;
+            $fourthCode = substr(sprintf("%'.02d", $fourthCode + 1), -2);
+            $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
+        }
+
+        $this->productBarcodes[$index] = $barcode;
+
+        return $barcode;
+    }*/
 }

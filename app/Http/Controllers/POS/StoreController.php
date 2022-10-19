@@ -39,7 +39,7 @@ class StoreController extends Controller
             'ip_address' => 'required|min:6',
         ]);
 
-        $company = auth()->user()->profile->company->first();
+        $company = auth()->user()->profile->company;
 
         $store = new Store;
         $store->company_id = $company->id;

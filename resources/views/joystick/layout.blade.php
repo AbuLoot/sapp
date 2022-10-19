@@ -78,11 +78,11 @@
 
           <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarResources" aria-expanded="true" aria-controls="sidebarResources">Ресурсы <span class="caret"></span></div>
           <ul class="nav nav-sidebar collapse in" id="sidebarResources">
-            @can('viewAny', App\Models\Company::class)<li @if(Request::is($lang.'/admin/companies*')) class="active" @endif><a href="/{{ $lang }}/admin/companies"><i class="material-icons md-20">business</i> Компании</a></li>@endcan
             @can('viewAny', App\Models\Region::class)<li @if(Request::is($lang.'/admin/regions*')) class="active" @endif><a href="/{{ $lang }}/admin/regions"><i class="material-icons md-20">map</i> Регионы</a></li>@endcan
             @can('viewAny', App\Models\Language::class)<li @if(Request::is($lang.'/admin/languages*')) class="active" @endif><a href="/{{ $lang }}/admin/languages"><i class="material-icons md-20">language</i> Языки</a></li>@endcan
-            @can('viewAny', App\Models\User::class)<li @if(Request::is($lang.'/admin/users*')) class="active" @endif><a href="/{{ $lang }}/admin/users"><i class="material-icons md-20">people_outline</i> Пользователи</a></li>@endcan
             @can('viewAny', App\Models\Currency::class)<li @if(Request::is($lang.'/admin/currencies*')) class="active" @endif><a href="/{{ $lang }}/admin/currencies"><i class="material-icons md-20">attach_money</i> Валюты</a></li>@endcan
+            @can('viewAny', App\Models\Company::class)<li @if(Request::is($lang.'/admin/companies*')) class="active" @endif><a href="/{{ $lang }}/admin/companies"><i class="material-icons md-20">business</i> Компании</a></li>@endcan
+            @can('viewAny', App\Models\User::class)<li @if(Request::is($lang.'/admin/users*')) class="active" @endif><a href="/{{ $lang }}/admin/users"><i class="material-icons md-20">people_outline</i> Пользователи</a></li>@endcan
             @can('viewAny', App\Models\Role::class)<li @if(Request::is($lang.'/admin/roles*')) class="active" @endif><a href="/{{ $lang }}/admin/roles"><i class="material-icons md-20">accessibility</i> Роли</a></li>@endcan
             @can('viewAny', App\Models\Permission::class)<li @if(Request::is($lang.'/admin/permissions*')) class="active" @endif><a href="/{{ $lang }}/admin/permissions"><i class="material-icons md-20">lock_open</i> Права доступа</a></li>@endcan
           </ul>

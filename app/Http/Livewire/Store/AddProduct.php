@@ -29,7 +29,6 @@ class AddProduct extends Component
     public $categories;
     public $barcodes = [''];
     public $idCode;
-    public $purchasePrice;
     public $wholesalePrice;
     public $wholesalePriceMarkup;
     public $priceMarkup;
@@ -45,12 +44,11 @@ class AddProduct extends Component
         'product.company_id' => 'required|numeric',
         'product.category_id' => 'required|numeric',
         'product.type' => 'required|numeric',
-        'product.price' => 'required',
-        'product.unit' => '',
         'docNo' => 'required',
         'productBarcodes.*' => 'required',
-        'wholesalePriceMarkup' => 'numeric',
-        'priceMarkup' => 'numeric',
+        'product.purchase_price' => 'required|numeric',
+        'product.price' => 'required|numeric',
+        'product.unit' => 'numeric',
     ];
 
     public function mount()
@@ -77,11 +75,11 @@ class AddProduct extends Component
         }
 
         if ($key == 'wholesalePriceMarkup' && $this->wholesalePriceMarkup >= 1) {
-            $this->wholesalePrice = $this->purchasePrice * $this->wholesalePriceMarkup;
+            $this->wholesalePrice = $this->product->purchase_price * $this->wholesalePriceMarkup;
         }
 
         if ($key == 'priceMarkup' && $this->priceMarkup >= 1) {
-            $this->product->price = $this->purchasePrice * $this->priceMarkup;
+            $this->product->price = $this->product->purchase_price * $this->priceMarkup;
         }
     }
 
@@ -94,33 +92,6 @@ class AddProduct extends Component
     {
         unset($this->barcodes[$index]);
         array_values($this->barcodes);
-    }
-
-    public function generateOldBarcode($index)
-    {
-        $firstCode = '200'; // 200-299
-
-        $companyId = (is_numeric($this->product->company_id)) ? $this->product->company_id : '0000';
-        $secondCode = substr(sprintf("%'.04d", $companyId), -4);
-
-        $lastSeconds = substr(intval(microtime(true)), -3);
-        $thirdCode = $lastSeconds.$index;
-
-        $fourthCode = substr(sprintf("%'.02d", $index + 1), -2);
-
-        $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
-        $sameProduct = Product::whereJsonContains('barcodes', $barcode)->first();
-
-        if (in_array($barcode, $this->productBarcodes) || $sameProduct) {
-            $firstCode += ($firstCode == '299') ? -98 : 1;
-            $thirdCode + 1;
-            $fourthCode = substr(sprintf("%'.02d", $fourthCode + 1), -2);
-            $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
-        }
-
-        $this->productBarcodes[$index] = $barcode;
-
-        return $barcode;
     }
 
     public function generateBarcode($index)
@@ -181,12 +152,12 @@ class AddProduct extends Component
             'slug' => Str::slug($this->product->title),
             'title' => $this->product->title,
             'barcodes' => json_encode($this->productBarcodes),
-            'id_code' => $this->idCode ?? NULL,
-            'purchase_price' => $this->purchasePrice ?? 0,
+            'id_code' => $idCode ?? NULL,
+            'purchase_price' => $this->product->purchase_price ?? 0,
             'wholesale_price' => $this->wholesalePrice ?? 0,
             'price' => $this->product->price,
             'count_in_stores' => json_encode($this->countInStores),
-            'count' => $this->product->type == 1 ? $totalCount : null,
+            'count' => $totalCount ?? 0,
             'type' => $this->product->type,
             'unit' => $this->product->unit ?? 0,
             'image' => 'no-image-middle.png',

@@ -20,11 +20,10 @@ class EditProduct extends Component
     public $product;
     public $productBarcodes = [];
     public $companies;
-    public $barcodes = [];
+    public $barcodes = [''];
     public $idCode;
-    public $countInStores = [];
-    public $purchasePrice;
     public $wholesalePrice;
+    public $countInStores = [];
     public $wholesalePriceMarkup;
     public $priceMarkup;
 
@@ -34,11 +33,10 @@ class EditProduct extends Component
         'product.title' => 'required|min:2',
         'product.company_id' => 'required|numeric',
         'product.category_id' => 'required|numeric',
+        'product.purchase_price' => 'required|numeric',
+        'product.price' => 'required|numeric',
         'product.type' => 'required|numeric',
-        'product.price' => 'required',
         'product.unit' => 'numeric',
-        // 'product.count.*' => 'required|numeric',
-        // 'productBarcodes.*' => 'required',
     ];
 
     public function mount($id)
@@ -49,6 +47,7 @@ class EditProduct extends Component
 
         $this->company = auth()->user()->profile->company;
         $this->stores = $this->company->stores;
+
         $this->product = Product::findOrFail($id);
         $this->productBarcodes = json_decode($this->product->barcodes) ?? [''];
         $this->barcodes = $this->productBarcodes;
@@ -64,10 +63,7 @@ class EditProduct extends Component
             }
         }
 
-        $this->purchasePrice = $this->product->purchase_price;
         $this->wholesalePrice = $this->product->wholesale_price;
-        $this->price = $this->product->price;
-        $this->companies = Company::where('is_supplier', 1)->get();
     }
 
     public function updated($key)
@@ -81,11 +77,11 @@ class EditProduct extends Component
         }
 
         if ($key == 'wholesalePriceMarkup' && $this->wholesalePriceMarkup >= 1) {
-            $this->wholesalePrice = $this->purchasePrice * $this->wholesalePriceMarkup;
+            $this->wholesalePrice = $this->product->purchase_price * $this->wholesalePriceMarkup;
         }
 
         if ($key == 'priceMarkup' && $this->priceMarkup >= 1) {
-            $this->product->price = $this->purchasePrice * $this->priceMarkup;
+            $this->product->price = $this->product->purchase_price * $this->priceMarkup;
         }
     }
 
@@ -99,33 +95,6 @@ class EditProduct extends Component
         unset($this->barcodes[$index]);
         array_values($this->barcodes);
         $this->productBarcodes = $this->barcodes;
-    }
-
-    public function generateOldBarcode($index)
-    {
-        $firstCode = '200'; // 200-299
-
-        $companyId = (is_numeric($this->product->company_id)) ? $this->product->company_id : '0000';
-        $secondCode = substr(sprintf("%'.04d", $companyId), -4);
-
-        $lastSeconds = substr(intval(microtime(true)), -3);
-        $thirdCode = $lastSeconds.$index;
-
-        $fourthCode = substr(sprintf("%'.02d", $index + 1), -2);
-
-        $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
-        $sameProduct = Product::whereJsonContains('barcodes', $barcode)->first();
-
-        if (in_array($barcode, $this->productBarcodes) || $sameProduct) {
-            $firstCode += ($firstCode == '299') ? -98 : 1;
-            $thirdCode + 1;
-            $fourthCode = substr(sprintf("%'.02d", $fourthCode + 1), -2);
-            $barcode = $firstCode.$secondCode.$thirdCode.$fourthCode;
-        }
-
-        $this->productBarcodes[$index] = $barcode;
-
-        return $barcode;
     }
 
     public function generateBarcode($index)
@@ -175,7 +144,7 @@ class EditProduct extends Component
     {
         $this->validate();
 
-        $amountCount = collect($this->countInStores)->sum();
+        $totalCount = collect($this->countInStores)->sum();
 
         Product::where('id', $this->product->id)->update([
             // 'sort_id' => $lastProduct->id + 1,
@@ -185,12 +154,12 @@ class EditProduct extends Component
             'slug' => Str::slug($this->product->title),
             'title' => $this->product->title,
             'barcodes' => json_encode($this->productBarcodes),
-            'id_code' => $this->idCode ?? NULL,
-            'purchase_price' => $this->purchasePrice ?? 0,
+            'id_code' => $idCode ?? NULL,
+            'purchase_price' => $this->product->purchase_price ?? 0,
             'wholesale_price' => $this->wholesalePrice ?? 0,
             'price' => $this->product->price,
-            // 'count_in_stores' => json_encode($this->countInStores),
-            // 'count' => $amountCount,
+            'count_in_stores' => json_encode($this->countInStores),
+            'count' => $totalCount ?? 0,
             'unit' => $this->product->unit,
             'type' => $this->product->type,
         ]);
@@ -200,10 +169,15 @@ class EditProduct extends Component
 
     public function render()
     {
+        $companies = Company::where('is_supplier', 1)->get();
         $currency = $this->company->currency->symbol;
         $units = Unit::all();
 
-        return view('livewire.store.edit-product', ['units' => $units, 'currency' => $currency])
+        return view('livewire.store.edit-product', [
+            'units' => $units,
+            'currency' => $currency,
+            'companies' => $companies,
+        ])
             ->layout('livewire.store.layout');
     }
 }

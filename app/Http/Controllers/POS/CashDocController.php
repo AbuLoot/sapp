@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\IncomingDoc;
 use App\Models\OutgoingDoc;
 use App\Models\CashShiftJournal;
+use App\Models\DocType;
 
 class CashDocController extends Controller
 {
@@ -17,25 +18,28 @@ class CashDocController extends Controller
     {
         // $this->authorize('viewAny', CashDoc::class);
 
-        $cashdocs = CashDoc::orderByDesc('id')->paginate(50);
+        $cashDocs = CashDoc::orderByDesc('id')->paginate(50);
+        $cashDocType = DocType::where('slug', 'forma-ko-5')->first();
+        $company = auth()->user()->profile->company;
+        $currency = $company->currency->symbol ?? null;
 
-        return view('pos.cashdocs.index', compact('cashdocs'));
+        return view('pos.cashdocs.index', compact('cashDocs', 'cashDocType', 'currency'));
     }
 
     public function show($lang, $id)
     {
-        $cashdoc = CashDoc::findOrFail($id);
+        $cashDoc = CashDoc::findOrFail($id);
 
-        return view('pos.cashdocs.show', compact('cashdoc'));
+        return view('pos.cashdocs.show', compact('cashDoc'));
     }
 
     public function destroy($lang, $id)
     {
-        $cashdoc = CashDoc::find($id);
+        $cashDoc = CashDoc::find($id);
 
-        // $this->authorize('delete', $cashdoc);
+        // $this->authorize('delete', $cashDoc);
 
-        $cashdoc->delete();
+        $cashDoc->delete();
 
         return redirect($lang.'/pos/cashdocs')->with('status', 'Запись удалена.');
     }

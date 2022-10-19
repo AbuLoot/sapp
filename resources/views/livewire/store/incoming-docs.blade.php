@@ -60,7 +60,7 @@
               <td>{{ $incomingDoc->count }}</td>
               <td>{{ $incomingDoc->user->name }}</td>
               <td>{{ $incomingDoc->created_at }}</td>
-              <td class="text-end"><button wire:click="docDetail({{ $incomingDoc->id }})" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#docDetails">Посмотреть</button></td>
+              <td class="text-end"><button wire:click="docDetail({{ $incomingDoc->id }})" class="btn btn-outline-primary btn-sm">Посмотреть</button></td>
             </tr>
           @empty
             <tr>
@@ -189,6 +189,13 @@
       </div>
     </div>
   </div>
+
+  <script>
+    window.addEventListener('open-modal', event => {
+      var docModal = new bootstrap.Modal(document.getElementById("docDetails"), {});
+      docModal.show();
+    })
+  </script>
 </div>
 
 @section('scripts')

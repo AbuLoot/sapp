@@ -38,7 +38,7 @@ class CashbookController extends Controller
             'title' => 'required|min:2|max:80|unique:cashbooks',
         ]);
 
-        $company = auth()->user()->profile->company->first();
+        $company = auth()->user()->profile->company;
 
         $cashbook = new Cashbook;
         $cashbook->company_id = $company->id;

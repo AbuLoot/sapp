@@ -4,6 +4,7 @@ return [
 
     // Storage operations
     'incoming-products' => 'Приход продуктов',
+    'inventory-products' => 'Инвентаризация продуктов',
     'writeoff-products' => 'Списание продуктов',
 
     // Cashdesk operations

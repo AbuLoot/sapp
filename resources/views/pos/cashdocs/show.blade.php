@@ -2,16 +2,16 @@
 
 @section('content')
 
-  <h2 class="page-header">{{ $cashdoc->order->docType->title.' - '.$cashdoc->order->doc_no }} </h2>
+  <h2 class="page-header">{{ $cashDoc->order->docType->title.' - '.$cashDoc->order->doc_no }} </h2>
 
   <div class="row">
     <div class="col-md-6">
-    @switch($cashdoc->order_type)
+    @switch($cashDoc->order_type)
       @case('App\Models\IncomingOrder')
-        <a href="/{{ $lang }}/cashdesk/docsprint/incoming-order/{{ $cashdoc->order_id }}" class="btn btn-primary"><i class="material-icons md-18">print</i> Печать документа</a>
+        <a href="/{{ $lang }}/cashdesk/docsprint/incoming-order/{{ $cashDoc->order_id }}" class="btn btn-primary"><i class="material-icons md-18">print</i> Печать документа</a>
         @break
       @case('App\Models\OutgoingOrder')
-        <a href="/{{ $lang }}/cashdesk/docsprint/outgoing-order/{{ $cashdoc->order_id }}" class="btn btn-primary"><i class="material-icons md-18">print</i> Печать документа</a>
+        <a href="/{{ $lang }}/cashdesk/docsprint/outgoing-order/{{ $cashDoc->order_id }}" class="btn btn-primary"><i class="material-icons md-18">print</i> Печать документа</a>
         @break
     @endswitch
     </div>
@@ -26,55 +26,55 @@
       <tbody>
         <tr>
           <th scope="row">Тип документа</th>
-          <td>{{ $cashdoc->order->docType->type }}</td>
+          <td>{{ $cashDoc->order->docType->type }}</td>
         </tr>
         <tr>
           <th scope="row">Название документа</th>
-          <td>{{ $cashdoc->order->docType->title }}</td>
+          <td>{{ $cashDoc->order->docType->title }}</td>
         </tr>
         <tr>
           <th scope="row">ID документа</th>
-          <td>{{ $cashdoc->doc_id }}</td>
+          <td>{{ $cashDoc->doc_id }}</td>
         </tr>
         <tr>
           <th scope="row">Тип операции</th>
-          <td>{{ __('operation-codes.'.$cashdoc->order->operation_code) }}</td>
+          <td>{{ __('operation-codes.'.$cashDoc->order->operation_code) }}</td>
         </tr>
         <tr>
           <th scope="row">Автор</th>
-          <td>{{ $cashdoc->user->name }}</td>
+          <td>{{ $cashDoc->user->name }}</td>
         </tr>
         <tr>
           <th scope="row">Контрагент</th>
-          <td>{{ $cashdoc->contractor->name ?? $cashdoc->contractor->title ?? 'No name' }}</td>
+          <td>{{ $cashDoc->contractor->name ?? $cashDoc->contractor->title ?? 'No name' }}</td>
         </tr>
         <tr>
           <th scope="row">Сумма прихода</th>
-          <td>{{ $cashdoc->incoming_amount }}</td>
+          <td>{{ $cashDoc->incoming_amount }}</td>
         </tr>
         <tr>
           <th scope="row">Сумма расхода</th>
-          <td>{{ $cashdoc->outgoing_amount }}</td>
+          <td>{{ $cashDoc->outgoing_amount }}</td>
         </tr>
         <tr>
           <th scope="row">Количество</th>
-          <td>{{ $cashdoc->count }}</td>
+          <td>{{ $cashDoc->count }}</td>
         </tr>
         <tr>
           <th scope="row">Дата и время</th>
-          <td>{{ $cashdoc->created_at }}</td>
+          <td>{{ $cashDoc->created_at }}</td>
         </tr>
         <tr>
           <th scope="row">Комментарии</th>
-          <td>{{ $cashdoc->comment }}</td>
+          <td>{{ $cashDoc->comment }}</td>
         </tr>
       </tbody>
     </table>
 
     <?php 
 
-    if ($cashdoc->order_type == 'App\Models\IncomingOrder' AND $cashdoc->doc_id) :
-      $productsData = json_decode($cashdoc->order->products_data, true);
+    if ($cashDoc->order_type == 'App\Models\IncomingOrder' AND $cashDoc->doc_id) :
+      $productsData = json_decode($cashDoc->order->products_data, true);
       $productsKeys = collect($productsData)->keys();
       $docProducts = App\Models\Product::whereIn('id', $productsKeys->all())->get();
     ?>
