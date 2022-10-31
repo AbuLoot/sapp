@@ -24,7 +24,7 @@ use App\Http\Controllers\Joystick\RoleController;
 use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
 
-// Sanapp Admin Controllers
+// Sanapp POS Controllers
 use App\Http\Controllers\POS\OfficeController;
 use App\Http\Controllers\POS\CashDocController;
 use App\Http\Controllers\POS\StoreController;
@@ -35,8 +35,6 @@ use App\Http\Controllers\POS\PaymentTypeController;
 use App\Http\Controllers\POS\DocTypeController;
 use App\Http\Controllers\POS\DiscountController;
 use App\Http\Controllers\POS\UnitController;
-
-// Sanapp Report Controllers
 use App\Http\Controllers\POS\Reports\FinancialReportController;
 use App\Http\Controllers\POS\Reports\CustomersReportController;
 use App\Http\Controllers\POS\Reports\ContractorsReportController;
@@ -223,7 +221,10 @@ Route::post('send-app', [InputController::class, 'sendApp']);
 
 
 // Shop
-Route::get('/', [ShopController::class, 'index']);
+// Route::get('/', [ShopController::class, 'index']);
+Route::get('/', function() {
+    echo '<h1>In developing...</h1>';
+});
 
 
 // Route::get('b/{project}/{id}', [ShopController::class, 'projectProducts']);

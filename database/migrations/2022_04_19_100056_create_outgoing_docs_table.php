@@ -28,7 +28,7 @@ class CreateOutgoingDocsTable extends Migration
             $table->integer('sum')->default(0);
             $table->char('currency');
             $table->integer('count')->default(0);
-            $table->char('unit');
+            $table->char('unit')->nullable();
             $table->string('comment')->nullable();
             $table->timestamps();
         });

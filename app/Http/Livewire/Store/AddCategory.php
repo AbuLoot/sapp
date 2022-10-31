@@ -26,10 +26,7 @@ class AddCategory extends Component
     {
         $data = $this->validate()['category'];
 
-        $lastCategory = Category::orderByDesc('id')->first();
-
         $category = new Category;
-        $category->sort_id = $lastCategory->id + 1;
         $category->slug = Str::slug($data['title']);
         $category->title = $data['title'];
         $category->lang = 'ru';

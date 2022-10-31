@@ -147,7 +147,6 @@ class EditProduct extends Component
         $totalCount = collect($this->countInStores)->sum();
 
         Product::where('id', $this->product->id)->update([
-            // 'sort_id' => $lastProduct->id + 1,
             'user_id' => auth()->user()->id,
             'company_id' => $this->product->company_id ?? 0,
             'category_id' => $this->product->category_id,

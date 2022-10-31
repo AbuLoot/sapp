@@ -29,10 +29,7 @@ class AddCompany extends Component
     {
         $data = $this->validate()['company'];
 
-        $lastCompany = Company::orderByDesc('id')->first();
-
         Company::create([
-            'sort_id' => (int) $lastCompany->id + 1,
             'region_id' => 0,
             'slug' => Str::slug($data['title']),
             'title' => $data['title'],

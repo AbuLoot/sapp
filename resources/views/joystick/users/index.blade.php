@@ -27,7 +27,7 @@
             <td>{{ $i++ }}</td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
-            <td>{{ ($user->profile) ? $user->profile->tel : '' }}</td>
+            <td>{{ ($user->profile) ? $user->tel : '' }}</td>
             <td><?php if ($user->profile) echo $regions->firstWhere('id', $user->profile->region_id)->title; ?></td>
             <td class="text-info">{{ trans('statuses.data.'.$user->is_customer.'.title') }}</td>
             <td class="text-info">{{ trans('statuses.data.'.$user->is_worker.'.title') }}</td>

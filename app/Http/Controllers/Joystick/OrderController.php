@@ -42,7 +42,6 @@ class OrderController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|min:2|max:255',
-            'email' => 'required|email|max:255',
             'phone' => 'required|min:5',
             'city_id' => 'numeric',
             'address' => 'required',

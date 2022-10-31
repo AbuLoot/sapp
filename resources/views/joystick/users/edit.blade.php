@@ -28,14 +28,18 @@
               </div>
               <div class="col-6 col-md-6">
                 <div class="form-group">
-                  <label>Фамилия</label>
-                  <input type="text" class="form-control" minlength="2" maxlength="60" name="lastname" placeholder="Фамилия*" value="{{ (old('lastname')) ? old('lastname') : $user->lastname }}">
+                  <label>Отчество</label>
+                  <input type="text" class="form-control" minlength="2" maxlength="60" name="lastname" placeholder="Отчество*" value="{{ (old('lastname')) ? old('lastname') : $user->lastname }}">
                 </div>
               </div>
             </div>
             <div class="form-group">
               <label for="email">Email:</label>
               <input type="email" class="form-control" name="email" id="email" minlength="8" maxlength="60" value="{{ $user->email }}">
+            </div>
+            <div class="form-group">
+              <label>Номер телефона</label>
+              <input type="tel" pattern="(\+?\d[- .]*){7,13}" class="form-control" name="tel" placeholder="Номер телефона*" value="{{ (old('tel')) ? old('tel') : $user->tel }}">
             </div>
             <div class="form-group">
               <label>Адрес</label>
@@ -105,10 +109,6 @@
                   <option value="{{ $company->id }}" <?= ($company->id == $user->profile->company_id) ? 'selected' : ''; ?>>{{ $company->title }}</option>
                 <?php endforeach; ?>
               </select>
-            </div>
-            <div class="form-group">
-              <label>Номер телефона</label>
-              <input type="tel" pattern="(\+?\d[- .]*){7,13}" class="form-control" name="tel" placeholder="Номер телефона*" value="{{ (old('tel')) ? old('tel') : $user->profile->tel }}">
             </div>
             <div class="form-group">
               <label>Дата рождения</label>

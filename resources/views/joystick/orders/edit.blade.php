@@ -24,7 +24,7 @@
         </div>
         <div class="form-group">
           <label for="email">Email:</label>
-          <input type="email" class="form-control" name="email" id="email" minlength="8" maxlength="60" value="{{ $order->email }}" required>
+          <input type="email" class="form-control" name="email" id="email" minlength="8" maxlength="60" value="{{ $order->email }}">
         </div>
         <div class="form-group">
           <label for="company_name">Название компаний</label>
