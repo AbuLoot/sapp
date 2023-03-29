@@ -15,6 +15,7 @@ class CreateProductsDraftsTable extends Migration
     {
         Schema::create('products_drafts', function (Blueprint $table) {
             $table->id();
+            $table->integer('company_id');
             $table->integer('user_id');
             $table->char('type');
             $table->string('title')->nullable();

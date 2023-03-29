@@ -24,7 +24,7 @@
         @else
           @foreach($productsData as $product)
             <tr>
-              <td>{{ $product['title'] }}</td>
+              <td>{{ $product['title'] ?? '' }}</td>
               <td class="text-end">{{ $product['outgoingCount'] . ' x ' . $product['price'] . $currency }}</td>
               <td class="text-end">={{ $product['outgoingCount'] * $product['price'] . $currency }}</td>
             </tr>

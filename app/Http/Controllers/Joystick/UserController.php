@@ -17,11 +17,17 @@ use App\Models\Company;
 
 class UserController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::orderBy('created_at')->paginate(50);
+        $users = User::orderBy('created_at')
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->paginate(50);
+
         $regions = Region::get();
 
         return view('joystick.users.index', compact('users', 'regions'));
@@ -29,12 +35,15 @@ class UserController extends Controller
 
     public function edit($lang, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->findOrFail($id);
 
         $this->authorize('update', $user);
 
         $regions = Region::orderBy('sort_id')->get()->toTree();
-        $companies = Company::orderBy('sort_id')->get();
+        $companies = Company::where('company_id', $this->companyId)->orderBy('sort_id')->get();
         $roles = Role::all();
 
         if ($user->profile == null) {
@@ -50,7 +59,10 @@ class UserController extends Controller
             'name' => 'required|max:60',
         ]);
 
-        $user = User::findOrFail($id);
+        $user = User::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->findOrFail($id);
 
         $this->authorize('update', $user);
 
@@ -121,7 +133,10 @@ class UserController extends Controller
             'password' => 'required|confirmed|min:6|max:255'
         ]);
 
-        $user = User::findOrFail($id);
+        $user = User::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->findOrFail($id);
 
         if ($user->email != $request->email) {
             return redirect()->back()->with('danger', 'Email не совпадает!');
@@ -140,7 +155,10 @@ class UserController extends Controller
 
     public function destroy($lang, $id)
     {
-        $user = User::find($id);
+        $user = User::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->find($id);
 
         $this->authorize('delete', $user);
 

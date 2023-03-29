@@ -86,11 +86,14 @@
             <th>Цена закупки</th>
             <th>Цена оптовая</th>
             <th>Цена продажи</th>
-            <th>Кол.</th>
+            @foreach($company->stores as $store)
+            <th>{{ $store->title }}</th>
+            @endforeach
             <th class="text-end">Поставщик</th>
           </tr>
         </thead>
         <tbody>
+          <?php $countStores = $company->stores->count(); ?>
           @forelse($products as $index => $product)
             <?php $unit = $units->where('id', $product->unit)->first()->title ?? null; ?>
             <tr>
@@ -114,12 +117,15 @@
               <td>{{ $product->purchase_price }}</td>
               <td>{{ $product->wholesale_price }}</td>
               <td>{{ $product->price }}</td>
-              <td>{{ $product->count . $unit }}</td>
+              <?php $countInStores = json_decode($product->count_in_stores, true) ?? []; ?>
+              @foreach($countInStores as $store => $count)
+                <td>{{ $count.$unit }}</td>
+              @endforeach
               <td class="text-end">{{ $product->company->title }}</td>
             </tr>
           @empty
             <tr>
-              <td colspan="8">No data</td>
+              <td colspan="{{ $countStores + 7 }}">No data</td>
             </tr>
           @endforelse
         </tbody>
@@ -198,6 +204,7 @@
 
 @section('scripts')
   <script type="text/javascript">
+
     // Offcanvas
     const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 

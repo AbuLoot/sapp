@@ -12,17 +12,19 @@ class Company extends Model
         'sort_id',
         'region_id',
         'currency_id',
-        'slug',
         'title',
-        'phones',
-        'address',
-        'legal_address',
+        'slug',
+        'bin',
         'image',
+        'about',
+        'phones',
+        'links',
+        'emails',
+        'legal_address',
+        'actual_address',
         'is_supplier',
         'is_customer',
-        'lang',
         'status',
-        'sort_id'
     ];
 
     public function profile()

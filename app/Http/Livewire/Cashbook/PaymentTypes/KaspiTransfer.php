@@ -32,6 +32,10 @@ class KaspiTransfer extends Component
         $this->sumOfCart = Index::sumOfCart();
         $this->paymentType = PaymentType::where('slug', 'kaspi-transfer')->first();
 
+        if (empty(session()->get('cartProducts'))) {
+            return redirect($this->lang.'/cashdesk');
+        }
+
         $this->makeDocs();
     }
 

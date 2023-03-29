@@ -13,11 +13,13 @@ use App\Models\Workplace;
 
 class WorkplaceController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         // $this->authorize('viewAny', Workplace::class);
 
-        $workplaces = Workplace::paginate(50);
+        $workplaces = Workplace::where('company_id', $this->companyId)->paginate(50);
 
         return view('pos.workplaces.index', compact('workplaces'));
     }
@@ -26,9 +28,9 @@ class WorkplaceController extends Controller
     {
         // $this->authorize('create', Workplace::class);
 
-        $users = User::where('is_worker', 1)->get();
-        $stores = Store::get();
-        $cashbooks = Cashbook::get();
+        $users = User::where('company_id', $this->companyId)->where('is_worker', 1)->get();
+        $stores = Store::where('company_id', $this->companyId)->get();
+        $cashbooks = Cashbook::where('company_id', $this->companyId)->get();
 
         return view('pos.workplaces.create', compact('users', 'stores', 'cashbooks'));
     }
@@ -43,11 +45,10 @@ class WorkplaceController extends Controller
             'code' => 'required|numeric|min:4'
         ]);
 
-        $company = auth()->user()->profile->company->first();
-
         list($workplace_type, $workplace_id) = explode('-', $request->workplace_id);
 
         $workplace = new Workplace;
+        $workplace->company_id = $this->companyId;
         $workplace->user_id = $request->user_id;
         $workplace->workplace_id = $workplace_id;
         $workplace->workplace_type = 'App\\Models\\'.Str::ucfirst($workplace_type);
@@ -60,11 +61,11 @@ class WorkplaceController extends Controller
 
     public function edit($lang, $id)
     {
-        $workplace = Workplace::findOrFail($id);
+        $workplace = Workplace::where('company_id', $this->companyId)->findOrFail($id);
         // $this->authorize('update', $workplace);
-        $users = User::where('is_worker', 1)->get();
-        $stores = Store::get();
-        $cashbooks = Cashbook::get();
+        $users = User::where('company_id', $this->companyId)->where('is_worker', 1)->get();
+        $stores = Store::where('company_id', $this->companyId)->get();
+        $cashbooks = Cashbook::where('company_id', $this->companyId)->get();
 
         return view('pos.workplaces.edit', compact('workplace', 'users', 'stores', 'cashbooks'));
     }
@@ -77,7 +78,7 @@ class WorkplaceController extends Controller
             'code' => 'required|numeric|min:4'
         ]);
 
-        $workplace = Workplace::findOrFail($id);
+        $workplace = Workplace::where('company_id', $this->companyId)->findOrFail($id);
 
         // $this->authorize('update', $workplace);
 
@@ -95,7 +96,7 @@ class WorkplaceController extends Controller
 
     public function destroy($lang, $id)
     {
-        $workplace = Workplace::find($id);
+        $workplace = Workplace::where('company_id', $this->companyId)->find($id);
 
         // $this->authorize('delete', $workplace);
 

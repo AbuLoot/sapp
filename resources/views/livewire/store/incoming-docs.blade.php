@@ -79,7 +79,7 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="docDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div wire:ignore.self class="modal fade" id="docDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
@@ -107,7 +107,14 @@
                     </tr>
                     <tr>
                       <th scope="row">Номер накладной</th>
-                      <td>{{ $docDetail->doc_no }}</td>
+                      <td>
+                        @if($editMode)
+                          <input wire:model.defer="docNo" type="text" class="form-control @error('docNo') is-invalid @enderror">
+                          @error('docNo')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        @else
+                          {{ $docDetail->doc_no }}
+                        @endif
+                      </td>
                     </tr>
                     <tr>
                       <th scope="row">Тип операции</th>
@@ -131,7 +138,13 @@
                     </tr>
                     <tr>
                       <th scope="row">Комментарий</th>
-                      <td>{{ $docDetail->comment }}</td>
+                      <td>
+                        @if($editMode)
+                          <input wire:model="docComment" type="text" class="form-control">
+                        @else
+                          {{ $docDetail->comment }}
+                        @endif
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -177,7 +190,11 @@
               </div>
               <div class="row">
                 <div class="col d-grid" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-primary" disabled><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+                  @if($editMode)
+                    <button wire:click="saveDoc" type="button" class="btn btn-success"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
+                  @else
+                    <button wire:click="editDoc" type="button" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+                  @endif
                 </div>
                 <div class="col d-grid" role="group" aria-label="Basic example">
                   <a href="/{{ $lang }}/storage/docsprint/incoming-doc/{{ $docDetail->id ?? null }}" class="btn btn-dark"><i class="be bi-printer-fill me-2"></i> Печать</a>

@@ -48,6 +48,7 @@ class Inventory extends Component
         $this->units = Unit::get();
         $this->company = auth()->user()->profile->company;
         $this->storeId = session()->get('storage')->id;
+
     }
 
     public function updated($key, $value)
@@ -162,7 +163,7 @@ class Inventory extends Component
         foreach($this->revisionProducts as $productId => $revisionProduct) {
 
             // If revision count empty, return wrong
-            if (is_null($this->actualCount[$productId][$this->storeId])
+            if (empty($this->actualCount[$productId][$this->storeId])
                     || $this->actualCount[$productId][$this->storeId] < 0) {
                 $this->addError('actualCount.'.$productId.'.'.$this->storeId, 'Wrong');
                 return;

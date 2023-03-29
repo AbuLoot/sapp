@@ -26,9 +26,9 @@
               <div class="col d-grid"><input type="button" value="%" onclick="display('%')" class="btn btn-outline-light btn-lg"></div>
               <div class="col d-grid"><input type="button" value="^" onclick="display('^')" class="btn btn-outline-light btn-lg"></div>
               <div class="col d-grid"><input type="button" value="&" onclick="display('&')" class="btn btn-outline-light btn-lg"></div>
-              <div class="col d-grid"><input type="button" value="*" onclick="display('*')" class="btn btn-outline-light btn-lg"></div>
               <div class="col d-grid"><input type="button" value="(" onclick="display('(')" class="btn btn-outline-light btn-lg"></div>
               <div class="col d-grid"><input type="button" value=")" onclick="display(')')" class="btn btn-outline-light btn-lg"></div>
+              <div class="col d-grid"><input type="button" value="/" onclick="display('/')" class="btn btn-outline-light btn-lg"></div>
               <div class="col d-grid"><button type="button" onclick="clearDisplay()" class="btn btn-outline-light btn-lg"><i class="bi bi-backspace"></i></button></div>
             </div>
             @foreach($signs[$keyboardLang][$letterCase] as $keyLine => $lines)

@@ -29,8 +29,7 @@ class RolesCheck
      */
     public function handle(Request $request, Closure $next, $roles)
     {
-        $roles = strpos($roles, '|')
-            ? explode('|', $roles) : [$roles];
+        $roles = strpos($roles, '|') ? explode('|', $roles) : [$roles];
 
         foreach($roles as $role) {
 

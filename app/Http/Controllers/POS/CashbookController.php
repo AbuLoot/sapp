@@ -12,11 +12,13 @@ use App\Models\Cashbook;
 
 class CashbookController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         // $this->authorize('viewAny', Cashbook::class);
 
-        $cashbooks = Cashbook::paginate(50);
+        $cashbooks = Cashbook::where('company_id', $this->companyId)->paginate(50);
 
         return view('pos.cashbooks.index', compact('cashbooks'));
     }
@@ -38,10 +40,8 @@ class CashbookController extends Controller
             'title' => 'required|min:2|max:80|unique:cashbooks',
         ]);
 
-        $company = auth()->user()->profile->company;
-
         $cashbook = new Cashbook;
-        $cashbook->company_id = $company->id;
+        $cashbook->company_id = $this->companyId;
         $cashbook->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $cashbook->title = $request->title;
         $cashbook->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
@@ -57,7 +57,7 @@ class CashbookController extends Controller
     public function edit($lang, $id)
     {
         $regions = Region::orderBy('sort_id')->get()->toTree();
-        $cashbook = Cashbook::findOrFail($id);
+        $cashbook = Cashbook::where('company_id', $this->companyId)->findOrFail($id);
 
         // $this->authorize('update', $cashbook);
 
@@ -70,11 +70,11 @@ class CashbookController extends Controller
             'title' => 'required|min:2|max:80',
         ]);
 
-        $cashbook = Cashbook::findOrFail($id);
+        $cashbook = Cashbook::where('company_id', $this->companyId)->findOrFail($id);
 
         // $this->authorize('update', $cashbook);
 
-        // $cashbook->company_id = $company->id;
+        // $cashbook->company_id = $this->companyId;
         $cashbook->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $cashbook->title = $request->title;
         $cashbook->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
@@ -89,7 +89,7 @@ class CashbookController extends Controller
 
     public function destroy($lang, $id)
     {
-        $cashbook = Cashbook::find($id);
+        $cashbook = Cashbook::where('company_id', $this->companyId)->find($id);
 
         // $this->authorize('delete', $cashbook);
 

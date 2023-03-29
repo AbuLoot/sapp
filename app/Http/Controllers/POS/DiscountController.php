@@ -11,6 +11,8 @@ use App\Models\Category;
 
 class DiscountController extends Controller
 {
+    public $companyId;
+    
     public function index()
     {
         // $this->authorize('viewAny', Discount::class);
@@ -37,6 +39,7 @@ class DiscountController extends Controller
         ]);
 
         $discount = new Discount;
+        $discount->company_id = $this->companyId;
         $discount->category_id = $request->category_id;
         $discount->percent = $request->percent;
         $discount->start_date = $request->start_date;

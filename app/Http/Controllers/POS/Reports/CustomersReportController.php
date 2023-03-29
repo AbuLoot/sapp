@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\POS\Reports;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\POS\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\User;
 
 class CustomersReportController extends Controller
 {
+    public $companyId;
+
     public function index(Request $request)
     {
         $startDate = $request->start_date ?? '2022-01-01';
         $endDate = $request->end_date ?? now();
 
         $customers = User::query()
+            ->where('users.company_id', $this->companyId)
             ->where('status', true)
             ->join('incoming_orders', function ($join) use ($startDate, $endDate) {
                 $join->on('users.id', '=', 'incoming_orders.contractor_id')

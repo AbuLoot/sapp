@@ -14,11 +14,13 @@ use App\Models\DocType;
 
 class CashDocController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         // $this->authorize('viewAny', CashDoc::class);
 
-        $cashDocs = CashDoc::orderByDesc('id')->paginate(50);
+        $cashDocs = CashDoc::orderByDesc('id')->where('company_id', $this->companyId)->paginate(50);
         $cashDocType = DocType::where('slug', 'forma-ko-5')->first();
         $company = auth()->user()->profile->company;
         $currency = $company->currency->symbol ?? null;
@@ -28,14 +30,14 @@ class CashDocController extends Controller
 
     public function show($lang, $id)
     {
-        $cashDoc = CashDoc::findOrFail($id);
+        $cashDoc = CashDoc::where('company_id', $this->companyId)->findOrFail($id);
 
         return view('pos.cashdocs.show', compact('cashDoc'));
     }
 
     public function destroy($lang, $id)
     {
-        $cashDoc = CashDoc::find($id);
+        $cashDoc = CashDoc::where('company_id', $this->companyId)->find($id);
 
         // $this->authorize('delete', $cashDoc);
 

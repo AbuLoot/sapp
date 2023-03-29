@@ -45,6 +45,10 @@ class SaleOnCredit extends Component
         $this->company = auth()->user()->profile->company;
         $this->sumOfCart = CashbookIndex::sumOfCart();
         $this->paymentType = PaymentType::where('slug', 'sale-on-credit')->first();
+
+        if (empty(session()->get('cartProducts'))) {
+            return redirect($this->lang.'/cashdesk');
+        }
     }
 
     public function save()
@@ -179,25 +183,29 @@ class SaleOnCredit extends Component
             $profile->is_debtor = true;
             $profile->debt_sum = $this->sumOfCart['sumDiscounted'];
 
-            $debt_order[] = [
+            $debtOrder[$this->company->id][$cashbook->id][] = [
                 'docNo' => $incomingOrder->doc_no,
                 'sum' => $this->sumOfCart['sumDiscounted'],
             ];
 
-            $profile->debt_orders = json_encode($debt_order);
+            $profile->debt_orders = json_encode($debtOrder);
             $profile->save();
-
-        } else {
+        }
+        else {
             $user->profile->is_debtor = true;
             $user->profile->debt_sum = $user->profile->debt_sum + $this->sumOfCart['sumDiscounted'];
 
-            $debt_orders = json_decode($user->profile->debt_orders, true) ?? [];
-            $debt_orders[] = [
+            $debtOrders = json_decode($user->profile->debt_orders, true) ?? [];
+            $countOrders = count($debtOrders[$this->company->id][$cashbook->id]) >= 1
+                ? count($debtOrders[$this->company->id][$cashbook->id]) - 1
+                : 0;
+
+            $debtOrders[$this->company->id][$cashbook->id][] = [
                 'docNo' => $incomingOrder->doc_no,
                 'sum' => $this->sumOfCart['sumDiscounted'],
             ];
 
-            $user->profile->debt_orders = json_encode($debt_orders);
+            $user->profile->debt_orders = json_encode($debtOrders);
             $user->profile->save();
         }
 
@@ -252,6 +260,7 @@ class SaleOnCredit extends Component
         if (strlen($this->search) >= 2) {
             $customers = User::where('name', 'like', $this->search.'%')
                 ->orWhere('lastname', 'like', $this->search.'%')
+                ->orWhere('email', 'like', $this->search.'%')
                 ->orWhere('tel', 'like', $this->search.'%')
                 ->get()
                 ->take(7);

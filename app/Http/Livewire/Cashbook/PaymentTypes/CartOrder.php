@@ -34,7 +34,15 @@ class CartOrder extends Component
     {
         $this->cartProducts = session()->get('cartProducts') ?? [];
 
-        return view('livewire.cashbook.payment-types.cart-order')
+        $sortedCartProducts = [];
+
+        foreach($this->cartProducts as $cartProduct) {
+            $sortedCartProducts[$cartProduct->time] = $cartProduct;
+        }
+
+        krsort($sortedCartProducts);
+
+        return view('livewire.cashbook.payment-types.cart-order', ['sortedCartProducts' => $sortedCartProducts])
             ->layout('livewire.cashbook.layout');
     }
 }

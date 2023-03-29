@@ -46,6 +46,10 @@ class ComplexPayment extends Component
         $this->company = auth()->user()->profile->company;
         $this->paymentType = PaymentType::where('slug', 'complex-payment')->first();
         $this->paymentTypes = PaymentType::whereIn('slug', ['cash-payment', 'bank-card', 'kaspi-transfer'])->get();
+
+        if (empty(session()->get('cartProducts'))) {
+            return redirect($this->lang.'/cashdesk');
+        }
     }
 
     public function updated($key, $value)

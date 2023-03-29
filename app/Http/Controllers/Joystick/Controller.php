@@ -13,8 +13,15 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public $companyId;
+
     public function __construct()
     {
+        $this->middleware(function($request, $next) {
+            $this->companyId = session('company')->id;
+            return $next($request);
+        });
+
         app()->setLocale(\Request::segment(1));
 
         $languages = Language::orderBy('sort_id')->get();

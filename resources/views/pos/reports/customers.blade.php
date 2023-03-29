@@ -30,11 +30,10 @@
     </div>
   </form>
   <?php 
-    $company = auth()->user()->profile->company;
+    $company = session('company');
     $currency = $company->currency->symbol ?? null;
 
     $groupedCustomers = $customers->groupBy('id');
-
   ?>
 
   <h4>Статистика от {{ $startDate }} до {{ $endDate }}</h4>

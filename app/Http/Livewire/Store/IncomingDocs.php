@@ -9,9 +9,11 @@ use Livewire\WithPagination;
 use App\Models\IncomingDoc;
 use App\Models\Product;
 
+use App\Traits\GenerateDocNo;
+
 class IncomingDocs extends Component
 {
-    use WithPagination;
+    use WithPagination, GenerateDocNo;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -20,8 +22,15 @@ class IncomingDocs extends Component
     public $search;
     public $docDetail;
     public $docProducts = [];
+    public $docNo;
+    public $docComment;
+    public $editMode = false;
     public $startDate;
     public $endDate;
+
+    protected $rules = [
+        'docNo' => 'required',
+    ];
 
     public function mount()
     {
@@ -39,7 +48,37 @@ class IncomingDocs extends Component
         $products_data = json_decode($this->docDetail->products_data, true);
         $products_keys = collect($products_data)->keys();
         $this->docProducts = Product::whereIn('id', $products_keys->all())->get();
+        $this->docNo = $this->docDetail->doc_no;
+        $this->docComment = $this->docDetail->comment;
         $this->dispatchBrowserEvent('open-modal');
+    }
+
+    public function editDoc()
+    {
+        $this->editMode = true;
+    }
+
+    public function saveDoc()
+    {
+        if ($this->docNo == $this->docDetail->doc_no AND $this->docComment == $this->docDetail->comment) {
+            $this->editMode = false;
+            return;
+        }
+
+        $existDocNo = IncomingDoc::where('doc_no', $this->docNo)->where('doc_no', '!=', $this->docDetail->doc_no)->first();
+
+        if ($existDocNo) {
+            $this->addError('docNo', 'Document number: '.$this->docNo.' exists');
+            return;
+        }
+
+        $this->resetErrorBag('docNo');
+
+        $this->docDetail->doc_no = $this->docNo;
+        $this->docDetail->comment = $this->docComment;
+        $this->docDetail->save();
+
+        $this->editMode = false;
     }
 
     public function render()

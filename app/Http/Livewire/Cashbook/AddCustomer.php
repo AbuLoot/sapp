@@ -22,6 +22,7 @@ class AddCustomer extends Component
     protected $rules = [
         'name' => 'required|min:2',
         'lastname' => 'required|min:2',
+        'email' => 'required|unique:users',
         'tel' => 'required|min:11',
     ];
 

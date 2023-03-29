@@ -32,8 +32,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/pos"><i class="material-icons text-primary">point_of_sale</i> <b>Sanapp POS</b>&nbsp;</a>
-          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/admin"> <i class="material-icons">sports_esports</i> <b>Joystick</b></a>
+          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/pos"><i class="material-icons text-primary">point_of_sale</i> <b>POS</b>&nbsp;</a>
+          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/admin"> <i class="material-icons">admin_panel_settings</i> <b>Admin</b></a>
         </div>
 
         <div class="navbar-collapse collapse">
@@ -82,17 +82,6 @@
             <li @if(Request::is($lang.'/pos/report-workers*')) class="active" @endif><a href="/{{ $lang }}/pos/report-workers"><i class="material-icons md-20">engineering</i> Отчет по сотрудникам</a></li>
             <li @if(Request::is($lang.'/pos/report-stores*')) class="active" @endif><a href="/{{ $lang }}/pos/report-stores"><i class="material-icons md-20">warehouse</i> Отчет по складам</a></li>
             <li @if(Request::is($lang.'/pos/cash-reconciliation*')) class="active" @endif><a href="/{{ $lang }}/pos/cash-reconciliation"><i class="material-icons md-20">money</i> Сверка кассы</a></li>
-          </ul>
-
-          <div class="btn-sidebar" role="button" data-toggle="collapse" href="#sidebarResources" aria-expanded="true" aria-controls="sidebarResources">Ресурсы <span class="caret"></span></div>
-          <ul class="nav nav-sidebar collapse in" id="sidebarResources">
-            @can('viewAny', App\Models\Category::class)<li @if(Request::is($lang.'/admin/categories*')) class="active" @endif><a href="/{{ $lang }}/admin/categories"><i class="material-icons md-20">category</i> Категории</a></li>@endcan
-            @can('viewAny', App\Models\Product::class)<li @if(Request::is($lang.'/admin/products*')) class="active" @endif><a href="/{{ $lang }}/admin/products"><i class="material-icons md-20">store</i> Продукты</a></li>@endcan
-            @can('viewAny', App\Models\Mode::class)<li @if(Request::is($lang.'/admin/modes*')) class="active" @endif><a href="/{{ $lang }}/admin/modes"><i class="material-icons md-20">style</i> Режимы</a></li>@endcan
-            @can('viewAny', App\Models\Company::class)<li @if(Request::is($lang.'/admin/companies*')) class="active" @endif><a href="/{{ $lang }}/admin/companies"><i class="material-icons md-20">business</i> Компании</a></li>@endcan
-            @can('viewAny', App\Models\User::class)<li @if(Request::is($lang.'/admin/users*')) class="active" @endif><a href="/{{ $lang }}/admin/users"><i class="material-icons md-20">people_outline</i> Пользователи</a></li>@endcan
-            @can('viewAny', App\Models\Role::class)<li @if(Request::is($lang.'/admin/roles*')) class="active" @endif><a href="/{{ $lang }}/admin/roles"><i class="material-icons md-20">accessibility</i> Роли</a></li>@endcan
-            @can('viewAny', App\Models\Permission::class)<li @if(Request::is($lang.'/admin/permissions*')) class="active" @endif><a href="/{{ $lang }}/admin/permissions"><i class="material-icons md-20">lock_open</i> Права доступа</a></li>@endcan
           </ul>
 
           <ul class="nav nav-sidebar">

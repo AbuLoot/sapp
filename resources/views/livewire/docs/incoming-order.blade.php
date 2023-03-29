@@ -52,11 +52,13 @@
           @foreach($productsData as $key => $product)
             <tr>
               <td>{{ $key + 1 }}</td>
-              <td>{{ $product['title'] }}</td>
+              <td>{{ $product['title'] ?? '' }}</td>
               <td>
-              @foreach($product['barcodes'] as $barcode)
-                {{ $barcode }}
-              @endforeach
+              @if(is_array($product['barcodes']))
+                @foreach($product['barcodes'] as $barcode)
+                  {{ $barcode }}
+                @endforeach
+              @endif
               </td>
               <td>{{ $product['outgoingCount'] }}</td>
               <td>{{ $product['price'] . $currency }}</td>

@@ -75,7 +75,7 @@
         ?>
         @foreach($productsData as $key => $product)
           <?php
-            $unit = $units->where('id', $product['unit'])->first()->title ?? null;
+            $unit = $units->where('id', $product['unit'] ?? null)->first()->title ?? null;
 
             if ($outgoingDoc->operation_code != 'sale-on-credit') {
               $percentage = $product['price'] / 100;
@@ -85,7 +85,7 @@
           ?>
           <tr>
             <td>{{ $n++ }}</td>
-            <td>{{ $product['title'] }}</td>
+            <td>{{ $product['title'] ?? '' }}</td>
             <td>
               @foreach($product['barcodes'] as $barcode)
                 {{ $barcode }}

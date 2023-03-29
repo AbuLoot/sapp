@@ -15,8 +15,8 @@ class CreateIncomingDocsTable extends Migration
     {
         Schema::create('incoming_docs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('store_id');
             $table->integer('company_id');
+            $table->integer('store_id');
             $table->integer('workplace_id')->nullable();
             $table->integer('user_id');
             $table->string('doc_no');

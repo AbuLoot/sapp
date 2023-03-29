@@ -25,6 +25,7 @@ class ListOfDebtors extends Component
 
     public $lang;
     public $company;
+    public $cashbook;
     public $profile;
     public $repaymentAmount;
     public $docNo;
@@ -45,6 +46,7 @@ class ListOfDebtors extends Component
     {
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->profile->company;
+        $this->cashbook = session()->get('cashbook');
         $this->paymentTypes = PaymentType::where('slug', '!=', 'sale-on-credit')->get();
         $this->paymentTypeId = $this->paymentTypes->where('slug', 'bank-card')->pluck('id')->first();
     }
@@ -63,42 +65,44 @@ class ListOfDebtors extends Component
 
     public function repay()
     {
-        $debtSum = $this->profile->debt_sum;
-
-        if ($this->repaymentAmount > $debtSum || $this->repaymentAmount <= 0) {
+        if ($this->repaymentAmount > $this->profile->debt_sum || $this->repaymentAmount <= 0) {
             $this->addError('message', 'Неверные данные');
             return;
         }
 
-        $profile = Profile::find($this->profile->id);
-        $debtOrders = json_decode($profile->debt_orders, true) ?? [];
+        $debtOrders = json_decode($this->profile->debt_orders, true) ?? [];
         $debtOrdersNew = [];
         $repaymentAmount = $this->repaymentAmount;
 
-        foreach($debtOrders as $key => $debtOrder) {
+        $i = 0;
+
+        foreach($debtOrders[$this->company->id][$this->cashbook->id] as $key => $debtOrder) {
 
             $balance = $debtOrder['sum'] - $repaymentAmount;
 
             if ($balance < 0) {
                 $repaymentAmount = abs($balance);
-                $profile->debt_sum -= $debtOrder['sum'];
+                $this->profile->debt_sum -= $debtOrder['sum'];
             } elseif ($balance == 0) {
                 $repaymentAmount = 0;
-                $profile->debt_sum = 0;
+                $this->profile->debt_sum = 0;
             } else {
-                $profile->debt_sum -= $repaymentAmount;
-                $debtOrdersNew[$key]['sum'] = $balance;
-                $debtOrdersNew[$key]['docNo'] = $debtOrder['docNo'];
+                $this->profile->debt_sum -= $repaymentAmount;
+
+                $debtOrdersNew[$this->company->id][$this->cashbook->id][$i++] = [
+                    'sum' => $balance,
+                    'docNo' => $debtOrder['docNo'],
+                ];
             }
         }
 
-        $profile->debt_orders = json_encode($debtOrdersNew);
+        $this->profile->debt_orders = json_encode($debtOrdersNew);
 
-        if ($profile->debt_sum == 0) {
-            $profile->is_debtor = null;
+        if ($this->profile->debt_sum == 0) {
+            $this->profile->is_debtor = null;
         }
 
-        $profile->save();
+        $this->profile->save();
 
         $paymentDetail['typeId'] = $this->paymentTypeId;
         $paymentDetail['type'] = $this->paymentTypes->where('id', $this->paymentTypeId)->pluck('slug')->first();
@@ -106,6 +110,7 @@ class ListOfDebtors extends Component
         $paymentDetail['repaymentAmount'] = $this->repaymentAmount;
 
         $this->makeRepaymentDocs($paymentDetail);
+        $this->emit('$refresh');
         $this->dispatchBrowserEvent('show-toast', [
             'message' => 'Операция выполнена', 'selector' => 'closeRepaymentOfDebt'
         ]);
@@ -159,7 +164,31 @@ class ListOfDebtors extends Component
 
     public function render()
     {
-        $debtors = Profile::where('is_debtor', 1)->paginate(30);
+        $debtors = Profile::query()
+            ->where('is_debtor', 1)
+            ->whereJsonContains('debt_orders->'.$this->company->id.'->'.$this->cashbook->id, [])
+            ->paginate(30);
+
+        $i = 0;
+
+        /*foreach($debtors as $debtor) {
+
+            $debtOrdersNew = [];
+            $debtOrders = json_decode($debtor->debt_orders, true) ?? [];
+
+            foreach ($debtOrders[$this->company->id][$this->cashbook->id] as $debtOrder) {
+
+                $debtOrdersNew[$this->company->id][$this->cashbook->id][$i++] = [
+                        'sum' => $debtOrder['sum'],
+                        'docNo' => $debtOrder['docNo'],
+                    ];
+
+                $debtor->debt_orders = json_encode($debtOrdersNew);
+                $debtor->save();
+            }
+
+        }*/
+
 
         return view('livewire.cashbook.list-of-debtors', ['debtors' => $debtors]);
     }

@@ -19,7 +19,12 @@ class PriceTags extends Component
     public $productName = true;
     public $priceUnit = true;
     public $barcode = true;
-    public $size = 70;
+    public $companyNameFS = 14;
+    public $productNameFS = 14;
+    public $priceUnitFS = 18;
+    public $barcodeWidth = 190;
+    public $width = 60;
+    public $height = 35;
     public $count = 1;
     public $mmInPX = 3.78;
 
@@ -35,7 +40,8 @@ class PriceTags extends Component
 
     public function updatedSize()
     {
-        $this->size = $this->size ? $this->size : 70;
+        $this->width = $this->width ? $this->width : 70;
+        $this->height = $this->height ? $this->height : 35;
     }
 
     public function updatedCount()

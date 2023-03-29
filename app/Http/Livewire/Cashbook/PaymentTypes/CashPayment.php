@@ -32,6 +32,10 @@ class CashPayment extends Component
         $this->company = auth()->user()->profile->company;
         $this->sumOfCart = Index::sumOfCart();
         $this->paymentType = PaymentType::where('slug', 'cash-payment')->first();
+
+        if (empty(session()->get('cartProducts'))) {
+            return redirect($this->lang.'/cashdesk');
+        }
     }
 
     public function updated($key, $value)

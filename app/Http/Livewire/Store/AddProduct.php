@@ -62,6 +62,7 @@ class AddProduct extends Component
         $this->companies = Company::where('is_supplier', 1)->get();
         $this->product = new Product;
         $this->product->type = 1;
+        $this->docNo = $this->generateIncomingStoreDocNo($this->store->id);
     }
 
     public function updated($key)
@@ -145,6 +146,7 @@ class AddProduct extends Component
 
         $product = Product::create([
             'user_id' => auth()->user()->id,
+            // 'in_company_id' => $this->company->id,
             'company_id' => $this->product->company_id ?? 0,
             'category_id' => $this->product->category_id,
             'slug' => Str::slug($this->product->title),
@@ -172,7 +174,10 @@ class AddProduct extends Component
 
             foreach ($this->countInStores as $storeId => $countInStore) {
 
-                $docNo = $this->generateIncomingStoreDocNo($storeId);
+                $docNoParts = explode('/', $this->docNo);
+                $firstDocNo = $docNoParts[0] == $storeId ? $this->docNo : null;
+
+                $docNo = $this->generateIncomingStoreDocNo($storeId, $firstDocNo);
 
                 $productData[$product->id]['purchase_price'] = $product->purchase_price;
                 $productData[$product->id]['count'] = $countInStore;
@@ -223,8 +228,6 @@ class AddProduct extends Component
         $currency = $this->company->currency->symbol;
         $stores = $this->company->stores;
         $units = Unit::all();
-
-        $this->docNo = $this->generateIncomingStoreDocNo($this->store->id);
 
         return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
             ->layout('livewire.store.layout');

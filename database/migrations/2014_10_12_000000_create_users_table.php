@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->char('address')->nullable();
             $table->integer('balance')->default(0);
+            $table->integer('company_id')->nullable();
             $table->boolean('is_customer')->default(0);
             $table->boolean('is_worker')->default(0);
             $table->integer('status')->default(1);

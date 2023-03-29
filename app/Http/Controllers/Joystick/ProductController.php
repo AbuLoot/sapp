@@ -21,9 +21,13 @@ use App\Models\Category;
 use App\Models\Currency;
 use App\Traits\ImageTrait;
 
+use App\Models\Store;
+
 class ProductController extends Controller
 {
     use ImageTrait;
+
+    public $companyId;
 
     public function index()
     {
@@ -33,10 +37,13 @@ class ProductController extends Controller
             $products = Product::orderBy('updated_at','desc')->paginate(50);
         }
         else {
-            $products = Product::where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
+            $products = Product::where('in_company_id', $this->companyId)
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('updated_at','desc')
+                ->paginate(50);
         }
 
-        $categories = Category::orderBy('sort_id')->get()->toTree();
+        $categories = Category::where('company_id', $this->companyId)->orderBy('sort_id')->get()->toTree();
         $modes = Mode::all();
 
         return view('joystick.products.index', ['categories' => $categories, 'products' => $products, 'modes' => $modes]);
@@ -47,8 +54,8 @@ class ProductController extends Controller
         $this->authorize('create', Product::class);
 
         $currency = Currency::where('lang', (($lang == 'ru') ? 'kz' : $lang))->first();
-        $categories = Category::get()->toTree();
-        $companies = Company::orderBy('sort_id')->get();
+        $categories = Category::where('company_id', $this->companyId)->get()->toTree();
+        $companies = Company::where('company_id', $this->companyId)->orderBy('sort_id')->get();
         $projects = Project::get()->toTree();
         $regions = Region::orderBy('sort_id')->get()->toTree();
         $options = Option::orderBy('sort_id')->get();
@@ -92,10 +99,11 @@ class ProductController extends Controller
 
         $product = new Product;
         $product->sort_id = ($request->sort_id > 0) ? $request->sort_id : $product->count() + 1;
-        $product->user_id = auth()->user()->id;
         $product->category_id = $request->category_id;
-        $product->project_id = $request->project_id ?? 0;
+        $product->user_id = auth()->user()->id;
+        $product->in_company_id = $this->companyId;
         $product->company_id = $request->company_id ?? 0;
+        $product->project_id = $request->project_id ?? 0;
         $product->slug = Str::slug($request->title);
         $product->title = $request->title;
         $product->meta_title = $request->meta_title;
@@ -137,9 +145,9 @@ class ProductController extends Controller
 
         $this->authorize('update', $product);
 
-        $categories = Category::get()->toTree();
+        $categories = Category::where('company_id', $this->companyId)->get()->toTree();
         $currency = Currency::where('lang', (($lang == 'ru') ? 'kz' : $lang))->first();
-        $companies = Company::orderBy('sort_id')->get();
+        $companies = Company::where('company_id', $this->companyId)->orderBy('sort_id')->get();
         $projects = Project::get()->toTree();
         $regions = Region::orderBy('sort_id')->get()->toTree();
         $options = Option::orderBy('sort_id')->get();
@@ -158,7 +166,7 @@ class ProductController extends Controller
             // 'barcode' => 'required',
         ]);
 
-        $product = Product::findOrFail($id);
+        $product = Product::where('in_company_id', $this->companyId)->findOrFail($id);
 
         $this->authorize('update', $product);
 
@@ -205,8 +213,8 @@ class ProductController extends Controller
 
         $product->sort_id = ($request->sort_id > 0) ? $request->sort_id : $product->count() + 1;
         $product->category_id = $request->category_id;
-        $product->project_id = $request->project_id ?? 0;
         $product->company_id = $request->company_id ?? 0;
+        $product->project_id = $request->project_id ?? 0;
         $product->slug = Str::slug($request->title);
         $product->title = $request->title;
         $product->meta_title = $request->meta_title;
@@ -327,7 +335,7 @@ class ProductController extends Controller
 
     public function destroy($lang, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::where('in_company_id', $this->companyId)->findOrFail($id);
 
         $this->authorize('delete', $product);
 

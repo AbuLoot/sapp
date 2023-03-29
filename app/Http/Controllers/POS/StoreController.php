@@ -12,11 +12,13 @@ use App\Models\Store;
 
 class StoreController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         // $this->authorize('viewAny', Store::class);
 
-        $stores = Store::paginate(50);
+        $stores = Store::where('company_id', $this->companyId)->paginate(50);
 
         return view('pos.stores.index', compact('stores'));
     }
@@ -39,10 +41,8 @@ class StoreController extends Controller
             'ip_address' => 'required|min:6',
         ]);
 
-        $company = auth()->user()->profile->company;
-
         $store = new Store;
-        $store->company_id = $company->id;
+        $store->company_id = $this->companyId;
         $store->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $store->title = $request->title;
         $store->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
@@ -58,7 +58,7 @@ class StoreController extends Controller
     public function edit($lang, $id)
     {
         $regions = Region::orderBy('sort_id')->get()->toTree();
-        $store = Store::findOrFail($id);
+        $store = Store::where('company_id', $this->companyId)->findOrFail($id);
 
         // $this->authorize('update', $store);
 
@@ -71,11 +71,11 @@ class StoreController extends Controller
             'title' => 'required|min:2|max:80',
         ]);
 
-        $store = Store::findOrFail($id);
+        $store = Store::where('company_id', $this->companyId)->findOrFail($id);
 
         // $this->authorize('update', $store);
 
-        // $store->company_id = $company->id;
+        // $store->company_id = $this->companyId;
         $store->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $store->title = $request->title;
         $store->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
@@ -90,7 +90,7 @@ class StoreController extends Controller
 
     public function destroy($lang, $id)
     {
-        $store = Store::find($id);
+        $store = Store::where('company_id', $this->companyId)->find($id);
 
         // $this->authorize('delete', $store);
 

@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\POS\Reports;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\POS\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Company;
 
 class ContractorsReportController extends Controller
 {
+    public $companyId;
+
     public function index(Request $request)
     {
         $startDate = $request->start_date ?? '2022-01-01';
         $endDate = $request->end_date ?? now();
 
         $suppliers = Company::query()
+            ->where('companies.company_id', $this->companyId)
             ->where('is_supplier', 1)
             ->join('incoming_docs', function ($join) use ($startDate, $endDate) {
                 $join->on('companies.id', '=', 'incoming_docs.contractor_id')

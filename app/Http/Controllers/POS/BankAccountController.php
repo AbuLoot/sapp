@@ -11,11 +11,13 @@ use App\Models\BankAccount;
 
 class BankAccountController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         // $this->authorize('viewAny', BankAccount::class);
 
-        $bank_accounts = BankAccount::paginate(50);
+        $bank_accounts = BankAccount::where('company_id', $this->companyId)->paginate(50);
 
         return view('pos.bank_accounts.index', compact('bank_accounts'));
     }
@@ -36,10 +38,8 @@ class BankAccountController extends Controller
             'title' => 'required|min:2|max:80|unique:bank_accounts',
         ]);
 
-        $company = auth()->user()->profile->company->first();
-
         $bank_account = new BankAccount;
-        $bank_account->company_id = $company->id;
+        $bank_account->company_id = $this->companyId;
         $bank_account->title = $request->title;
         $bank_account->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
         $bank_account->account_number = $request->account_number;
@@ -54,7 +54,7 @@ class BankAccountController extends Controller
 
     public function edit($lang, $id)
     {
-        $bank_account = BankAccount::findOrFail($id);
+        $bank_account = BankAccount::where('company_id', $this->companyId)->findOrFail($id);
         $currencies = Currency::orderBy('sort_id')->get();
 
         // $this->authorize('update', $bank_account);
@@ -68,11 +68,11 @@ class BankAccountController extends Controller
             'title' => 'required|min:2|max:80',
         ]);
 
-        $bank_account = BankAccount::findOrFail($id);
+        $bank_account = BankAccount::where('company_id', $this->companyId)->findOrFail($id);
 
         // $this->authorize('update', $bank_account);
 
-        // $bank_account->company_id = $company->id;
+        // $bank_account->company_id = $this->companyId;
         $bank_account->title = $request->title;
         $bank_account->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
         $bank_account->account_number = $request->account_number;
@@ -88,7 +88,7 @@ class BankAccountController extends Controller
 
     public function destroy($lang, $id)
     {
-        $bank_account = BankAccount::find($id);
+        $bank_account = BankAccount::where('company_id', $this->companyId)->find($id);
 
         // $this->authorize('delete', $bank_account);
 

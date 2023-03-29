@@ -20,12 +20,12 @@
             <tbody>
               <?php $currency = $company->currency->symbol; ?>
               @foreach($debtors as $debtor)
-                <?php $debtOrders = json_decode($debtor->debt_orders, true) ?? []; ?>
+                <?php $debtOrders = json_decode($debtor->debt_orders, true) ?? []; // dd($debtOrders); ?>
                 <tr>
                   <th scope="row">{{ $debtor->user->name . $debtor->user->username }}</th>
                   <td>{{ $debtor->debt_sum . $currency }}</td>
                   <td>
-                    @foreach($debtOrders as $debtOrder)
+                    @foreach($debtOrders[$company->id][$cashbook->id] as $docNoLey => $debtOrder)
                       №{{ $debtOrder['docNo'] ?? null }},
                     @endforeach
                   </td>
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-dark btn-lg text-end" disabled><i class="be bi-printer-fill me-2"></i> Печать</button>
+          <a href="/{{ $lang }}/cashdesk/docsprint/list-of-debtors/{{ $cashbook->id }}" class="btn btn-dark btn-lg text-end" disabled><i class="be bi-printer-fill me-2"></i> Печать</a>
         </div>
       </div>
     </div>

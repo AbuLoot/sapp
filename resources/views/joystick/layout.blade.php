@@ -32,8 +32,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/pos"><i class="material-icons">point_of_sale</i> <b>Sanapp POS</b>&nbsp;</a>
-          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/admin"><i class="material-icons text-primary">sports_esports</i> <b>Joystick</b></a>
+          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/pos"><i class="material-icons">point_of_sale</i> <b>POS</b>&nbsp;</a>
+          <a class="navbar-brand text-uppercase" href="/{{ $lang }}/admin"><i class="material-icons text-primary">admin_panel_settings</i> <b>Admin</b></a>
         </div>
 
         <div class="navbar-collapse collapse">

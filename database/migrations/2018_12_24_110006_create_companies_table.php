@@ -15,6 +15,7 @@ class CreateCompaniesTable extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('company_id')->nullable();
             $table->integer('sort_id')->nullable();
             $table->integer('region_id')->nullable();
             $table->integer('currency_id')->nullable();
@@ -30,6 +31,7 @@ class CreateCompaniesTable extends Migration
             $table->char('actual_address')->nullable();
             $table->boolean('is_supplier')->default(0);
             $table->boolean('is_customer')->default(0);
+            $table->boolean('sn_client')->default(0);
             $table->integer('status')->default(1);
             $table->timestamps();
         });

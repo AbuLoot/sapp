@@ -51,7 +51,7 @@
                   <i class="bi bi-person-circle"></i> 
                 </div>
                 <div class="ms-3">
-                  <h6 class="mt-1 mb-0">{{ $customer->name.' '.$customer->lastname }}</h6>
+                  <h6 class="mt-1 mb-0">{{ $customer->name.' '.$customer->lastname.' / '.$customer->email }}</h6>
                   <a href="#" class="stretched-link">{{ $customer->tel }}</a>
                 </div>
               </div>

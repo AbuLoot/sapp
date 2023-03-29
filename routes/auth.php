@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\RegisteredCompanyController;
+use App\Http\Controllers\Auth\SelectCompanyController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('register-company', [RegisteredCompanyController::class, 'create'])->name('register-company');
+    Route::post('register-company', [RegisteredCompanyController::class, 'store']);
+
+    Route::get('select-company', [SelectCompanyController::class, 'create'])->name('select-company');
+    Route::post('select-company', [SelectCompanyController::class, 'store']);
 
     Route::get('verify-email', [EmailVerificationPromptController::class, '__invoke'])->name('verification.notice');
     Route::get('verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])

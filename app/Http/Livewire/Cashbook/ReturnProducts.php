@@ -210,8 +210,8 @@ class ReturnProducts extends Component
         // Outgoing Order & Incoming Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-2', 'forma-z-1'])->get();
 
-        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
-        $storeDocNo = $this->generateOutgoingStoreDocNo($store->id);
+        $cashDocNo = $this->generateOutgoingCashDocNo($cashbook->id);
+        $storeDocNo = $this->generateIncomingStoreDocNo($store->id);
 
         // Cash Docs
         $outgoingOrder = new OutgoingOrder;

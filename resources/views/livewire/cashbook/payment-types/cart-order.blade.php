@@ -22,7 +22,7 @@
       </tr>
     </thead>
     <tbody>
-      @forelse($cartProducts as $index => $cartProduct)
+      @forelse($sortedCartProducts as $index => $cartProduct)
         <tr>
           <th>{{ $cartProduct->title }}</th>
           <?php

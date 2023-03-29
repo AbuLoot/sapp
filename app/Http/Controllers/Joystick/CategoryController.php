@@ -11,11 +11,16 @@ use Storage;
 
 class CategoryController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         $this->authorize('viewAny', Category::class);
 
-        $categories = Category::orderBy('sort_id')->get()->toTree();
+        $categories = Category::orderBy('sort_id')
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->get()->toTree();
 
         return view('joystick.categories.index', compact('categories'));
     }
@@ -27,10 +32,16 @@ class CategoryController extends Controller
         ]);
 
         if (in_array($request->action, ['0', '1', '2', '3'])) {
-            Category::whereIn('id', $request->categories_id)->update(['status' => $request->action]);
+            Category::whereIn('id', $request->categories_id)
+                ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                    return $query->where('company_id', $this->companyId);
+                })->update(['status' => $request->action]);
         }
         elseif($request->action == 'destroy') {
-            Category::whereIn('id', $request->categories_id)->delete();
+            Category::whereIn('id', $request->categories_id)
+                ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                    return $query->where('company_id', $this->companyId);
+                })->delete();
         }
 
         return response()->json(['status' => true]);
@@ -40,7 +51,10 @@ class CategoryController extends Controller
     {
         $this->authorize('create', Category::class);
 
-        $categories = Category::get()->toTree();
+        $categories = Category::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->get()->toTree();
 
         return view('joystick.categories.create', ['categories' => $categories]);
     }
@@ -54,6 +68,7 @@ class CategoryController extends Controller
         ]);
 
         $category = new Category;
+        $category->company_id = $this->companyId;
         $category->sort_id = ($request->sort_id > 0) ? $request->sort_id : $category->count() + 1;
         $category->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
         $category->title = trim($request->title);
@@ -80,11 +95,17 @@ class CategoryController extends Controller
 
     public function edit($lang, $id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->findOrFail($id);
 
         $this->authorize('update', $category);
 
-        $categories = Category::get()->toTree();
+        $categories = Category::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->get()->toTree();
 
         return view('joystick.categories.edit', compact('category', 'categories'));
     }
@@ -95,7 +116,10 @@ class CategoryController extends Controller
             'title' => 'required|min:2|max:80',
         ]);
 
-        $category = Category::findOrFail($id);
+        $category = Category::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->findOrFail($id);
 
         $this->authorize('update', $category);
 
@@ -125,7 +149,10 @@ class CategoryController extends Controller
 
     public function destroy($lang, $id)
     {
-        $category = Category::find($id);
+        $category = Category::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->find($id);
 
         $this->authorize('delete', $category);
 

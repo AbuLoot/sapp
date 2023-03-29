@@ -7,7 +7,7 @@
   @include('components.alerts')
 
   <?php 
-    $company = auth()->user()->profile->company;
+    $company = session('company');
     $currency = $company->currency->symbol ?? null;
 
     // Cash Operations Info

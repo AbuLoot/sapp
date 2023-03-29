@@ -179,7 +179,7 @@
             </div>
             <div class="row">
               <div class="col d-grid" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-primary" disabled><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
+                <!-- <button type="button" class="btn btn-primary" disabled><i class="bi bi-pencil-square me-2"></i> Редактировать</button> -->
               </div>
               <div class="col d-grid" role="group" aria-label="Basic example">
                 @if($docDetail->operation_code == 'writeoff-products')

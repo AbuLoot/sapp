@@ -16,6 +16,8 @@ use App\Models\CashDoc;
 
 class OfficeController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         $operationCodes = [
@@ -35,15 +37,16 @@ class OfficeController extends Controller
         $previousYear = now()->subYear()->format('Y').'-01-01';
 
         $incomes = IncomingOrder::query()
+            ->where('company_id', $this->companyId)
             ->where('created_at', '>', $previousYear)
             ->where('created_at', '<=', now())
             ->get();
 
         return view('pos.office.index', [
             'incomes'   => $incomes,
-            'countUsers'    => User::count(),
-            'countStores'   => Store::count(),
-            'products' => Product::get(),
+            'countUsers'    => User::where('company_id', $this->companyId)->count(),
+            'countStores'   => Store::where('company_id', $this->companyId)->count(),
+            'products' => Product::where('in_company_id', $this->companyId)->get(),
         ]);
     }
 }

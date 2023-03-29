@@ -19,8 +19,9 @@ class Index extends Component
     public $search;
     public $units;
     public $type;
-    public $categoryId;
+    public $company;
     public $companyId;
+    public $categoryId;
     public $productsId = [];
     public $toggleMode = false;
     public $printMode = false;
@@ -30,6 +31,7 @@ class Index extends Component
     {
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
+        $this->company = auth()->user()->profile->company;
     }
 
     public function resetFilter()
@@ -110,6 +112,7 @@ class Index extends Component
             ->when($this->companyId, function($query) {
                 $query->where('company_id', $this->companyId);
             })
+            // ->where('status', 33)
             ->paginate(30);
 
         if ($this->toggleMode) {

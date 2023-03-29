@@ -48,7 +48,7 @@
       <div class="container d-flex flex-wrap">
 
         <!-- Search Products -->
-        <form class="col-4 col-lg-4 me-4" style="position: relative;">
+        <form class="col-4 col-lg-4 me-4" style="position: relative;" wire:submit.prevent="getByBarcode">
           <div class="input-group">
             <input wire:model="search" onclick="setFocus(this, 'indexInput-search')" type="search" id="search" class="form-control form-control-lg" placeholder="Поиск по названию, штрихкоду..." aria-label="Search">
             <button class="btn btn-outline-secondary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvasBottom"><i class="bi bi-keyboard-fill"></i></button>
@@ -145,14 +145,23 @@
             </tr>
           </thead>
           <tbody>
-            @forelse($cartProducts as $index => $cartProduct)
+            <?php
+              $sortedCartProducts = [];
+
+              foreach($cartProducts as $cartProduct) {
+                  $sortedCartProducts[$cartProduct->time] = $cartProduct;
+              }
+
+              krsort($sortedCartProducts);
+            ?>
+            @forelse($sortedCartProducts as $index => $cartProduct)
               <?php
                 $barcodes = json_decode($cartProduct->barcodes, true) ?? [];
                 $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
                 $countInStore = $countInStores[$store->id] ?? 0;
               ?>
               <tr>
-                <td>{{ $cartProduct->title }}</td>
+                <td>{{ $cartProduct->sortId.' '.$cartProduct->title }}</td>
                 <td>
                   @foreach($barcodes as $barcode)
                     {{ $barcode }}<br>
@@ -332,6 +341,16 @@
 </div>
 
 @section('scripts')
+  <script type="text/javascript">
+    // Toast Script
+    window.addEventListener('area-focus', event => {
+
+      var areaEl = document.getElementById('search');
+      areaEl.value = '';
+      areaEl.focus();
+    })
+  </script>
+
   <script type="text/javascript">
     // Offcanvas
     const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })

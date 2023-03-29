@@ -44,10 +44,7 @@ use App\Http\Controllers\POS\Reports\CashReconciliationController;
 
 // Site Controllers
 use App\Http\Controllers\InputController;
-// use App\Http\Controllers\ShopController;
 // use App\Http\Controllers\ProfileController;
-// use App\Http\Controllers\CartController;
-// use App\Http\Controllers\FavouriteController;
 // use App\Http\Controllers\PostController as NewsController;
 use App\Http\Controllers\PageController as SiteController;
 
@@ -82,9 +79,10 @@ use App\Http\Livewire\Cashbook\CashDocsPrint;
 use App\Http\Controllers\Auth\StorageVerificationController;
 use App\Http\Controllers\Auth\CashdeskVerificationController;
 
+
 // Sanapp Storage
 Route::redirect('storage', '/'.app()->getLocale().'/storage');
-Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|storekeeper', 'verify.storage']], function () {
+Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:admin|manager|accountant|chief-storekeeper|storekeeper', 'verify.storage']], function () {
 
     // Custom Auth Code
     Route::get('verification', [StorageVerificationController::class, 'create'])->withoutMiddleware('verify.storage');
@@ -111,7 +109,7 @@ Route::group(['prefix' => '{lang}/storage', 'middleware' => ['auth' , 'roles:adm
 
 // Sanapp Cashdesk
 Route::redirect('cashdesk', '/'.app()->getLocale().'/cashdesk');
-Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|cashier', 'verify.cashdesk']], function () {
+Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:admin|manager|accountant|chief-cashier|cashier', 'verify.cashdesk']], function () {
 
     // Custom Auth Code
     Route::get('verification', [CashdeskVerificationController::class, 'create'])->withoutMiddleware('verify.cashdesk');
@@ -132,9 +130,10 @@ Route::group(['prefix' => '{lang}/cashdesk', 'middleware' => ['auth' , 'roles:ad
 
 // Sanapp POS Administration
 Route::redirect('pos', '/'.app()->getLocale().'/pos');
-Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
+Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|manager|accountant']], function () {
 
     Route::get('/', [OfficeController::class, 'index']);
+    Route::get('/selection', [AdminController::class, 'index']);
 
     Route::resources([
         'cashdocs' => CashDocController::class,
@@ -223,31 +222,8 @@ Route::post('send-app', [InputController::class, 'sendApp']);
 // Shop
 // Route::get('/', [ShopController::class, 'index']);
 Route::get('/', function() {
-    echo '<h1>In developing...</h1>';
+    return '<h1>In developing...</h1>';
 });
-
-
-// Route::get('b/{project}/{id}', [ShopController::class, 'projectProducts']);
-// Route::get('b/{project}/{subproject}/{id}', [ShopController::class, 'subProjectProducts']);
-// Route::get('c/{category}/{id}', [ShopController::class, 'categoryProducts']);
-// Route::get('c/{category}/{subcategory}/{id}', [ShopController::class, 'subCategoryProducts']);
-// Route::get('p/{id}-{product}', [ShopController::class, 'product']);
-// Route::post('comment-product', [ShopController::class, 'saveComment']);
-
-
-// Cart Actions
-// Route::get('cart', [CartController::class, 'cart']);
-// Route::get('checkout', [CartController::class, 'checkout']);
-// Route::get('add-to-cart/{id}', [CartController::class, 'addToCart']);
-// Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart']);
-// Route::get('clear-cart', [CartController::class, 'clearCart']);
-// Route::post('store-order', [CartController::class, 'storeOrder']);
-// Route::get('destroy-from-cart/{id}', [CartController::class, 'destroy']);
-
-
-// Favourite Actions
-// Route::get('favorite', [FavouriteController::class, 'getFavorite']);
-// Route::get('toggle-favourite/{id}', [FavouriteController::class, 'toggleFavourite']);
 
 // User Profile
 // Route::group(['middleware' => 'auth'], function() {
@@ -269,8 +245,11 @@ Route::get('i/contacts', [SiteController::class, 'contacts']);
 Route::get('i/{page}', [SiteController::class, 'page']);
 
 Route::redirect('apps', '/'.app()->getLocale().'/apps');
-Route::get('{lang}/apps', function () {
-    return view('apps');
-})->middleware(['auth'])->name('apps');
+Route::group(['prefix' => '{lang}', 'middleware' => ['auth', 'verify.company']], function() {
+
+    Route::get('apps', function () {
+        return view('apps');
+    })->name('apps');
+});
 
 require __DIR__.'/auth.php';

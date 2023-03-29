@@ -15,8 +15,8 @@ class CreateRevisionsTable extends Migration
     {
         Schema::create('revisions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('store_id');
             $table->integer('company_id');
+            $table->integer('store_id');
             $table->integer('user_id');
             $table->string('doc_no');
             $table->integer('doc_type_id');

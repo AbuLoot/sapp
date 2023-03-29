@@ -13,11 +13,16 @@ use Storage;
 
 class CompanyController extends Controller
 {
+    public $companyId;
+
     public function index()
     {
         $this->authorize('viewAny', Company::class);
 
-        $companies = Company::orderBy('sort_id')->paginate(50);
+        $companies = Company::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->orderBy('sort_id')->paginate(50);
 
         return view('joystick.companies.index', compact('companies'));
     }
@@ -29,12 +34,19 @@ class CompanyController extends Controller
         ]);
 
         if (in_array($request->action, ['0', '1', '2', '3'])) {
-            Company::whereIn('id', $request->companies_id)->update(['status' => $request->action]);
+            Company::query()
+                ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                    return $query->where('company_id', $this->companyId);
+                })->whereIn('id', $request->companies_id)->update(['status' => $request->action]);
         }
         elseif($request->action == 'destroy') {
 
             foreach($request->companies_id as $company_id) {
-                $company = company::find($company_id);
+                $company = Company::query()
+                    ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                        return $query->where('company_id', $this->companyId);
+                    })->find($company_id);
+
                 $this->authorize('delete', $company);
 
                 if (file_exists('img/companies/'.$company->image) && $company->image != 'no-image-mini.png') {
@@ -75,6 +87,7 @@ class CompanyController extends Controller
         }
 
         $company->sort_id = ($request->sort_id > 0) ? $request->sort_id : $company->count() + 1;
+        $company->company_id = $this->companyId;
         $company->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $company->currency_id = $request->currency_id;
         $company->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
@@ -98,8 +111,11 @@ class CompanyController extends Controller
     public function edit($lang, $id)
     {
         $regions = Region::orderBy('sort_id')->get()->toTree();
-        $company = Company::findOrFail($id);
         $currencies = Currency::get();
+        $company = Company::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->findOrFail($id);
 
         $this->authorize('update', $company);
 
@@ -113,7 +129,10 @@ class CompanyController extends Controller
             'title' => 'required|min:2|max:80',
         ]);
 
-        $company = Company::findOrFail($id);
+        $company = Company::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->findOrFail($id);
 
         $this->authorize('update', $company);
 
@@ -150,7 +169,10 @@ class CompanyController extends Controller
 
     public function destroy($lang, $id)
     {
-        $company = Company::find($id);
+        $company = Company::query()
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
+                return $query->where('company_id', $this->companyId);
+            })->find($id);
 
         $this->authorize('delete', $company);
 

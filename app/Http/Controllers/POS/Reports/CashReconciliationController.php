@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\POS\Reports;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\POS\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\User;
@@ -12,6 +12,8 @@ use App\Models\IncomingOrder;
 
 class CashReconciliationController extends Controller
 {
+    public $companyId;
+
     public function index(Request $request)
     {
         $startDate = $request->start_date ?? '2022-01-01';
@@ -23,6 +25,7 @@ class CashReconciliationController extends Controller
         $incomes = [];
 
         $cashiers = User::query()
+            ->where('company_id', $this->companyId)
             ->where('is_worker', true)
             ->join('role_user', function ($join) {
                 $join->on('users.id', '=', 'role_user.user_id')
@@ -35,12 +38,14 @@ class CashReconciliationController extends Controller
             $cashierObj = User::find($cashierId);
 
             $cashShiftJournal = CashShiftJournal::query()
+                ->where('company_id', $this->companyId)
                 ->where('from_user_id', $cashierId)
                 ->orWhere('to_user_id', $cashierId)
                 ->orderBy('id', 'desc')
                 ->get();
 
             $incomes = IncomingOrder::query()
+                ->where('company_id', $this->companyId)
                 ->where('user_id', $cashierId)
                 ->where('operation_code', 'payment-products')
                 ->get();

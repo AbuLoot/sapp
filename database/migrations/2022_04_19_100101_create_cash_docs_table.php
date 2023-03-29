@@ -15,8 +15,8 @@ class CreateCashDocsTable extends Migration
     {
         Schema::create('cash_docs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('cashbook_id');
             $table->integer('company_id');
+            $table->integer('cashbook_id');
             $table->integer('user_id');
             $table->char('order_type');
             $table->integer('order_id');

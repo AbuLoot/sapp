@@ -12,6 +12,7 @@ use App\Models\IncomingDoc;
 use App\Models\OutgoingDoc;
 use App\Models\PaymentType;
 use App\Models\Product;
+use App\Models\Profile;
 use App\Models\User;
 use App\Models\Unit;
 
@@ -20,6 +21,7 @@ class CashDocsPrint extends Component
     public $lang;
     public $company;
     public $data = [];
+    public $debtors = [];
     public $units;
     public $view;
 
@@ -44,6 +46,9 @@ class CashDocsPrint extends Component
                 break;
             case 'outgoing-doc':
                 $this->outgoingDoc($id);
+                break;
+            case 'list-of-debtors':
+                $this->listOfDebtors($id);
                 break;
         }
     }
@@ -234,6 +239,25 @@ class CashDocsPrint extends Component
         ];
 
         $this->view = 'outgoing-doc';
+    }
+
+    public function listOfDebtors($cashbookId)
+    {
+        $this->debtors = Profile::query()
+            ->where('is_debtor', 1)
+            ->whereJsonContains('debt_orders->'.$this->company->id.'->'.$cashbookId, [])
+            ->get();
+
+        $this->data = [
+            'companyName' => $this->company->title,
+            'companyBin' => $this->company->bin,
+            'cashbookId' => $cashbookId,
+            'units' => $this->units,
+            'currency' => $this->company->currency->symbol,
+            'prevPage' => url()->previous(),
+        ];
+
+        $this->view = 'list-of-debtors';
     }
 
     public function render()

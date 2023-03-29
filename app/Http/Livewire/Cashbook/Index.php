@@ -88,7 +88,7 @@ class Index extends Component
         }
     }
 
-    public function sumOfCart()
+    public static function sumOfCart()
     {
         // Count The Order
         $percent = 0;
@@ -189,6 +189,11 @@ class Index extends Component
 
     public function addToCart($id)
     {
+        if (in_array($id, array_keys($this->cartProducts))) {
+            $this->search = '';
+            return $this->dispatchBrowserEvent('show-toast', ['message' => 'Item already added in cart']);
+        }
+
         $product = Product::findOrFail($id);
 
         $countInStores = json_decode($product->count_in_stores, true) ?? [];
@@ -202,6 +207,7 @@ class Index extends Component
         $cartProducts[$id]['countInCart'] = ($countInStore == 0) ? 0 : 1;
         $cartProducts[$id]['discount'] = null;
         $cartProducts[$id]['input'] = false;
+        $cartProducts[$id]['time'] = time();
 
         session()->put('cartProducts', $cartProducts);
         $this->search = '';
@@ -315,6 +321,17 @@ class Index extends Component
         ]);
     }
 
+    public function getByBarcode()
+    {
+        $product = Product::select('id')
+            ->where('barcodes', 'like', '%'.$this->search.'%')
+            ->first();
+
+        $this->addToCart($product->id);
+
+        $this->dispatchBrowserEvent('area-focus');
+    }
+
     public function render()
     {
         $products = [];
@@ -334,14 +351,19 @@ class Index extends Component
             $customers = User::where('name', 'like', $this->searchCustomer.'%')
                 ->orWhere('lastname', 'like', $this->searchCustomer.'%')
                 ->orWhere('tel', 'like', $this->searchCustomer.'%')
-                ->get()->take(7);
+                ->get()
+                ->take(7);
         }
 
         $this->priceMode = session()->get('priceMode');
         $this->cartProducts = session()->get('cartProducts') ?? [];
         $this->totalDiscount = session()->get('totalDiscount');
 
-        return view('livewire.cashbook.index', ['products' => $products, 'customers' => $customers, 'sumOfCart' => $sumOfCart])
+        return view('livewire.cashbook.index', [
+                'products' => $products,
+                'customers' => $customers,
+                'sumOfCart' => $sumOfCart
+            ])
             ->layout('livewire.cashbook.layout');
     }
 }

@@ -96,9 +96,9 @@
             $sum += $product['purchase_price'] * $product['count'];
           ?>
           <tr>
-            <td>{{ $product['title'] }}</td>
+            <td>{{ $product['title'] ?? 'No name' }}</td>
             <td>
-              @if($product['barcodes'] != null)
+              @if(is_array($product['barcodes']))
                 @foreach($product['barcodes'] as $barcode)
                   {{ $barcode }}
                 @endforeach

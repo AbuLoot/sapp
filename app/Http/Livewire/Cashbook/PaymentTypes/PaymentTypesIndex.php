@@ -19,7 +19,6 @@ class PaymentTypesIndex extends Component
     public $lang;
     public $company;
     public $sumOfCart;
-    public $cartProducts;
     public $paymentTypes;
 
     protected $listeners = ['makeDocs'];
@@ -50,8 +49,6 @@ class PaymentTypesIndex extends Component
 
     public function render()
     {
-        $this->cartProducts = session()->get('cartProducts') ?? [];
-
         return view('livewire.cashbook.payment-types.payment-types-index')
             ->layout('livewire.cashbook.layout');
     }

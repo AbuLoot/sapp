@@ -37,29 +37,81 @@
       <div class="offset-lg-2 col-lg-8">
         <div class="row">
           <div class="col-6">
-            <div class="list-group mb-3">
-              <label class="list-group-item">
-                <input wire:model="companyName" class="form-check-input me-2" type="checkbox">
-                <span>Company Name</span>
-              </label>
-              <label class="list-group-item">
-                <input wire:model="productName" class="form-check-input me-2" type="checkbox">
-                <span>Product Name</span>
-              </label>
-              <label class="list-group-item">
-                <input wire:model="priceUnit" class="form-check-input me-2" type="checkbox" disabled>
-                <span>Price/Unit</span>
-              </label>
-              <label class="list-group-item">
-                <input wire:model="barcode" class="form-check-input me-2" type="checkbox">
-                <span>Barcode</span>
-              </label>
+            <!-- Company Name -->
+            <div class="input-group mb-3">
+              <div class="input-group-text w-50">
+                <label class="list-group-item">
+                  <input wire:model="companyName" class="form-check-input" type="checkbox">
+                  <span>Company Name</span>
+                </label>
+              </div>
+              <input wire:model="companyNameFS" type="text" class="form-control" placeholder="00px" aria-label="Font size">
+              <select wire:model.debounce.500ms="companyNameFS" class="form-select">
+                <option value="10">10px</option>
+                <option value="11">11px</option>
+                <option value="12">12px</option>
+                <option value="14">14px</option>
+                <option value="16">16px</option>
+                <option value="18">18px</option>
+              </select>
             </div>
+
+            <!-- Product Name -->
+            <div class="input-group mb-3">
+              <div class="input-group-text w-50">
+                <label class="list-group-item">
+                  <input wire:model="productName" class="form-check-input" type="checkbox">
+                  <span>Product Name</span>
+                </label>
+              </div>
+              <input wire:model="productNameFS" type="text" class="form-control" placeholder="00px" aria-label="Font size">
+              <select wire:model.debounce.500ms="productNameFS" class="form-select">
+                <option value="10">10px</option>
+                <option value="11">11px</option>
+                <option value="12">12px</option>
+                <option value="14">14px</option>
+                <option value="16">16px</option>
+                <option value="18">18px</option>
+              </select>
+            </div>
+
+            <!-- Price/Unit -->
+            <div class="input-group mb-3">
+              <div class="input-group-text w-50">
+                <label class="list-group-item">
+                  <input wire:model="priceUnit" class="form-check-input" type="checkbox">
+                  <span>Price/Unit</span>
+                </label>
+              </div>
+              <input wire:model="priceUnitFS" type="text" class="form-control" placeholder="00px" aria-label="Font size">
+              <select wire:model.debounce.500ms="priceUnitFS" class="form-select">
+                <option value="14">14px</option>
+                <option value="16">16px</option>
+                <option value="18">18px</option>
+                <option value="20">20px</option>
+                <option value="22">22px</option>
+                <option value="24">24px</option>
+              </select>
+            </div>
+
+            <!-- Barcode -->
+            <div class="input-group mb-3">
+              <div class="input-group-text w-50">
+                <label class="list-group-item">
+                  <input wire:model="barcode" class="form-check-input" type="checkbox">
+                  <span>Barcode</span>
+                </label>
+              </div>
+              <input wire:model="barcodeWidth" type="text" class="form-control" placeholder="00px" aria-label="Font size">
+              <span class="input-group-text">px</span>
+            </div>
+
+            <!-- Price Tag Size -->
             <label class="form-label">Ширина ценника</label>
             <div class="input-group mb-3">
-              <input wire:model.debounce.500ms="size" type="number" class="form-control" placeholder="00мм">
+              <input wire:model.debounce.500ms="width" type="number" class="form-control" placeholder="00мм">
               <span class="input-group-text">мм</span>
-              <select wire:model.debounce.500ms="size" class="form-select">
+              <select wire:model.debounce.500ms="width" class="form-select">
                 <option value=""></option>
                 <option value="90">90мм</option>
                 <option value="80">80мм</option>
@@ -67,6 +119,19 @@
                 <option value="60">60мм</option>
               </select>
             </div>
+            <label class="form-label">Высота ценника</label>
+            <div class="input-group mb-3">
+              <input wire:model.debounce.500ms="height" type="number" class="form-control" placeholder="00мм">
+              <span class="input-group-text">мм</span>
+              <select wire:model.debounce.500ms="height" class="form-select">
+                <option value=""></option>
+                <option value="65">65мм</option>
+                <option value="45">45мм</option>
+                <option value="35">35мм</option>
+                <option value="25">25мм</option>
+              </select>
+            </div>
+
             <label class="form-label">Количество ценников</label>
             <div class="input-group mb-3">
               <?php
@@ -103,7 +168,7 @@
                 $companyNameEl = '';
 
                 if ($companyName) {
-                  $companyNameEl = '<h6>'.$company->title.'</h6>';
+                  $companyNameEl = '<div class="companyNameFS">'.$company->title.'</div>';
                 }
 
                 foreach ($products as $index => $product) {
@@ -114,16 +179,16 @@
                   $priceEl = '';
 
                   if ($barcode AND $barcodes) {
-                    $barcodeEl = '<div><img src="data:image/png;base64,'.base64_encode($generator->getBarcode(substr($barcodes[0], 0, -1), $generator::TYPE_EAN_13)).'"></div>';
+                    $barcodeEl = '<div><img class="barcodeWidth" src="data:image/png;base64,'.base64_encode($generator->getBarcode(substr($barcodes[0], 0, -1), $generator::TYPE_EAN_13)).'"></div>';
                     $barcodeEl .= '<div>'.$barcodes[0].'</div>';
                   }
 
                   if ($productName) {
-                    $titleEl = '<h5>'.$product->title.'</h5>';
+                    $titleEl = '<div class="productNameFS">'.$product->title.'</div>';
                   }
 
                   if ($priceUnit) {
-                    $priceEl = '<h3>'.$product->price.'<span style="font-size: 0.7em;">'.$company->currency->symbol.'/'.$unitTitles[$product->id].'</span></h3>';
+                    $priceEl = '<div class="priceUnitFS">'.$product->price.'<span style="font-size: 0.9em;">'.$company->currency->symbol.'/'.$unitTitles[$product->id].'</span></div>';
                   }
 
                   for ($i=0; $i < $count; $i++) {
@@ -147,14 +212,19 @@
                     height: 250px;
                   }
                   .price-tag {
-                    border: 1px solid #333;
+                    outline: 1px solid #333;
                     font-family: Verdana, Arial, sans-serif;
-                    width: <?= $size * $mmInPX ?>px;
+                    width: <?= $width * $mmInPX ?>px;
+                    height: <?= $height * $mmInPX ?>px;
                     background-color: #fff;
                     text-align: center;
-                    margin: 0 auto 2px auto;
+                    margin: 0 auto;
                     padding: 5px 2px 2px;
                   }
+                  .companyNameFS { font-size: <?= $companyNameFS; ?>px; }
+                  .productNameFS { font-size: <?= $productNameFS; ?>px; }
+                  .priceUnitFS { font-size: <?= $priceUnitFS; ?>px; }
+                  .barcodeWidth { width: <?= $barcodeWidth; ?>px; }
                 </style>
               </div>
             </div>

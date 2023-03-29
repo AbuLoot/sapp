@@ -15,6 +15,7 @@ class CreateWorkplacesTable extends Migration
     {
         Schema::create('workplaces', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('company_id');
             $table->integer('user_id');
             $table->integer('workplace_id');
             $table->char('workplace_type');
