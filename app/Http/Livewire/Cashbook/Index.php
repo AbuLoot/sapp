@@ -43,7 +43,7 @@ class Index extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
 
         if (!session()->has('store')) {
             session()->put('store', Store::first());
@@ -324,6 +324,7 @@ class Index extends Component
     public function getByBarcode()
     {
         $product = Product::select('id')
+            ->where('in_company_id', $this->company->id)
             ->where('barcodes', 'like', '%'.$this->search.'%')
             ->first();
 
@@ -340,6 +341,7 @@ class Index extends Component
 
         if (strlen($this->search) >= 2) {
             $products = Product::orderBy('id', 'desc')
+                ->where('in_company_id', $this->company->id)
                 ->where('title', 'like', '%'.$this->search.'%')
                 ->orWhere('barcodes', 'like', '%'.$this->search.'%')
                 ->orWhere('id_code', 'like', '%'.$this->search.'%')
@@ -348,7 +350,8 @@ class Index extends Component
         }
 
         if (strlen($this->searchCustomer) >= 2) {
-            $customers = User::where('name', 'like', $this->searchCustomer.'%')
+            $customers = User::where('company_id', $this->company->id)
+                ->where('name', 'like', $this->searchCustomer.'%')
                 ->orWhere('lastname', 'like', $this->searchCustomer.'%')
                 ->orWhere('tel', 'like', $this->searchCustomer.'%')
                 ->get()

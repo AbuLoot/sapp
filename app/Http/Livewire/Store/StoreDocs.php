@@ -21,6 +21,7 @@ class StoreDocs extends Component
 
     public $lang;
     public $search;
+    public $companyId;
     public $docDetail;
     public $docProducts = [];
     public $startDate;
@@ -33,11 +34,12 @@ class StoreDocs extends Component
         }
 
         $this->lang = app()->getLocale();
+        $this->companyId = auth()->user()->company->id;
     }
 
     public function docDetail($id)
     {
-        $this->docDetail = StoreDoc::findOrFail($id);
+        $this->docDetail = StoreDoc::where('company_id', $this->companyId)->findOrFail($id);
         $productsData = json_decode($this->docDetail->products_data, true);
         $productsKeys = collect($productsData)->keys();
         $this->docProducts = Product::whereIn('id', $productsKeys->all())->get();
@@ -46,7 +48,7 @@ class StoreDocs extends Component
 
     public function render()
     {
-        $query = StoreDoc::orderByDesc('id');
+        $query = StoreDoc::where('company_id', $this->companyId)->orderByDesc('id');
         $appends = [];
 
         if (strlen($this->search) >= 2) {

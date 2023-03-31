@@ -24,15 +24,20 @@ class InventoryHistory extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
-        $this->storeId = $this->company->first()->id;
+        $this->company = auth()->user()->company;
+        $this->storeId = $this->company->stores->first()->id;
     }
 
     public function render()
     {
-        $revisions = ($this->search)
-            ? Revision::where('doc_no', 'like', '%'.$this->search.'%')->where('store_id', $this->storeId)->orderBy('id', 'desc')->paginate(30)
-            : Revision::orderBy('id', 'desc')->where('store_id', $this->storeId)->paginate(30);
+        $revisions = Revision::query()
+            ->orderBy('id', 'desc')
+            ->where('company_id', $this->company->id)
+            ->where('store_id', $this->storeId)
+            ->when($this->search, function($query) {
+                $query->where('doc_no', 'like', '%'.$this->search.'%');
+            })
+            ->paginate(30);
 
         return view('livewire.store.inventory-history', ['revisions' => $revisions])
             ->layout('livewire.store.layout');

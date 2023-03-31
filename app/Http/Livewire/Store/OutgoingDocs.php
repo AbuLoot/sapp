@@ -30,12 +30,12 @@ class OutgoingDocs extends Component
         }
 
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
     }
 
     public function docDetail($id)
     {
-        $this->docDetail = OutgoingDoc::findOrFail($id);
+        $this->docDetail = OutgoingDoc::where('company_id', $this->company->id)->findOrFail($id);
         $products_data = json_decode($this->docDetail->products_data, true);
         $products_keys = collect($products_data)->keys();
         $this->docProducts = Product::whereIn('id', $products_keys->all())->get();
@@ -44,7 +44,7 @@ class OutgoingDocs extends Component
 
     public function render()
     {
-        $query = OutgoingDoc::orderBy('id', 'desc');
+        $query = OutgoingDoc::where('company_id', $this->company->id)->orderBy('id', 'desc');
         $appends = [];
 
         if (strlen($this->search) >= 2) {

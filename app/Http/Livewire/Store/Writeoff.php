@@ -43,8 +43,8 @@ class Writeoff extends Component
 
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
-        $this->company = auth()->user()->profile->company;
-        $this->storeId = $this->company->first()->id;
+        $this->company = auth()->user()->company;
+        $this->storeId = $this->company->stores->first()->id;
     }
 
     public function updated($key, $value)
@@ -54,7 +54,7 @@ class Writeoff extends Component
         // Validating Writeoff Counts
         if (count($parts) == 3 && $parts[0] == 'writeoffCounts') {
 
-            $product = Product::findOrFail($parts[1]);
+            $product = Product::where('in_company_id', $this->company->id)->findOrFail($parts[1]);
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
             $countInStore = $countInStores[$this->storeId] ?? 0;
 
@@ -80,7 +80,7 @@ class Writeoff extends Component
 
         foreach($this->writeoffProducts as $productId => $writeoffProduct) {
 
-            $product = Product::findOrFail($productId);
+            $product = Product::where('in_company_id', $this->company->id)->findOrFail($productId);
 
             $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
             $countInStore = $countInStores[$this->storeId] ?? 0;
@@ -188,7 +188,10 @@ class Writeoff extends Component
         $products = [];
 
         if (strlen($this->search) >= 2) {
-            $products = Product::search($this->search)->orderBy('id', 'desc')->paginate(5);
+            $products = Product::search($this->search)
+                ->where('in_company_id', $this->company->id)
+                ->orderBy('id', 'desc')
+                ->paginate(5);
         }
 
         $this->writeoffProducts = session()->get('writeoffProducts') ?? [];

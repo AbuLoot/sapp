@@ -23,17 +23,22 @@ class InventoryDraft extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
     }
 
     public function openTheDraft($id)
     {
-        $draft = ProductDraft::find($id);
+        $draft = ProductDraft::where('company_id', $this->company->id)->find($id);
         $productsData = json_decode($draft->products_data, true) ?? [];
+        $revisionProducts = [];
 
         foreach($productsData as $productId => $productData) {
+
             $product = Product::find($productId);
-            $revisionProducts[$productId] = $product;
+
+            if ($product) {
+                $revisionProducts[$productId] = $product;
+            }
         }
 
         session()->put('revisionProducts', $revisionProducts);
@@ -43,7 +48,7 @@ class InventoryDraft extends Component
 
     public function removeFromDrafts($id)
     {
-        $draft = ProductDraft::find($id);
+        $draft = ProductDraft::where('company_id', $this->company->id)->find($id);
         $draft->delete();
 
         session()->flash('message', 'Запись удалена');
@@ -51,9 +56,14 @@ class InventoryDraft extends Component
 
     public function render()
     {
-        $drafts = ($this->search)
-            ? ProductDraft::where('title', 'like', '%'.$this->search.'%')->where('type', 'revision')->orderByDesc('id')->paginate(30)
-            : ProductDraft::where('type', 'revision')->orderByDesc('id')->paginate(30);
+        $drafts = ProductDraft::query()
+            ->where('company_id', $this->company->id)
+            ->when($this->search, function($query) {
+                $query->where('title', 'like', '%'.$this->search.'%');
+            })
+            ->where('type', 'revision')
+            ->orderByDesc('id')
+            ->paginate(30);
 
         return view('livewire.store.inventory-draft', ['drafts' => $drafts])
             ->layout('livewire.store.layout');

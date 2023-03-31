@@ -36,7 +36,7 @@ class ReturnProducts extends Component
 
     public function mount()
     {
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
     }
 
     public function updated($key, $value)

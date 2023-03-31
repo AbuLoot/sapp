@@ -52,7 +52,6 @@ class ProductController extends Controller
     public function create($lang)
     {
         $this->authorize('create', Product::class);
-
         $currency = Currency::where('lang', (($lang == 'ru') ? 'kz' : $lang))->first();
         $categories = Category::where('company_id', $this->companyId)->get()->toTree();
         $companies = Company::where('company_id', $this->companyId)->orderBy('sort_id')->get();

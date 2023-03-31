@@ -17,13 +17,13 @@ class EditProduct extends Component
 {
     public $lang;
     public $company;
+    public $stores;
     public $product;
     public $productBarcodes = [];
-    public $companies;
     public $barcodes = [''];
     public $idCode;
-    public $wholesalePrice;
     public $countInStores = [];
+    public $wholesalePrice;
     public $wholesalePriceMarkup;
     public $priceMarkup;
 
@@ -45,9 +45,8 @@ class EditProduct extends Component
             abort(403);
         }
 
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->stores = $this->company->stores;
-
         $this->product = Product::findOrFail($id);
         $this->productBarcodes = json_decode($this->product->barcodes) ?? [''];
         $this->barcodes = $this->productBarcodes;
@@ -127,7 +126,7 @@ class EditProduct extends Component
         $lastNum = substr($bothSum, -1);
 
         $barcode = $firstCode.$secondCode.$thirdCode.$lastNum;
-        $sameProduct = Product::whereJsonContains('barcodes', $barcode)->first();
+        $sameProduct = Product::where('in_company_id', $this->company->id)->whereJsonContains('barcodes', $barcode)->first();
 
         if (in_array($barcode, $this->productBarcodes) || $sameProduct) {
             $firstCode += ($firstCode == '299') ? -98 : 1;
@@ -168,15 +167,14 @@ class EditProduct extends Component
 
     public function render()
     {
-        $companies = Company::where('is_supplier', 1)->get();
+        $companies = Company::where('company_id', $this->company->id)->where('is_supplier', 1)->get();
         $currency = $this->company->currency->symbol;
         $units = Unit::all();
 
         return view('livewire.store.edit-product', [
-            'units' => $units,
-            'currency' => $currency,
-            'companies' => $companies,
-        ])
-            ->layout('livewire.store.layout');
+                'units' => $units,
+                'currency' => $currency,
+                'companies' => $companies,
+            ])->layout('livewire.store.layout');
     }
 }

@@ -10,6 +10,7 @@ class Company extends Model
 
     protected $fillable = [
         'sort_id',
+        'company_id',
         'region_id',
         'currency_id',
         'title',
@@ -27,9 +28,9 @@ class Company extends Model
         'status',
     ];
 
-    public function profile()
+    public function user()
     {
-        return $this->hasOne('App\Models\Profile');
+        return $this->hasOne('App\Models\User');
     }
 
     public function products()

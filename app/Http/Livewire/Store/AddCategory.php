@@ -9,6 +9,7 @@ use App\Models\Category;
 
 class AddCategory extends Component
 {
+    public $company;
     public $category;
     public $categoryId;
     public $alert = false;
@@ -20,6 +21,7 @@ class AddCategory extends Component
     public function mount()
     {
         $this->category = new Category;
+        $this->company = auth()->user()->company;
     }
 
     public function saveCategory()
@@ -27,6 +29,7 @@ class AddCategory extends Component
         $data = $this->validate()['category'];
 
         $category = new Category;
+        $category->company_id = $this->company->id;
         $category->slug = Str::slug($data['title']);
         $category->title = $data['title'];
         $category->lang = 'ru';
@@ -50,7 +53,7 @@ class AddCategory extends Component
 
     public function render()
     {
-        $categories = Category::orderBy('sort_id')->get()->toTree();
+        $categories = Category::where('company_id', $this->company->id)->orderBy('sort_id')->get()->toTree();
 
         return view('livewire.store.add-category', ['categories' => $categories]);
     }

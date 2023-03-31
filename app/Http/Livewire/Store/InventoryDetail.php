@@ -22,7 +22,7 @@ class InventoryDetail extends Component
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
         $this->revision = Revision::findOrFail($id);
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->storeId = $this->revision->store_id;
 
         $productsData = json_decode($this->revision->products_data, true) ?? [];
@@ -31,13 +31,15 @@ class InventoryDetail extends Component
 
             $product = Product::find($productId);
 
-            $this->revisionProducts[$productId] = $product;
-            $this->revisionProducts[$productId]['estimatedCount'] = $productData['estimatedCount'];
-            $this->revisionProducts[$productId]['actualCount'] = $productData['actualCount'];
-            $this->revisionProducts[$productId]['shortageCount'] = $productData['shortageCount'];
-            $this->revisionProducts[$productId]['surplusCount'] = $productData['surplusCount'];
-            $this->revisionProducts[$productId]['shortageSum'] = $productData['shortageSum'];
-            $this->revisionProducts[$productId]['surplusSum'] = $productData['surplusSum'];
+            if ($product) {
+                $this->revisionProducts[$productId] = $product;
+                $this->revisionProducts[$productId]['estimatedCount'] = $productData['estimatedCount'];
+                $this->revisionProducts[$productId]['actualCount'] = $productData['actualCount'];
+                $this->revisionProducts[$productId]['shortageCount'] = $productData['shortageCount'];
+                $this->revisionProducts[$productId]['surplusCount'] = $productData['surplusCount'];
+                $this->revisionProducts[$productId]['shortageSum'] = $productData['shortageSum'];
+                $this->revisionProducts[$productId]['surplusSum'] = $productData['surplusSum'];
+            }
         }
     }
 

@@ -23,17 +23,15 @@ class AddProduct extends Component
 
     public $lang;
     public $docNo;
-    public $product;
     public $company;
-    public $companies;
-    public $categories;
+    public $product;
+    public $productBarcodes = [];
     public $barcodes = [''];
     public $idCode;
+    public $countInStores = [];
     public $wholesalePrice;
     public $wholesalePriceMarkup;
     public $priceMarkup;
-    public $productBarcodes = [];
-    public $countInStores = [];
 
     protected $listeners = [
         'newData' => '$refresh',
@@ -57,9 +55,8 @@ class AddProduct extends Component
             abort(403);
         }
 
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->store = session()->get('storage');
-        $this->companies = Company::where('is_supplier', 1)->get();
         $this->product = new Product;
         $this->product->type = 1;
         $this->docNo = $this->generateIncomingStoreDocNo($this->store->id);
@@ -146,7 +143,7 @@ class AddProduct extends Component
 
         $product = Product::create([
             'user_id' => auth()->user()->id,
-            // 'in_company_id' => $this->company->id,
+            'in_company_id' => $this->company->id,
             'company_id' => $this->product->company_id ?? 0,
             'category_id' => $this->product->category_id,
             'slug' => Str::slug($this->product->title),
@@ -225,11 +222,16 @@ class AddProduct extends Component
 
     public function render()
     {
+        $companies = Company::where('company_id', $this->company->id)->where('is_supplier', 1)->get();
         $currency = $this->company->currency->symbol;
         $stores = $this->company->stores;
         $units = Unit::all();
 
-        return view('livewire.store.add-product', ['units' => $units, 'stores' => $stores, 'currency' => $currency])
-            ->layout('livewire.store.layout');
+        return view('livewire.store.add-product', [
+                'units' => $units,
+                'stores' => $stores,
+                'currency' => $currency,
+                'companies' => $companies
+            ])->layout('livewire.store.layout');
     }
 }

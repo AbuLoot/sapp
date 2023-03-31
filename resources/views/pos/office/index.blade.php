@@ -7,7 +7,7 @@
   @include('components.alerts')
 
   <?php 
-    $company = auth()->user()->profile->company;
+    $company = auth()->user()->company;
     $currency = $company->currency->symbol ?? null;
 
     // Dates

@@ -43,7 +43,7 @@ class Income extends Component
 
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->storeId = session()->get('storage')->id;
     }
 
@@ -138,7 +138,7 @@ class Income extends Component
 
     public function addToIncome($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::where('in_company_id', $this->company->id)->findOrFail($id);
 
         if (session()->has('incomeProducts')) {
             $incomeProducts = session()->get('incomeProducts');
@@ -190,6 +190,7 @@ class Income extends Component
         $draftsCount = ProductDraft::where('type', 'income')->count();
 
         $draft = new ProductDraft;
+        $draft->company_id = $this->company->id;
         $draft->user_id = auth()->user()->id;
         $draft->type = 'income';
         $draft->title = 'Income '.($draftsCount + 1);
@@ -211,7 +212,10 @@ class Income extends Component
         $products = [];
 
         if (strlen($this->search) >= 2) {
-            $products = Product::search($this->search)->orderBy('id', 'desc')->paginate(50);
+            $products = Product::search($this->search)
+                ->where('in_company_id', $this->company->id)
+                ->orderBy('id', 'desc')
+                ->paginate(50);
         }
 
         $this->incomeProducts = session()->get('incomeProducts') ?? [];

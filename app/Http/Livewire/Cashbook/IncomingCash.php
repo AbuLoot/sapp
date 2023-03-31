@@ -30,7 +30,7 @@ class IncomingCash extends Component
 
     public function mount()
     {
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->cashbook = session()->get('cashbook');
     }
 

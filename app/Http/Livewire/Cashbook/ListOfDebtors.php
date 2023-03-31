@@ -45,7 +45,7 @@ class ListOfDebtors extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->cashbook = session()->get('cashbook');
         $this->paymentTypes = PaymentType::where('slug', '!=', 'sale-on-credit')->get();
         $this->paymentTypeId = $this->paymentTypes->where('slug', 'bank-card')->pluck('id')->first();

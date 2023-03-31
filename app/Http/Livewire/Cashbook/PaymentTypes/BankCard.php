@@ -27,7 +27,7 @@ class BankCard extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->sumOfCart = Index::sumOfCart();
         $this->paymentType = PaymentType::where('slug', 'bank-card')->first();
 

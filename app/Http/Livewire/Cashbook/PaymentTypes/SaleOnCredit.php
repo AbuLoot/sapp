@@ -42,7 +42,7 @@ class SaleOnCredit extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->sumOfCart = CashbookIndex::sumOfCart();
         $this->paymentType = PaymentType::where('slug', 'sale-on-credit')->first();
 

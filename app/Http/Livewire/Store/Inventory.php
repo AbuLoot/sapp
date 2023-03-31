@@ -22,6 +22,7 @@ class Inventory extends Component
 
     public $lang;
     public $search;
+    public $company;
     public $units;
     public $docNo;
     public $storeId;
@@ -46,9 +47,8 @@ class Inventory extends Component
 
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->storeId = session()->get('storage')->id;
-
     }
 
     public function updated($key, $value)
@@ -102,7 +102,7 @@ class Inventory extends Component
                 return;
             }
 
-            $product = Product::whereJsonContains('barcodes', $barcode)->first();
+            $product = Product::where('in_company_id', $this->company->id)->whereJsonContains('barcodes', $barcode)->first();
 
             $this->addToRevision($product->id, $count);
 
@@ -180,7 +180,7 @@ class Inventory extends Component
         // Store revision products
         foreach($this->revisionProducts as $productId => $revisionProduct) {
 
-            $product = Product::findOrFail($productId);
+            $product = Product::where('in_company_id', $this->company->id)->findOrFail($productId);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
             unset($countInStores[0]);
@@ -285,7 +285,7 @@ class Inventory extends Component
     {
         if (is_null($docNo)) {
 
-            $lastDoc = Revision::where('doc_no', 'like', $storeId.'/%')->orderByDesc('id')->first();
+            $lastDoc = Revision::where('company_id', $this->company->id)->where('doc_no', 'like', $storeId.'/%')->orderByDesc('id')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
@@ -295,7 +295,7 @@ class Inventory extends Component
             }
         }
 
-        $existDoc = Revision::where('doc_no', $docNo)->first();
+        $existDoc = Revision::where('company_id', $this->company->id)->where('doc_no', $docNo)->first();
 
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
@@ -333,6 +333,7 @@ class Inventory extends Component
         $draftsCount = ProductDraft::where('type', 'revision')->count();
 
         $draft = new ProductDraft;
+        $draft->company_id = $this->company->id;
         $draft->user_id = auth()->user()->id;
         $draft->type = 'revision';
         $draft->title = 'Revision '.($draftsCount + 1);
@@ -346,7 +347,7 @@ class Inventory extends Component
 
     public function addToRevision($id, $count = null)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::where('in_company_id', $this->company->id)->findOrFail($id);
 
         if (session()->has('revisionProducts')) {
             $revisionProducts = session()->get('revisionProducts');
@@ -379,7 +380,7 @@ class Inventory extends Component
     public function render()
     {
         $products = (strlen($this->search) >= 2)
-            ? Product::search($this->search)->get()->take(7)
+            ? Product::search($this->search)->where('in_company_id', $this->company->id)->get()->take(7)
             : [];
 
         $this->revisionProducts = session()->get('revisionProducts') ?? [];

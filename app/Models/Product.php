@@ -15,9 +15,10 @@ class Product extends Model
 
     protected $fillable = [
         'sort_id',
-        'category_id',
         'user_id',
+        'in_company_id',
         'company_id',
+        'category_id',
         'project_id',
         'slug',
         'title',

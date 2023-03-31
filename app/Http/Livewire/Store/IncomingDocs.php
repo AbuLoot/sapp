@@ -39,12 +39,12 @@ class IncomingDocs extends Component
         }
 
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
     }
 
     public function docDetail($id)
     {
-        $this->docDetail = IncomingDoc::findOrFail($id);
+        $this->docDetail = IncomingDoc::where('company_id', $this->company->id)->findOrFail($id);
         $products_data = json_decode($this->docDetail->products_data, true);
         $products_keys = collect($products_data)->keys();
         $this->docProducts = Product::whereIn('id', $products_keys->all())->get();
@@ -65,7 +65,11 @@ class IncomingDocs extends Component
             return;
         }
 
-        $existDocNo = IncomingDoc::where('doc_no', $this->docNo)->where('doc_no', '!=', $this->docDetail->doc_no)->first();
+        $existDocNo = IncomingDoc::query()
+            ->where('company_id', $this->company->id)
+            ->where('doc_no', $this->docNo)
+            ->where('doc_no', '!=', $this->docDetail->doc_no)
+            ->first();
 
         if ($existDocNo) {
             $this->addError('docNo', 'Document number: '.$this->docNo.' exists');
@@ -83,7 +87,7 @@ class IncomingDocs extends Component
 
     public function render()
     {
-        $query = IncomingDoc::orderBy('id', 'desc');
+        $query = IncomingDoc::where('company_id', $this->company->id)->orderBy('id', 'desc');
         $appends = [];
 
         if (strlen($this->search) >= 2) {

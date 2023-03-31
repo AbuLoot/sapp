@@ -17,7 +17,7 @@ class OpeningCash extends Component
 
     public function mount()
     {
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->cashbook = session()->get('cashbook');
     }
 
@@ -68,7 +68,10 @@ class OpeningCash extends Component
         $cashDoc->currency = $this->company->currency->code;
         $cashDoc->save();
 
-        Cache()->put('openedCash', $cashShift->id);
+        Cache()->put('openedCash', [
+                'cashShiftId' => $cashShift->id,
+                'companyId' => $this->company->id
+            ]);
 
         return redirect(app()->getLocale().'/cashdesk');
     }

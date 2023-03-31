@@ -22,7 +22,7 @@ class CashDocController extends Controller
 
         $cashDocs = CashDoc::orderByDesc('id')->where('company_id', $this->companyId)->paginate(50);
         $cashDocType = DocType::where('slug', 'forma-ko-5')->first();
-        $company = auth()->user()->profile->company;
+        $company = auth()->user()->company;
         $currency = $company->currency->symbol ?? null;
 
         return view('pos.cashdocs.index', compact('cashDocs', 'cashDocType', 'currency'));

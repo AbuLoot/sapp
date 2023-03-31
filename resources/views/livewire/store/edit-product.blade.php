@@ -48,12 +48,12 @@
 
               <div class="row">
                 <div class="col-lg-6 mb-3">
-                  <?php $companies = \App\Models\Company::where('is_supplier', 1)->get(); ?>
+                  <?php $companies = \App\Models\Company::where('company_id', $company->id)->where('is_supplier', 1)->get(); ?>
                   <label for="company_id">Поставщик</label>
                   <select wire:model.defer="product.company_id" class="form-control @error('product.company_id') is-invalid @enderror" id="company_id">
                     <option value="">Выберите поставщика...</option>
-                    @foreach($companies as $company)
-                      <option value="{{ $company->id }}">{{ $company->title }}</option>
+                    @foreach($companies as $companyObj)
+                      <option value="{{ $companyObj->id }}">{{ $companyObj->title }}</option>
                     @endforeach
                   </select>
                   @error('product.company_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -89,7 +89,7 @@
                         <?php $traverse($node->children, $prefix.'__'); ?>
                       <?php endforeach; ?>
                     <?php }; ?>
-                    <?php $categories = \App\Models\Category::orderBy('sort_id')->get()->toTree(); ?>
+                    <?php $categories = \App\Models\Category::where('company_id', $company->id)->orderBy('sort_id')->get()->toTree(); ?>
                     <?php $traverse($categories); ?>
                   </select>
                   @error('product.category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror

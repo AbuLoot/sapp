@@ -30,6 +30,7 @@ class AddCompany extends Component
         $data = $this->validate()['company'];
 
         Company::create([
+            'company_id' => auth()->user()->company->id,
             'region_id' => 0,
             'slug' => Str::slug($data['title']),
             'title' => $data['title'],

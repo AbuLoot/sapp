@@ -31,7 +31,7 @@ class Index extends Component
     {
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
     }
 
     public function resetFilter()
@@ -73,7 +73,7 @@ class Index extends Component
     {
         if (count($this->productsId) >= 1) {
 
-            $products = Product::whereIn('id', $this->productsId)->get();
+            $products = Product::where('in_company_id', $this->company->id)->whereIn('id', $this->productsId)->get();
 
             // $this->authorize('delete', $products->first());
 
@@ -98,6 +98,7 @@ class Index extends Component
     public function render()
     {
         $products = Product::orderBy('id', 'desc')
+            ->where('in_company_id', $this->company->id)
             ->when(strlen($this->search) >= 2, function($query) {
                 $query->where('title', 'like', '%'.$this->search.'%')
                     ->orWhere('barcodes', 'like', '%'.$this->search.'%')
@@ -112,8 +113,7 @@ class Index extends Component
             ->when($this->companyId, function($query) {
                 $query->where('company_id', $this->companyId);
             })
-            // ->where('status', 33)
-            ->paginate(30);
+            ->paginate(50);
 
         if ($this->toggleMode) {
             $this->productsId = $products->pluck('id')->toArray();

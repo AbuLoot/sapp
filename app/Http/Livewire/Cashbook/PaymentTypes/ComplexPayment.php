@@ -43,7 +43,7 @@ class ComplexPayment extends Component
     {
         $this->lang = app()->getLocale();
         $this->sumOfCart = Index::sumOfCart();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->paymentType = PaymentType::where('slug', 'complex-payment')->first();
         $this->paymentTypes = PaymentType::whereIn('slug', ['cash-payment', 'bank-card', 'kaspi-transfer'])->get();
 

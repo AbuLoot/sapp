@@ -19,7 +19,8 @@ class CashdeskVerificationController extends Controller
     public function store(Request $request)
     {
         $workplaces = Workplace::where('user_id', auth()->user()->id)
-                ->where('workplace_type', 'App\Models\Cashbook')->get();
+                ->where('workplace_type', 'App\Models\Cashbook')
+                ->get();
 
         $request->validate([
             'code' => [
@@ -28,7 +29,7 @@ class CashdeskVerificationController extends Controller
         ]);
 
         $workplace = $workplaces->where('code', $request->code)->first();
-        $cashbook = Cashbook::find($workplace->workplace_id);
+        $cashbook = Cashbook::where('company_id', session('company')->id)->find($workplace->workplace_id);
 
         $request->session()->put('cashbook', $cashbook);
         $request->session()->put('cashdeskWorkplace', $workplace->id);

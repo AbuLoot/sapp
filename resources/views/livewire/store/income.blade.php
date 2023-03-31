@@ -139,44 +139,44 @@
 </div>
 
 @section('scripts')
-<script type="text/javascript">
-  // Offcanvas
-  const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
+  <script type="text/javascript">
+    // Offcanvas
+    const offcanvas = new bootstrap.Offcanvas('#offcanvas', { backdrop: false, scroll: true })
 
-  // Offcanvas - Changing Placement
-  function changePLacement(val) {
+    // Offcanvas - Changing Placement
+    function changePLacement(val) {
 
-    let placement = 'offcanvas-bottom';
-    let element = document.getElementById("offcanvas");
+      let placement = 'offcanvas-bottom';
+      let element = document.getElementById("offcanvas");
 
-    placement = (val == 'offcanvas-bottom') ? 'offcanvas-top' : 'offcanvas-bottom';
+      placement = (val == 'offcanvas-bottom') ? 'offcanvas-top' : 'offcanvas-bottom';
 
-    element.classList.add(val);
-    element.classList.remove(placement);
-  }
+      element.classList.add(val);
+      element.classList.remove(placement);
+    }
 
-  // Keyboard Input
-  let inputElId;
+    // Keyboard Input
+    let inputElId;
 
-  // Setting Input Focus
-  function setFocus(elId) {
-    inputElId = elId;
-    document.getElementById(elId).focus();
-  }
+    // Setting Input Focus
+    function setFocus(elId) {
+      inputElId = elId;
+      document.getElementById(elId).focus();
+    }
 
-  // Displaying values
-  function display(val) {
-    let input = document.getElementById(inputElId);
+    // Displaying values
+    function display(val) {
+      let input = document.getElementById(inputElId);
 
-    input.value += val;
-    @this.set(inputElId, input.value);
-  }
+      input.value += val;
+      @this.set(inputElId, input.value);
+    }
 
-  // Clearing the display
-  function clearDisplay() {
-    let inputSearch = document.getElementById(inputElId);
-    inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
-    @this.set(inputElId, inputSearch.value);
-  }
-</script>
+    // Clearing the display
+    function clearDisplay() {
+      let inputSearch = document.getElementById(inputElId);
+      inputSearch.value = inputSearch.value.substr(0, inputSearch.value.length - 1);
+      @this.set(inputElId, inputSearch.value);
+    }
+  </script>
 @endsection

@@ -26,7 +26,7 @@ class PaymentTypesIndex extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
 
         if (empty(session()->get('cartProducts'))) {
             return redirect($this->lang.'/cashdesk');

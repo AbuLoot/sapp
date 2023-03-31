@@ -35,8 +35,8 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        if ($user->profile->company) {
-            $request->session()->put('company', $user->profile->company);
+        if ($user->company) {
+            $request->session()->put('company', $user->company);
         }
 
         return redirect()->intended(RouteServiceProvider::HOME);

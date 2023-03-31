@@ -92,13 +92,13 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="barcodes">Штрихкод</label>
-                  <input type="text" class="form-control" id="barcodes" name="barcodes[]" value="{{ (old('barcodes')) ? old('barcodes') : NULL }}">
+                  <input type="text" class="form-control" id="barcodes" name="barcodes" value="{{ (old('barcodes')) ? old('barcodes') : '' }}">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="id_code">Код товара</label>
-                  <input type="text" class="form-control" id="id_code" name="id_code" value="{{ (old('id_code')) ? old('id_code') : NULL }}">
+                  <input type="text" class="form-control" id="id_code" name="id_code" value="{{ (old('id_code')) ? old('id_code') : '' }}">
                 </div>
               </div>
               <div class="col-md-6">

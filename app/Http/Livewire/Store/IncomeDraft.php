@@ -23,13 +23,13 @@ class IncomeDraft extends Component
     public function mount()
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->storeId = session()->get('storage')->id;
     }
 
     public function openTheDraft($id)
     {
-        $draft = ProductDraft::find($id);
+        $draft = ProductDraft::where('company_id', $this->company->id)->find($id);
         $productsData = json_decode($draft->products_data, true) ?? [];
 
         foreach($productsData as $productId => $productData) {
@@ -52,9 +52,14 @@ class IncomeDraft extends Component
 
     public function render()
     {
-        $drafts = $this->search
-            ? ProductDraft::where('title', 'like', '%'.$this->search.'%')->where('type', 'income')->orderByDesc('id')->paginate(30)
-            : ProductDraft::where('type', 'income')->orderByDesc('id')->paginate(30);
+        $drafts = ProductDraft::query()
+            ->where('company_id', $this->company->id)
+            ->when($this->search, function($query) {
+                $query->where('title', 'like', '%'.$this->search.'%');
+            })
+            ->where('type', 'income')
+            ->orderByDesc('id')
+            ->paginate(30);
 
         return view('livewire.store.income-draft', ['drafts' => $drafts])
             ->layout('livewire.store.layout');

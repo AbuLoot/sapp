@@ -20,7 +20,7 @@ class CompanyVerificationController extends Controller
                 ->where('is_member', true)
                 ->first();
 
-        $cashbook = Cashbook::find($workplace->workplace_id);
+        $cashbook = Cashbook::where('company_id', session('company')->id)->find($workplace->workplace_id);
 
         $request->session()->put('company', $company->id);
 

@@ -21,6 +21,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductExtensionController extends Controller
 {
+    public $companyId;
+
     public function joytable()
     {
         if (! Gate::allows('joytable', \Auth::user())) {
@@ -31,9 +33,12 @@ class ProductExtensionController extends Controller
 
         $products = auth()->user()->roles()->firstWhere('name', 'admin')
             ? Product::orderBy('updated_at','desc')->paginate(50)
-            : Product::where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
+            : Product::where('in_company_id', $this->companyId)
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('updated_at','desc')
+                ->paginate(50);
 
-        $categories = Category::get()->toTree();
+        $categories = Category::where('company_id', $this->companyId)->get()->toTree();
         $modes = Mode::all();
 
         return view('joystick.products.joytable', ['categories' => $categories, 'modes' => $modes]);
@@ -108,13 +113,13 @@ class ProductExtensionController extends Controller
         $text = trim(strip_tags($request->text));
 
         if (auth()->user()->roles()->firstWhere('name', 'admin')) {
-            $products = Product::search($text)->orderBy('updated_at','desc')->paginate(50);
+            $products = Product::search($text)->where('in_company_id', $this->companyId)->orderBy('updated_at','desc')->paginate(50);
         }
         else {
-            $products = Product::search($text)->where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
+            $products = Product::search($text)->where('in_company_id', $this->companyId)->where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->paginate(50);
         }
 
-        $categories = Category::orderBy('sort_id')->get()->toTree();
+        $categories = Category::where('company_id', $this->companyId)->orderBy('sort_id')->get()->toTree();
         $modes = Mode::all();
 
         $products->appends([

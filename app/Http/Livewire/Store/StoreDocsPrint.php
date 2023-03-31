@@ -27,7 +27,7 @@ class StoreDocsPrint extends Component
     public function mount($type, $id)
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->units = Unit::get();
 
         switch ($type) {
@@ -48,7 +48,7 @@ class StoreDocsPrint extends Component
 
     public function incomingDoc($id)
     {
-        $incomingDoc = IncomingDoc::find($id);
+        $incomingDoc = IncomingDoc::where('company_id', $this->company->id)->find($id);
         $contractorName = 'No name';
 
         $productsData = json_decode($incomingDoc->products_data, true) ?? [];
@@ -83,7 +83,7 @@ class StoreDocsPrint extends Component
 
     public function outgoingDoc($id)
     {
-        $outgoingDoc = OutgoingDoc::find($id);
+        $outgoingDoc = OutgoingDoc::where('company_id', $this->company->id)->find($id);
         $customerName = 'No name';
 
         if (!is_null($outgoingDoc->storeDoc->order_id)) {

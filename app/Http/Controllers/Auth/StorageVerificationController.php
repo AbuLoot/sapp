@@ -28,7 +28,7 @@ class StorageVerificationController extends Controller
         ]);
 
         $workplace = $workplaces->where('code', $request->code)->first();
-        $store = Store::find($workplace->workplace_id);
+        $store = Store::where('company_id', session('company')->id)->find($workplace->workplace_id);
 
         $request->session()->put('storage', $store);
         $request->session()->put('storageWorkplace', $workplace->id);

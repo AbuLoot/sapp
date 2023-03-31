@@ -70,11 +70,9 @@ class RegisteredCompanyController extends Controller
         ]);
 
         $user = auth()->user();
+        $user->company_id = $company->id;
         $user->is_worker = 1;
         $user->save();
-
-        $user->profile->company_id = $company->id;
-        $user->profile->save();
 
         $role = Role::where('name', 'manager')->first();
 

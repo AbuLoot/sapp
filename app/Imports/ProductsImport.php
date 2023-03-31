@@ -30,7 +30,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
     public function __construct()
     {
         $this->user_id = auth()->user()->id;
-        $this->first_store = auth()->user()->profile->company->stores->first();
+        $this->first_store = auth()->user()->company->stores->first();
         $this->categories = Category::select('id', 'slug', 'title')->get();
         $this->companies = Company::select('id', 'slug', 'title')->get();
         $this->products_count = Product::count();

@@ -36,7 +36,7 @@
     </div>
   </header>
 
-  @if(! Cache::has('openedCash'))
+  @if(! Cache::has('openedCash') AND Cache::get('openedCash')->companyId === $company->id)
 
     <!-- Opening Cash -->
     <livewire:cashbook.opening-cash>

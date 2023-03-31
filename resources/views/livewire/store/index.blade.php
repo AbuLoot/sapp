@@ -169,14 +169,14 @@
                     <?php $traverse($node->children, $prefix.'__'); ?>
                   <?php endforeach; ?>
                 <?php }; ?>
-                <?php $categories = \App\Models\Category::orderBy('sort_id')->get()->toTree(); ?>
+                <?php $categories = \App\Models\Category::where('company_id', $company->id)->orderBy('sort_id')->get()->toTree(); ?>
                 <?php $traverse($categories); ?>
               </select>
               @error('categoryId')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="mb-3">
-              <?php $companies = \App\Models\Company::where('is_supplier', 1)->get(); ?>
+              <?php $companies = \App\Models\Company::where('company_id', $company->id)->where('is_supplier', 1)->get(); ?>
               <label for="companyId">Поставщик</label>
               <select wire:model="companyId" class="form-control @error('companyId') is-invalid @enderror" id="companyId">
                 <option value="">Выберите поставщика...</option>

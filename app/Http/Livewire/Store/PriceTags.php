@@ -33,8 +33,8 @@ class PriceTags extends Component
         parse_str($ids, $arrIds);
 
         $this->lang = app()->getLocale();
-        $this->products = Product::whereIn('id', $arrIds)->get();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
+        $this->products = Product::where('in_company_id', $this->company->id)->whereIn('id', $arrIds)->get();
         $this->units = Unit::get();
     }
 
@@ -60,7 +60,7 @@ class PriceTags extends Component
         $productsObj = [];
 
         if (strlen($this->search) >= 2) {
-            $productsObj = Product::search($this->search)->get()->take(7);
+            $productsObj = Product::search($this->search)->where('in_company_id', $this->company->id)->get()->take(7);
         }
 
         return view('livewire.store.price-tags', ['productsObj' => $productsObj])

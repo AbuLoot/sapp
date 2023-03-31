@@ -28,7 +28,7 @@ class CashDocsPrint extends Component
     public function mount($type, $id)
     {
         $this->lang = app()->getLocale();
-        $this->company = auth()->user()->profile->company;
+        $this->company = auth()->user()->company;
         $this->units = Unit::get();
 
         switch ($type) {

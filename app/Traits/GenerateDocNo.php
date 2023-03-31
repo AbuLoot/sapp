@@ -13,7 +13,7 @@ trait GenerateDocNo {
     {
         if (is_null($docNo)) {
 
-            $lastDoc = IncomingDoc::where('doc_no', 'like', $storeId.'/%')->orderByDesc('id')->first();
+            $lastDoc = IncomingDoc::where('company_id', session('company')->id)->where('doc_no', 'like', $storeId.'/%')->first();
 
             if ($lastDoc && is_null($docNo)) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
@@ -23,7 +23,7 @@ trait GenerateDocNo {
             }
         }
 
-        $existDoc = IncomingDoc::where('doc_no', $docNo)->first();
+        $existDoc = IncomingDoc::where('company_id', session('company')->id)->where('doc_no', $docNo)->first();
 
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
@@ -38,7 +38,7 @@ trait GenerateDocNo {
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingDoc::where('doc_no', 'like', $storeId.'/%')->orderByDesc('id')->first();
+            $lastDoc = OutgoingDoc::where('company_id', session('company')->id)->where('doc_no', 'like', $storeId.'/%')->first();
 
             if ($lastDoc && is_null($docNo)) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
@@ -48,7 +48,7 @@ trait GenerateDocNo {
             }
         }
 
-        $existDoc = OutgoingDoc::where('doc_no', $docNo)->first();
+        $existDoc = OutgoingDoc::where('company_id', session('company')->id)->where('doc_no', $docNo)->first();
 
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
@@ -63,7 +63,7 @@ trait GenerateDocNo {
     {
         if (is_null($docNo)) {
 
-            $lastDoc = IncomingOrder::where('doc_no', 'like', $cashbookId.'/%')->orderByDesc('id')->first();
+            $lastDoc = IncomingOrder::where('company_id', session('company')->id)->where('doc_no', 'like', $cashbookId.'/%')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
@@ -73,7 +73,7 @@ trait GenerateDocNo {
             }
         }
 
-        $existDoc = IncomingOrder::where('doc_no', $docNo)->first();
+        $existDoc = IncomingOrder::where('company_id', session('company')->id)->where('doc_no', $docNo)->first();
 
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
@@ -88,7 +88,7 @@ trait GenerateDocNo {
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingOrder::where('doc_no', 'like', $cashbookId.'/%')->orderByDesc('id')->first();
+            $lastDoc = OutgoingOrder::where('company_id', session('company')->id)->where('doc_no', 'like', $cashbookId.'/%')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
@@ -98,7 +98,7 @@ trait GenerateDocNo {
             }
         }
 
-        $existDoc = OutgoingOrder::where('doc_no', $docNo)->first();
+        $existDoc = OutgoingOrder::where('company_id', session('company')->id)->where('doc_no', $docNo)->first();
 
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
