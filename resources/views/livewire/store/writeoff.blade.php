@@ -50,12 +50,12 @@
 
     <div class="row justify-content-end mb-3">
       <div class="col-3">
-        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
+        <select wire:model="storeNum" class="form-control @error('storeNum') is-invalid @enderror" id="storeNum">
           @foreach ($company->stores as $store)
-            <option value="{{ $store->id }}"> {{ $store->title }}</option>
+            <option value="{{ $store->num_id }}"> {{ $store->title }}</option>
           @endforeach
         </select>
-        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
+        @error('storeNum')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
     </div>
 
@@ -68,7 +68,7 @@
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
-            <th scope="col">{{ $company->stores->where('id', $storeId)->first()->title }}</th>
+            <th scope="col">{{ $company->stores->firstWhere('num_id', $storeNum)->title }}</th>
             <th scope="col">Общее кол-во</th>
             <th scope="col">Кол-во</th>
             <th scope="col">Поставщик</th>
@@ -92,20 +92,20 @@
                 $unit = $units->where('id', $writeoffProduct->unit)->first()->title ?? '?';
 
                 $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
-                $countInStore = (isset($countInStores[$storeId])) ? $countInStores[$storeId] : 0;
+                $countInStore = (isset($countInStores[$storeNum])) ? $countInStores[$storeNum] : 0;
                 $writeoffCountProduct = 0;
 
-                if (isset($writeoffCounts[$writeoffProduct->id][$storeId])) {
-                  $writeoffCountProduct = $writeoffCounts[$writeoffProduct->id][$storeId];
+                if (isset($writeoffCounts[$writeoffProduct->id][$storeNum])) {
+                  $writeoffCountProduct = $writeoffCounts[$writeoffProduct->id][$storeNum];
                 }
               ?>
               <td>{{ $countInStore - $writeoffCountProduct . $unit }}</td>
               <td>{{ $writeoffProduct->count - $writeoffCountProduct . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
-                  <input wire:model="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}" type="number" id="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}" onclick="setFocus('writeoffCounts.{{ $writeoffProduct->id.'.'.$storeId }}')" class="form-control @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeId) is-invalid @enderror" required>
+                  <input wire:model="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeNum }}" type="number" id="writeoffCounts.{{ $writeoffProduct->id.'.'.$storeNum }}" onclick="setFocus('writeoffCounts.{{ $writeoffProduct->id.'.'.$storeNum }}')" class="form-control @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeNum) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
-                  @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
+                  @error('writeoffCounts.'.$writeoffProduct->id.'.'.$storeNum)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
               <td>{{ $writeoffProduct->company->title }}</td>

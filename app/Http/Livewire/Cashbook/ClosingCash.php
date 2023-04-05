@@ -27,7 +27,7 @@ class ClosingCash extends Component
     public function mount()
     {
         $this->company = auth()->user()->company;
-        $this->cashbook = session()->get('cashbook');
+        $this->cashbook = session()->get('cashdesk');
 
         $this->nominals = [
             // Coins
@@ -95,7 +95,7 @@ class ClosingCash extends Component
         }
 
         // Close The Cash
-        $openedCashShift = CashShiftJournal::find(Cache::get('openedCash')->cashShiftId);
+        $openedCashShift = CashShiftJournal::find(Cache::get('openedCash')['cashShiftId']);
 
         $incomes = IncomingOrder::query()
             ->where('created_at', '>', $openedCashShift->created_at)

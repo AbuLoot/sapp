@@ -19,13 +19,12 @@ class StorageVerificationController extends Controller
     public function store(Request $request)
     {
         $workplaces = Workplace::where('user_id', auth()->user()->id)
-                ->where('workplace_type', 'App\Models\Store')->get();
+            ->where('workplace_type', 'App\Models\Store')
+            ->get();
 
         $request->validate([
-            'code' => [
-                'required', 'integer', 'min:4', Rule::in($workplaces->pluck('code')->toArray())
-            ],
-        ]);
+                'code' => ['required', 'integer', 'min:4', Rule::in($workplaces->pluck('code')->toArray())],
+            ]);
 
         $workplace = $workplaces->where('code', $request->code)->first();
         $store = Store::where('company_id', session('company')->id)->find($workplace->workplace_id);

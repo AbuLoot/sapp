@@ -46,7 +46,7 @@ class ListOfDebtors extends Component
     {
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->company;
-        $this->cashbook = session()->get('cashbook');
+        $this->cashbook = session()->get('cashdesk');
         $this->paymentTypes = PaymentType::where('slug', '!=', 'sale-on-credit')->get();
         $this->paymentTypeId = $this->paymentTypes->where('slug', 'bank-card')->pluck('id')->first();
     }
@@ -119,7 +119,7 @@ class ListOfDebtors extends Component
     public function makeRepaymentDocs($paymentDetail)
     {
         $store = session()->get('store');
-        $cashbook = session()->get('cashbook');
+        $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
 
         // Incoming Order
@@ -165,6 +165,7 @@ class ListOfDebtors extends Component
     public function render()
     {
         $debtors = Profile::query()
+            ->where('company_id', $this->company->id)
             ->where('is_debtor', 1)
             ->whereJsonContains('debt_orders->'.$this->company->id.'->'.$this->cashbook->id, [])
             ->paginate(30);

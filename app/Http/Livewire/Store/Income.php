@@ -24,14 +24,15 @@ class Income extends Component
 
     public $lang;
     public $units;
-    public $storeId;
     public $search;
+    public $storeId;
+    public $storeNum;
     public $incomeProducts = [];
     public $incomeProductsCount = [];
     public $draftProducts = [];
 
     protected $rules = [
-        'storeId' => 'required|numeric',
+        'storeNum' => 'required|numeric',
         'incomeProductsCount.*.*' => 'required|numeric',
     ];
 
@@ -45,6 +46,7 @@ class Income extends Component
         $this->units = Unit::get();
         $this->company = auth()->user()->company;
         $this->storeId = session()->get('storage')->id;
+        $this->storeNum = session()->get('storage')->num_id;
     }
 
     public function updated($key, $value)
@@ -55,20 +57,20 @@ class Income extends Component
 
             $validValue = ($value <= 0 || !is_numeric($value)) ? null : $value;
 
-            $this->incomeProductsCount[$parts[1]][$this->storeId] = $validValue;
+            $this->incomeProductsCount[$parts[1]][$this->storeNum] = $validValue;
         }
     }
 
     public function makeDoc()
     {
-        $this->validate();
+        // $this->validate();
 
         foreach($this->incomeProducts as $productId => $incomeProduct) {
 
             // If incoming count empty, return wrong
-            if (empty($this->incomeProductsCount[$productId][$this->storeId])
-                    || $this->incomeProductsCount[$productId][$this->storeId] < 0) {
-                $this->addError('incomeProductsCount.'.$productId.'.'.$this->storeId, 'Wrong');
+            if (empty($this->incomeProductsCount[$productId][$this->storeNum])
+                    || $this->incomeProductsCount[$productId][$this->storeNum] < 0) {
+                $this->addError('incomeProductsCount.'.$productId.'.'.$this->storeNum, 'Wrong');
                 return;
             }
         }
@@ -81,7 +83,7 @@ class Income extends Component
 
         foreach($this->incomeProducts as $productId => $incomeProduct) {
 
-            $incomeCount = $this->incomeProductsCount[$productId][$this->storeId];
+            $incomeCount = $this->incomeProductsCount[$productId][$this->storeNum];
 
             $product = Product::findOrFail($productId);
 
@@ -94,7 +96,7 @@ class Income extends Component
             $incomeTotalAmount = $incomeTotalAmount + ($product->purchase_price * $incomeCount);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [''];
-            $countInStores[$this->storeId] += $incomeCount;
+            $countInStores[$this->storeNum] += $incomeCount;
 
             $product->count_in_stores = json_encode($countInStores);
             $product->count += $incomeCount;
@@ -103,7 +105,7 @@ class Income extends Component
 
         // Incoming Doc
         $docType = DocType::where('slug', 'forma-z-1')->first();
-        $docNo = $this->generateIncomingStoreDocNo($this->storeId);
+        $docNo = $this->generateIncomingStoreDocNo($this->storeNum);
 
         $incomingDoc = new IncomingDoc;
         $incomingDoc->store_id = $this->storeId;
@@ -134,6 +136,7 @@ class Income extends Component
         session()->flash('message', 'Запись добавлена');
         session()->forget('incomeProducts');
         $this->incomeProducts = [];
+        $this->incomeProductsCount = [];
     }
 
     public function addToIncome($id)
@@ -145,7 +148,7 @@ class Income extends Component
         }
 
         $incomeProducts[$id] = $product;
-        $this->incomeProductsCount[$id][$this->storeId] = null;
+        $this->incomeProductsCount[$id][$this->storeNum] = null;
 
         session()->put('incomeProducts', $incomeProducts);
         $this->search = '';

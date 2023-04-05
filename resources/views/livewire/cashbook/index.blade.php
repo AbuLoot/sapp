@@ -4,7 +4,7 @@
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/{{ $lang }}/cashdesk" class="navbar-brand me-4">
-          <img src="/img/logo.svg" width="auto" height="40"> <span class="text-white">{{ session()->get('cashbook')->title }}</span>
+          <img src="/img/logo.svg" width="auto" height="40"> <span class="text-white">{{ session()->get('cashdesk')->title }}</span>
         </a>
 
         <button class="btn btn-warning rounded-circle me-auto" onclick="document.location.reload()"><i class="bi bi-arrow-clockwise"></i></button>
@@ -19,9 +19,9 @@
             <i class="bi bi-person-circle fs-4 text-white"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end shadow">
-            <div class="px-3 py-1">
+            <div class="text-muted px-3 py-1">
               {{ Auth()->user()->name.' '.Auth()->user()->lastname }}<br>
-              {{ Auth::user()->email }}
+              {{ $company->title }}
             </div>
             <li><hr class="dropdown-divider"></li>
             <li>
@@ -36,12 +36,12 @@
     </div>
   </header>
 
-  @if(! Cache::has('openedCash') AND Cache::get('openedCash')->companyId === $company->id)
+  @if(! Cache::has('openedCash') OR Cache::get('openedCash')['companyId'] !== $company->id)
 
     <!-- Opening Cash -->
     <livewire:cashbook.opening-cash>
 
-  @else
+  @elseif(Cache::get('openedCash')['companyId'] === $company->id)
 
     <!-- Cash Interface -->
     <div class="px-3 py-3 border-bottom-mb-3">
@@ -158,7 +158,7 @@
               <?php
                 $barcodes = json_decode($cartProduct->barcodes, true) ?? [];
                 $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-                $countInStore = $countInStores[$store->id] ?? 0;
+                $countInStore = $countInStores[$storeNum] ?? 0;
               ?>
               <tr>
                 <td>{{ $cartProduct->sortId.' '.$cartProduct->title }}</td>
@@ -222,9 +222,9 @@
               <div class="col-3 gy-2">
                 <div class="d-grid gap-2 h-100">
                   @if($priceMode == 'retail')
-                    <button class="btn btn-dark" wire:click="switchPriceMode" type="button">Оптовые<br> цены</button>
+                    <button class="btn btn-dark" @can('switch-price-mode', Auth::user()) wire:click="switchPriceMode" @endcan type="button">Оптовые<br> цены</button>
                   @else
-                    <button class="btn btn-dark" @can('switch-price-mode', Auth::user()) wire:click="switchPriceMode" @endcan type="button">Розничные<br> цены</button>
+                    <button class="btn btn-dark" wire:click="switchPriceMode" type="button">Розничные<br> цены</button>
                   @endif
                 </div>
               </div>
@@ -331,7 +331,7 @@
     <livewire:cashbook.reprint>
 
     <!-- Modal Deferred Checks -->
-    <livewire:cashbook.deferred-checks>
+    <livewire:cashbook.deferred-checks :store="$store">
 
     <!-- Keyboard -->
     <livewire:keyboard>

@@ -37,6 +37,7 @@ class AddCustomer extends Component
         $this->validate();
 
         $user = new User;
+        $user->company_id = session('company')->id;
         $user->name = $this->name;
         $user->lastname = $this->lastname;
         $user->tel = $this->tel;
@@ -49,6 +50,7 @@ class AddCustomer extends Component
         $profile = new Profile;
         $profile->user_id = $user->id;
         $profile->region_id = 1;
+        $profile->company_id = session('company')->id;
         $profile->save();
  
         $this->dispatchBrowserEvent('show-toast', [

@@ -19,19 +19,17 @@ class CashdeskVerificationController extends Controller
     public function store(Request $request)
     {
         $workplaces = Workplace::where('user_id', auth()->user()->id)
-                ->where('workplace_type', 'App\Models\Cashbook')
-                ->get();
+            ->where('workplace_type', 'App\Models\Cashbook')
+            ->get();
 
         $request->validate([
-            'code' => [
-                'required', 'integer', 'min:4', Rule::in($workplaces->pluck('code')->toArray())
-            ],
-        ]);
+                'code' => ['required', 'integer', 'min:4', Rule::in($workplaces->pluck('code')->toArray())],
+            ]);
 
         $workplace = $workplaces->where('code', $request->code)->first();
         $cashbook = Cashbook::where('company_id', session('company')->id)->find($workplace->workplace_id);
 
-        $request->session()->put('cashbook', $cashbook);
+        $request->session()->put('cashdesk', $cashbook);
         $request->session()->put('cashdeskWorkplace', $workplace->id);
 
         return redirect(app()->getLocale().'/cashdesk');

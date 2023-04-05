@@ -18,12 +18,12 @@ class OpeningCash extends Component
     public function mount()
     {
         $this->company = auth()->user()->company;
-        $this->cashbook = session()->get('cashbook');
+        $this->cashbook = session()->get('cashdesk');
     }
 
     public function backToDashboard()
     {
-        session()->forget('cashbook');
+        session()->forget('cashdesk');
         session()->forget('cashdeskWorkplace');
 
         return redirect('apps');
@@ -72,6 +72,8 @@ class OpeningCash extends Component
                 'cashShiftId' => $cashShift->id,
                 'companyId' => $this->company->id
             ]);
+
+        // dd(Cache::get('openedCash'));
 
         return redirect(app()->getLocale().'/cashdesk');
     }

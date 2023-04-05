@@ -32,8 +32,8 @@ class PaymentTypesIndex extends Component
             return redirect($this->lang.'/cashdesk');
         }
 
-        if (empty(session()->get('cashbook'))) {
-            session()->put('cashbook', $this->company->cashbooks->first());
+        if (empty(session()->get('cashdesk'))) {
+            session()->put('cashdesk', $this->company->cashbooks->first());
         }
 
         $this->sumOfCart = CashbookIndex::sumOfCart();

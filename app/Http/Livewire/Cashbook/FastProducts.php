@@ -28,7 +28,7 @@ class FastProducts extends Component
     public function getFastProducts()
     {
         $this->fastMode = Mode::where('slug', 'fast-products')->first();
-        $this->fastProducts = $this->fastMode->products;
+        $this->fastProducts = $this->fastMode->products->where('in_company_id', $this->company->id);
     }
 
     public function fastProductsInput($value)
@@ -39,11 +39,11 @@ class FastProducts extends Component
 
     public function toggleFastMode($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::where('in_company_id', $this->company->id)->findOrFail($id);
         $product->modes()->toggle($this->fastMode->id);
 
         $this->fastMode = Mode::where('slug', 'fast-products')->first();
-        $this->fastProducts = $this->fastMode->products;
+        $this->fastProducts = $this->fastMode->products->where('in_company_id', $this->company->id);
         $this->search = '';
     }
 
@@ -57,7 +57,10 @@ class FastProducts extends Component
         $products = [];
 
         if (strlen($this->search) >= 2) {
-            $products = Product::search($this->search)->get()->take(7);
+            $products = Product::search($this->search)
+                ->where('in_company_id', $this->company->id)
+                ->get()
+                ->take(7);
         }
 
         return view('livewire.cashbook.fast-products', ['products' => $products]);

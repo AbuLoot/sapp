@@ -26,6 +26,7 @@ class Inventory extends Component
     public $units;
     public $docNo;
     public $storeId;
+    public $storeNum;
     public $revisionProducts = [];
     public $draftProducts = [];
     public $actualCount = [];
@@ -49,6 +50,7 @@ class Inventory extends Component
         $this->units = Unit::get();
         $this->company = auth()->user()->company;
         $this->storeId = session()->get('storage')->id;
+        $this->storeNum = session()->get('storage')->num_id;
     }
 
     public function updated($key, $value)
@@ -58,11 +60,11 @@ class Inventory extends Component
         if (count($parts) == 3 && $parts[0] == 'actualCount') {
 
             if ($value < 0 || !is_numeric($value)) {
-                $this->actualCount[$parts[1]][$this->storeId] = null;
+                $this->actualCount[$parts[1]][$this->storeNum] = null;
                 return;
             }
 
-            $this->actualCount[$parts[1]][$this->storeId] = $value;
+            $this->actualCount[$parts[1]][$this->storeNum] = $value;
         }
     }
 
@@ -108,13 +110,13 @@ class Inventory extends Component
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
             unset($countInStores[0]);
-            $countInStore = $countInStores[$this->storeId] ?? 0;
+            $countInStore = $countInStores[$this->storeNum] ?? 0;
 
-            $countInStores[$this->storeId] = $this->actualCount[$product->id][$this->storeId];
+            $countInStores[$this->storeNum] = $this->actualCount[$product->id][$this->storeNum];
             $difference = (int) $count - (int) $countInStore;
 
             $productsData[$product->id]['estimatedCount'] = $countInStore;
-            $productsData[$product->id]['actualCount'] = $this->actualCount[$product->id][$this->storeId];
+            $productsData[$product->id]['actualCount'] = $this->actualCount[$product->id][$this->storeNum];
             $productsData[$product->id]['difference'] = $difference;
 
             if ($difference < 0) {
@@ -163,9 +165,9 @@ class Inventory extends Component
         foreach($this->revisionProducts as $productId => $revisionProduct) {
 
             // If revision count empty, return wrong
-            if (empty($this->actualCount[$productId][$this->storeId])
-                    || $this->actualCount[$productId][$this->storeId] < 0) {
-                $this->addError('actualCount.'.$productId.'.'.$this->storeId, 'Wrong');
+            if (empty($this->actualCount[$productId][$this->storeNum])
+                    || $this->actualCount[$productId][$this->storeNum] < 0) {
+                $this->addError('actualCount.'.$productId.'.'.$this->storeNum, 'Wrong');
                 return;
             }
         }
@@ -184,22 +186,22 @@ class Inventory extends Component
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
             unset($countInStores[0]);
-            $countInStore = $countInStores[$this->storeId] ?? 0;
+            $countInStore = $countInStores[$this->storeNum] ?? 0;
 
             // If count in store and revision count equal, return error
-            if ($countInStore == $this->actualCount[$productId][$this->storeId]) {
-                $this->addError('actualCount.'.$productId.'.'.$this->storeId, 'No difference');
+            if ($countInStore == $this->actualCount[$productId][$this->storeNum]) {
+                $this->addError('actualCount.'.$productId.'.'.$this->storeNum, 'No difference');
                 return;
             }
 
-            $countInStores[$this->storeId] = $this->actualCount[$productId][$this->storeId];
-            $difference = $this->actualCount[$productId][$this->storeId] - $countInStore;
+            $countInStores[$this->storeNum] = $this->actualCount[$productId][$this->storeNum];
+            $difference = $this->actualCount[$productId][$this->storeNum] - $countInStore;
 
             $barcodes = json_decode($product->barcodes, true) ?? [];
             $barcode = (isset($barcodes[0])) ? $barcodes[0] : '';
 
             $productsData[$productId]['estimatedCount'] = $countInStore;
-            $productsData[$productId]['actualCount'] = $this->actualCount[$productId][$this->storeId];
+            $productsData[$productId]['actualCount'] = $this->actualCount[$productId][$this->storeNum];
             $productsData[$productId]['difference'] = $difference;
 
             if ($difference < 0) {
@@ -240,7 +242,8 @@ class Inventory extends Component
 
     public function makeInventoryDocs($inventoryData, $productsData)
     {
-        $docNo = $this->generateDocNo($this->storeId, $this->docNo);
+        $store = $this->company->stores->firstWhere('id', $this->storeId);
+        $docNo = $this->generateDocNo($store->num_id, $this->docNo);
 
         // Inventory Doc
         $docType = DocType::where('slug', 'forma-inv-10')->first();
@@ -281,17 +284,17 @@ class Inventory extends Component
         session()->flash('message', 'Запись изменена');
     }
 
-    public function generateDocNo($storeId, $docNo = null)
+    public function generateDocNo($storeNum, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = Revision::where('company_id', $this->company->id)->where('doc_no', 'like', $storeId.'/%')->orderByDesc('id')->first();
+            $lastDoc = Revision::where('company_id', $this->company->id)->where('doc_no', 'like', $storeNum.'/%')->orderByDesc('id')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } else {
-                $docNo = $storeId.'/1';
+                $docNo = $storeNum.'/1';
             }
         }
 
@@ -300,7 +303,7 @@ class Inventory extends Component
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return $this->generateDocNo($storeId, $docNo);
+            return $this->generateDocNo($storeNum, $docNo);
         }
 
         return $docNo;
@@ -354,7 +357,7 @@ class Inventory extends Component
         }
 
         $revisionProducts[$id] = $product;
-        $this->actualCount[$id][$this->storeId] = $count;
+        $this->actualCount[$id][$this->storeNum] = $count;
 
         session()->put('revisionProducts', $revisionProducts);
         $this->search = '';
@@ -379,12 +382,13 @@ class Inventory extends Component
 
     public function render()
     {
-        $products = (strlen($this->search) >= 2)
+        $products = (strlen($this->search) > 1)
             ? Product::search($this->search)->where('in_company_id', $this->company->id)->get()->take(7)
             : [];
 
         $this->revisionProducts = session()->get('revisionProducts') ?? [];
-        $this->docNo = $this->generateDocNo($this->storeId);
+        $store = $this->company->stores->firstWhere('id', $this->storeId);
+        $this->docNo = $this->generateDocNo($store->num_id);
 
         return view('livewire.store.inventory', ['products' => $products])
             ->layout('livewire.store.layout');

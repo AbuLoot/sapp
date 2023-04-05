@@ -152,7 +152,7 @@ class ReturnProducts extends Component
         $belongsToStoreId = collect($this->productsData)->pluck('store')->first() ?? null;
 
         $store = session()->get('store');
-        $cashbook = session()->get('cashbook');
+        $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
 
         $productsData = [];
@@ -299,7 +299,9 @@ class ReturnProducts extends Component
         $incomingOrders = [];
 
         if ($this->search) {
-            $incomingOrders = IncomingOrder::where('doc_no', 'like', '%'.$this->search.'%')
+            $incomingOrders = IncomingOrder::query()
+                ->where('company_id', $this->company->id)
+                ->where('doc_no', 'like', '%'.$this->search.'%')
                 ->whereIn('operation_code', ['payment-products', 'returned-products']) // , 'sale-on-credit'
                 ->orderByDesc('id')
                 ->paginate(12);

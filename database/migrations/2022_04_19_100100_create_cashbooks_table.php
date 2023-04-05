@@ -15,6 +15,7 @@ class CreateCashbooksTable extends Migration
     {
         Schema::create('cashbooks', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('num_id');
             $table->integer('company_id');
             $table->integer('region_id');
             $table->char('title');

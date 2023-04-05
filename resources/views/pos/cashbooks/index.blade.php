@@ -15,6 +15,7 @@
         <tr class="active">
           <td>№</td>
           <td>Название</td>
+          <td>Номер кассы</td>
           <td>Компания</td>
           <td>Регион</td>
           <td>Адрес</td>
@@ -28,6 +29,7 @@
           <tr>
             <td>{{ $i++ }}</td>
             <td>{{ $cashbook->title }}</td>
+            <td>{{ $cashbook->num_id }}</td>
             <td>{{ $cashbook->company->title }}</td>
             <td>{{ $cashbook->region->title ?? null }}</td>
             <td>{{ $cashbook->address }}</td>

@@ -24,6 +24,7 @@ class AddProduct extends Component
     public $lang;
     public $docNo;
     public $company;
+    public $stores;
     public $product;
     public $productBarcodes = [];
     public $barcodes = [''];
@@ -56,10 +57,15 @@ class AddProduct extends Component
         }
 
         $this->company = auth()->user()->company;
+        $this->stores = $this->company->stores;
         $this->store = session()->get('storage');
         $this->product = new Product;
         $this->product->type = 1;
-        $this->docNo = $this->generateIncomingStoreDocNo($this->store->id);
+        $this->docNo = $this->generateIncomingStoreDocNo($this->store->num_id);
+
+        foreach ($this->stores as $store) {
+            $this->countInStores[$store->num_id] = 0;
+        }
     }
 
     public function updated($key)
@@ -169,12 +175,17 @@ class AddProduct extends Component
 
             $productData = [];
 
-            foreach ($this->countInStores as $storeId => $countInStore) {
+            foreach ($this->countInStores as $storeNum => $countInStore) {
+
+                if (!$countInStore) {
+                    continue;
+                }
 
                 $docNoParts = explode('/', $this->docNo);
-                $firstDocNo = $docNoParts[0] == $storeId ? $this->docNo : null;
+                $firstDocNo = $docNoParts[0] == $storeNum ? $this->docNo : null;
 
-                $docNo = $this->generateIncomingStoreDocNo($storeId, $firstDocNo);
+                $storeId = $this->stores->where('num_id', $storeNum)->first()->id;
+                $docNo = $this->generateIncomingStoreDocNo($storeNum, $firstDocNo);
 
                 $productData[$product->id]['purchase_price'] = $product->purchase_price;
                 $productData[$product->id]['count'] = $countInStore;
@@ -224,12 +235,10 @@ class AddProduct extends Component
     {
         $companies = Company::where('company_id', $this->company->id)->where('is_supplier', 1)->get();
         $currency = $this->company->currency->symbol;
-        $stores = $this->company->stores;
         $units = Unit::all();
 
         return view('livewire.store.add-product', [
                 'units' => $units,
-                'stores' => $stores,
                 'currency' => $currency,
                 'companies' => $companies
             ])->layout('livewire.store.layout');

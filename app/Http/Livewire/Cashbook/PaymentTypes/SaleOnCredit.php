@@ -86,7 +86,7 @@ class SaleOnCredit extends Component
         $incomingTotalAmount = 0;
 
         $store = session()->get('store');
-        $cashbook = session()->get('cashbook');
+        $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
         $cartProducts = session()->get('cartProducts');
 

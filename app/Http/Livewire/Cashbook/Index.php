@@ -19,6 +19,7 @@ class Index extends Component
     public $company;
     public $store;
     public $storeId;
+    public $storeNum;
     public $search = '';
     public $searchCustomer = '';
     public $cartProducts = [];
@@ -27,7 +28,6 @@ class Index extends Component
     public $totalDiscount = null;
     public $totalDiscountView;
     public $priceMode = 'retail';
-    public $amount;
 
     protected $listeners = [
         'addToCart',
@@ -45,12 +45,13 @@ class Index extends Component
         $this->lang = app()->getLocale();
         $this->company = auth()->user()->company;
 
-        if (!session()->has('store')) {
-            session()->put('store', Store::first());
+        if (!session()->has('storage')) {
+            session()->put('storage', Store::where('company_id', $this->company->id)->first());
         }
 
-        $this->store = session()->get('store');
+        $this->store = session()->get('storage');
         $this->storeId = $this->store->id;
+        $this->storeNum = $this->store->num_id;
     }
 
     public function updated($key, $value)
@@ -136,7 +137,7 @@ class Index extends Component
     {
         $cartProducts = session()->get('cartProducts');
         $countInStores = json_decode($cartProducts[$productId]->count_in_stores, true) ?? [];
-        $countInStore = $countInStores[$this->store->id] ?? 0;
+        $countInStore = $countInStores[$this->storeNum] ?? 0;
 
         if ($value <= 0 || !is_numeric($value)) {
             $validCount = ($countInStore == 0) ? 0 : 1;
@@ -197,7 +198,7 @@ class Index extends Component
         $product = Product::findOrFail($id);
 
         $countInStores = json_decode($product->count_in_stores, true) ?? [];
-        $countInStore = $countInStores[$this->store->id] ?? 0;
+        $countInStore = $countInStores[$this->storeNum] ?? 0;
 
         if (session()->has('cartProducts')) {
             $cartProducts = session()->get('cartProducts');
@@ -293,16 +294,14 @@ class Index extends Component
         $deferredCheck = $deferredChecks[$orderName];
         $orderArrName = explode('/', $orderName);
 
-        session()->put('store', Store::find($orderArrName[0]));
-        $this->store = session()->get('store');
-        $this->storeId = $this->store->id;
+        session()->put('storage', Store::where('company_id', $this->company->id)->find($orderArrName[0]));
 
         foreach($deferredCheck['cart'] as $id => $check) {
 
             $product = Product::findOrFail($id);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$this->store->id] ?? 0;
+            $countInStore = $countInStores[$this->storeNum] ?? 0;
 
             $validCount = ($countInStore <= $check['countInCart']) ? $countInStore : $check['countInCart'];
 

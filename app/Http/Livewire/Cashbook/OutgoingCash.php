@@ -31,7 +31,7 @@ class OutgoingCash extends Component
     public function mount()
     {
         $this->company = auth()->user()->company;
-        $this->cashbook = session()->get('cashbook');
+        $this->cashbook = session()->get('cashdesk');
     }
 
     public function outgoingCashInput($value)

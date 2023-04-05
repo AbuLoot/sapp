@@ -23,9 +23,10 @@ class Writeoff extends Component
 
     public $lang;
     public $units;
+    public $search;
     public $company;
     public $storeId;
-    public $search;
+    public $storeNum;
     public $writeoffProducts = [];
     public $writeoffCounts = [];
     public $comment;
@@ -44,7 +45,8 @@ class Writeoff extends Component
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
         $this->company = auth()->user()->company;
-        $this->storeId = $this->company->stores->first()->id;
+        $this->storeId = session()->get('storage')->id;
+        $this->storeNum = session()->get('storage')->num_id;
     }
 
     public function updated($key, $value)
@@ -56,20 +58,30 @@ class Writeoff extends Component
 
             $product = Product::where('in_company_id', $this->company->id)->findOrFail($parts[1]);
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$this->storeId] ?? 0;
+            $countInStore = $countInStores[$this->storeNum] ?? 0;
 
             if ($value <= 0 || !is_numeric($value)) {
-                $this->writeoffCounts[$parts[1]][$this->storeId] = null;
+                $this->writeoffCounts[$parts[1]][$this->storeNum] = null;
                 return;
             }
 
-            $this->writeoffCounts[$parts[1]][$this->storeId] = ($countInStore < $value) ? $countInStore : $value;
+            $this->writeoffCounts[$parts[1]][$this->storeNum] = ($countInStore < $value) ? $countInStore : $value;
         }
     }
 
     public function makeDoc()
     {
-        $this->validate();
+        // $this->validate();
+
+        foreach($this->writeoffProducts as $productId => $writeoffProduct) {
+
+            // If incoming count empty, return wrong
+            if (empty($this->writeoffCounts[$productId][$this->storeNum])
+                    || $this->writeoffCounts[$productId][$this->storeNum] < 0) {
+                $this->addError('writeoffCounts.'.$productId.'.'.$this->storeNum, 'Wrong');
+                return;
+            }
+        }
 
         $productsData = [];
         $countInStores = [];
@@ -83,10 +95,10 @@ class Writeoff extends Component
             $product = Product::where('in_company_id', $this->company->id)->findOrFail($productId);
 
             $countInStores = json_decode($writeoffProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$this->storeId] ?? 0;
-            $writeoffCount = $this->writeoffCounts[$productId][$this->storeId];
+            $countInStore = $countInStores[$this->storeNum] ?? 0;
+            $writeoffCount = $this->writeoffCounts[$productId][$this->storeNum];
 
-            unset($this->writeoffCounts[$productId][$this->storeId]);
+            unset($this->writeoffCounts[$productId][$this->storeNum]);
 
             $stockCount = $countInStore - $writeoffCount;
 
@@ -99,7 +111,7 @@ class Writeoff extends Component
             $writeoffTotalCount = $writeoffTotalCount + $writeoffCount;
             $writeoffTotalAmount = $writeoffTotalAmount + ($product->purchase_price * $writeoffCount);
 
-            $countInStores[$this->storeId] = $stockCount;
+            $countInStores[$this->storeNum] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -113,7 +125,7 @@ class Writeoff extends Component
         // Writeoff Doc
         $docType = DocType::where('slug', 'forma-z-6')->first();
 
-        $docNo = $this->generateOutgoingStoreDocNo($this->storeId);
+        $docNo = $this->generateOutgoingStoreDocNo($this->storeNum);
 
         $outgoingDoc = new OutgoingDoc;
         $outgoingDoc->store_id = $this->storeId;
@@ -160,7 +172,7 @@ class Writeoff extends Component
         }
 
         $writeoffProducts[$id] = $product;
-        $this->writeoffCounts[$id][$this->storeId] = null;
+        $this->writeoffCounts[$id][$this->storeNum] = null;
 
         session()->put('writeoffProducts', $writeoffProducts);
         $this->search = '';

@@ -25,6 +25,10 @@
               <input type="text" class="form-control" id="slug" name="slug" minlength="2" maxlength="80" value="{{ (old('slug')) ? old('slug') : $store->slug }}">
             </div>
             <div class="form-group">
+              <label for="num_id">Номер</label>
+              <input type="text" class="form-control" id="num_id" name="num_id" maxlength="80" value="{{ (old('num_id')) ? old('num_id') : $store->num_id }}">
+            </div>
+            <div class="form-group">
               <label for="ip_address">IP address</label>
               <input type="text" class="form-control" id="ip_address" name="ip_address" value="{{ (old('ip_address')) ? old('ip_address') : $store->ip_address }}">
             </div>
@@ -34,7 +38,7 @@
             </div>
             <div class="form-group">
               <label for="company_id">Компания</label>
-              <input type="text" class="form-control" id="company_id" name="company_id" value="{{ (old('company_id')) ? old('company_id') : Auth::user()->profile->company->title }}" disabled>
+              <input type="text" class="form-control" id="company_id" name="company_id" value="{{ (old('company_id')) ? old('company_id') : Auth::user()->company->title }}" disabled>
             </div>
             <div class="form-group">
               <label for="region_id">Регионы</label>

@@ -131,8 +131,8 @@
                   <div style="max-height: 210px; overflow-y: auto;" class="py-1">
                     @foreach($stores as $index => $store)
                       <div class="input-group mb-1">
-                        <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
-                        <input type="number" value="{{ $countInStores[$store->id] }}" class="form-control" disabled>
+                        <span class="input-group-text">{{ $store->title }}</span>
+                        <input type="number" value="{{ $countInStores[$store->num_id] }}" class="form-control" disabled>
                         <select class="form-control @error('product.unit') is-invalid @enderror" wire:model="product.unit" id="unit">
                           <option value="">Ед. измерения</option>
                           @foreach($units as $unit)

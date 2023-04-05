@@ -55,12 +55,12 @@
 
     <div class="row justify-content-end mb-3">
       <div class="col-3">
-        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
+        <select wire:model="storeNum" class="form-control @error('storeNum') is-invalid @enderror" id="storeNum">
           @foreach ($company->stores as $store)
-            <option value="{{ $store->id }}"> {{ $store->title }}</option>
+            <option value="{{ $store->num_id }}"> {{ $store->title }}</option>
           @endforeach
         </select>
-        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
+        @error('storeNum')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
 
       <!-- @foreach($company->stores as $index => $store)
@@ -103,21 +103,21 @@
                 $unit = $units->where('id', $revisionProduct->unit)->first()->title ?? '?';
 
                 $countInStores = json_decode($revisionProduct->count_in_stores, true) ?? [];
-                $countInStore = (isset($countInStores[$storeId])) ? $countInStores[$storeId] : 0;
+                $countInStore = (isset($countInStores[$storeNum])) ? $countInStores[$storeNum] : 0;
                 $difference = 0;
 
-                if (isset($actualCount[$revisionProduct->id][$storeId])) {
-                  $difference = $actualCount[$revisionProduct->id][$storeId] - $countInStore;
+                if (isset($actualCount[$revisionProduct->id][$storeNum])) {
+                  $difference = $actualCount[$revisionProduct->id][$storeNum] - $countInStore;
                 }
               ?>
               <td>{{ $revisionProduct->count + $difference . $unit }}</td>
               <td>{{ $countInStore + $difference . $unit }}</td>
               <td class="col-2">
                 <div class="input-group">
-                  <input type="number" wire:model="actualCount.{{ $revisionProduct->id.'.'.$storeId }}" id="actualCount.{{ $revisionProduct->id.'.'.$storeId }}" onclick="setFocus('actualCount.{{ $revisionProduct->id.'.'.$storeId }}')" class="form-control @error('actualCount.'.$revisionProduct->id.'.'.$storeId) is-invalid @enderror" required>
+                  <input type="number" wire:model="actualCount.{{ $revisionProduct->id.'.'.$storeNum }}" id="actualCount.{{ $revisionProduct->id.'.'.$storeNum }}" onclick="setFocus('actualCount.{{ $revisionProduct->id.'.'.$storeNum }}')" class="form-control @error('actualCount.'.$revisionProduct->id.'.'.$storeNum) is-invalid @enderror" required>
                   <span class="input-group-text">{{ $unit }}</span>
                 </div>
-                @error('actualCount.'.$revisionProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
+                @error('actualCount.'.$revisionProduct->id.'.'.$storeNum)<div class="text-danger">{{ $message }}</div>@enderror
               </td>
               <td class="text-end"><a wire:click="removeFromRevision({{ $revisionProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
             </tr>

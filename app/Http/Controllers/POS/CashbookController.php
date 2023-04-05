@@ -40,7 +40,10 @@ class CashbookController extends Controller
             'title' => 'required|min:2|max:80|unique:cashbooks',
         ]);
 
+        $numId = $request->num_id ?? Cashbook::where('company_id', $this->companyId)->count() + 1;
+
         $cashbook = new Cashbook;
+        $cashbook->num_id = $numId;
         $cashbook->company_id = $this->companyId;
         $cashbook->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $cashbook->title = $request->title;
@@ -72,8 +75,11 @@ class CashbookController extends Controller
 
         $cashbook = Cashbook::where('company_id', $this->companyId)->findOrFail($id);
 
+        $numId = ($request->num_id) ? $request->num_id : Cashbook::where('company_id', $this->companyId)->count() + 1;
+
         // $this->authorize('update', $cashbook);
 
+        $cashbook->num_id = $numId;
         // $cashbook->company_id = $this->companyId;
         $cashbook->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $cashbook->title = $request->title;

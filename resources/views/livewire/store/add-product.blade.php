@@ -118,8 +118,8 @@
                   <div style="max-height: 210px; overflow-y: auto;" class="py-1">
                     @foreach($stores as $store)
                       <div class="input-group mb-1">
-                        <span class="input-group-text" id="{{ $store->id }}">{{ $store->title }}</span>
-                        <input wire:model="countInStores.{{ $store->id }}" type="number" class="form-control @error('countInStores.'.$store->id) is-invalid @enderror" id="count">
+                        <span class="input-group-text">{{ $store->title }}</span>
+                        <input wire:model="countInStores.{{ $store->num_id }}" type="number" class="form-control @error('countInStores.'.$store->id) is-invalid @enderror" onfocus="this.select()">
                         <select wire:model="product.unit" class="form-control @error('product.unit') is-invalid @enderror">
                           <option value="">Ед. измерения</option>
                           @foreach($units as $unit)

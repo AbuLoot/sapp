@@ -57,12 +57,12 @@
 
     <div class="row justify-content-end mb-3">
       <div class="col-3">
-        <select wire:model="storeId" class="form-control @error('storeId') is-invalid @enderror" id="storeId">
+        <select wire:model="storeNum" class="form-control @error('storeNum') is-invalid @enderror" id="storeNum">
           @foreach ($company->stores as $store)
-            <option value="{{ $store->id }}"> {{ $store->title }}</option>
+            <option value="{{ $store->num_id }}"> {{ $store->title }}</option>
           @endforeach
         </select>
-        @error('storeId')<div class="text-danger">{{ $message }}</div>@enderror
+        @error('storeNum')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
     </div>
 
@@ -75,7 +75,7 @@
             <th scope="col">Категория</th>
             <th scope="col">Цена закупки</th>
             <th scope="col">Цена продажи</th>
-            <th scope="col">{{ $company->stores->where('id', $storeId)->first()->title }}</th>
+            <th scope="col">{{ $company->stores->firstWhere('num_id', $storeNum)->title }}</th>
             <th scope="col">В базе</th>
             <th scope="col">Количество</th>
             <th scope="col">Поставщик</th>
@@ -88,9 +88,9 @@
               $unit = $units->where('id', $incomeProduct->unit)->first()->title ?? '?';
               $barcodes = json_decode($incomeProduct->barcodes, true) ?? [''];
               $countInStores = json_decode($incomeProduct->count_in_stores, true) ?? [];
-              $countInStore = isset($countInStores[$storeId]) ? $countInStores[$storeId] : 0;
-              $incomeCount = !empty($incomeProductsCount[$incomeProduct->id][$storeId])
-                  ? $incomeProductsCount[$incomeProduct->id][$storeId]
+              $countInStore = isset($countInStores[$storeNum]) ? $countInStores[$storeNum] : 0;
+              $incomeCount = !empty($incomeProductsCount[$incomeProduct->id][$storeNum])
+                  ? $incomeProductsCount[$incomeProduct->id][$storeNum]
                   : 0;
             ?>
             <tr>
@@ -107,9 +107,9 @@
               <td>{{ $incomeProduct->count + $incomeCount . $unit }}</td>
               <td class="col-2" style="width:12%">
                 <div class="input-group">
-                  <input wire:model="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" type="number" id="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}" onclick="setFocus('incomeProductsCount.{{ $incomeProduct->id.'.'.$storeId }}')" class="form-control @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId) is-invalid @enderror" required>
+                  <input wire:model="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeNum }}" type="number" id="incomeProductsCount.{{ $incomeProduct->id.'.'.$storeNum }}" onclick="setFocus('incomeProductsCount.{{ $incomeProduct->id.'.'.$storeNum }}')" class="form-control @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeNum) is-invalid @enderror" required>
                   <span class="input-group-text px-1-">{{ $unit }}</span>
-                  @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeId)<div class="text-danger">{{ $message }}</div>@enderror
+                  @error('incomeProductsCount.'.$incomeProduct->id.'.'.$storeNum)<div class="text-danger">{{ $message }}</div>@enderror
                 </div>
               </td>
               <td>{{ $incomeProduct->company->title }}</td>

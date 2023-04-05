@@ -15,6 +15,7 @@
         <tr class="active">
           <td>№</td>
           <td>Название</td>
+          <td>Номер склада</td>
           <td>Компания</td>
           <td>Регион</td>
           <td>Адрес</td>
@@ -28,6 +29,7 @@
           <tr>
             <td>{{ $i++ }}</td>
             <td>{{ $store->title }}</td>
+            <td>{{ $store->num_id }}</td>
             <td>{{ $store->company->title }}</td>
             <td>{{ $store->region->title ?? null }}</td>
             <td>{{ $store->address }}</td>

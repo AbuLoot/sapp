@@ -9,17 +9,17 @@ use App\Models\OutgoingDoc;
 
 trait GenerateDocNo {
 
-    public function generateIncomingStoreDocNo($storeId, $docNo = null)
+    public function generateIncomingStoreDocNo($storeNum, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = IncomingDoc::where('company_id', session('company')->id)->where('doc_no', 'like', $storeId.'/%')->first();
+            $lastDoc = IncomingDoc::where('company_id', session('company')->id)->where('doc_no', 'like', $storeNum.'/%')->first();
 
             if ($lastDoc && is_null($docNo)) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $storeId.'/1';
+                $docNo = $storeNum.'/1';
             }
         }
 
@@ -28,23 +28,23 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateIncomingStoreDocNo($storeId, $docNo);
+            return self::generateIncomingStoreDocNo($storeNum, $docNo);
         }
 
         return $docNo;
     }
 
-    public function generateOutgoingStoreDocNo($storeId, $docNo = null)
+    public function generateOutgoingStoreDocNo($storeNum, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingDoc::where('company_id', session('company')->id)->where('doc_no', 'like', $storeId.'/%')->first();
+            $lastDoc = OutgoingDoc::where('company_id', session('company')->id)->where('doc_no', 'like', $storeNum.'/%')->first();
 
             if ($lastDoc && is_null($docNo)) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $storeId.'/1';
+                $docNo = $storeNum.'/1';
             }
         }
 
@@ -53,7 +53,7 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateOutgoingStoreDocNo($storeId, $docNo);
+            return self::generateOutgoingStoreDocNo($storeNum, $docNo);
         }
 
         return $docNo;

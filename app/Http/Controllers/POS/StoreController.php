@@ -41,7 +41,10 @@ class StoreController extends Controller
             'ip_address' => 'required|min:6',
         ]);
 
+        $numId = $request->num_id ?? Store::where('company_id', $this->companyId)->count() + 1;
+
         $store = new Store;
+        $store->num_id = $numId;
         $store->company_id = $this->companyId;
         $store->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $store->title = $request->title;
@@ -75,6 +78,9 @@ class StoreController extends Controller
 
         // $this->authorize('update', $store);
 
+        $numId = ($request->num_id) ? $request->num_id : Store::where('company_id', $this->companyId)->count() + 1;
+
+        $store->num_id = $numId;
         // $store->company_id = $this->companyId;
         $store->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $store->title = $request->title;

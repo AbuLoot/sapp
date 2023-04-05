@@ -7,7 +7,6 @@
           <button type="button" id="closeDefferedChecks" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="min-height:270px;">
-
           <div class="row">
             @foreach($deferredChecks as $index => $check)
               <div class="col-3 mb-3">
@@ -25,7 +24,6 @@
               </div>
             @endforeach
           </div>
-
         </div>
       </div>
     </div>

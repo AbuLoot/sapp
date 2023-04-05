@@ -16,7 +16,7 @@
             {!! csrf_field() !!}
             <div class="form-group">
               <label for="company_id">Компания</label>
-              <input type="text" class="form-control" id="company_id" name="company_id" value="{{ (old('company_id')) ? old('company_id') : Auth::user()->profile->company->title }}" disabled>
+              <input type="text" class="form-control" id="company_id" name="company_id" value="{{ (old('company_id')) ? old('company_id') : Auth::user()->company->title }}" disabled>
             </div>
 
             <div class="form-group">
