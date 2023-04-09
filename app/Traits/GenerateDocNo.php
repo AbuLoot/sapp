@@ -59,17 +59,17 @@ trait GenerateDocNo {
         return $docNo;
     }
 
-    public function generateIncomingCashDocNo($cashbookId, $docNo = null)
+    public function generateIncomingCashDocNo($cashbookNum, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = IncomingOrder::where('company_id', session('company')->id)->where('doc_no', 'like', $cashbookId.'/%')->first();
+            $lastDoc = IncomingOrder::where('company_id', session('company')->id)->where('doc_no', 'like', $cashbookNum.'/%')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $cashbookId.'/1';
+                $docNo = $cashbookNum.'/1';
             }
         }
 
@@ -78,23 +78,23 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateIncomingCashDocNo($cashbookId, $docNo);
+            return self::generateIncomingCashDocNo($cashbookNum, $docNo);
         }
 
         return $docNo;
     }
 
-    public function generateOutgoingCashDocNo($cashbookId, $docNo = null)
+    public function generateOutgoingCashDocNo($cashbookNum, $docNo = null)
     {
         if (is_null($docNo)) {
 
-            $lastDoc = OutgoingOrder::where('company_id', session('company')->id)->where('doc_no', 'like', $cashbookId.'/%')->first();
+            $lastDoc = OutgoingOrder::where('company_id', session('company')->id)->where('doc_no', 'like', $cashbookNum.'/%')->first();
 
             if ($lastDoc) {
                 list($first, $second) = explode('/', $lastDoc->doc_no);
                 $docNo = $first.'/'.$second++;
             } elseif (is_null($docNo)) {
-                $docNo = $cashbookId.'/1';
+                $docNo = $cashbookNum.'/1';
             }
         }
 
@@ -103,7 +103,7 @@ trait GenerateDocNo {
         if ($existDoc) {
             list($first, $second) = explode('/', $docNo);
             $docNo = $first.'/'.++$second;
-            return self::generateOutgoingCashDocNo($cashbookId, $docNo);
+            return self::generateOutgoingCashDocNo($cashbookNum, $docNo);
         }
 
         return $docNo;

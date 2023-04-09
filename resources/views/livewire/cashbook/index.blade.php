@@ -4,7 +4,7 @@
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/{{ $lang }}/cashdesk" class="navbar-brand me-4">
-          <img src="/img/logo.svg" width="auto" height="40"> <span class="text-white">{{ session()->get('cashdesk')->title }}</span>
+          <img src="/img/logo.svg" width="auto" height="40"> <span class="text-white">{{ $cashbook->title }}</span>
         </a>
 
         <button class="btn btn-warning rounded-circle me-auto" onclick="document.location.reload()"><i class="bi bi-arrow-clockwise"></i></button>
@@ -331,7 +331,7 @@
     <livewire:cashbook.reprint>
 
     <!-- Modal Deferred Checks -->
-    <livewire:cashbook.deferred-checks :store="$store">
+    <livewire:cashbook.deferred-checks :company="$company">
 
     <!-- Keyboard -->
     <livewire:keyboard>

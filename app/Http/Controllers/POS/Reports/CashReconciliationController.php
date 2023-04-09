@@ -29,7 +29,7 @@ class CashReconciliationController extends Controller
             ->where('is_worker', true)
             ->join('role_user', function ($join) {
                 $join->on('users.id', '=', 'role_user.user_id')
-                    ->whereIn('role_user.role_id', [1, 4]);
+                    ->whereIn('role_user.role_id', [1, 2, 4]);
             })
             ->get();
 

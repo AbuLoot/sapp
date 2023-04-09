@@ -126,7 +126,7 @@
                             <option value="{{ $unit->id }}">{{ $unit->title }}</option>
                           @endforeach
                         </select>
-                        @error('countInStores.'.$store->id)<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        @error('countInStores.'.$store->num_id)<div class="invalid-feedback">{{ $message }}</div>@enderror
                         @error('product.unit')<div class="invalid-feedback">{{ $message }}</div>@enderror
                       </div>
                     @endforeach

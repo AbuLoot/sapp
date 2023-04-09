@@ -70,9 +70,9 @@ class Reprint extends Component
 
         if ($this->search) {
             $incomingOrders = IncomingOrder::query()
-                ->where('doc_no', 'like', '%'.$this->search.'%')
                 ->where('company_id', $this->company->id)
                 ->whereIn('operation_code', ['returned-products', 'repayment-debt', 'payment-products', 'sale-on-credit'])
+                ->where('doc_no', 'like', '%'.$this->search.'%')
                 ->orderByDesc('id')
                 ->paginate(12);
         }

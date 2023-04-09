@@ -150,6 +150,7 @@ class ReturnProducts extends Component
         $outgoingTotalAmount = 0;
         $incomingTotalCount = 0;
         $belongsToStoreId = collect($this->productsData)->pluck('store')->first() ?? null;
+        $belongsToStoreNum = $this->company->stores->firstWhere('id', $belongsToStoreId)->num_id;
 
         $store = session()->get('store');
         $cashbook = session()->get('cashdesk');
@@ -172,8 +173,8 @@ class ReturnProducts extends Component
             $product = Product::findOrFail($productId);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$store->id] ?? 0;
-            $stockCount = $countInStores[$belongsToStoreId] + $returnedProduct['incomingCount'];
+            $countInStore = $countInStores[$store->num_id] ?? 0;
+            $stockCount = $countInStores[$belongsToStoreNum] + $returnedProduct['incomingCount'];
 
             // Discount Calculation
             $percentage = $this->productsData[$product->id]['price'] / 100;
@@ -199,7 +200,7 @@ class ReturnProducts extends Component
             $outgoingTotalAmount = $outgoingTotalAmount + $amountDiscounted;
             $incomingTotalCount = $incomingTotalCount + $returnedProduct['incomingCount'];
 
-            $countInStores[$belongsToStoreId] = $stockCount;
+            $countInStores[$belongsToStoreNum] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -210,8 +211,8 @@ class ReturnProducts extends Component
         // Outgoing Order & Incoming Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-2', 'forma-z-1'])->get();
 
-        $cashDocNo = $this->generateOutgoingCashDocNo($cashbook->id);
-        $storeDocNo = $this->generateIncomingStoreDocNo($store->id);
+        $cashDocNo = $this->generateOutgoingCashDocNo($cashbook->num_id);
+        $storeDocNo = $this->generateIncomingStoreDocNo($store->num_id);
 
         // Cash Docs
         $outgoingOrder = new OutgoingOrder;

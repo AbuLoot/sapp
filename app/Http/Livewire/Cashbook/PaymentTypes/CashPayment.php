@@ -79,7 +79,7 @@ class CashPayment extends Component
             $outgoingCount = $cartProduct['countInCart'];
 
             $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$store->id] ?? 0;
+            $countInStore = $countInStores[$store->num_id] ?? 0;
 
             // Prepare outgoing count & If outgoing count greater, assign $countInStore
             if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
@@ -89,7 +89,7 @@ class CashPayment extends Component
             }
 
             $stockCount = $countInStore - $outgoingCount;
-            $countInStores[$store->id] = $stockCount;
+            $countInStores[$store->num_id] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -116,8 +116,8 @@ class CashPayment extends Component
         // Incoming Order & Outgoing Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
 
-        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
-        $storeDocNo = $this->generateOutgoingStoreDocNo($store->id);
+        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->num_id);
+        $storeDocNo = $this->generateOutgoingStoreDocNo($store->num_id);
 
         // Cash Doc
         $incomingOrder = new IncomingOrder;

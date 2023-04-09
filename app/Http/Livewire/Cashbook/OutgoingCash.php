@@ -49,7 +49,7 @@ class OutgoingCash extends Component
         // Outgoing Order
         $docType = DocType::where('slug', 'forma-ko-2')->first();
 
-        $docNo = $this->generateOutgoingCashDocNo($this->cashbook->id);
+        $docNo = $this->generateOutgoingCashDocNo($this->cashbook->num_id);
 
         $outgoingOrder = new OutgoingOrder;
         $outgoingOrder->cashbook_id = $this->cashbook->id;

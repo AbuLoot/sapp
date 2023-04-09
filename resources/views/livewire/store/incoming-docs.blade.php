@@ -192,7 +192,7 @@
                 <div class="col d-grid" role="group" aria-label="Basic example">
                   @if($editMode)
                     <button wire:click="saveDoc" type="button" class="btn btn-success"><i class="bi bi-hdd-fill me-2"></i> Сохранить</button>
-                  @else
+                  @elseif($docDetail->operation_code == 'incoming-products')
                     <button wire:click="editDoc" type="button" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i> Редактировать</button>
                   @endif
                 </div>

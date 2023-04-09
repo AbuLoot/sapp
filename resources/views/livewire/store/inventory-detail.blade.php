@@ -45,7 +45,6 @@
         </thead>
         <tbody>
           @forelse($revisionProducts as $index => $revisionProduct)
-
             <tr>
               <td>{{ $revisionProduct->title }}</td>
               <td>

@@ -110,7 +110,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, Skips
             'id_code' => $row['artikul'] ?? NULL,
             'purchase_price' => (int) str_replace(" ", "", $row['cena_zakupocnaya']) ?? 0,
             'price' => (int) str_replace(" ", "", $row['cena']) ?? 0,
-            'count_in_stores' => json_encode([$this->first_store->id => $row['kolicestvo'] ?? 0]),
+            'count_in_stores' => json_encode([$this->first_store->num_id => $row['kolicestvo'] ?? 0]),
             'count' => $row['kolicestvo'] ?? 0,
             'type' => ($row['tip'] == 'Товар') ? 1 : 2,
             'image' => 'no-image-middle.png',

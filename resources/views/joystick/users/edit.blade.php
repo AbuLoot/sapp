@@ -105,6 +105,7 @@
               <label>Компании</label>
               <select id="company_id" name="company_id" class="form-control">
                 <option value=""></option>
+                <option value="{{ auth()->user()->company->id }}">{{ auth()->user()->company->title }}</option>
                 <?php foreach ($companies as $company) : ?>
                   <option value="{{ $company->id }}" <?= ($company->id == $user->profile->company_id) ? 'selected' : ''; ?>>{{ $company->title }}</option>
                 <?php endforeach; ?>

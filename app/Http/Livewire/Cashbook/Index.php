@@ -17,6 +17,7 @@ class Index extends Component
 {
     public $lang;
     public $company;
+    public $cashbook;
     public $store;
     public $storeId;
     public $storeNum;
@@ -49,6 +50,7 @@ class Index extends Component
             session()->put('storage', Store::where('company_id', $this->company->id)->first());
         }
 
+        $this->cashbook = session()->get('cashdesk');
         $this->store = session()->get('storage');
         $this->storeId = $this->store->id;
         $this->storeNum = $this->store->num_id;
@@ -183,7 +185,8 @@ class Index extends Component
 
         if (session()->get('priceMode') == 'retail') {
             session()->put('priceMode', 'wholesale');
-        } else {
+        }
+        else {
             session()->put('priceMode', 'retail');
         }
     }
@@ -264,8 +267,10 @@ class Index extends Component
         $sumOfCart = $this->sumOfCart();
         $orderName = $this->storeId.'/'.$sumOfCart['totalCount'].'/'.date("Y-m-d/H:i");
 
-        if (Cache::has('deferredChecks')) {
-            $deferredChecks = Cache::get('deferredChecks');
+        $ccid = $this->company->id.$this->cashbook->id;
+
+        if (Cache::has('deferredChecks'.$ccid)) {
+            $deferredChecks = Cache::get('deferredChecks'.$ccid);
         }
 
         $deferredChecks[$orderName]['totalDiscount'] = $this->totalDiscount;
@@ -273,7 +278,7 @@ class Index extends Component
         $deferredChecks[$orderName]['sumUndiscounted'] = number_format($sumOfCart['sumUndiscounted'], 0, '.', ' ').$this->company->currency->symbol;
         $deferredChecks[$orderName]['cart'] = $this->cartProducts;
 
-        Cache::put('deferredChecks', $deferredChecks);
+        Cache::put('deferredChecks'.$ccid, $deferredChecks);
 
         $this->totalDiscount = null;
         session()->forget('cartProducts');
@@ -287,12 +292,15 @@ class Index extends Component
             session()->forget('cartProducts');
         }
 
-        if (Cache::has('deferredChecks')) {
-            $deferredChecks = Cache::get('deferredChecks');
+        $ccid = $this->company->id.$this->cashbook->id;
+
+        if (Cache::has('deferredChecks'.$ccid)) {
+            $deferredChecks = Cache::get('deferredChecks'.$ccid);
         }
 
         $deferredCheck = $deferredChecks[$orderName];
         $orderArrName = explode('/', $orderName);
+        $i = 0;
 
         session()->put('storage', Store::where('company_id', $this->company->id)->find($orderArrName[0]));
 
@@ -309,6 +317,7 @@ class Index extends Component
             $cartProducts[$id]['countInCart'] = $validCount;
             $cartProducts[$id]['discount'] = $check['discount'];
             $cartProducts[$id]['input'] = false;
+            $cartProducts[$id]['time'] = time() + $i++;
         }
 
         $this->totalDiscount = $deferredCheck['totalDiscount'];

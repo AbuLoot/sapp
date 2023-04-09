@@ -26,7 +26,7 @@ class CartOrder extends Component
         $this->company = auth()->user()->company;
         $this->cashbook = session()->get('cashdesk');
         $this->currency = $this->company->currency->symbol;
-        $this->incomingOrderDocNo = $this->generateIncomingCashDocNo($this->cashbook->id);
+        $this->incomingOrderDocNo = $this->generateIncomingCashDocNo($this->cashbook->num_id);
         $this->sumOfCart = CashbookIndex::sumOfCart();
     }
 

@@ -55,10 +55,10 @@ class EditProduct extends Component
         $this->countInStores = json_decode($this->product->count_in_stores, true) ?? [];
 
         foreach($this->stores as $index => $store) {
-            if (empty($this->countInStores[$store->id]) && $index == 0) {
-                $this->countInStores[$store->id] = $this->product->count;
-            } elseif (empty($this->countInStores[$store->id])) {
-                $this->countInStores[$store->id] = null;
+            if (empty($this->countInStores[$store->num_id]) && $index == 0) {
+                $this->countInStores[$store->num_id] = $this->product->count;
+            } elseif (empty($this->countInStores[$store->num_id])) {
+                $this->countInStores[$store->num_id] = null;
             }
         }
 

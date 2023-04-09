@@ -125,7 +125,7 @@ class ListOfDebtors extends Component
         // Incoming Order
         $docType = DocType::where('slug', 'forma-ko-1')->first();
 
-        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->id);
+        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->num_id);
 
         $incomingOrder = new IncomingOrder;
         $incomingOrder->cashbook_id = $cashbook->id;

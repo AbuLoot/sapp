@@ -153,7 +153,7 @@
                 @foreach($company->stores as $index => $store)
                   <?php $totalCountStores = 0; ?>
                   @foreach ($products as $index => $product)
-                    <?php $totalCountStores += isset($countStores[$product->id][$store->id]) ? $countStores[$product->id][$store->id] : 0; ?>
+                    <?php $totalCountStores += isset($countStores[$product->id][$store->num_id]) ? $countStores[$product->id][$store->num_id] : 0; ?>
                   @endforeach
                   <option value="{{ $totalCountStores }}">{{ $store->title . ' - ' . $totalCountStores . 'шт' }}</option>
                 @endforeach
