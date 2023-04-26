@@ -41,6 +41,7 @@ class CashReconciliationController extends Controller
                 ->where('company_id', $this->companyId)
                 ->where('from_user_id', $cashierId)
                 ->orWhere('to_user_id', $cashierId)
+                ->where('mode', 'close')
                 ->orderBy('id', 'desc')
                 ->get();
 

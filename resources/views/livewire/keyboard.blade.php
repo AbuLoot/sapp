@@ -11,6 +11,11 @@
           <button type="button" class="btn btn-dark" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
         </span>
       </div>
+      <div class="position-absolute" style="bottom: -60px !important; left:30px !important;">
+        <span class="badge p-0">
+          <button type="button" class="btn btn-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="This keyboard is developed by ismoon"><i class="bi bi-info-square"></i></button>
+        </span>
+      </div>
     </div>
 
     <div class="offcanvas-body small">

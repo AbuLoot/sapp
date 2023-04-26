@@ -18,6 +18,10 @@
           <label for="title">Название компании</label>
         </div>
         <div class="form-floating mb-3">
+          <input type="text" name="code" class="form-control rounded-3" id="code" placeholder="Код партнера" required>
+          <label for="code">Код партнера</label>
+        </div>
+        <div class="form-floating mb-3">
           <input type="text" name="bin" class="form-control rounded-3" id="bin" placeholder="БИН / ИИН" value="{{ old('bin') }}" required>
           <label for="bin">БИН / ИИН</label>
         </div>

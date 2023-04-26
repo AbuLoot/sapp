@@ -188,7 +188,7 @@ class ProductExtensionController extends Controller
 
     public function categoryProducts($lang, $id)
     {
-        $categories = Category::orderBy('sort_id')->get()->toTree();
+        $categories = Category::where('company_id', $this->companyId)->orderBy('sort_id')->get()->toTree();
         $category = Category::find($id);
 
         if ($category->children && count($category->children) > 0) {
@@ -198,10 +198,17 @@ class ProductExtensionController extends Controller
         $ids[] = $category->id;
 
         if (auth()->user()->roles()->firstWhere('name', 'admin')) {
-            $products = Product::whereIn('category_id', $ids)->orderBy('updated_at','desc')->paginate(50);
+            $products = Product::where('in_company_id', $this->companyId)
+                ->whereIn('category_id', $ids)
+                ->orderBy('updated_at','desc')
+                ->paginate(50);
         }
         else {
-            $products = Product::where('user_id', auth()->user()->id)->whereIn('category_id', $ids)->orderBy('updated_at','desc')->paginate(50);
+            $products = Product::where('in_company_id', $this->companyId)
+                ->where('user_id', auth()->user()->id)
+                ->whereIn('category_id', $ids)
+                ->orderBy('updated_at','desc')
+                ->paginate(50);
         }
 
         $modes = Mode::all();

@@ -48,7 +48,7 @@ class BankCard extends Component
         $outgoingTotalCount = 0;
         $incomingTotalAmount = 0;
 
-        $store = session()->get('store');
+        $store = session()->get('storage');
         $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
         $cartProducts = session()->get('cartProducts');
@@ -69,6 +69,7 @@ class BankCard extends Component
 
             $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
             $countInStore = $countInStores[$store->num_id] ?? 0;
+
 
             // Prepare outgoing count & If outgoing count greater, assign $countInStore
             if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {

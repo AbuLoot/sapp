@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        if ($user->company) {
+        if ($user->company AND $user->is_worker) {
             $request->session()->put('company', $user->company);
         }
 

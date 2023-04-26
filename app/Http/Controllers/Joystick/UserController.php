@@ -44,6 +44,7 @@ class UserController extends Controller
 
         $regions = Region::orderBy('sort_id')->get()->toTree();
         $companies = Company::where('company_id', $this->companyId)->orderBy('sort_id')->get();
+        $companies->push(auth()->user()->company);
         $roles = Role::all();
 
         if ($user->profile == null) {
@@ -66,6 +67,7 @@ class UserController extends Controller
 
         $this->authorize('update', $user);
 
+        $user->company_id = $request->company_id;
         $user->name = $request->name;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
@@ -129,7 +131,7 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'email' => 'required|email|max:255',
-            'old_password' => 'required|min:6|max:255',
+            // 'old_password' => 'required|min:6|max:255',
             'password' => 'required|confirmed|min:6|max:255'
         ]);
 

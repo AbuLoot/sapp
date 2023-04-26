@@ -79,7 +79,7 @@ class ComplexPayment extends Component
         $outgoingTotalCount = 0;
         $incomingTotalAmount = 0;
 
-        $store = session()->get('store');
+        $store = session()->get('storage');
         $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
         $cartProducts = session()->get('cartProducts');

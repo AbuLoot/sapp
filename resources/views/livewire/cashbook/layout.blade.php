@@ -37,6 +37,10 @@
   <!-- <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script> -->
 
   <script type="text/javascript">
+    // Tooltip
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
     // Toast Script
     window.addEventListener('show-toast', event => {
       if (event.detail.reload) {

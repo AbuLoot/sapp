@@ -37,7 +37,25 @@
         </tr>
       </thead>
       <tbody>
-        <?php $i = 1; ?>
+        <?php $i = 1; $ownCompany = auth()->user()->company; ?>
+        <tr>
+          <td><input type="checkbox" name="companies_id[]" value="{{ $ownCompany->id }}" class="checkbox-ids"></td>
+          <td>{{ $i++ }}</td>
+          <td><img src="/img/companies/{{ $ownCompany->image }}" class="img-responsive" style="width:80px;"></td>
+          <td>{{ $ownCompany->title }}</td>
+          <td>{{ $ownCompany->sort_id }}</td>
+          <td class="text-info">{{ trans('statuses.data.'.$ownCompany->is_supplier.'.title') }}</td>
+          <td class="text-info">{{ trans('statuses.data.'.$ownCompany->is_customer.'.title') }}</td>
+          <td class="text-info">{{ trans('statuses.data.'.$ownCompany->status.'.title') }}</td>
+          <td class="text-right">
+            <a class="btn btn-link btn-xs" href="{{ route('companies.edit', [$lang, $ownCompany->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>
+            <form method="POST" action="{{ route('companies.destroy', [$lang, $ownCompany->id]) }}" accept-charset="UTF-8" class="btn-delete">
+              <input name="_method" type="hidden" value="DELETE">
+              <input name="_token" type="hidden" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-link btn-xs" onclick="return confirm('Удалить запись?')"><i class="material-icons md-18">clear</i></button>
+            </form>
+          </td>
+        </tr>
         @foreach ($companies as $company)
           <tr>
             <td><input type="checkbox" name="companies_id[]" value="{{ $company->id }}" class="checkbox-ids"></td>

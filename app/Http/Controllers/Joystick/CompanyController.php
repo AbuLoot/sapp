@@ -21,8 +21,10 @@ class CompanyController extends Controller
 
         $companies = Company::query()
             ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
-                return $query->where('company_id', $this->companyId);
-            })->orderBy('sort_id')->paginate(50);
+                $query->where('company_id', $this->companyId);
+            })
+            ->orderBy('sort_id')
+            ->paginate(50);
 
         return view('joystick.companies.index', compact('companies'));
     }
@@ -113,12 +115,12 @@ class CompanyController extends Controller
         $regions = Region::orderBy('sort_id')->get()->toTree();
         $currencies = Currency::get();
         $company = Company::query()
-            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
-                return $query->where('company_id', $this->companyId);
-            })->findOrFail($id);
+            ->when( ! auth()->user()->roles()->firstWhere('name', 'admin') AND $this->companyId != $id, function($query) {
+                $query->where('company_id', $this->companyId);
+            })
+            ->findOrFail($id);
 
         $this->authorize('update', $company);
-
 
         return view('joystick.companies.edit', compact('regions', 'company', 'currencies'));
     }

@@ -80,7 +80,7 @@ class StoreController extends Controller
 
         $numId = ($request->num_id) ? $request->num_id : Store::where('company_id', $this->companyId)->count() + 1;
 
-        $store->num_id = $numId;
+        // $store->num_id = $numId;
         // $store->company_id = $this->companyId;
         $store->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $store->title = $request->title;

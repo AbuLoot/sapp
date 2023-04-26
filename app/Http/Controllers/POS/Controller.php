@@ -25,8 +25,8 @@ class Controller extends BaseController
             }
 
             $this->companyId = session()->has('selectedCompany')
-                    ? session('selectedCompany')->id
-                    : session('company')->id;
+                ? session('selectedCompany')->id
+                : session('company')->id;
 
             return $next($request);
         });

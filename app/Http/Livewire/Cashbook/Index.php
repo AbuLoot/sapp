@@ -32,6 +32,7 @@ class Index extends Component
 
     protected $listeners = [
         'addToCart',
+        'removeFromCart',
         'returnDeferredCheck',
     ];
 
@@ -61,7 +62,7 @@ class Index extends Component
         // Stores Switching
         if ($key == 'storeId') {
             $this->store = Store::where('id', $value)->first();
-            session()->put('store', $this->store);
+            session()->put('storage', $this->store);
             session()->forget('cartProducts');
             $this->discounts = [];
         }
@@ -241,10 +242,11 @@ class Index extends Component
 
     public function removeFromCart($id)
     {
-        $cartProducts = session()->get('cartProducts');
+       $cartProducts = session()->get('cartProducts');
 
-        if (count($cartProducts) == 0) {
+        if (count($cartProducts) == 0 OR $id == '0') {
             session()->forget('cartProducts');
+            return;
         }
 
         unset($cartProducts[$id], $this->cartProducts[$id]);
@@ -265,7 +267,7 @@ class Index extends Component
 
         // Getting Sum Of Cart
         $sumOfCart = $this->sumOfCart();
-        $orderName = $this->storeId.'/'.$sumOfCart['totalCount'].'/'.date("Y-m-d/H:i");
+        $orderName = $this->storeNum.'/'.$sumOfCart['totalCount'].'/'.date("Y-m-d/H:i");
 
         $ccid = $this->company->id.$this->cashbook->id;
 

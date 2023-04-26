@@ -141,7 +141,7 @@
                 <th>Скидка</th>
               @endcan
               <th>Поставщик</th>
-              <th><button wire:click="clearCart" type="button" class="btn btn-link p-0">Очистить</button></th>
+              <th><button wire:click="$emit('showStornoModal', '0')" type="button" class="btn btn-link p-0">Очистить</button></th>
             </tr>
           </thead>
           <tbody>
@@ -176,7 +176,7 @@
                   @error('cartProducts.'.$cartProduct->id.'.countInCart')<div class="text-danger">{{ $message }}</div>@enderror
                 </td>
                 @can('set-discount', Auth::user())
-                  <td class="text-nowrap" style="width:12%;">
+                  <td class="text-nowrap" style="width:10%;">
                     @if($cartProduct->input)
                       <div class="input-group input-group-sm">
                         <input wire:model="cartProducts.{{ $cartProduct->id.'.discount' }}" onclick="setFocus(this, 'indexInput-cartProducts.{{ $cartProduct->id }}.discount')" type="number" class="form-control @error('cartProducts.'.$cartProduct->id.'.discount') is-invalid @enderror" required>
@@ -191,7 +191,7 @@
                   </td>
                 @endcan
                 <td>{{ $cartProduct->company->title }}</td>
-                <td class="text-end"><a wire:click="removeFromCart({{ $cartProduct->id }})" href="#" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
+                <td class="text-end"><a href="#" wire:click="$emit('showStornoModal', '{{ $cartProduct->id }}')" class="fs-4"><i class="bi bi-file-x-fill"></i></a></td>
               </tr>
             @empty
               <tr>
@@ -298,6 +298,9 @@
 
     <!-- Modal Fast Products -->
     <livewire:cashbook.fast-products>
+
+    <!-- Modal Confirm Storno -->
+    <livewire:cashbook.confirm-storno>
 
     <!-- Modal Closing Cash -->
     @can('closing-cash', Auth::user())

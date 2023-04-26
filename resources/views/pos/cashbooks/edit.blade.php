@@ -25,8 +25,8 @@
               <input type="text" class="form-control" id="slug" name="slug" minlength="2" maxlength="80" value="{{ (old('slug')) ? old('slug') : $cashbook->slug }}">
             </div>
             <div class="form-group">
-              <label for="num_id">Номер</label>
-              <input type="text" class="form-control" id="num_id" name="num_id" maxlength="80" value="{{ (old('num_id')) ? old('num_id') : $cashbook->num_id }}" required>
+              <label for="num_id">Номер кассы</label>
+              <input type="text" class="form-control" id="num_id" name="num_id" maxlength="80" value="{{ (old('num_id')) ? old('num_id') : $cashbook->num_id }}" required disabled>
             </div>
             <div class="form-group">
               <label for="ip_address">IP address</label>
@@ -54,7 +54,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="description">Описание</label>
+              <label for="description">Информация</label>
               <textarea class="form-control" id="description" name="description" rows="5">{{ (old('description')) ? old('description') : $cashbook->description }}</textarea>
             </div>
             <div class="form-group">

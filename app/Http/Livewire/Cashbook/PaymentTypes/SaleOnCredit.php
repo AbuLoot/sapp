@@ -85,7 +85,7 @@ class SaleOnCredit extends Component
         $outgoingTotalCount = 0;
         $incomingTotalAmount = 0;
 
-        $store = session()->get('store');
+        $store = session()->get('storage');
         $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
         $cartProducts = session()->get('cartProducts');
@@ -196,9 +196,9 @@ class SaleOnCredit extends Component
             $user->profile->debt_sum = $user->profile->debt_sum + $this->sumOfCart['sumDiscounted'];
 
             $debtOrders = json_decode($user->profile->debt_orders, true) ?? [];
-            $countOrders = count($debtOrders[$this->company->id][$cashbook->id]) >= 1
-                ? count($debtOrders[$this->company->id][$cashbook->id]) - 1
-                : 0;
+            // $countOrders = count($debtOrders[$this->company->id][$cashbook->id]) >= 1
+            //     ? count($debtOrders[$this->company->id][$cashbook->id]) - 1
+            //     : 0;
 
             $debtOrders[$this->company->id][$cashbook->id][] = [
                 'docNo' => $incomingOrder->doc_no,
@@ -258,7 +258,8 @@ class SaleOnCredit extends Component
         $customers = [];
 
         if (strlen($this->search) >= 2) {
-            $customers = User::where('name', 'like', $this->search.'%')
+            $customers = User::where('company_id', $this->company->id)
+                ->where('name', 'like', $this->search.'%')
                 ->orWhere('lastname', 'like', $this->search.'%')
                 ->orWhere('email', 'like', $this->search.'%')
                 ->orWhere('tel', 'like', $this->search.'%')

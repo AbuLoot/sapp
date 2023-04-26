@@ -122,7 +122,7 @@
               @endforeach
             </div>
             <div class="form-group">
-              <label for="about">О себе</label>
+              <label for="about">Информация</label>
               <textarea class="form-control" id="about" name="about" rows="5">{{ (old('about')) ? old('about') : '' }}</textarea>
             </div>
             <div class="form-group">

@@ -23,7 +23,7 @@
               <label for="user_id">Пользователи</label>
               <select id="user_id" name="user_id" class="form-control">
                 @foreach($users as $user)
-                  <option value="{{ $user->id }}">{{ $user->name }}</option>
+                  <option value="{{ $user->id }}">{{ $user->name.' '.$user->lastname }} / {{ $user->email }}</option>
                 @endforeach
               </select>
             </div>
@@ -56,7 +56,7 @@
               <input type="number" class="form-control" id="code" name="code" minlength="4" maxlength="4" value="{{ (old('code')) ? old('code') : NULL }}" required>
             </div>
             <div class="form-group">
-              <label for="comment">Примечание</label>
+              <label for="comment">Информация</label>
               <textarea class="form-control" id="comment" name="comment" rows="5">{{ (old('comment')) ? old('comment') : '' }}</textarea>
             </div>
             <div class="form-group">

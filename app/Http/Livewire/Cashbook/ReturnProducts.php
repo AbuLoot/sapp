@@ -152,7 +152,7 @@ class ReturnProducts extends Component
         $belongsToStoreId = collect($this->productsData)->pluck('store')->first() ?? null;
         $belongsToStoreNum = $this->company->stores->firstWhere('id', $belongsToStoreId)->num_id;
 
-        $store = session()->get('store');
+        $store = session()->get('storage');
         $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
 

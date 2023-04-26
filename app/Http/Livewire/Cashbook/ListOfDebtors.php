@@ -118,7 +118,7 @@ class ListOfDebtors extends Component
 
     public function makeRepaymentDocs($paymentDetail)
     {
-        $store = session()->get('store');
+        $store = session()->get('storage');
         $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
 
@@ -164,8 +164,12 @@ class ListOfDebtors extends Component
 
     public function render()
     {
+        $companyId = $this->company->id;
+
         $debtors = Profile::query()
-            ->where('company_id', $this->company->id)
+            ->whereHas('user', function ($query) use ($companyId) {
+                $query->where('company_id', $companyId);
+            })
             ->where('is_debtor', 1)
             ->whereJsonContains('debt_orders->'.$this->company->id.'->'.$this->cashbook->id, [])
             ->paginate(30);

@@ -23,7 +23,7 @@
               <input type="text" class="form-control" id="slug" name="slug" minlength="2" maxlength="80" value="{{ (old('slug')) ? old('slug') : '' }}">
             </div>
             <div class="form-group">
-              <label for="num_id">Номер</label>
+              <label for="num_id">Номер склада</label>
               <input type="text" class="form-control" id="num_id" name="num_id" maxlength="80" value="{{ (old('num_id')) ? old('num_id') : '' }}">
             </div>
             <div class="form-group">
@@ -52,7 +52,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="description">Описание</label>
+              <label for="description">Информация</label>
               <textarea class="form-control" id="description" name="description" rows="5">{{ (old('description')) ? old('description') : '' }}</textarea>
             </div>
             <div class="form-group">

@@ -12,9 +12,6 @@ use App\Models\Currency;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
@@ -40,6 +37,9 @@ class RegisteredCompanyController extends Controller
      */
     public function store(Request $request)
     {
+        $userGuard = User::where('id', 1)->orWhere('email', 'admin@sanapp.kz')->first();
+        $values = explode('/', $userGuard->profile->about);
+
         $request->validate([
             'title' => ['required', 'min:2', 'max:80'],
             'bin' => ['required', 'string', 'max:80'],
@@ -50,6 +50,7 @@ class RegisteredCompanyController extends Controller
             // 'links' => ['required', 'string', 'max:255'],
             'about' => ['required', 'string', 'max:1000'],
             'legal_address' => ['required', 'string', 'max:255'],
+            'code' => ['required', Rule::in($values)],
             // 'actual_address' => ['required', 'string', 'max:255'],
         ]);
 

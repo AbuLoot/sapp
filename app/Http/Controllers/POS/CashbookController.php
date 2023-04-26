@@ -79,7 +79,7 @@ class CashbookController extends Controller
 
         // $this->authorize('update', $cashbook);
 
-        $cashbook->num_id = $numId;
+        // $cashbook->num_id = $numId;
         // $cashbook->company_id = $this->companyId;
         $cashbook->region_id = ($request->region_id > 0) ? $request->region_id : 0;
         $cashbook->title = $request->title;
