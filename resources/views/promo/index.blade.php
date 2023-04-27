@@ -7,9 +7,13 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Favicon -->
-  <link rel="shortcut icon" href="/promo/img/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="/promo/img/icon.png">
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="/promo/img/icon.svg" sizes="180x180">
+  <link rel="icon" href="/promo/img/icon.svg" sizes="32x32" type="image/png">
+  <link rel="icon" href="/promo/img/icon.svg" sizes="16x16" type="image/png">
+  <link rel="mask-icon" href="/promo/img/icon.svg" color="#7952b3">
+  <link rel="icon" href="/promo/img/icon.svg">
+  <meta name="theme-color" content="#7952b3">
 
   <!-- CSS
   ============================================ -->
