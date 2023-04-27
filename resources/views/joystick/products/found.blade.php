@@ -32,7 +32,6 @@
     </div>
 
     <div class="col-md-7 text-right">
-      <a href="/{{ $lang }}/admin/joytable" class="btn btn-default text-uppercase"><i class="material-icons md-18">table_rows</i> Joytable</a>
       <a href="/{{ $lang }}/admin/products-export" class="btn btn-default"><i class="material-icons md-18">import_export</i> Экспорт</a>
       <a href="/{{ $lang }}/admin/products-import" class="btn btn-default"><i class="material-icons md-18">import_export</i> Импорт</a>
       <a href="/{{ $lang }}/admin/products-price/edit" class="btn btn-default"><i class="material-icons md-18">calculate</i> Цены</a>
@@ -62,7 +61,6 @@
       <thead>
         <tr class="active">
           <td><input type="checkbox" onclick="toggleCheckbox(this)" class="checkbox-ids"></td>
-          <td>Картинка</td>
           <td>Название</td>
           <td>Категории</td>
           <td>Компании</td>
@@ -79,7 +77,6 @@
         @foreach ($products as $product)
           <tr>
             <td><input type="checkbox" name="products_id[]" value="{{ $product->id }}" class="checkbox-ids"></td>
-            <td><img src="/img/products/{{ $product->path.'/'.$product->image }}" class="img-responsive" style="width:80px;height:auto;"></td>
             <td class="cell-size">{{ $product->title }}</td>
             <td class="text-nowrap">{{ $product->category->title }}</td>
             <td>{{ ($product->company) ? $product->company->title : '' }}</td>
@@ -145,7 +142,7 @@
       // Set the Options for "Bloodhound" suggestion engine
       var engine = new Bloodhound({
         remote: {
-          url: '/search-ajax-admin?text=%QUERY%',
+          url: '/{{ $lang }}/admin/products-search-ajax?text=%QUERY%',
           wildcard: '%QUERY%'
         },
         datumTokenizer: Bloodhound.tokenizers.whitespace('text'),

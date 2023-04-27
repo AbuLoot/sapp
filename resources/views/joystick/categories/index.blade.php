@@ -29,6 +29,7 @@
           <td>№</td>
           <td>Название</td>
           <td>URI</td>
+          <td>Компания</td>
           <td>Номер</td>
           <td>Язык</td>
           <td>Статус</td>
@@ -37,7 +38,7 @@
       </thead>
       <tbody>
         <?php $i = 1; ?>
-        <?php $traverse = function ($nodes, $parent = null, $prefix = null, $caret = null) use (&$traverse, $lang, &$i) { ?>
+        <?php $traverse = function ($nodes, $parent = null, $prefix = null, $caret = null) use (&$traverse, $lang, &$i, $companies) { ?>
           <?php foreach ($nodes as $node) : ?>
             <tr <?php if ($parent != null): $classes = $node->ancestors->pluck('id')->flatten()->join(' '); ?> class="collapse {{ $classes }} in" <?php endif; ?>>
               <td><input type="checkbox" name="categories_id[]" value="{{ $node->id }}" class="checkbox-ids"></td>
@@ -49,6 +50,7 @@
                 {!! $caret !!} {{ PHP_EOL.$prefix.' '.$node->title }} <?php $caret = null; ?>
               </td>
               <td>{{ $node->slug }}</td>
+              <td>{{ $companies->find($node->company_id)->title }}</td>
               <td>{{ $node->sort_id }}</td>
               <td>{{ $node->lang }}</td>
               <td class="text-{{ trans('statuses.data.'.$node->status.'.style') }}">{{ trans('statuses.data.'.$node->status.'.title') }}</td>

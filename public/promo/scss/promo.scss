@@ -1,0 +1,203 @@
+/*====================
+	Version: 1.0
+======================*/
+
+/**************************************************************
+	
+	STYLESHEET INDEXING
+	|
+	|
+	|___ Default Styles
+	|	|
+	|	|___ variables
+	|	|___ mixins
+	|	|___ reset
+	|	|___ typography
+	|	|___ animations
+	|	|___ shortcode
+	|
+	|
+	|___Elements Styles
+	|	|___ Button
+	|	|___ section-title
+	|	|___ service
+	|	|___ counterup
+	|	|___ team
+	|	|___ wavify
+	|	|___ wavify
+	|	|___ blog-list
+	|	|___ contact
+	|	|___ about
+	|	|___ call-to-action
+	|	|___ slick-arrow
+	|	|___ motivational-archive
+	|	|___ social
+	|	|___ shortnote
+	|	|___ flexable-image-slide
+	|	|___ carousel-slider
+	|	|___ countdown
+	|	|___ progress-charts
+	|	|___ gradation
+	|	|___ typed-text
+	|	|___ Politic
+	|	|___ pricing-plans
+	|	|___ career
+	|	|___ maintenance
+	|	|___ contagion
+	|	|___ player
+	|	|___ 404
+	|	
+	|
+	|
+	|___Components Styles
+	|	|___ video 
+	|	|___ breadcaump 
+	|	|___ instagram
+	|	|___ popup
+	|	|___ shopping-cart
+	|	|___ mega-menu
+	|	|___ toolbar
+	|	|___ typography
+	|	|___ list
+	|	|___ pricing-box
+	|	|___ icon-boxes
+	|	|___ dividers
+	|	|___ message-box
+	|	|___ accordion
+	|	|___ googlemap
+	|	|___ rows-column
+	|	|___ info-boxes
+	|	|___ loader
+	|	|___ demo-option
+	|
+	|
+	|
+	|___Portfolio Styles
+	|	|___ portfolio-grid 
+	|	|___ portfolio-grid-metro 
+	|	|___ portfolio-caption
+	|	|___ mesonry-button
+	|	|___ paralax
+	|	|___ has-center
+	|	|___ type-hover
+	|	|___ portfolio-details
+	|
+	|
+	|
+	|___Blog Grid Styles
+	|	|___ blod-grid 
+	|	|___ pagination 
+	|	|___ blog-mesonry
+	|	|___ blog-grid-no-flex
+	|	|___ blog-grid-minimal
+	|	|___ blog-details
+	|	|___ blog-sidebar
+	|
+	|
+	|
+	|___Shop Sidebar Styles
+	|	|___ shop-sidebar 
+	|	|___ single-product 
+	|	|___ cart
+	|	|___ checkout
+	|	|___ compare
+	|	|___ my-account
+	|	|___ vertical-slide
+	|	|___ login
+	|	|___ table-form
+	|
+	|
+	|
+	|
+	|___Template Styles
+	|	|___ header
+	|	|___ sidebar-header
+	|	|___ navigation
+	|	|___ banner
+	|	|___ feature
+	|	|___ startup-service
+	|	|___ freelancer
+	|	|___ hamber-menu
+	|	|___ left-vertical-header
+	|	|___ fullscreen-slider
+	|	|___ sidebar-mobilemenu
+	|	|___ header-broadsheets
+	|	|___ onepage
+	|	|___ foodie
+	|	|___ portfolio-slide
+	|	|___ photo-slide
+	|	|___ vertical-slide
+	|	|___ musician
+	|	|___ vertical-slider-portfolio
+	|	|___ shop-slide
+	|	|___ product
+	|	|___ revulution
+	|	|___ presentation
+	|	|___ footer
+	|	 
+	|	
+	|	|___ Color Variation
+	|	|
+	|	|___ color-2
+	|	|___ font-variation
+	|	|___ preview
+	|	|___ responsive
+	|
+	|___ END STYLESHEET INDEXING
+
+***************************************************************/
+
+
+/*===================================
+    Default Styles
+====================================*/
+@import 'default/variables';
+@import 'default/mixins';
+@import 'default/reset';
+@import 'default/typography';
+@import 'default/animations';
+@import 'default/shortcode';
+
+
+
+/*====================================
+	Elements Styles
+=====================================*/
+@import 'elements/button';
+/*@import 'elements/section-title';*/
+@import 'elements/wavify';
+@import 'elements/brand';
+@import 'elements/contact';
+/*@import 'elements/call-to-action';*/
+@import 'elements/testimonial';
+
+
+
+/*================================
+	Components Style
+=================================*/
+@import 'components/popup';
+@import 'components/typography';
+@import 'components/icon-boxes';
+@import 'components/rows-column';
+
+
+/*==================================
+	Portfolio Styles
+===================================*/
+@import 'portfolio/portfolio-grid';
+@import 'portfolio/portfolio-caption';
+
+
+
+/*=================================
+	Template Styles
+==================================*/
+@import 'template/header';
+@import 'template/sidebar-header';
+@import 'template/navigation';
+@import 'template/hamber-menu';
+@import 'template/sidebar-mobilemenu';
+@import 'template/revulution';
+@import 'template/footer';
+@import 'template/onepage';

@@ -4,25 +4,24 @@ use Illuminate\Support\Facades\Route;
 
 // Admin Controllers
 use App\Http\Controllers\Joystick\AdminController;
-use App\Http\Controllers\Joystick\PageController;
-use App\Http\Controllers\Joystick\PostController;
-use App\Http\Controllers\Joystick\SectionController;
 use App\Http\Controllers\Joystick\CategoryController;
+use App\Http\Controllers\Joystick\ProjectController;
 use App\Http\Controllers\Joystick\ProductController;
 use App\Http\Controllers\Joystick\ProductExtensionController;
-use App\Http\Controllers\Joystick\BannerController;
-use App\Http\Controllers\Joystick\AppController;
-use App\Http\Controllers\Joystick\OrderController;
-use App\Http\Controllers\Joystick\OptionController;
 use App\Http\Controllers\Joystick\ModeController;
 use App\Http\Controllers\Joystick\CompanyController;
-use App\Http\Controllers\Joystick\ProjectController;
 use App\Http\Controllers\Joystick\RegionController;
 use App\Http\Controllers\Joystick\CurrencyController;
 use App\Http\Controllers\Joystick\UserController;
 use App\Http\Controllers\Joystick\RoleController;
 use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
+
+
+// Site Controllers
+use App\Http\Controllers\InputController;
+use App\Http\Controllers\PageController;
+
 
 // Sanapp POS Controllers
 use App\Http\Controllers\POS\OfficeController;
@@ -42,11 +41,6 @@ use App\Http\Controllers\POS\Reports\WorkersReportController;
 use App\Http\Controllers\POS\Reports\StoresReportController;
 use App\Http\Controllers\POS\Reports\CashReconciliationController;
 
-// Site Controllers
-use App\Http\Controllers\InputController;
-// use App\Http\Controllers\ProfileController;
-// use App\Http\Controllers\PostController as NewsController;
-use App\Http\Controllers\PageController as SiteController;
 
 // Storage
 use App\Http\Livewire\Store\Index as StoreIndex;
@@ -64,6 +58,7 @@ use App\Http\Livewire\Store\Writeoff;
 use App\Http\Livewire\Store\StoreDocs;
 use App\Http\Livewire\Store\StoreDocsPrint;
 use App\Http\Livewire\Store\PriceTags;
+
 
 // Cashdesk
 use App\Http\Livewire\Cashbook\Index as CashbookIndex;
@@ -162,20 +157,11 @@ Route::redirect('admin', '/'.app()->getLocale().'/admin');
 Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin|manager']], function () {
 
     Route::get('/', [AdminController::class, 'index']);
-    Route::get('filemanager', [AdminController::class, 'filemanager']);
-    Route::get('frame-filemanager', [AdminController::class, 'frameFilemanager']);
 
     Route::resources([
-        'pages' => PageController::class,
-        'posts' => PostController::class,
-        'sections' => SectionController::class,
         'categories' => CategoryController::class,
         'projects' => ProjectController::class,
         'products' => ProductController::class,
-        'banners' => BannerController::class,
-        'apps' => AppController::class,
-        'orders' => OrderController::class,
-        'options' => OptionController::class,
         'modes' => ModeController::class,
 
         'companies' => CompanyController::class,
@@ -191,15 +177,10 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
     Route::get('companies-actions', [CompanyController::class, 'actionCompanies']);
     Route::get('projects-actions', [ProjectController::class, 'actionProjects']);
 
-    Route::get('products/{id}/comments', [ProductController::class, 'comments']);
-    Route::get('products/{id}/destroy-comment', [ProductController::class, 'destroyComment']);
-
     Route::get('products-search', [ProductExtensionController::class, 'search']);
     Route::get('products-search-ajax', [ProductExtensionController::class, 'searchAjax']);
     Route::get('products-actions', [ProductExtensionController::class, 'actionProducts']);
     Route::get('products-category/{id}', [ProductExtensionController::class, 'categoryProducts']);
-    Route::get('joytable', [ProductExtensionController::class, 'joytable']);
-    Route::post('joytable-update', [ProductExtensionController::class, 'joytableUpdate']);
     Route::get('products-export', [ProductExtensionController::class, 'export']);
     Route::get('products-import', [ProductExtensionController::class, 'importView']);
     Route::post('products-import', [ProductExtensionController::class, 'import']);
@@ -219,31 +200,11 @@ Route::post('filter-products', [InputController::class, 'filterProducts']);
 Route::post('send-app', [InputController::class, 'sendApp']);
 
 
-// Shop
-// Route::get('/', [ShopController::class, 'index']);
-Route::get('/', function() {
-    return '<h1>In developing...</h1>';
-});
+// Promo Page
+Route::get('/', [PageController::class, 'index']);
 
-// User Profile
-// Route::group(['middleware' => 'auth'], function() {
 
-//     Route::get('profile', [ProfileController::class, 'profile']);
-//     Route::get('profile/edit', [ProfileController::class, 'editProfile']);
-//     Route::put('profile', [ProfileController::class, 'updateProfile']);
-//     Route::get('orders', [ProfileController::class, 'myOrders']);
-// });
-
-// News
-// Route::get('news', [NewsController::class, 'posts']);
-// Route::get('i/news-category', [NewsController::class, 'postsCategory']);
-// Route::get('news/{page}', [NewsController::class, 'postSingle']);
-// Route::post('comment-news', [NewsController::class, 'saveComment']);
-
-// Pages
-Route::get('i/contacts', [SiteController::class, 'contacts']);
-Route::get('i/{page}', [SiteController::class, 'page']);
-
+// Apps Page
 Route::redirect('apps', '/'.app()->getLocale().'/apps');
 Route::group(['prefix' => '{lang}', 'middleware' => ['auth', 'verify.company']], function() {
 

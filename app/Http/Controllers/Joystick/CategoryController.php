@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Joystick\Controller;
 use App\Models\Category;
+use App\Models\Company;
 
 use Storage;
 
@@ -17,12 +18,14 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
+        $companies = Company::where('sn_client', true)->get();
+
         $categories = Category::orderBy('sort_id')
             ->when( ! auth()->user()->roles()->firstWhere('name', 'admin'), function($query) {
                 return $query->where('company_id', $this->companyId);
             })->get()->toTree();
 
-        return view('joystick.categories.index', compact('categories'));
+        return view('joystick.categories.index', compact('companies', 'categories'));
     }
 
     public function actionCategories(Request $request)

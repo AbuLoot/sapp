@@ -12,18 +12,4 @@ class AdminController extends Controller
     {
     	return view('joystick.index');
     }
-
-    public function filemanager()
-    {
-        if (! Gate::allows('allow-filemanager', \Auth::user())) {
-            abort(403);
-        }
-
-    	return view('joystick.filemanager');
-    }
-
-    public function frameFilemanager()
-    {
-    	return view('joystick.frame-filemanager');
-    }
 }

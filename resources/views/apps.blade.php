@@ -6,22 +6,22 @@
   <div class="row align-items-md-stretch">
     <div class="col-md-6 mb-3">
       <div class="h-100 p-5 bg-light border rounded-3">
-        <h2 class="mb-3">Storage</h2>
-        <h4 class="mb-3">Умный склад</h4>
+        <h2 class="mb-2">Storage</h2>
+        <h5 class="mb-3">Умный склад</h5>
         <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/storage">Перейти</a>
       </div>
     </div>
     <div class="col-md-6 mb-3">
       <div class="h-100 p-5 bg-light border rounded-3">
-        <h2 class="mb-3">Cashdesk</h2>
-        <h4 class="mb-3">Умная касса</h4>
+        <h2 class="mb-2">Cashdesk</h2>
+        <h5 class="mb-3">Умная касса</h5>
         <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/cashdesk">Перейти</a>
       </div>
     </div>
     <div class="col-md-6 mb-3">
       <div class="h-100 p-5 bg-light border rounded-3">
-        <h2 class="mb-3">POS System</h2>
-        <h4 class="mb-3">Панель управления</h4>
+        <h2 class="mb-2">POS System</h2>
+        <h5 class="mb-3">Панель управления</h5>
         <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/pos">Перейти</a>
       </div>
     </div>

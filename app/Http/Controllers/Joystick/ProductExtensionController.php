@@ -129,6 +129,20 @@ class ProductExtensionController extends Controller
         return view('joystick.products.found', compact('categories', 'text', 'modes', 'products'));
     }
 
+    public function searchAjax(Request $request)
+    {
+        $text = trim(strip_tags($request->text));
+
+        if (auth()->user()->roles()->firstWhere('name', 'admin')) {
+            $products = Product::search($text)->where('in_company_id', $this->companyId)->orderBy('updated_at','desc')->take(50)->get();
+        }
+        else {
+            $products = Product::search($text)->where('in_company_id', $this->companyId)->where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->take(50)->get();
+        }
+
+        return response()->json($products);
+    }
+
     public function calcForm()
     {
         if (! Gate::allows('allow-calc', \Auth::user())) {
