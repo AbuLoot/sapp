@@ -24,7 +24,7 @@ class CreateProductsTable extends Migration
             $table->integer('project_id')->nullable();
             $table->string('slug');
             $table->string('title');
-            $table->string('meta_title');
+            $table->string('meta_title')->nullable();
             $table->string('meta_description')->nullable();
             $table->json('barcodes')->nullable();
             $table->string('id_code')->nullable();

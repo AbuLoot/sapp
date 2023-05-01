@@ -38,7 +38,7 @@
             </div>
             <div class="form-group">
               <label for="description">Описание</label>
-              <textarea class="form-control" id="summernote" name="description" rows="5" maxlength="2000">{{ (old('description')) ? old('description') : $product->description }}</textarea>
+              <textarea class="form-control" name="description" rows="5" maxlength="2000">{{ (old('description')) ? old('description') : $product->description }}</textarea>
             </div>
             <div class="form-group">
               <label for="characteristic">Характеристика</label>
@@ -245,20 +245,4 @@
       <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
     </div>
   </form>
-@endsection
-
-@section('head')
-  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-@endsection
-
-@section('scripts')
-  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-  <script>
-    /* Summernote */
-    $(document).ready(function() {
-      $('#summernote').summernote({
-        height: 150
-      });
-    });
-  </script>
 @endsection

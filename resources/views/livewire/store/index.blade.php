@@ -125,7 +125,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="{{ $countStores + 7 }}">No data</td>
+              <td colspan="{{ 7 + $countStores }}">No data</td>
             </tr>
           @endforelse
         </tbody>

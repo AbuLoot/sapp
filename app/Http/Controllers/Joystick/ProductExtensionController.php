@@ -89,9 +89,8 @@ class ProductExtensionController extends Controller
 
         $companies = Company::orderBy('sort_id')->get();
         $categories = Category::get()->toTree();
-        $projects = Project::get()->toTree();
 
-        return view('joystick.products.import', ['companies' => $companies, 'categories' => $categories, 'projects' => $projects]);
+        return view('joystick.products.import', ['companies' => $companies, 'categories' => $categories]);
     }
 
     public function import(Request $request, $lang)

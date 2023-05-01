@@ -8,47 +8,61 @@
   <p class="text-right">
     <a href="/{{ $lang }}/admin/products" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
-  <form action="/{{ $lang }}/admin/products-import" method="POST" enctype="multipart/form-data">
-    {!! csrf_field() !!}
-    <div class="row">
+
+  <div class="row">
+    @if(auth()->user()->roles()->firstWhere('name', 'admin'))
       <div class="col-md-4">
-        <div class="panel panel-default">
-          <div class="panel-body">
-
-            <div class="form-group">
-              <label for="company_id">Компания</label>
-              <select id="company_id" name="company_id" class="form-control">
-                <option value="">Выбор компании</option>
-                @foreach($companies as $company)
-                  <option value="{{ $company->id }}">{{ $company->title }}</option>
-                @endforeach
-              </select>
-            </div>
-
-            <p><b>Проекты</b></p>
-            <select name="project_id" class="form-control" size="15">
-              <?php $traverse = function ($nodes, $prefix = null) use (&$traverse) { ?>
-                <?php foreach ($nodes as $node) : ?>
-                  <option value="{{ $node->id }}">{{ PHP_EOL.$prefix.' '.$node->title }}</option>
-                  <?php $traverse($node->children, $prefix.'___'); ?>
-                <?php endforeach; ?>
-              <?php }; ?>
-              <?php $traverse($projects); ?>
-            </select><br>
-
-            <div class="form-group">
-              <label for="file">Файл</label>
-              <input type="file" id="file" name="file" accept=".xlsx, .csv, .ods" required>
-              <p class="help-block">Поддерживаемые форматы файлов: xlsx, csv, ods</p>
+        <form action="/{{ $lang }}/admin/products-select-company" method="GET">
+          {!! csrf_field() !!}
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="form-group">
+                <label for="company_id">Компании</label>
+                <select id="company_id" name="company_id" class="form-control">
+                  <option value="">Выбор компании</option>
+                  @foreach($companies as $company)
+                    <option value="{{ $company->id }}">{{ $company->title }}</option>
+                  @endforeach
+                </select>
+              </div>
             </div>
           </div>
-        </div>
+          <div class="form-group">
+            <button type="submit" id="select" class="btn btn-primary">Выбрать</button>
+          </div>
+        </form>
       </div>
-    </div>
-    <div class="form-group">
-      <button type="submit" id="import" class="btn btn-primary">Загрузить</button>
-    </div>
-  </form>
+    @else
+      <div class="col-md-4">
+        <form action="/{{ $lang }}/admin/products" method="POST" enctype="multipart/form-data">
+          {!! csrf_field() !!}
+          <input type="hidden" name="company_id" value="{{ $company->id }}">
+          <div class="panel panel-default">
+            <div class="panel-heading">{{ $company->title }}</div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label for="store_id">Склады</label>
+                <select id="store_id" name="store_id" class="form-control">
+                  <option value="">Выбор складов</option>
+                  @foreach($stores as $store)
+                    <option value="{{ $store->id }}">{{ $store->title }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="file">Файл</label>
+                <input type="file" id="file" name="file" accept=".xlsx, .csv, .ods" required>
+                <p class="help-block">Поддерживаемые форматы файлов: xlsx, csv, ods</p>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <button type="submit" id="import" class="btn btn-primary">Загрузить</button>
+          </div>
+        </form>
+      </div>
+    @endif
+  </div>
 
   <!-- Modal Progress Bar -->
   <div class="modal fade" id="modal-progress" tabindex="-1" role="dialog" aria-labelledby="modalProgress">
