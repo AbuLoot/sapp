@@ -6,6 +6,7 @@
 /public/img/products
 /public/livewire-tmp
 /storage/*.key
+/storage/products.index
 /vendor
 .env
 .env.backup

@@ -96,7 +96,12 @@ class Income extends Component
             $incomeTotalAmount = $incomeTotalAmount + ($product->purchase_price * $incomeCount);
 
             $countInStores = json_decode($product->count_in_stores, true) ?? [''];
-            $countInStores[$this->storeNum] += $incomeCount;
+
+            if (isset($countInStores[$this->storeNum])) {
+                $countInStores[$this->storeNum] += $incomeCount;
+            } else {
+                $countInStores[$this->storeNum] = $incomeCount;
+            }
 
             $product->count_in_stores = json_encode($countInStores);
             $product->count += $incomeCount;
