@@ -244,15 +244,6 @@ class ProductExtensionController extends Controller
 
             $this->authorize('delete', $products->first());
 
-            foreach($products as $product) {
-
-                $images = unserialize($product->images);
-
-                if (! empty($images) AND $product->image != 'no-image-middle.png') {
-                    Storage::deleteDirectory('img/products/'.$product->path);
-                }
-            }
-
             Product::destroy($products->pluck('id'));
         }
         else {

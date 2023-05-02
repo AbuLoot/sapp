@@ -130,6 +130,7 @@ class Income extends Component
         $storeDoc->products_data = json_encode($productsData);
         $storeDoc->incoming_amount = 0;
         $storeDoc->outgoing_amount = $incomeTotalAmount;
+        $storeDoc->count = $incomeTotalCount;
         $storeDoc->sum = $incomeTotalAmount;
         $storeDoc->save();
 

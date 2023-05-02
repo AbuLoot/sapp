@@ -35,7 +35,6 @@ class ProductController extends Controller
         }
         else {
             $products = Product::where('in_company_id', $this->companyId)
-                ->where('user_id', auth()->user()->id)
                 ->orderBy('updated_at','desc')
                 ->paginate(50);
         }

@@ -6,14 +6,7 @@
   @include('components.alerts')
 
   <div class="row">
-    <div class="col-md-6">
-      <ul class="nav nav-pills">
-        @foreach ($languages as $language)
-          <li role="presentation" @if ($language->slug == $lang) class="active" @endif><a href="/{{ $language->slug }}/admin/modes/{{ $mode->id }}/edit">{{ $language->title }}</a></li>
-        @endforeach
-      </ul>
-    </div>
-    <div class="col-md-6">
+    <div class="col-md-12">
       <p class="text-right">
         <a href="/{{ $lang }}/admin/modes" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
       </p>

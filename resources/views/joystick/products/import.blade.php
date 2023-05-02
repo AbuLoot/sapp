@@ -10,10 +10,9 @@
   </p>
 
   <div class="row">
-    @if(auth()->user()->roles()->firstWhere('name', 'admin'))
+    @if(auth()->user()->roles()->firstWhere('name', 'admin') AND empty($_GET['company_id']))
       <div class="col-md-4">
         <form action="/{{ $lang }}/admin/products-select-company" method="GET">
-          {!! csrf_field() !!}
           <div class="panel panel-default">
             <div class="panel-body">
               <div class="form-group">
@@ -34,7 +33,7 @@
       </div>
     @else
       <div class="col-md-4">
-        <form action="/{{ $lang }}/admin/products" method="POST" enctype="multipart/form-data">
+        <form action="/{{ $lang }}/admin/products-import" method="POST" enctype="multipart/form-data">
           {!! csrf_field() !!}
           <input type="hidden" name="company_id" value="{{ $company->id }}">
           <div class="panel panel-default">
@@ -62,6 +61,9 @@
         </form>
       </div>
     @endif
+    <div class="col-md-4">
+      <a href="/joystick/files/Example products.xlsx" class="btn btn-link"><i class="material-icons md-20">description</i> Скачать пример</a>
+    </div>
   </div>
 
   <!-- Modal Progress Bar -->

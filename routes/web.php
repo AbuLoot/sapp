@@ -185,7 +185,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
 
     Route::get('products-export', [ProductExtensionController::class, 'export']);
     Route::get('products-import', [ProductImportController::class, 'importView']);
-    Route::get('products-select-company/{id?}', [ProductImportController::class, 'selectCompany']);
+    Route::get('products-select-company', [ProductImportController::class, 'selectCompany']);
     Route::post('products-import', [ProductImportController::class, 'fastImport']);
 
     Route::get('products-price/edit', [ProductExtensionController::class, 'calcForm']);
