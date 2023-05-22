@@ -199,10 +199,20 @@ class ProductExtensionController extends Controller
         return redirect($request->lang.'/admin/products')->with('status', 'Запись обновлена.');
     }
 
-    public function categoryProducts($lang, $id)
+    public function companyProducts($companyId)
+    {
+        if (auth()->user()->roles()->firstWhere('name', 'admin')) {
+
+            $companyId = trim(strip_tags($companyId));
+
+            return redirect(app()->getLocale().'/admin/products?company_id='.$companyId);
+        }
+    }
+
+    public function categoryProducts($lang, $categoryId)
     {
         $categories = Category::where('company_id', $this->companyId)->orderBy('sort_id')->get()->toTree();
-        $category = Category::find($id);
+        $category = Category::find($categoryId);
 
         if ($category->children && count($category->children) > 0) {
             $ids = $category->descendants->pluck('id');
@@ -226,7 +236,7 @@ class ProductExtensionController extends Controller
 
         $modes = Mode::all();
 
-        return view('joystick.products.index', ['category' => $category, 'categories' => $categories, 'products' => $products, 'modes' => $modes]);
+        return view('joystick.products.index', ['companyId' => $this->companyId, 'category' => $category, 'categories' => $categories, 'products' => $products, 'modes' => $modes]);
     }
 
     public function actionProducts(Request $request)

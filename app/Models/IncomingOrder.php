@@ -11,6 +11,25 @@ class IncomingOrder extends Model
 
     protected $table = 'incoming_orders';
 
+    protected $fillable = [
+        'company_id',
+        'cashbook_id',
+        'workplace_id',
+        'user_id',
+        'doc_no',
+        'doc_type_id',
+        'products_data',
+        'contractor_type',
+        'contractor_id',
+        'operation_code',
+        'payment_type_id',
+        'payment_detail',
+        'sum',
+        'currency',
+        'count',
+        'comment',
+    ];
+
     public function contractor()
     {
         return $this->morphTo();

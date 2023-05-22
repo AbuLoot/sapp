@@ -7,6 +7,7 @@ use App\Http\Controllers\Joystick\AdminController;
 use App\Http\Controllers\Joystick\CategoryController;
 use App\Http\Controllers\Joystick\ProjectController;
 use App\Http\Controllers\Joystick\ProductController;
+use App\Http\Controllers\Joystick\ProductExportController;
 use App\Http\Controllers\Joystick\ProductExtensionController;
 use App\Http\Controllers\Joystick\ProductImportController;
 use App\Http\Controllers\Joystick\ModeController;
@@ -181,9 +182,10 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth' , 'roles:admin
     Route::get('products-search', [ProductExtensionController::class, 'search']);
     Route::get('products-search-ajax', [ProductExtensionController::class, 'searchAjax']);
     Route::get('products-actions', [ProductExtensionController::class, 'actionProducts']);
-    Route::get('products-category/{id}', [ProductExtensionController::class, 'categoryProducts']);
+    Route::get('products-company/{id}', [ProductExtensionController::class, 'companyProducts']);
+    Route::get('products-category/{company_id}/{category_id?}', [ProductExtensionController::class, 'categoryProducts']);
 
-    Route::get('products-export', [ProductExtensionController::class, 'export']);
+    Route::get('products-export', [ProductExportController::class, 'export']);
     Route::get('products-import', [ProductImportController::class, 'importView']);
     Route::get('products-select-company', [ProductImportController::class, 'selectCompany']);
     Route::post('products-import', [ProductImportController::class, 'fastImport']);

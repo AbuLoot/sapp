@@ -20,7 +20,7 @@
     </div>
     <div class="col-md-6 mb-3">
       <div class="h-100 p-5 bg-light border rounded-3">
-        <h2 class="mb-2">POS System</h2>
+        <h2 class="mb-2">POS Control</h2>
         <h5 class="mb-3">Панель управления</h5>
         <a class="btn btn-lg btn-primary" href="/{{ app()->getLocale() }}/pos">Перейти</a>
       </div>

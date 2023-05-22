@@ -192,37 +192,37 @@ class AddProduct extends Component
                 $productData[$product->id]['unit'] = $product->unit;
                 $productData[$product->id]['barcodes'] = $product->barcodes;
 
-                $incomingDoc = new IncomingDoc;
-                $incomingDoc->store_id = $storeId;
-                $incomingDoc->company_id = $this->company->id;
-                $incomingDoc->workplace_id = session()->get('storageWorkplace');
-                $incomingDoc->user_id = auth()->user()->id;
-                $incomingDoc->doc_no = $docNo;
-                $incomingDoc->doc_type_id = $docType->id;
-                $incomingDoc->products_data = json_encode($productData);
-                $incomingDoc->contractor_type = 'App\Models\Company';
-                $incomingDoc->contractor_id = $this->product->company_id;
-                $incomingDoc->operation_code = 'incoming-products';
-                $incomingDoc->sum = $countInStore * $product->purchase_price;
-                $incomingDoc->currency = $this->company->currency->code;
-                $incomingDoc->count = $countInStore;
-                $incomingDoc->unit = $product->unit;
-                $incomingDoc->save();
+                $incomingDoc = IncomingDoc::create([
+                    'store_id' => $storeId,
+                    'company_id' => $this->company->id,
+                    'workplace_id' => session()->get('storageWorkplace'),
+                    'user_id' => auth()->user()->id,
+                    'doc_no' => $docNo,
+                    'doc_type_id' => $docType->id,
+                    'products_data' => json_encode($productData),
+                    'contractor_type' => 'App\Models\Company',
+                    'contractor_id' => $this->product->company_id,
+                    'operation_code' => 'incoming-products',
+                    'sum' => $countInStore * $product->purchase_price,
+                    'currency' => $this->company->currency->code,
+                    'count' => $countInStore,
+                    'unit' => $product->unit,
+                ]);
 
-                $storeDoc = new StoreDoc;
-                $storeDoc->store_id = $storeId;
-                $storeDoc->company_id = $this->company->id;
-                $storeDoc->user_id = auth()->user()->id;
-                $storeDoc->doc_type = 'App\Models\IncomingDoc';
-                $storeDoc->doc_id = $incomingDoc->id;
-                $storeDoc->products_data = json_encode($productData);
-                $storeDoc->contractor_type = 'App\Models\Company';
-                $storeDoc->contractor_id = $this->product->company_id;
-                $storeDoc->incoming_amount = 0;
-                $storeDoc->outgoing_amount = $countInStore * $product->purchase_price;
-                $storeDoc->count = $countInStore;
-                $storeDoc->sum = $countInStore * $product->purchase_price;
-                $storeDoc->save();
+                StoreDoc::create([
+                    'store_id' => $storeId,
+                    'company_id' => $this->company->id,
+                    'user_id' => auth()->user()->id,
+                    'doc_type' => 'App\Models\IncomingDoc',
+                    'doc_id' => $incomingDoc->id,
+                    'products_data' => json_encode($productData),
+                    'contractor_type' => 'App\Models\Company',
+                    'contractor_id' => $this->product->company_id,
+                    'incoming_amount' => 0,
+                    'outgoing_amount' => $countInStore * $product->purchase_price,
+                    'count' => $countInStore,
+                    'sum' => $countInStore * $product->purchase_price,
+                ]);
             }
         }
 

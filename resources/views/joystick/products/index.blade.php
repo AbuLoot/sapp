@@ -13,6 +13,7 @@
 
           <div class="input-group-btn">
             <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Категории <span class="caret"></span></button>
             <ul class="dropdown-menu dropdown-menu-right dropdown-menu-category">
               <li><a href="/{{ $lang }}/admin/products"><b>Все продукты</b></a></li>

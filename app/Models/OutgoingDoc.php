@@ -12,15 +12,17 @@ class OutgoingDoc extends Model
     protected $table = 'outgoing_docs';
 
     protected $fillable = [
-        'store_id',
         'company_id',
+        'store_id',
+        'workplace_id',
         'user_id',
-        'username',
         'doc_no',
         'doc_type_id',
         'products_data',
-        'to_contractor',
-        'amount',
+        'contractor_type',
+        'contractor_id',
+        'operation_code',
+        'sum',
         'currency',
         'count',
         'unit',

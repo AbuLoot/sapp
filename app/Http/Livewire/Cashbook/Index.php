@@ -186,8 +186,7 @@ class Index extends Component
 
         if (session()->get('priceMode') == 'retail') {
             session()->put('priceMode', 'wholesale');
-        }
-        else {
+        } else {
             session()->put('priceMode', 'retail');
         }
     }

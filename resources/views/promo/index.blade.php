@@ -83,12 +83,26 @@
         <div class="mobileheader">
           <div class="logo">
             <a href="/promo/index.html">
-              <img src="/promo/img/logo/brook-black.png" alt="Multipurpose">
+              <img src="/promo/img/icon.svg" alt="Sanapp">
             </a>
           </div>
           <a class="mobile-close" href="/promo/#"></a>
         </div>
-
+        <div class="menu-content">
+            <div class="classic-address ml--30 mt--60">
+              <h4 class="heading heading-h3 text-white">Наш адрес</h4>
+              <div class="desc mt--15">
+                <p class="text-white">г. Актобе, ул. текст</p>
+              </div>
+            </div>
+            <div class="classic-address ml--30 mt--30">
+              <h4 class="heading heading-h3 text-white">Контакты</h4>
+              <div class="desc mt--15 mb--30">
+                <p class="text-white">support@sanapp.kz</p>
+                <p class="text-white">8 (888) 888 8888</p>
+              </div>
+            </div>
+        </div>
       </div>
     </div>
 
@@ -217,8 +231,11 @@
                 data-frames='[{"delay":600,"speed":1500,"frame":"0","from":"x:-50px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
                 data-textAlign="['inherit','inherit','inherit','inherit']" data-paddingtop="[0,0,0,0]"
                 data-paddingright="[0,0,0,0]" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]"
-                style="z-index: 13; min-width: 470px; max-width: 470px; white-space: normal; font-size: 120px; line-height: 150px; font-weight: 700; color: #222222; letter-spacing: 0px; text-shadow: #fff 2px 0 2px;">удобно.
-                быстро. точно. </div>
+                style="z-index: 13; min-width: 470px; max-width: 470px; white-space: normal; font-size: 120px; line-height: 150px; font-weight: 700; color: #222222; letter-spacing: 0px; text-shadow: #fff 2px 0 2px;">
+                <div>удобно.</div>
+                <div>быстро.</div>
+                <div>точно.</div>
+              </div>
 
               <!-- LAYER NR. 10 -->
               <div class="tp-caption" id="slide-22-layer-13" data-x="['right','right','right','right']"
@@ -409,7 +426,7 @@
       </div>
 
       <!-- Start Testimonial Area -->
-      <div class="brook-testimonial-area ptb--80 ptb-md--80 ptb-sm--80 bg_color--16 slick-arrow-hover">
+      <!-- <div class="brook-testimonial-area ptb--80 ptb-md--80 ptb-sm--80 bg_color--16 slick-arrow-hover">
         <div class="container">
           <div class="row">
             <div class="col-lg-12">
@@ -439,7 +456,6 @@
                   {"breakpoint":481, "settings": {"slidesToShow": 1}}
                 ]'>
 
-                <!-- Start Single Testimonial -->
                 <div class="testimonial testimonial_style--2">
                   <div class="content">
                     <h4 class="heading heading-h4">Best product ever !</h4>
@@ -461,7 +477,6 @@
                   </div>
                 </div>
 
-                <!-- Start Single Testimonial -->
                 <div class="testimonial testimonial_style--2">
                   <div class="content">
                     <h4 class="heading heading-h4">Best product ever !</h4>
@@ -483,7 +498,6 @@
                   </div>
                 </div>
 
-                <!-- Start Single Testimonial -->
                 <div class="testimonial testimonial_style--2">
                   <div class="content">
                     <h4 class="heading heading-h4">Best product ever !</h4>
@@ -505,7 +519,6 @@
                   </div>
                 </div>
 
-                <!-- Start Single Testimonial -->
                 <div class="testimonial testimonial_style--2">
                   <div class="content">
                     <h4 class="heading heading-h4">Best product ever !</h4>
@@ -531,7 +544,7 @@
 
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- Start Call To Action -->
       <!-- <div class="brook-call-to-action bg_image--33 ptb--70 ptb-md--80 ptb-sm--80">

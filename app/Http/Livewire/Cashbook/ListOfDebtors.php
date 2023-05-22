@@ -83,10 +83,12 @@ class ListOfDebtors extends Component
             if ($balance < 0) {
                 $repaymentAmount = abs($balance);
                 $this->profile->debt_sum -= $debtOrder['sum'];
-            } elseif ($balance == 0) {
+            }
+            elseif ($balance == 0) {
                 $repaymentAmount = 0;
                 $this->profile->debt_sum = 0;
-            } else {
+            }
+            else {
                 $this->profile->debt_sum -= $repaymentAmount;
 
                 $debtOrdersNew[$this->company->id][$this->cashbook->id][$i++] = [

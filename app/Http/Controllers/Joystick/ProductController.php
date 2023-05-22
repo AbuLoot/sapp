@@ -30,8 +30,11 @@ class ProductController extends Controller
     {
         $this->authorize('viewAny', Product::class);
 
+        $companies = [];
+
         if (auth()->user()->roles()->firstWhere('name', 'admin')) {
             $products = Product::orderBy('updated_at','desc')->paginate(50);
+            $companies = Company::where('sn_client', true)->get();
         }
         else {
             $products = Product::where('in_company_id', $this->companyId)
@@ -39,10 +42,10 @@ class ProductController extends Controller
                 ->paginate(50);
         }
 
-        $categories = Category::where('company_id', $this->companyId)->orderBy('sort_id')->get()->toTree();
         $modes = Mode::all();
+        $categories = Category::where('company_id', $this->companyId)->orderBy('sort_id')->get()->toTree();
 
-        return view('joystick.products.index', ['categories' => $categories, 'products' => $products, 'modes' => $modes]);
+        return view('joystick.products.index', ['companies' => $companies, 'categories' => $categories, 'products' => $products, 'modes' => $modes]);
     }
 
     public function create($lang)

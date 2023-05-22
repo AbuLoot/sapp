@@ -11,6 +11,23 @@ class OutgoingOrder extends Model
 
     protected $table = 'outgoing_orders';
 
+    protected $fillable = [
+        'company_id',
+        'cashbook_id',
+        'workplace_id',
+        'user_id',
+        'doc_no',
+        'doc_type_id',
+        'products_data',
+        'contractor_type',
+        'contractor_id',
+        'operation_code',
+        'sum',
+        'currency',
+        'count',
+        'comment',
+    ];
+
     public function cashDoc()
     {
         return $this->morphOne(CashDoc::class, 'order');

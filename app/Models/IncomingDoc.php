@@ -12,15 +12,17 @@ class IncomingDoc extends Model
     protected $table = 'incoming_docs';
 
     protected $fillable = [
-        'store_id',
         'company_id',
+        'store_id',
         'user_id',
-        'username',
+        'workplace_id',
         'doc_no',
         'doc_type_id',
         'products_data',
-        'from_contractor',
-        'amount',
+        'contractor_type',
+        'contractor_id',
+        'operation_code',
+        'sum',
         'currency',
         'count',
         'unit',

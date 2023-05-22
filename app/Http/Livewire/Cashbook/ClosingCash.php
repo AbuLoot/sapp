@@ -31,9 +31,19 @@ class ClosingCash extends Component
 
         $this->nominals = [
             // Coins
-            '5' => null, '10' => null, '20' => null, '50' => null, '100' => null, '200' => null,
+            '5' => null,
+            '10' => null,
+            '20' => null,
+            '50' => null,
+            '100' => null,
+            '200' => null,
             // Banknotes
-            '500' => null, '1000' => null, '2000' => null, '5000' => null, '10000' => null, '20000' => null,
+            '500' => null,
+            '1000' => null,
+            '2000' => null,
+            '5000' => null,
+            '10000' => null,
+            '20000' => null,
         ];
 
         $this->attr = [

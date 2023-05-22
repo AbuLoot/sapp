@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Joystick Admin</title>
-    <meta name="description" content="Joystick Admin">
+    <title>POS</title>
+    <meta name="description" content="POS">
     <meta name="author" content="issayev.adilet@gmail.com">
     <link rel="icon" href="/joystick/favicon.png" type="image/x-icon" />
     <link rel="shortcut icon" href="/joystick/favicon.png" type="image/x-icon" />
