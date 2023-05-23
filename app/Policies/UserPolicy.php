@@ -40,10 +40,6 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        if (!$user->roles->firstWhere('name', 'admin')) {
-            return false;
-        }
-
         return $user->roles->first()->permissions->pluck('name')->contains('create-user');
     }
 

@@ -29,7 +29,6 @@
           <td>№</td>
           <td>Название</td>
           <td>URI</td>
-          <td>Компания</td>
           <td>Номер</td>
           <td>Язык</td>
           <td>Статус</td>
@@ -50,7 +49,6 @@
                 {!! $caret !!} {{ PHP_EOL.$prefix.' '.$node->title }} <?php $caret = null; ?>
               </td>
               <td>{{ $node->slug }}</td>
-              <td>{{ $companies->find($node->company_id)->title }}</td>
               <td>{{ $node->sort_id }}</td>
               <td>{{ $node->lang }}</td>
               <td class="text-{{ trans('statuses.data.'.$node->status.'.style') }}">{{ trans('statuses.data.'.$node->status.'.title') }}</td>

@@ -7,6 +7,7 @@ use Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rules;
 use App\Http\Controllers\Joystick\Controller;
 
 use App\Models\User;
@@ -31,6 +32,68 @@ class UserController extends Controller
         $regions = Region::get();
 
         return view('joystick.users.index', compact('users', 'regions'));
+    }
+
+    public function create($lang)
+    {
+        $this->authorize('create', User::class);
+
+        $regions = Region::orderBy('sort_id')->get()->toTree();
+        $companies = Company::where('company_id', $this->companyId)->where('sn_client', true)->orderBy('sort_id')->get();
+        // $companies->push(auth()->user()->company);
+        $roles = Role::all();
+
+        return view('joystick.users.create', compact('regions', 'companies', 'roles'));
+    }
+
+    public function store(Request $request, $lang)
+    {
+        $this->validate($request, [
+            'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'tel' => ['required', 'string', 'max:15', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $this->authorize('create', User::class);
+
+        $user = new User;
+        $user->company_id = $this->companyId;
+        // $user->user_id = auth()->user()->id;
+        $user->name = $request->name;
+        $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->address = $request->address;
+        $user->balance = $request->balance;
+        $user->is_customer = ($request->is_customer == 'on') ? 1 : 0;
+        $user->is_worker = ($request->is_worker == 'on' OR $request->role_id) ? 1 : 0;
+        $user->status = ($request->status == 'on') ? 1 : 0;
+        $user->save();
+
+        if (is_null($request->role_id)) {
+            $user->roles()->detach();
+            $user->is_worker = 0;
+        } else {
+            $user->roles()->sync($request->role_id);
+        }
+
+        $profile = new Profile;
+        $profile->user_id = $user->id;
+        $profile->region_id = $request->region_id;
+        $profile->company_id = $request->company_id;
+        $profile->tel = $request->phone;
+        $profile->birthday = $request->birthday;
+        $profile->gender = $request->gender;
+        $profile->about = $request->about;
+        $profile->is_debtor = ($request->debt_sum > 0) ? 1 : 0;
+        $profile->debt_sum = $request->debt_sum;
+        $profile->bonus = $request->bonus;
+        $profile->discount = $request->discount;
+        $profile->save();
+
+        return redirect($lang.'/admin/users')->with('status', 'Запись добавлена!');
     }
 
     public function edit($lang, $id)

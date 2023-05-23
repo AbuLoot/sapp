@@ -32,6 +32,10 @@ class ComplexPayment extends Component
     public $bankCard;
     public $kaspiTransfer;
 
+    public $store;
+    public $cashbook;
+    public $workplaceId;
+
     protected $rules = [
         'complexPayments' => 'array|max:2',
         'cashPayment' => 'integer|min:2',
@@ -46,6 +50,10 @@ class ComplexPayment extends Component
         $this->company = auth()->user()->company;
         $this->paymentType = PaymentType::where('slug', 'complex-payment')->first();
         $this->paymentTypes = PaymentType::whereIn('slug', ['cash-payment', 'bank-card', 'kaspi-transfer'])->get();
+
+        $this->store = session()->get('storage');
+        $this->cashbook = session()->get('cashdesk');
+        $this->workplaceId = session()->get('cashdeskWorkplace');
 
         if (empty(session()->get('cartProducts'))) {
             return redirect($this->lang.'/cashdesk');
@@ -79,10 +87,10 @@ class ComplexPayment extends Component
         $outgoingTotalCount = 0;
         $incomingTotalAmount = 0;
 
-        $store = session()->get('storage');
-        $cashbook = session()->get('cashdesk');
-        $workplaceId = session()->get('cashdeskWorkplace');
-        $cartProducts = session()->get('cartProducts');
+        // $store = session()->get('storage');
+        // $cashbook = session()->get('cashdesk');
+        // $workplaceId = session()->get('cashdeskWorkplace');
+        // $cartProducts = session()->get('cartProducts');
 
         $contractorType = null;
         $contractorId = null;
@@ -92,14 +100,14 @@ class ComplexPayment extends Component
             $contractorId = session()->get('customer')->id;
         }
 
-        foreach($cartProducts as $productId => $cartProduct) {
+        foreach(session()->get('cartProducts') as $productId => $cartProduct) {
 
             $product = Product::findOrFail($productId);
 
             $outgoingCount = $cartProduct['countInCart'];
 
             $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$store->num_id] ?? 0;
+            $countInStore = $countInStores[$this->store->num_id] ?? 0;
 
             // Prepare outgoing count & If outgoing count greater, assign $countInStore
             if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
@@ -109,7 +117,7 @@ class ComplexPayment extends Component
             }
 
             $stockCount = $countInStore - $outgoingCount;
-            $countInStores[$store->num_id] = $stockCount;
+            $countInStores[$this->store->num_id] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -123,7 +131,7 @@ class ComplexPayment extends Component
                 $discount = $cartProduct->discount;
             }
 
-            $productsData[$productId]['store'] = $store->id;
+            $productsData[$productId]['store'] = $this->store->id;
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
@@ -136,15 +144,15 @@ class ComplexPayment extends Component
         // Incoming Order & Outgoing Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
 
-        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->num_id);
-        $storeDocNo = $this->generateOutgoingStoreDocNo($store->num_id);
+        $cashDocNo = $this->generateIncomingCashDocNo($this->cashbook->num_id);
+        $storeDocNo = $this->generateOutgoingStoreDocNo($this->store->num_id);
 
         // Cash Doc
         $incomingOrder = new IncomingOrder;
-        $incomingOrder->cashbook_id = $cashbook->id;
+        $incomingOrder->cashbook_id = $this->cashbook->id;
         $incomingOrder->company_id = $this->company->id;
         $incomingOrder->user_id = auth()->user()->id;
-        $incomingOrder->workplace_id = $workplaceId;
+        $incomingOrder->workplace_id = $this->workplaceId;
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $incomingOrder->products_data = json_encode($productsData);
@@ -160,7 +168,7 @@ class ComplexPayment extends Component
 
         // Store Doc
         $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $store->id;
+        $outgoingDoc->store_id = $this->store->id;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->doc_no = $storeDocNo;
@@ -176,7 +184,7 @@ class ComplexPayment extends Component
 
         // Cash Doc
         $cashDoc = new CashDoc;
-        $cashDoc->cashbook_id = $cashbook->id;
+        $cashDoc->cashbook_id = $this->cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->order_type = 'App\Models\IncomingOrder';
@@ -192,7 +200,7 @@ class ComplexPayment extends Component
 
         // Store Doc
         $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $store->id;
+        $storeDoc->store_id = $this->store->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_type = 'App\Models\OutgoingDoc';

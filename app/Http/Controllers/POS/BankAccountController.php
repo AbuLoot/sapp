@@ -43,7 +43,7 @@ class BankAccountController extends Controller
         $bank_account->title = $request->title;
         $bank_account->slug = (empty($request->slug)) ? Str::slug($request->title) : $request->slug;
         $bank_account->account_number = $request->account_number;
-        $bank_account->bic = $request->bic;
+        $bank_account->biс = $request->biс;
         $bank_account->balance = $request->balance;
         $bank_account->currency = $request->currency;
         $bank_account->comment = $request->comment;

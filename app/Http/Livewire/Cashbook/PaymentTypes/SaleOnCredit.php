@@ -31,6 +31,9 @@ class SaleOnCredit extends Component
     public $email;
     public $address;
 
+    public $cashbook;
+    public $workplaceId;
+
     protected $listeners = ['newUser'];
 
     protected $rules = [
@@ -45,6 +48,9 @@ class SaleOnCredit extends Component
         $this->company = auth()->user()->company;
         $this->sumOfCart = CashbookIndex::sumOfCart();
         $this->paymentType = PaymentType::where('slug', 'sale-on-credit')->first();
+
+        $this->cashbook = session()->get('cashdesk');
+        $this->workplaceId = session()->get('cashdeskWorkplace');
 
         if (empty(session()->get('cartProducts'))) {
             return redirect($this->lang.'/cashdesk');
@@ -85,22 +91,22 @@ class SaleOnCredit extends Component
         $outgoingTotalCount = 0;
         $incomingTotalAmount = 0;
 
-        $store = session()->get('storage');
-        $cashbook = session()->get('cashdesk');
-        $workplaceId = session()->get('cashdeskWorkplace');
-        $cartProducts = session()->get('cartProducts');
+        // $store = session()->get('storage');
+        // $cashbook = session()->get('cashdesk');
+        // $workplaceId = session()->get('cashdeskWorkplace');
+        // $cartProducts = session()->get('cartProducts');
 
         $contractorType = 'App\Models\User';
         $contractorId = $user->id;
 
-        foreach($cartProducts as $productId => $cartProduct) {
+        foreach(session()->get('cartProducts') as $productId => $cartProduct) {
 
             $product = Product::findOrFail($productId);
 
             $outgoingCount = $cartProduct['countInCart'];
 
             $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$store->num_id] ?? 0;
+            $countInStore = $countInStores[session('storage')->num_id] ?? 0;
 
             // Prepare outgoing count & If outgoing count greater, assign $countInStore
             if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
@@ -110,7 +116,7 @@ class SaleOnCredit extends Component
             }
 
             $stockCount = $countInStore - $outgoingCount;
-            $countInStores[$store->num_id] = $stockCount;
+            $countInStores[session('storage')->num_id] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -124,7 +130,7 @@ class SaleOnCredit extends Component
                 $discount = $cartProduct->discount;
             }
 
-            $productsData[$productId]['store'] = $store->id;
+            $productsData[$productId]['store'] = session('storage')->id;
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
@@ -137,15 +143,15 @@ class SaleOnCredit extends Component
         // Incoming Order & Outgoing Doc
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
 
-        $cashDocNo = $this->generateIncomingCashDocNo($cashbook->num_id);
-        $storeDocNo = $this->generateOutgoingStoreDocNo($store->num_id);
+        $cashDocNo = $this->generateIncomingCashDocNo($this->cashbook->num_id);
+        $storeDocNo = $this->generateOutgoingStoreDocNo(session('storage')->num_id);
 
         // Cash Doc
         $incomingOrder = new IncomingOrder;
-        $incomingOrder->cashbook_id = $cashbook->id;
+        $incomingOrder->cashbook_id = $this->cashbook->id;
         $incomingOrder->company_id = $this->company->id;
         $incomingOrder->user_id = auth()->user()->id;
-        $incomingOrder->workplace_id = $workplaceId;
+        $incomingOrder->workplace_id = $this->workplaceId;
         $incomingOrder->doc_no = $cashDocNo;
         $incomingOrder->doc_type_id = $docTypes->where('slug', 'forma-ko-1')->first()->id;
         $incomingOrder->products_data = json_encode($productsData);
@@ -161,7 +167,7 @@ class SaleOnCredit extends Component
 
         // Store Doc
         $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $store->id;
+        $outgoingDoc->store_id = session('storage')->id;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->doc_no = $storeDocNo;
@@ -183,7 +189,7 @@ class SaleOnCredit extends Component
             $profile->is_debtor = true;
             $profile->debt_sum = $this->sumOfCart['sumDiscounted'];
 
-            $debtOrder[$this->company->id][$cashbook->id][] = [
+            $debtOrder[$this->company->id][$this->cashbook->id][] = [
                 'docNo' => $incomingOrder->doc_no,
                 'sum' => $this->sumOfCart['sumDiscounted'],
             ];
@@ -196,11 +202,11 @@ class SaleOnCredit extends Component
             $user->profile->debt_sum = $user->profile->debt_sum + $this->sumOfCart['sumDiscounted'];
 
             $debtOrders = json_decode($user->profile->debt_orders, true) ?? [];
-            // $countOrders = count($debtOrders[$this->company->id][$cashbook->id]) >= 1
-            //     ? count($debtOrders[$this->company->id][$cashbook->id]) - 1
+            // $countOrders = count($debtOrders[$this->company->id][$this->cashbook->id]) >= 1
+            //     ? count($debtOrders[$this->company->id][$this->cashbook->id]) - 1
             //     : 0;
 
-            $debtOrders[$this->company->id][$cashbook->id][] = [
+            $debtOrders[$this->company->id][$this->cashbook->id][] = [
                 'docNo' => $incomingOrder->doc_no,
                 'sum' => $this->sumOfCart['sumDiscounted'],
             ];
@@ -211,7 +217,7 @@ class SaleOnCredit extends Component
 
         // Cash Doc
         $cashDoc = new CashDoc;
-        $cashDoc->cashbook_id = $cashbook->id;
+        $cashDoc->cashbook_id = $this->cashbook->id;
         $cashDoc->company_id = $this->company->id;
         $cashDoc->user_id = auth()->user()->id;
         $cashDoc->order_type = 'App\Models\IncomingOrder';
@@ -227,7 +233,7 @@ class SaleOnCredit extends Component
 
         // Store Doc
         $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $store->id;
+        $storeDoc->store_id = session('storage')->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_type = 'App\Models\OutgoingDoc';

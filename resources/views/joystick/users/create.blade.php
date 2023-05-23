@@ -1,15 +1,14 @@
 @extends('joystick.layout')
 
 @section('content')
-  <h2 class="page-header">Редактирование</h2>
+  <h2 class="page-header">Создание</h2>
 
   @include('components.alerts')
 
   <p class="text-right">
     <a href="/{{ $lang }}/admin/users" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
-  <form action="{{ route('users.update', [$lang, $user->id]) }}" method="post" enctype="multipart/form-data">
-    <input name="_method" type="hidden" value="PUT">
+  <form action="{{ route('users.store', $lang) }}" method="post">
     {!! csrf_field() !!}
 
     <div class="row">
@@ -21,7 +20,7 @@
               <div class="col-6 col-md-6">
                 <div class="form-group">
                   <label>Имя</label>
-                  <input type="text" class="form-control" minlength="2" maxlength="40" name="name" placeholder="Имя*" value="{{ (old('name')) ? old('name') : $user->name }}" required>
+                  <input type="text" class="form-control" minlength="2" maxlength="40" name="name" placeholder="Имя*" value="{{ (old('name')) ? old('name') : '' }}" required>
                 </div>
               </div>
               <div class="col-6 col-md-6">
@@ -33,8 +32,24 @@
             </div>
             <div class="form-group">
               <label for="email">Email:</label>
-              <input type="email" class="form-control" name="email" id="email" minlength="8" maxlength="60" value="{{ $user->email }}">
+              <input type="email" class="form-control" name="email" id="email" minlength="8" maxlength="60" value="{{ old('email') }}">
             </div>
+
+            <div class="row">
+              <div class="col-6 col-md-6">
+                <div class="form-group">
+                  <label>Пароль</label>
+                  <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
+                </div>
+              </div>
+              <div class="col-6 col-md-6">
+                <div class="form-group">
+                  <label>Павторите пароль</label>
+                  <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                </div>
+              </div>
+            </div>
+
             <div class="form-group">
               <label>Номер телефона</label>
               <input type="tel" pattern="(\+?\d[- .]*){7,13}" class="form-control" name="tel" placeholder="Номер телефона*" value="{{ (old('tel')) ? old('tel') : '' }}">
@@ -52,11 +67,7 @@
               <select class="form-control" name="role_id" id="role_id">
                 <option value=""></option>
                 @foreach($roles as $role)
-                  @if ($user->roles->contains($role->id)))
-                    <option value="{{ $role->id }}" selected>{{ $role->name }}</option>
-                  @else
-                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                  @endif
+                  <option value="{{ $role->id }}">{{ $role->name }}</option>
                 @endforeach
               </select>
             </div>
