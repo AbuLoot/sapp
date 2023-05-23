@@ -16,4 +16,9 @@ class PageController extends Controller
     {
         return view('promo.contacts');
     }
+
+    public function apps()
+    {
+        return view('apps');
+    }
 }

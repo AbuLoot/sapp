@@ -9,7 +9,7 @@
 
   <div class="row">
     <div class="text-center">
-      <i class="material-icons text-primary" style="font-size: 480px;">admin_panel_settings</i>
+      <i class="material-icons text-primary" style="font-size: 300px;">admin_panel_settings</i>
     </div>
   </div>
 

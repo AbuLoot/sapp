@@ -144,6 +144,8 @@ Route::group(['prefix' => '{lang}/pos', 'middleware' => ['auth' , 'roles:admin|m
         'discounts' => DiscountController::class,
     ]);
 
+    Route::get('docsprint/{type}/{id}', CashDocsPrint::class);
+
     // Reports
     Route::get('report-financial', [FinancialReportController::class, 'index']);
     Route::get('report-customers', [CustomersReportController::class, 'index']);
@@ -214,9 +216,11 @@ Route::get('/', [PageController::class, 'index']);
 Route::redirect('apps', '/'.app()->getLocale().'/apps');
 Route::group(['prefix' => '{lang}', 'middleware' => ['auth', 'verify.company']], function() {
 
-    Route::get('apps', function () {
-        return view('apps');
-    })->name('apps');
+    Route::get('apps', [PageController::class, 'apps']);
+
+    // Route::get('apps', function () {
+    //     return view('apps');
+    // })->name('apps');
 });
 
 require __DIR__.'/auth.php';

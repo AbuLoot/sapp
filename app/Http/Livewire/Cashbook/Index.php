@@ -55,6 +55,8 @@ class Index extends Component
         $this->store = session()->get('storage');
         $this->storeId = $this->store->id;
         $this->storeNum = $this->store->num_id;
+
+        session()->put('priceMode', $this->priceMode);
     }
 
     public function updated($key, $value)
