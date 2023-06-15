@@ -32,7 +32,6 @@ class ComplexPayment extends Component
     public $bankCard;
     public $kaspiTransfer;
 
-    public $store;
     public $cashbook;
     public $workplaceId;
 
@@ -51,7 +50,6 @@ class ComplexPayment extends Component
         $this->paymentType = PaymentType::where('slug', 'complex-payment')->first();
         $this->paymentTypes = PaymentType::whereIn('slug', ['cash-payment', 'bank-card', 'kaspi-transfer'])->get();
 
-        $this->store = session()->get('storage');
         $this->cashbook = session()->get('cashdesk');
         $this->workplaceId = session()->get('cashdeskWorkplace');
 
@@ -107,7 +105,7 @@ class ComplexPayment extends Component
             $outgoingCount = $cartProduct['countInCart'];
 
             $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$this->store->num_id] ?? 0;
+            $countInStore = $countInStores[session('storage')->num_id] ?? 0;
 
             // Prepare outgoing count & If outgoing count greater, assign $countInStore
             if ($countInStore >= 1 && $cartProduct['countInCart'] <= $countInStore) {
@@ -117,7 +115,7 @@ class ComplexPayment extends Component
             }
 
             $stockCount = $countInStore - $outgoingCount;
-            $countInStores[$this->store->num_id] = $stockCount;
+            $countInStores[session('storage')->num_id] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -131,7 +129,7 @@ class ComplexPayment extends Component
                 $discount = $cartProduct->discount;
             }
 
-            $productsData[$productId]['store'] = $this->store->id;
+            $productsData[$productId]['store'] = session('storage')->id;
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
@@ -145,7 +143,7 @@ class ComplexPayment extends Component
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
 
         $cashDocNo = $this->generateIncomingCashDocNo($this->cashbook->num_id);
-        $storeDocNo = $this->generateOutgoingStoreDocNo($this->store->num_id);
+        $storeDocNo = $this->generateOutgoingStoreDocNo(session('storage')->num_id);
 
         // Cash Doc
         $incomingOrder = new IncomingOrder;
@@ -168,7 +166,7 @@ class ComplexPayment extends Component
 
         // Store Doc
         $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $this->store->id;
+        $outgoingDoc->store_id = session('storage')->id;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->doc_no = $storeDocNo;
@@ -200,7 +198,7 @@ class ComplexPayment extends Component
 
         // Store Doc
         $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $this->store->id;
+        $storeDoc->store_id = session('storage')->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_type = 'App\Models\OutgoingDoc';

@@ -48,7 +48,7 @@ class BankCard extends Component
         $outgoingTotalCount = 0;
         $incomingTotalAmount = 0;
 
-        $store = session()->get('storage');
+        // $store = session()->get('storage');
         $cashbook = session()->get('cashdesk');
         $workplaceId = session()->get('cashdeskWorkplace');
         $cartProducts = session()->get('cartProducts');
@@ -68,7 +68,7 @@ class BankCard extends Component
             $outgoingCount = $cartProduct['countInCart'];
 
             $countInStores = json_decode($cartProduct->count_in_stores, true) ?? [];
-            $countInStore = $countInStores[$store->num_id] ?? 0;
+            $countInStore = $countInStores[session('storage')->num_id] ?? 0;
 
 
             // Prepare outgoing count & If outgoing count greater, assign $countInStore
@@ -79,7 +79,7 @@ class BankCard extends Component
             }
 
             $stockCount = $countInStore - $outgoingCount;
-            $countInStores[$store->num_id] = $stockCount;
+            $countInStores[session('storage')->num_id] = $stockCount;
             $amountCount = collect($countInStores)->sum();
 
             $product->count_in_stores = json_encode($countInStores);
@@ -93,7 +93,7 @@ class BankCard extends Component
                 $discount = $cartProduct->discount;
             }
 
-            $productsData[$productId]['store'] = $store->id;
+            $productsData[$productId]['store'] = session('storage')->id;
             $productsData[$productId]['price'] = $price;
             $productsData[$productId]['outgoingCount'] = $outgoingCount;
             $productsData[$productId]['discount'] = $discount;
@@ -107,7 +107,7 @@ class BankCard extends Component
         $docTypes = DocType::whereIn('slug', ['forma-ko-1', 'forma-z-2'])->get();
 
         $cashDocNo = $this->generateIncomingCashDocNo($cashbook->num_id);
-        $storeDocNo = $this->generateOutgoingStoreDocNo($store->num_id);
+        $storeDocNo = $this->generateOutgoingStoreDocNo(session('storage')->num_id);
 
         // Cash Doc
         $incomingOrder = new IncomingOrder;
@@ -130,7 +130,7 @@ class BankCard extends Component
 
         // Store Doc
         $outgoingDoc = new OutgoingDoc;
-        $outgoingDoc->store_id = $store->id;
+        $outgoingDoc->store_id = session('storage')->id;
         $outgoingDoc->company_id = $this->company->id;
         $outgoingDoc->user_id = auth()->user()->id;
         $outgoingDoc->doc_no = $storeDocNo;
@@ -162,7 +162,7 @@ class BankCard extends Component
 
         // Store Doc
         $storeDoc = new StoreDoc;
-        $storeDoc->store_id = $store->id;
+        $storeDoc->store_id = session('storage')->id;
         $storeDoc->company_id = $this->company->id;
         $storeDoc->user_id = auth()->user()->id;
         $storeDoc->doc_type = 'App\Models\OutgoingDoc';

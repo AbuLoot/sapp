@@ -37,7 +37,7 @@ class StoreController extends Controller
         // $this->authorize('create', Store::class);
 
         $this->validate($request, [
-            'title' => 'required|min:2|max:80|unique:stores',
+            'title' => 'required|min:2|max:80',
             'ip_address' => 'required|min:6',
         ]);
 

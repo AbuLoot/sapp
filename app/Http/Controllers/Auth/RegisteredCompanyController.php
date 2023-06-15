@@ -68,6 +68,7 @@ class RegisteredCompanyController extends Controller
             'about' => $request->about,
             'legal_address' => $request->legal_address,
             'actual_address' => $request->actual_address,
+            'sn_client' => 1,
         ]);
 
         $user = auth()->user();

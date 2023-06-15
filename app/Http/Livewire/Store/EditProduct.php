@@ -47,7 +47,7 @@ class EditProduct extends Component
 
         $this->company = auth()->user()->company;
         $this->stores = $this->company->stores;
-        $this->product = Product::findOrFail($id);
+        $this->product = Product::where('in_company_id', $this->company->id)->findOrFail($id);
         $this->productBarcodes = json_decode($this->product->barcodes) ?? [''];
         $this->barcodes = $this->productBarcodes;
         $this->idCode = $this->product->id_code;

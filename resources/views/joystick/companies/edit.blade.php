@@ -95,22 +95,36 @@
               <label for="emails">Emails</label>
               <input type="text" class="form-control" id="emails" name="emails" value="{{ (old('emails')) ? old('emails') : $company->emails }}">
             </div>
+            <?php
+              $inputAttr = [
+                '1' => 'checked',
+                '0' => '',
+              ];
+            ?>
+            @if(auth()->user()->roles()->firstWhere('name', 'admin'))
+              <div class="form-group">
+                <label for="sn_client">Клиент системы:</label>
+                <label>
+                  <input type="checkbox" id="sn_client" name="sn_client" {{ $inputAttr[$company->sn_client] }}> Активен
+                </label>
+              </div>
+            @endif
             <div class="form-group">
               <label for="is_supplier">Поставщик:</label>
               <label>
-                <input type="checkbox" id="is_supplier" name="is_supplier" @if($company->is_supplier == 1) checked @endif> Активен
+                <input type="checkbox" id="is_supplier" name="is_supplier"{{ $inputAttr[$company->is_supplier] }}> Активен
               </label>
             </div>
             <div class="form-group">
               <label for="is_customer">Заказщик:</label>
               <label>
-                <input type="checkbox" id="is_customer" name="is_customer" @if($company->is_customer == 1) checked @endif> Активен
+                <input type="checkbox" id="is_customer" name="is_customer"{{ $inputAttr[$company->is_customer] }}> Активен
               </label>
             </div>
             <div class="form-group">
               <label for="status">Статус:</label>
               <label>
-                <input type="checkbox" id="status" name="status" @if ($company->status == 1) checked @endif> Активен
+                <input type="checkbox" id="status" name="status" {{ $inputAttr[$company->status] }}> Активен
               </label>
             </div>
             <div class="form-group">

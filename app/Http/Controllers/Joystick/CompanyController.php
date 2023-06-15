@@ -105,6 +105,11 @@ class CompanyController extends Controller
         $company->is_supplier = ($request->is_supplier == 'on') ? 1 : 0;
         $company->is_customer = ($request->is_customer == 'on') ? 1 : 0;
         $company->status = ($request->status == 'on') ? 1 : 0;
+
+        if (auth()->user()->roles()->firstWhere('name', 'admin') AND $request->sn_client == 'on') {
+            $company->sn_client = 1;
+        }
+
         $company->save();
 
         return redirect($request->lang.'/admin/companies')->with('status', 'Запись добавлена.');
@@ -164,6 +169,11 @@ class CompanyController extends Controller
         $company->is_supplier = ($request->is_supplier == 'on') ? 1 : 0;
         $company->is_customer = ($request->is_customer == 'on') ? 1 : 0;
         $company->status = ($request->status == 'on') ? 1 : 0;
+
+        if (auth()->user()->roles()->firstWhere('name', 'admin') AND $request->sn_client == 'on') {
+            $company->sn_client = 1;
+        }
+
         $company->save();
 
         return redirect($lang.'/admin/companies')->with('status', 'Запись обновлена.');

@@ -59,7 +59,14 @@ class UserController extends Controller
         $this->authorize('create', User::class);
 
         $user = new User;
-        $user->company_id = $this->companyId;
+
+        if (auth()->user()->roles()->firstWhere('name', 'admin')) {
+            $user->company_id = $request->company_id;
+        } else {
+            $user->company_id = $this->companyId;
+            Company::where('id', $this->companyId)->update('sn_client', 1);
+        }
+
         // $user->user_id = auth()->user()->id;
         $user->name = $request->name;
         $user->lastname = $request->lastname;
@@ -130,7 +137,13 @@ class UserController extends Controller
 
         $this->authorize('update', $user);
 
-        $user->company_id = $request->company_id;
+        if (auth()->user()->roles()->firstWhere('name', 'admin')) {
+            $user->company_id = $request->company_id;
+        } else {
+            $user->company_id = $this->companyId;
+            Company::where('id', $this->companyId)->update('sn_client', 1);
+        }
+
         $user->name = $request->name;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
@@ -207,15 +220,15 @@ class UserController extends Controller
             return redirect()->back()->with('danger', 'Email не совпадает!');
         }
 
-        if (Hash::check($request->old_password, $user->password)) {
-            return redirect()->back()->with('danger', 'Старый пароль не совпадает!');
-        }
+        // if (Hash::check($request->old_password, $user->password)) {
+        //     return redirect()->back()->with('danger', 'Старый пароль не совпадает!');
+        // }
 
         $user->password = Hash::make($request->password);
         $user->setRememberToken(Str::random(60));
         $user->save();
 
-        return redirect('/admin/users')->with('status', 'Запись обновлена!');
+        return redirect($lang.'/admin/users')->with('status', 'Запись обновлена!');
     }
 
     public function destroy($lang, $id)

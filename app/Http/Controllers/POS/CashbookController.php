@@ -37,7 +37,7 @@ class CashbookController extends Controller
         // $this->authorize('create', Cashbook::class);
 
         $this->validate($request, [
-            'title' => 'required|min:2|max:80|unique:cashbooks',
+            'title' => 'required|min:2|max:80',
         ]);
 
         $numId = $request->num_id ?? Cashbook::where('company_id', $this->companyId)->count() + 1;

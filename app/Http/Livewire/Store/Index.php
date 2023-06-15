@@ -21,6 +21,7 @@ class Index extends Component
     public $type;
     public $company;
     public $companyId;
+    // public $inCompanyId;
     public $categoryId;
     public $productsId = [];
     public $toggleMode = false;
@@ -32,6 +33,7 @@ class Index extends Component
         $this->lang = app()->getLocale();
         $this->units = Unit::get();
         $this->company = auth()->user()->company;
+        // $this->inCompanyId = session('company')->id;
     }
 
     public function resetFilter()
@@ -98,6 +100,7 @@ class Index extends Component
     public function render()
     {
         $products = Product::orderBy('id', 'desc')
+            ->where('in_company_id', $this->company->id)
             ->when(strlen($this->search) >= 2, function($query) {
                 $query->where('title', 'like', '%'.$this->search.'%')
                     ->orWhere('barcodes', 'like', '%'.$this->search.'%')
@@ -112,7 +115,6 @@ class Index extends Component
             ->when($this->companyId, function($query) {
                 $query->where('company_id', $this->companyId);
             })
-            ->where('in_company_id', $this->company->id)
             ->paginate(50);
 
         if ($this->toggleMode) {

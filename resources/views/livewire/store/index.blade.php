@@ -177,14 +177,14 @@
 
             <div class="mb-3">
               <?php $companies = \App\Models\Company::where('company_id', $company->id)->where('is_supplier', 1)->get(); ?>
-              <label for="companyId">Поставщик</label>
-              <select wire:model="companyId" class="form-control @error('companyId') is-invalid @enderror" id="companyId">
+              <label for="inCompanyId">Поставщик</label>
+              <select wire:model="inCompanyId" class="form-control @error('inCompanyId') is-invalid @enderror" id="inCompanyId">
                 <option value="">Выберите поставщика...</option>
                 @foreach($companies as $company)
                   <option value="{{ $company->id }}">{{ $company->title }}</option>
                 @endforeach
               </select>
-              @error('companyId')<div class="invalid-feedback">{{ $message }}</div>@enderror
+              @error('inCompanyId')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="row">

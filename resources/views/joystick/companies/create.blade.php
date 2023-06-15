@@ -91,10 +91,18 @@
               <label for="emails">Emails</label>
               <input type="text" class="form-control" id="emails" name="emails" value="{{ (old('emails')) ? old('emails') : NULL }}">
             </div>
+            @if(auth()->user()->roles()->firstWhere('name', 'admin'))
+              <div class="form-group">
+                <label for="sn_client">Клиент системы:</label>
+                <label>
+                  <input type="checkbox" id="sn_client" name="sn_client" checked> Активен
+                </label>
+              </div>
+            @endif
             <div class="form-group">
               <label for="is_supplier">Поставщик:</label>
               <label>
-                <input type="checkbox" id="is_supplier" name="is_supplier" checked> Активен
+                <input type="checkbox" id="is_supplier" name="is_supplier"> Активен
               </label>
             </div>
             <div class="form-group">
